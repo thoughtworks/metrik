@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {CleanWebpackPlugin} = require("clean-webpack-plugin");
-const {ENTRY_PATH,OUTPUT_PATH} = require("./constants");
+const {ENTRY_PATH,OUTPUT_PATH,PUBLIC_HTML_PATH} = require("./constants");
 
 
 module.exports = {
@@ -12,6 +12,14 @@ module.exports = {
   target: "web",
   module: {
     rules: [
+      {
+        test:/\.jsx?$/,
+        loader: "babel-loader",
+        options: {
+          presets:["@babel/preset-env","@babel/preset-react"]
+        },
+        exclude: /node_modules/
+      },
       {
         test:/\.css$/,
         use:[
@@ -66,7 +74,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: PUBLIC_HTML_PATH
+    }),
     new CleanWebpackPlugin()
   ]
 };
