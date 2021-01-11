@@ -83,6 +83,25 @@ module.exports = {
           }
         ]
 
+      },
+      {
+        test:/\.(png|jpg|jpeg|svg)$/i,
+        loader: "url-loader",
+        options: {
+          limit:10*1024,
+          outputPath:"assets/images",
+          name:"[name].[contenthash:8].[ext]"
+        }
+
+      },
+      {
+        test:/\.(woff|woff2|e0t|ttf|otf)$/i,
+        loader: "url-loader",
+        options: {
+          outputPath:"assets/fonts",
+          name:"[name].[contenthash:8].[ext]"
+        }
+
       }
     ]
   },
