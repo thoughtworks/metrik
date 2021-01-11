@@ -1,0 +1,40 @@
+{
+  "name": "SEA-4-Key-Metrics-frontend",
+  "version": "0.0.1",
+  "description": "ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --config ./scripts/webpack.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend/issues"
+  },
+  "homepage": "https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend#readme",
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^7.0.3",
+    "html-webpack-plugin": "^4.5.1",
+    "webpack": "^5.12.3",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1",
+    "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.2.1",
+    "css-loader": "^5.0.1",
+    "less": "^4.1.0",
+    "less-loader": "^7.2.1",
+    "postcss-loader": "^4.1.0",
+    "style-loader": "^2.0.0"
+  }
+}
