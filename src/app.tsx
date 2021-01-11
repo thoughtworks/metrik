@@ -1,12 +1,12 @@
-import React from "react";
+import React,{FC} from "react";
 import ReactDom from "react-dom";
 
 import "./style.less";
+import "./util"
 
-
-function App() {
+const App: FC = () => {
   return <div className={"test"}>Hello React</div>
-}
+};
 
 
 ReactDom.render(<App/>,document.getElementById("root"));

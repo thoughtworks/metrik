@@ -10,13 +10,26 @@ module.exports = {
     filename: "js/[name].[hash:8].js"
   },
   target: "web",
+  resolve: {
+    extensions: [".ts",".tsx",".js",".jsx",".json"]
+  },
   module: {
     rules: [
       {
-        test:/\.jsx?$/,
+        test:/\.([jt])sx?$/,
         loader: "babel-loader",
         options: {
-          presets:["@babel/preset-env","@babel/preset-react"]
+          cacheDirectory:true,
+          presets:[["@babel/preset-env",{
+            "modules":false
+          }],"@babel/preset-react","@babel/preset-typescript"],
+          plugins:[
+            ["@babel/plugin-transform-runtime",{
+              "corejs":3,
+              "helpers":true,
+              "useESModules":true
+            }]
+          ]
         },
         exclude: /node_modules/
       },
