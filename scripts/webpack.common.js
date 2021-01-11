@@ -13,6 +13,30 @@ module.exports = {
   module: {
     rules: [
       {
+        test:/\.css$/,
+        use:[
+          {
+            loader: "style-loader"
+          },
+          {
+            loader:"css-loader",
+            options:{
+              importLoaders:1
+            }
+          },
+          {
+            loader:"postcss-loader",
+            options:{
+              postcssOptions:{
+                plugins:[require("autoprefixer")]
+              }
+
+            }
+          }
+        ]
+
+      },
+      {
         test:/\.less$/,
         use:[
           {
