@@ -1,4 +1,4 @@
-package keymetrics.keymetrics.hello
+package fourkeymetrics.hello
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
