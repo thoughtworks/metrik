@@ -9,7 +9,7 @@ module.exports = {
     path:OUTPUT_PATH,
     filename: "js/[name].[hash:8].js"
   },
-
+  target: "web",
   module: {
     rules: [
       {
