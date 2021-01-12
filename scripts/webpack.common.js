@@ -1,13 +1,14 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {CleanWebpackPlugin} = require("clean-webpack-plugin");
-const {ENTRY_PATH,OUTPUT_PATH,PUBLIC_HTML_PATH} = require("./constants");
+const WebpackBarPlugin = require("webpackbar");
+const {ENTRY_PATH,OUTPUT_PATH,PUBLIC_HTML_PATH,isDev} = require("./constants");
 
 
 module.exports = {
   entry: ENTRY_PATH,
   output: {
     path:OUTPUT_PATH,
-    filename: "js/[name].[hash:8].js"
+    filename: "js/[name].[fullhash:8].js"
   },
   target: "web",
   resolve: {
@@ -106,9 +107,12 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: PUBLIC_HTML_PATH
     }),
-    new CleanWebpackPlugin()
+    new WebpackBarPlugin({
+      name:isDev?"compiling":"building",
+    })
   ]
 };
