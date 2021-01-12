@@ -20,22 +20,7 @@ module.exports = {
         test: /\.([jt])sx?$/,
         loader: "babel-loader",
         options: {
-          cacheDirectory: true,
-          presets: [["@babel/preset-env", {
-            "modules": false
-          }], "@babel/preset-react", "@babel/preset-typescript"],
-          plugins: [
-            ["@babel/plugin-transform-runtime", {
-              "corejs": 3,
-              "helpers": true,
-              "useESModules": true
-            }],
-            ["import", {
-              "libraryName": "antd",
-              "libraryDirectory": "es",
-              "style": true,
-            }]
-          ]
+          cacheDirectory: true
         },
         exclude: /node_modules/
       },
