@@ -6,6 +6,7 @@ plugins {
 	application
 	id("org.springframework.boot") version "2.4.1"
 	id("io.spring.dependency-management") version "1.0.10.RELEASE"
+	id("io.gitlab.arturbosch.detekt").version("1.15.0")
 	kotlin("jvm") version "1.4.21"
 	kotlin("plugin.spring") version "1.4.21"
 }
@@ -16,6 +17,11 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
+	jcenter {
+		content {
+			includeGroup("org.jetbrains.kotlinx")
+		}
+	}
 }
 
 application {
@@ -75,4 +81,16 @@ tasks.jacocoTestCoverageVerification {
 
 tasks.check {
 	dependsOn(":jacocoTestReport", ":jacocoTestCoverageVerification")
+}
+
+tasks.detekt {
+	reports {
+		xml.enabled = false
+		txt.enabled = false
+		html.enabled = true
+	}
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	exclude("fourkeymetrics/Application.kt")
 }
