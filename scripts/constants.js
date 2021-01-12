@@ -10,11 +10,11 @@ const isTest = process.env.NODE_ENV === "test";
 const enableAnalyzer = !!process.env.ENABLE_ANALYZER;
 
 module.exports = {
-  SOURCE_CODE_PATH,
-  ENTRY_PATH,
-  OUTPUT_PATH,
-  PUBLIC_HTML_PATH,
-  isDev,
-  isTest,
-  enableAnalyzer,
+	SOURCE_CODE_PATH,
+	ENTRY_PATH,
+	OUTPUT_PATH,
+	PUBLIC_HTML_PATH,
+	isDev,
+	isTest,
+	enableAnalyzer,
 };

@@ -1,7 +1,5 @@
 describe("test for example", () => {
-  it("should return true", () => {
-    expect("str").toBe("str");
-  });
+	it("should return true", () => {
+		expect("str").toBe("str");
+	});
 });
-
-jest.mock("");

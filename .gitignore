@@ -3,3 +3,5 @@ dist
 coverage
 #ide
 .idea
+.DS_Store
+
