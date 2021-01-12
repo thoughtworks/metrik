@@ -1,33 +1,34 @@
-const {isTest} = require('./scripts/constants');
+const { isTest } = require("./scripts/constants");
 
 module.exports = {
   presets: [
     [
       "@babel/preset-env",
       {
-        modules: isTest ? "auto" : false
-      }
+        modules: isTest ? "auto" : false,
+      },
     ],
     "@babel/preset-react",
-    "@babel/preset-typescript"
+    "@babel/preset-typescript",
   ],
   plugins: [
-    isTest ? undefined : [
-      "@babel/plugin-transform-runtime",
-      {
-        "corejs": 3,
-        "helpers": true,
-        "useESModules": true
-      }
-    ],
+    isTest
+      ? undefined
+      : [
+          "@babel/plugin-transform-runtime",
+          {
+            corejs: 3,
+            helpers: true,
+            useESModules: true,
+          },
+        ],
     [
       "import",
       {
-        "libraryName": "antd",
-        "libraryDirectory": "es",
-        "style": true
-      }
-    ]
+        libraryName: "antd",
+        libraryDirectory: "es",
+        style: true,
+      },
+    ],
   ].filter(Boolean),
 };
-

@@ -2,12 +2,18 @@
   "compilerOptions": {
     "strict": true,
     "module": "ESNext",
-    "lib": ["ESNext","DOM"],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "jsx": "react",
     "esModuleInterop": true,
     "moduleResolution": "Node",
-    "noEmit": true,
-    "rootDir": "./src"
+    "skipLibCheck": true,
+    "noEmit": true
   },
-  "exclude": ["node_modules"]
+  "include": ["src","test"],
+  "exclude": [
+    "node_modules"
+  ]
 }
