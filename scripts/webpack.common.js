@@ -1,8 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+const MiniCssExtractPlugin=require("mini-css-extract-plugin");
 const WebpackBarPlugin = require("webpackbar");
 const {ENTRY_PATH,OUTPUT_PATH,PUBLIC_HTML_PATH,isDev} = require("./constants");
-
 
 module.exports = {
   entry: ENTRY_PATH,
@@ -29,6 +29,11 @@ module.exports = {
               "corejs":3,
               "helpers":true,
               "useESModules":true
+            }],
+            ["import", {
+              "libraryName": "antd",
+              "libraryDirectory": "es",
+              "style": true,
             }]
           ]
         },
@@ -38,31 +43,31 @@ module.exports = {
         test:/\.css$/,
         use:[
           {
-            loader: "style-loader"
+            loader: isDev? "style-loader":MiniCssExtractPlugin.loader
           },
-          {
-            loader:"css-loader",
-            options:{
-              importLoaders:1
-            }
-          },
-          {
-            loader:"postcss-loader",
-            options:{
-              postcssOptions:{
-                plugins:[require("autoprefixer")]
-              }
-
-            }
+             {
+        loader:"css-loader",
+        options:{
+          importLoaders:1
+        }
+      },
+      {
+        loader:"postcss-loader",
+        options:{
+          postcssOptions:{
+            plugins:[require("autoprefixer")]
           }
-        ]
+
+        }
+      }
+    ]
 
       },
       {
         test:/\.less$/,
         use:[
           {
-            loader: "style-loader"
+            loader: isDev? "style-loader":MiniCssExtractPlugin.loader
           },
           {
             loader:"css-loader",
@@ -80,7 +85,12 @@ module.exports = {
             }
           },
           {
-            loader:"less-loader"
+            loader:"less-loader",
+            options: {
+              lessOptions: {
+                javascriptEnabled: true
+              }
+            }
           }
         ]
 
@@ -108,6 +118,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+
     new HtmlWebpackPlugin({
       template: PUBLIC_HTML_PATH
     }),
