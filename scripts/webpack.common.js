@@ -18,8 +18,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.([jt])sx?$/,
-				loader:
-					"babel-loader",
+				loader: "babel-loader",
 				options: {
 					cacheDirectory: true,
 				},
@@ -29,25 +28,19 @@ module.exports = {
 				test: /\.css$/,
 				use: [
 					{
-						loader: isDev
-							? "style-loader"
-							: MiniCssExtractPlugin.loader,
+						loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader,
 					},
 					{
-						loader:
-							"css-loader",
+						loader: "css-loader",
 						options: {
 							importLoaders: 1,
 						},
 					},
 					{
-						loader:
-							"postcss-loader",
+						loader: "postcss-loader",
 						options: {
 							postcssOptions: {
-								plugins: [
-									require("autoprefixer"),
-								],
+								plugins: [require("autoprefixer")],
 							},
 						},
 					},
@@ -57,31 +50,24 @@ module.exports = {
 				test: /\.less$/,
 				use: [
 					{
-						loader: isDev
-							? "style-loader"
-							: MiniCssExtractPlugin.loader,
+						loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader,
 					},
 					{
-						loader:
-							"css-loader",
+						loader: "css-loader",
 						options: {
 							importLoaders: 2,
 						},
 					},
 					{
-						loader:
-							"postcss-loader",
+						loader: "postcss-loader",
 						options: {
 							postcssOptions: {
-								plugins: [
-									require("autoprefixer"),
-								],
+								plugins: [require("autoprefixer")],
 							},
 						},
 					},
 					{
-						loader:
-							"less-loader",
+						loader: "less-loader",
 						options: {
 							lessOptions: {
 								javascriptEnabled: true,
@@ -92,27 +78,19 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpg|jpeg|svg)$/i,
-				loader:
-					"url-loader",
+				loader: "url-loader",
 				options: {
-					limit:
-						10 *
-						1024,
-					outputPath:
-						"assets/images",
-					name:
-						"[name].[contenthash:8].[ext]",
+					limit: 10 * 1024,
+					outputPath: "assets/images",
+					name: "[name].[contenthash:8].[ext]",
 				},
 			},
 			{
 				test: /\.(woff|woff2|e0t|ttf|otf)$/i,
-				loader:
-					"url-loader",
+				loader: "url-loader",
 				options: {
-					outputPath:
-						"assets/fonts",
-					name:
-						"[name].[contenthash:8].[ext]",
+					outputPath: "assets/fonts",
+					name: "[name].[contenthash:8].[ext]",
 				},
 			},
 		],

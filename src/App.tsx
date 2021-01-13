@@ -8,8 +8,7 @@ export const App: FC = () => {
 
 	return (
 		<div className={"app"}>
-			Hello 4 key metrics{" "}
-			<Button>Click me</Button>
+			Hello 4 key metrics <Button>Click me</Button>
 		</div>
 	);
 };

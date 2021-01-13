@@ -5,9 +5,7 @@ module.exports = {
 		[
 			"@babel/preset-env",
 			{
-				modules: isTest
-					? "auto"
-					: false,
+				modules: isTest ? "auto" : false,
 			},
 		],
 		"@babel/preset-react",
@@ -28,8 +26,7 @@ module.exports = {
 			"import",
 			{
 				libraryName: "antd",
-				libraryDirectory:
-					"es",
+				libraryDirectory: "es",
 				style: true,
 			},
 		],

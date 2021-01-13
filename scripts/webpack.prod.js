@@ -14,16 +14,12 @@ const prodConfig = {
 	devtool: false,
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename:
-				"css/[name].[contenthash:8].css",
+			filename: "css/[name].[contenthash:8].css",
 		}),
 		new PurgecssWebpackPlugin({
-			paths: glob.sync(
-				`${SOURCE_CODE_PATH}/**/*.{tsx,less,css}`,
-				{
-					nodir: true,
-				}
-			),
+			paths: glob.sync(`${SOURCE_CODE_PATH}/**/*.{tsx,less,css}`, {
+				nodir: true,
+			}),
 		}),
 		enableAnalyzer && new BundleAnalyzerPlugin(),
 	].filter(Boolean),
@@ -32,8 +28,7 @@ const prodConfig = {
 			chunks: "all",
 			cacheGroups: {
 				vendors: {
-					name:
-						"vendors",
+					name: "vendors",
 					test: /[\\/]node_modules[\\/]/,
 					priority: -10,
 					reuseExistingChunk: true,
