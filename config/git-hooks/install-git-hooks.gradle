@@ -1,0 +1,6 @@
+task installGitHooks(type: Copy) {
+    from 'config/git-hooks/pre-commit'
+    into '.git/hooks'
+}
+
+build.dependsOn installGitHooks
