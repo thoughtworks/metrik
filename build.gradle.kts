@@ -126,11 +126,16 @@ tasks.check {
 	dependsOn(":jacocoTestReport", ":jacocoTestCoverageVerification")
 }
 
-tasks.detekt {
+detekt {
+	toolVersion = "1.15.0"
+	config = files("config/detekt/detekt.yml")
+	buildUponDefaultConfig = true
+
 	reports {
 		xml.enabled = false
 		txt.enabled = false
 		html.enabled = true
+		html.destination = file("${buildDir}/reports/detekt/detekt.html")
 	}
 }
 
