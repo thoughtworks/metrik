@@ -61,14 +61,57 @@ tasks.jacocoTestReport {
 		html.isEnabled = true
 		html.destination = file("${buildDir}/reports/coverage")
 	}
+
+	classDirectories.setFrom(
+		sourceSets.main.get().output.asFileTree.matching {
+			exclude("fourkeymetrics/Application.class")
+		}
+	)
 }
 
 tasks.jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = "0.9".toBigDecimal()
+				minimum = "0.95".toBigDecimal()
 			}
+		}
+
+		rule {
+			element = "METHOD"
+			limit {
+				counter = "BRANCH"
+				value = "COVEREDRATIO"
+				minimum = "1.0".toBigDecimal()
+			}
+		}
+
+		rule {
+			element = "CLASS"
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "1.0".toBigDecimal()
+			}
+			/**
+			 * filter class which not need to test
+			 * excludes = listOf("fourkeymetrics.service.HelloService")
+			 */
+			excludes = listOf("fourkeymetrics.service.HelloService")
+		}
+
+		rule {
+			element = "METHOD"
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "1.0".toBigDecimal()
+			}
+			/**
+			 * filter method which not need to test
+			 * excludes = listOf("fourkeymetrics.service.HelloService.sayHello(java.lang.String)")
+			 */
+			excludes = listOf("fourkeymetrics.service.HelloService.sayHello(java.lang.String)")
 		}
 	}
 
