@@ -8,7 +8,8 @@ module.exports = {
 
 	collectCoverage: true,
 	coverageDirectory: "coverage",
-	collectCoverageFrom: ["./src/**/*.{ts,tsx}", "!App.tsx", "!**/*.d.ts"],
+	collectCoverageFrom: ["./src/**/*.{ts,tsx}", "!./src/App.tsx", "!**/*.d.ts"],
+	coverageReporters: ["html", "text"],
 	coverageThreshold: {
 		global: {
 			branches: 80,
@@ -20,8 +21,7 @@ module.exports = {
 
 	setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
 	moduleNameMapper: {
-		"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-			"<rootDir>/test/mocks/fileMock.ts",
+		"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/test/mocks/fileMock.ts",
 		"\\.(css|less)$": "<rootDir>/test/mocks/styleMock.ts",
 	},
 };
