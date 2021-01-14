@@ -15,11 +15,11 @@ internal class DeploymentFrequencyServiceTest {
 
     @Test
     internal fun `should get deployment count given build data`() {
-        val pipelineName = "test pipeline name"
+        val pipelineID = "test pipeline name"
         val targetStage = "UAT"
         val startTime = 1611964800L
         val endTime = 1609459200L
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineName, targetStage, startTime, endTime)).isEqualTo(30)
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(30)
     }
 }

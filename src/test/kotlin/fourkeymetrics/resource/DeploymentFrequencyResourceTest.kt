@@ -26,22 +26,19 @@ internal class DeploymentFrequencyResourceTest {
 
     @Test
     internal fun `should get deployment count given time range and pipeline information`() {
-        val pipelineName = "test pipeline name"
-        val branch = "master"
+        val pipelineID = "test pipeline ID"
         val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineName)).thenReturn(true)
-        `when`(pipelineService.hasPipeline(pipelineName, branch)).thenReturn(true)
-        `when`(deploymentFrequencyService.getDeploymentCount(pipelineName, targetStage, startTime, endTime))
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime))
                 .thenReturn(30)
-        `when`(pipelineService.hasStage(pipelineName, targetStage)).thenReturn(true)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
 
 
         mockMvc.perform(get("/api/deployment-frequency")
-                .param("pipelineName", pipelineName)
-                .param("branch", branch)
+                .param("pipelineID", pipelineID)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))
@@ -51,16 +48,16 @@ internal class DeploymentFrequencyResourceTest {
 
     @Test
     internal fun `should return bad request given start time is after end time when get deployment count`() {
-        val pipelineName = "test pipeline name"
+        val pipelineID = "test pipeline ID"
         val targetStage = "UAT"
         val startTime = 1611964800L
         val endTime = 1609459200L
 
-        `when`(pipelineService.hasPipeline(pipelineName)).thenReturn(true)
-        `when`(pipelineService.hasStage(pipelineName, targetStage)).thenReturn(true)
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
-                .param("pipelineName", pipelineName)
+                .param("pipelineID", pipelineID)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))
@@ -68,38 +65,17 @@ internal class DeploymentFrequencyResourceTest {
     }
 
     @Test
-    internal fun `should return bad request given pipeline name does not exist when get deployment count`() {
-        val pipelineName = "invalid pipeline name"
+    internal fun `should return bad request given pipeline ID does not exist when get deployment count`() {
+        val pipelineID = "invalid pipeline ID"
         val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineName)).thenReturn(false)
-        `when`(pipelineService.hasStage(pipelineName, targetStage)).thenReturn(true)
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(false)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
-                .param("pipelineName", pipelineName)
-                .param("targetStage", targetStage)
-                .param("startTime", startTime.toString())
-                .param("endTime", endTime.toString()))
-                .andExpect(status().isBadRequest)
-    }
-
-    @Test
-    internal fun `should return bad request given branch does not exist when get deployment count`() {
-        val pipelineName = "pipeline name"
-        val branch = "invalid branch"
-        val targetStage = "UAT"
-        val startTime = 1609459200L
-        val endTime = 1611964800L
-
-        `when`(pipelineService.hasPipeline(pipelineName)).thenReturn(true)
-        `when`(pipelineService.hasPipeline(pipelineName, branch)).thenReturn(false)
-        `when`(pipelineService.hasStage(pipelineName, targetStage)).thenReturn(true)
-
-        mockMvc.perform(get("/api/deployment-frequency")
-                .param("pipelineName", pipelineName)
-                .param("branch", branch)
+                .param("pipelineID", pipelineID)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))
@@ -108,18 +84,16 @@ internal class DeploymentFrequencyResourceTest {
 
     @Test
     internal fun `should return bad request given Stage name does not exist when get deployment count`() {
-        val pipelineName = "pipeline name"
-        val branch = "master"
+        val pipelineID = "pipeline ID"
         val targetStage = "invalid stage"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineName, branch)).thenReturn(true)
-        `when`(pipelineService.hasStage(pipelineName, targetStage)).thenReturn(false)
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
-                .param("pipelineName", pipelineName)
-                .param("branch", branch)
+                .param("pipelineID", pipelineID)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))

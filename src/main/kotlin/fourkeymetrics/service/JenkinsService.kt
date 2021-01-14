@@ -8,10 +8,6 @@ class JenkinsService : PipelineService {
         TODO("Not yet implemented")
     }
 
-    override fun hasPipeline(pipelineName: String, branch: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
     override fun hasStage(pipelineName: String, targetStage: String): Boolean {
         TODO("Not yet implemented")
     }
