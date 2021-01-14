@@ -20,7 +20,6 @@ pipeline {
             steps {
                 sh "npm test"
                 }
-            }
             post {
             	always {
               	step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml'])
