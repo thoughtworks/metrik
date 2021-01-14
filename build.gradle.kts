@@ -56,10 +56,9 @@ tasks.jacocoTestReport {
 	dependsOn(tasks.test)
 
 	reports {
-		xml.isEnabled = false
 		csv.isEnabled = false
+		xml.isEnabled = true
 		html.isEnabled = true
-		html.destination = file("${buildDir}/reports/coverage")
 	}
 
 	classDirectories.setFrom(

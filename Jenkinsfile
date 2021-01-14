@@ -20,14 +20,7 @@ pipeline {
         stage('Build Project') {
             steps {
                 echo '-------------------------Build Project-------------------------'
-                script {
-                    try {
-                        sh "./gradlew clean build"
-                    } catch (error) {
-                        echo 'Something wrong when building project using gradle'
-                        throw error
-                    }
-                }
+                sh "./gradlew clean build"
             }
         }
 
@@ -47,6 +40,13 @@ pipeline {
             steps {
                 echo '-------------------------Deploy to UAT-------------------------'
             }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+            junit 'build/reports/jacoco/test/jacocoTestReport.xml'
         }
     }
 }
