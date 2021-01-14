@@ -19,7 +19,7 @@
 		}
 	},
 	"lint-staged": {
-		"*.{js,jex,ts,tsx}": [
+		"*.{js,jsx,ts,tsx}": [
 			"bash -c tsc",
 			"eslint --fix",
 			"git add"
