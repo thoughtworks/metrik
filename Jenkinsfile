@@ -1,71 +1,38 @@
 pipeline {
-    agent { node 'dev' }
+    agent any
 
     triggers {
-        pollSCM('H/5 8-23 * * 1-5')
-    }
-
-    environment {
-        CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
-    }
-
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        pollSCM('H/2 * * * *')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Code') {
             steps {
-                checkout scm
+                echo 'Clone Code...'
             }
         }
 
-        stage('test') {
+        stage('Build Project') {
             steps {
-                script {
-                    def err = null
-                    try {
-                        sh "./gradlew clean build"
-                    } catch (caughtError) {
-                        err = caughtError
-                    }
-                }
+                echo 'Build Project...'
             }
         }
 
-        stage('coverage') {
+        stage('Build Image') {
             steps {
-                jacoco(
-                        execPattern: 'build/jacoco/test.exec',
-                        classPattern: 'build/classes/java/main',
-                        sourcePattern: 'src/main/java',
-                        exclusionPattern: "${testCoverageExclusions}"
-                )
+                echo 'Build Image...'
             }
         }
 
-        stage('build package') {
+        stage('Deploy to DEV') {
             steps {
-                sh "./gradlew clean build -x test"
+                echo 'Deploy to DEV...'
             }
         }
 
-        stage('build image') {
-
+        stage('Deploy to UAT') {
             steps {
-                sh "docker build -t ezltwkregdck001.azurecr.io/campaign-bff:v${env.BUILD_NUMBER}-${env.CURRENT_DATE} ."
-            }
-        }
-
-        stage('deploy dev') {
-            agent { label 'dev' }
-
-            steps {
-                milestone(1)
-
-                lock('campaign-bff') {
-                    sh "./deploy.sh run dev v${env.BUILD_NUMBER}-${env.CURRENT_DATE} "
-                }
+                echo 'Deploy to UAT...'
             }
         }
     }
