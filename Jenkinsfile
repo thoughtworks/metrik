@@ -39,7 +39,8 @@ pipeline {
         stage('build image') {
 
             steps {
-                sh "docker build -t 4key-metric-app:v${env.BUILD_NUMBER}-${env.CURRENT_DATE} ."
+//                 sh "docker build -t 4key-metric-app:v${env.BUILD_NUMBER}-${env.CURRENT_DATE} ."
+									echo "im in build image"
             }
         }
 
