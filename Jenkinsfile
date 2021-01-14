@@ -18,13 +18,13 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
-            steps {
-                echo '-------------------------Build Project-------------------------'
-
-                sh "./gradlew clean build"
-            }
-        }
+//         stage('Build Project') {
+//             steps {
+//                 echo '-------------------------Build Project-------------------------'
+//
+//                 sh "./gradlew clean build"
+//             }
+//         }
 
         stage('Build and Push Image') {
             steps {
