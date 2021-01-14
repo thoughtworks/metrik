@@ -1,5 +1,5 @@
 pipeline {
-    agent { node 'dev' }
+    agent any
 
     triggers {
         pollSCM('*/2 * * * 1-5')
