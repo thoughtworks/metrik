@@ -11,4 +11,8 @@ class JenkinsService {
     fun hasStage(pipelineName: String, targetStage: String): Boolean {
         TODO("Not yet implemented")
     }
+
+    fun hasPipeline(pipelineName: String, branch: String): Boolean {
+        TODO("Not yet implemented")
+    }
 }

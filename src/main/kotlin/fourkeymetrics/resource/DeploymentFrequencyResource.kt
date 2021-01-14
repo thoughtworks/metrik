@@ -19,9 +19,10 @@ class DeploymentFrequencyResource {
     private lateinit var jenkinsService: JenkinsService
 
     @GetMapping("/api/deployment-frequency")
-    fun getDeploymentCount(@RequestParam pipelineName: String, @RequestParam targetStage: String,
-                           @RequestParam startTime: Long, @RequestParam endTime: Long): ResponseEntity<DeploymentFrequencyResponse> {
-        if (isInvalidParameters(startTime, endTime, pipelineName, targetStage)) {
+    fun getDeploymentCount(@RequestParam pipelineName: String, @RequestParam(required = false) branch: String?,
+                           @RequestParam targetStage: String, @RequestParam startTime: Long,
+                           @RequestParam endTime: Long): ResponseEntity<DeploymentFrequencyResponse> {
+        if (isInvalidParameters(startTime, endTime, pipelineName, branch, targetStage)) {
             return ResponseEntity.badRequest().build()
         }
 
@@ -30,6 +31,10 @@ class DeploymentFrequencyResource {
         return ResponseEntity.ok(DeploymentFrequencyResponse(deploymentCount))
     }
 
-    private fun isInvalidParameters(startTime: Long, endTime: Long, pipelineName: String, targetStage: String) =
-            startTime > endTime || !jenkinsService.hasPipeline(pipelineName) || !jenkinsService.hasStage(pipelineName, targetStage)
+    private fun isInvalidParameters(startTime: Long, endTime: Long, pipelineName: String, branch: String?, targetStage: String): Boolean {
+        return startTime > endTime ||
+                !jenkinsService.hasPipeline(pipelineName) ||
+                !jenkinsService.hasStage(pipelineName, targetStage) ||
+                (branch != null && !jenkinsService.hasPipeline(pipelineName, branch))
+    }
 }

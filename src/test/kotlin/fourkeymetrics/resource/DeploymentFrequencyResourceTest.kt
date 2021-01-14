@@ -25,13 +25,15 @@ internal class DeploymentFrequencyResourceTest {
     private lateinit var jenkinsService: JenkinsService
 
     @Test
-    internal fun `should get deployment count given time range and target Stage name`() {
+    internal fun `should get deployment count given time range and pipeline information`() {
         val pipelineName = "test pipeline name"
+        val branch = "master"
         val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
         `when`(jenkinsService.hasPipeline(pipelineName)).thenReturn(true)
+        `when`(jenkinsService.hasPipeline(pipelineName, branch)).thenReturn(true)
         `when`(deploymentFrequencyService.getDeploymentCount(pipelineName, targetStage, startTime, endTime))
                 .thenReturn(30)
         `when`(jenkinsService.hasStage(pipelineName, targetStage)).thenReturn(true)
@@ -39,6 +41,7 @@ internal class DeploymentFrequencyResourceTest {
 
         mockMvc.perform(get("/api/deployment-frequency")
                 .param("pipelineName", pipelineName)
+                .param("branch", branch)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))
@@ -64,7 +67,6 @@ internal class DeploymentFrequencyResourceTest {
                 .andExpect(status().isBadRequest)
     }
 
-
     @Test
     internal fun `should return bad request given pipeline name does not exist when get deployment count`() {
         val pipelineName = "invalid pipeline name"
@@ -84,17 +86,40 @@ internal class DeploymentFrequencyResourceTest {
     }
 
     @Test
-    internal fun `should return bad request given Stage name does not exist when get deployment count`() {
+    internal fun `should return bad request given branch does not exist when get deployment count`() {
         val pipelineName = "pipeline name"
-        val targetStage = "invalid stage"
+        val branch = "invalid branch"
+        val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
         `when`(jenkinsService.hasPipeline(pipelineName)).thenReturn(true)
+        `when`(jenkinsService.hasPipeline(pipelineName, branch)).thenReturn(false)
+        `when`(jenkinsService.hasStage(pipelineName, targetStage)).thenReturn(true)
+
+        mockMvc.perform(get("/api/deployment-frequency")
+                .param("pipelineName", pipelineName)
+                .param("branch", branch)
+                .param("targetStage", targetStage)
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    internal fun `should return bad request given Stage name does not exist when get deployment count`() {
+        val pipelineName = "pipeline name"
+        val branch = "master"
+        val targetStage = "invalid stage"
+        val startTime = 1609459200L
+        val endTime = 1611964800L
+
+        `when`(jenkinsService.hasPipeline(pipelineName, branch)).thenReturn(true)
         `when`(jenkinsService.hasStage(pipelineName, targetStage)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
                 .param("pipelineName", pipelineName)
+                .param("branch", branch)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString()))
