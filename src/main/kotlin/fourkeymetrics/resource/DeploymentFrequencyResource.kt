@@ -1,7 +1,7 @@
 package fourkeymetrics.resource
 
 import fourkeymetrics.service.DeploymentFrequencyService
-import fourkeymetrics.service.JenkinsService
+import fourkeymetrics.service.PipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,7 +16,7 @@ class DeploymentFrequencyResource {
     private lateinit var deploymentFrequencyService: DeploymentFrequencyService
 
     @Autowired
-    private lateinit var jenkinsService: JenkinsService
+    private lateinit var pipelineService: PipelineService
 
     @GetMapping("/api/deployment-frequency")
     fun getDeploymentCount(@RequestParam pipelineName: String, @RequestParam(required = false) branch: String?,
@@ -33,8 +33,8 @@ class DeploymentFrequencyResource {
 
     private fun isInvalidParameters(startTime: Long, endTime: Long, pipelineName: String, branch: String?, targetStage: String): Boolean {
         return startTime > endTime ||
-                !jenkinsService.hasPipeline(pipelineName) ||
-                !jenkinsService.hasStage(pipelineName, targetStage) ||
-                (branch != null && !jenkinsService.hasPipeline(pipelineName, branch))
+                !pipelineService.hasPipeline(pipelineName) ||
+                !pipelineService.hasStage(pipelineName, targetStage) ||
+                (branch != null && !pipelineService.hasPipeline(pipelineName, branch))
     }
 }
