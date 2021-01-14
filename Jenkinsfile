@@ -30,9 +30,11 @@ pipeline {
             steps {
                 echo '-------------------------Build Image-------------------------'
 
-                docker.withRegistry('https://18.138.19.85:8004', '43a2395c-e529-4624-a7f2-14e54f9bcabf') {
-                    def image = docker.build("4-key-metrics-backend:${env.BUILD_ID}")
-                    image.push()
+                script {
+                    docker.withRegistry('https://18.138.19.85:8004', '43a2395c-e529-4624-a7f2-14e54f9bcabf') {
+                        def image = docker.build("4-key-metrics-backend:${env.BUILD_ID}")
+                        image.push()
+                    }
                 }
             }
         }
