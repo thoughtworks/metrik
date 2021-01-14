@@ -20,12 +20,7 @@ pipeline {
         stage('Build Project') {
             steps {
                 echo '-------------------------Build Project-------------------------'
-                try {
-                    sh "./gradlew clean build"
-                } catch (error) {
-                    echo 'Something failed when building project with gradle!'
-                    throw error
-                }
+                sh "./gradlew clean build"
             }
         }
 
