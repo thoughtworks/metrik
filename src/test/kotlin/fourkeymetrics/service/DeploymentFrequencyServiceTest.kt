@@ -39,7 +39,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-1.json").readText())
 
-        `when`(pipelineService.getBuildsByTimeRange(pipelineID, startTime, endTime)).thenReturn(mockBuildList)
+        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(1)
     }
@@ -59,7 +59,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-2.json").readText())
 
-        `when`(pipelineService.getBuildsByTimeRange(pipelineID, startTime, endTime)).thenReturn(mockBuildList)
+        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
     }
@@ -79,7 +79,28 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-3.json").readText())
 
-        `when`(pipelineService.getBuildsByTimeRange(pipelineID, startTime, endTime)).thenReturn(mockBuildList)
+        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
+
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
+    }
+
+    /**
+     * test file: deployments-4.json
+     * build 1 : 2021-12-01, [commitID: 0]
+     * build 2 : 2021-01-01, [commitID: 1]
+     * build 3 : 2021-01-15, [commitID: 1]
+     * build 4 : 2021-01-30, [commitID: 2]
+     */
+    @Test
+    internal fun `should get deployment count with effective deployments only when calculate deployment count`() {
+        val pipelineID = "test pipeline - master"
+        val targetStage = "deploy to prod"
+        val startTime = 1609286400L  // 2020-12-30
+        val endTime = 1612137600L   // 2021-02-01
+
+        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-4.json").readText())
+
+        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
     }

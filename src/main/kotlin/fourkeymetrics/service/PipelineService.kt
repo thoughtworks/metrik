@@ -7,5 +7,5 @@ interface PipelineService {
 
     fun hasStage(pipelineName: String, targetStage: String): Boolean
 
-    fun getBuildsByTimeRange(pipelineID: String, startTime: Long, endTime: Long): List<Build>
+    fun getAllBuilds(pipelineID: String): List<Build>
 }

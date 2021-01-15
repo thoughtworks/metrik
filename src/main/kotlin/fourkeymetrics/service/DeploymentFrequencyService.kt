@@ -11,13 +11,32 @@ class DeploymentFrequencyService {
     private lateinit var pipelineService: PipelineService
 
     fun getDeploymentCount(pipelineID: String, targetStage: String, startTime: Long, endTime: Long): Int {
-        val builds = pipelineService.getBuildsByTimeRange(pipelineID, startTime, endTime)
+        val allBuilds = pipelineService.getAllBuilds(pipelineID).sortedBy { it.timestamp }
 
-        return builds.filter {
-            isWithinTimeRange(it, startTime, endTime)
-                    && isBuildSuccess(it)
-                    && isTargetStageSuccess(it, targetStage)
-        }.count()
+        var validDeploymentCount = 0
+        for (index in allBuilds.indices) {
+            val currentBuild = allBuilds[index]
+            val prevBuild = if (index == 0) {
+                null
+            } else {
+                allBuilds[index - 1]
+            }
+
+            if (isInvalidBuild(currentBuild, startTime, endTime, targetStage, prevBuild)) {
+                continue
+            }
+
+            validDeploymentCount++
+        }
+
+        return validDeploymentCount
+    }
+
+    private fun isInvalidBuild(currentBuild: Build, startTime: Long, endTime: Long, targetStage: String, prevBuild: Build?): Boolean {
+        return !isWithinTimeRange(currentBuild, startTime, endTime) ||
+                !isBuildSuccess(currentBuild) ||
+                !isTargetStageSuccess(currentBuild, targetStage) ||
+                !isEffectiveDeployment(prevBuild, currentBuild)
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
@@ -27,4 +46,11 @@ class DeploymentFrequencyService {
 
     private fun isWithinTimeRange(build: Build, startTime: Long, endTime: Long) =
             build.timestamp in startTime..endTime
+
+    private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
+            if (previousBuild == null) {
+                true
+            } else {
+                previousBuild.commits != currentBuild.commits
+            }
 }

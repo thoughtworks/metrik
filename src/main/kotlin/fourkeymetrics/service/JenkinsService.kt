@@ -13,7 +13,7 @@ class JenkinsService : PipelineService {
         TODO("Not yet implemented")
     }
 
-    override fun getBuildsByTimeRange(pipelineID: String, startTime: Long, endTime: Long): List<Build> {
+    override fun getAllBuilds(pipelineID: String): List<Build> {
         TODO("Not yet implemented")
     }
 }
