@@ -64,7 +64,7 @@ tasks.jacocoTestReport {
 
 	classDirectories.setFrom(
 		sourceSets.main.get().output.asFileTree.matching {
-			exclude("fourkeymetrics/Application.class")
+			exclude("fourkeymetrics/Application**")
 		}
 	)
 }
@@ -117,7 +117,7 @@ tasks.jacocoTestCoverageVerification {
 
 	classDirectories.setFrom(
 			sourceSets.main.get().output.asFileTree.matching {
-				exclude( "fourkeymetrics/Application.class", "**/JenkinsService*","fourkeymetrics/model/**")
+				exclude( "fourkeymetrics/Application**", "**/JenkinsService*","fourkeymetrics/model/**")
 			}
 	)
 }
