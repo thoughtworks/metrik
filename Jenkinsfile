@@ -11,8 +11,7 @@ pipeline {
 
     environment {
         REGISTRY_HOST =  "18.138.19.85:8004"
-        REGISTRY_USERNAME = credentials('registryUsername')
-        REGISTRY_PWD = credentials('registryPassword')
+        REGISTRY_CREDS = credentials('4km_private_registry')
         CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
         IMAGE_NAME = "${REGISTRY_HOST}/4-key-metrics-service:v${env.BUILD_NUMBER}-${env.CURRENT_DATE}"
         CONTAINER_NAME_DEV = "4km-backend-dev"
@@ -20,14 +19,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone Code') {
-            steps {
-                echo '-------------------------Clone Code-------------------------'
-
-                checkout scm
-            }
-        }
-
         stage('Build Docker image') {
             steps {
                 echo '-------------------------Build Image-------------------------'
@@ -40,7 +31,7 @@ pipeline {
             steps {
                 echo '-------------------------Push Image-------------------------'
 
-                sh "docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PWD} ${REGISTRY_HOST}"
+                sh 'echo $REGISTRY_CREDS_PSW | docker login -u $REGISTRY_CREDS_USR --password-stdin $REGISTRY_HOST'
                 sh "docker push ${env.IMAGE_NAME}"
             }
         }
