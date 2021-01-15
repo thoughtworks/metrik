@@ -32,7 +32,8 @@ class DeploymentFrequencyService {
         return validDeploymentCount
     }
 
-    private fun isInvalidBuild(currentBuild: Build, startTime: Long, endTime: Long, targetStage: String, prevBuild: Build?): Boolean {
+    private fun isInvalidBuild(currentBuild: Build, startTime: Long, endTime: Long,
+                               targetStage: String, prevBuild: Build?): Boolean {
         return !isWithinTimeRange(currentBuild, startTime, endTime) ||
                 !isBuildSuccess(currentBuild) ||
                 !isTargetStageSuccess(currentBuild, targetStage) ||
