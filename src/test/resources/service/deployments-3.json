@@ -20,7 +20,7 @@
     ],
     "commits": [
       {
-        "id": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "message": "this is a message",
         "timestamp": 1609459200
       }
@@ -47,7 +47,7 @@
     ],
     "commits": [
       {
-        "id": "b9b775059d120a0dbf09fd40d2becea69a115678",
+        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a115678",
         "message": "this is a message",
         "timestamp": 1610668800
       }
@@ -74,7 +74,7 @@
     ],
     "commits": [
       {
-        "id": "b9b775059d120a0dbf09fd40d2becea69a117899",
+        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a117899",
         "message": "this is a message",
         "timestamp": 1611964800
       }

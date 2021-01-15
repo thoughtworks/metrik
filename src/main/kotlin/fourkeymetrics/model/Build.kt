@@ -12,7 +12,7 @@ data class Stage(var status: BuildStatus, var name: String, var startTime: Long,
     constructor() : this(BuildStatus.FAILED, Strings.EMPTY, 0, 0)
 }
 
-data class Commit(var id: String, var message: String, var timestamp: Long) {
+data class Commit(var revisionNumber: String, var message: String, var timestamp: Long) {
     constructor() : this(Strings.EMPTY, Strings.EMPTY, 0)
 }
 
