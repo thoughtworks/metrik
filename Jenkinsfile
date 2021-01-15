@@ -6,8 +6,6 @@ pipeline {
         REGISTRY_CREDS = credentials('4km_private_registry')
         CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
         IMAGE_NAME = "$REGISTRY_HOST/4key-metric-app:v$BUILD_NUMBER-$CURRENT_DATE"
-        CONTAINER_NAME_DEV = '4km-app-dev'
-        CONTAINER_NAME_UAT = '4km-app-uat'
     }
 
     stages {
@@ -26,8 +24,16 @@ pipeline {
 
         stage('Deploy to DEV') {
             steps {
-                sh "if docker ps | grep '$CONTAINER_NAME_DEV'; then docker stop '$CONTAINER_NAME_DEV'; fi"
-                sh "docker run --name '$CONTAINER_NAME_DEV' -d -p 80:80 $IMAGE_NAME"
+                sh '''
+                    #!/bin/bash
+                    container_name=4km-app-dev
+                    existing_container_id="$(docker ps -aqf name=$container_name)"
+                    if [ "$existing_container_id" ]; then
+                        docker container stop $existing_container_id
+                        docker container rm $existing_container_id
+                    fi
+                    docker run --name $container_name -d -p 80:80 $IMAGE_NAME
+                '''
             }
         }
 
