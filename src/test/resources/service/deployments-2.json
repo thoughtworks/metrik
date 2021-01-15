@@ -1,0 +1,83 @@
+[
+  {
+    "pipelineID": "test pipeline - master",
+    "buildNumber": 1,
+    "status": "FAILED",
+    "timestamp": 1609459200,
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTime": 1609459300,
+        "duration": 1000
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTime": 1609459400,
+        "duration": 2000
+      }
+    ],
+    "commits": [
+      {
+        "id": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "message": "this is a message",
+        "timestamp": 1609459200
+      }
+    ]
+  },
+  {
+    "pipelineID": "test pipeline - master",
+    "buildNumber": 2,
+    "status": "SUCCESS",
+    "timestamp": 1610668800,
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTime": 1610668900,
+        "duration": 1000
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTime": 1610669000,
+        "duration": 2000
+      }
+    ],
+    "commits": [
+      {
+        "id": "b9b775059d120a0dbf09fd40d2becea69a115678",
+        "message": "this is a message",
+        "timestamp": 1610668800
+      }
+    ]
+  },
+  {
+    "pipelineID": "test pipeline - master",
+    "buildNumber": 3,
+    "status": "SUCCESS",
+    "timestamp": 1611964800,
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTime": 1611964900,
+        "duration": 1000
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTime": 1611965000,
+        "duration": 2000
+      }
+    ],
+    "commits": [
+      {
+        "id": "b9b775059d120a0dbf09fd40d2becea69a117899",
+        "message": "this is a message",
+        "timestamp": 1611964800
+      }
+    ]
+  }
+]

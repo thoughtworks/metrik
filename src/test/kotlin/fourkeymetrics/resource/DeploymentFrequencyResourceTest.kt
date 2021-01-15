@@ -1,0 +1,102 @@
+package fourkeymetrics.resource
+
+import fourkeymetrics.service.DeploymentFrequencyService
+import fourkeymetrics.service.PipelineService
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
+
+@WebMvcTest(controllers = [DeploymentFrequencyResource::class])
+internal class DeploymentFrequencyResourceTest {
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @MockBean
+    private lateinit var deploymentFrequencyService: DeploymentFrequencyService
+
+    @MockBean
+    private lateinit var pipelineService: PipelineService
+
+    @Test
+    internal fun `should get deployment count given time range and pipeline information`() {
+        val pipelineID = "test pipeline ID"
+        val targetStage = "UAT"
+        val startTime = 1609459200L
+        val endTime = 1611964800L
+
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime))
+                .thenReturn(30)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+
+
+        mockMvc.perform(get("/api/deployment-frequency")
+                .param("pipelineID", pipelineID)
+                .param("targetStage", targetStage)
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.deploymentCount").value(30))
+    }
+
+    @Test
+    internal fun `should return bad request given start time is after end time when get deployment count`() {
+        val pipelineID = "test pipeline ID"
+        val targetStage = "UAT"
+        val startTime = 1611964800L
+        val endTime = 1609459200L
+
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+
+        mockMvc.perform(get("/api/deployment-frequency")
+                .param("pipelineID", pipelineID)
+                .param("targetStage", targetStage)
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    internal fun `should return bad request given pipeline ID does not exist when get deployment count`() {
+        val pipelineID = "invalid pipeline ID"
+        val targetStage = "UAT"
+        val startTime = 1609459200L
+        val endTime = 1611964800L
+
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(false)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+
+        mockMvc.perform(get("/api/deployment-frequency")
+                .param("pipelineID", pipelineID)
+                .param("targetStage", targetStage)
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    internal fun `should return bad request given Stage name does not exist when get deployment count`() {
+        val pipelineID = "pipeline ID"
+        val targetStage = "invalid stage"
+        val startTime = 1609459200L
+        val endTime = 1611964800L
+
+        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(false)
+
+        mockMvc.perform(get("/api/deployment-frequency")
+                .param("pipelineID", pipelineID)
+                .param("targetStage", targetStage)
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(status().isBadRequest)
+    }
+}
