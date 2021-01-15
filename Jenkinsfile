@@ -28,7 +28,6 @@ pipeline {
             }
         }
 
-
         stage('Build Docker image') {
             steps {
                 echo '-------------------------Build Image-------------------------'
@@ -50,8 +49,17 @@ pipeline {
             steps {
                 echo '-------------------------Deploy to DEV-------------------------'
 
-                sh "if docker ps | grep ${CONTAINER_NAME_DEV}; then docker stop ${CONTAINER_NAME_DEV}; fi"
+                sh "docker container rm --force ${CONTAINER_NAME_DEV}"
                 sh "docker run --name ${CONTAINER_NAME_DEV} -d -p 9000:9000 ${env.IMAGE_NAME}"
+            }
+        }
+
+        stage('Deploy to UAT') {
+            steps {
+                echo '-------------------------Deploy to UAT-------------------------'
+
+                sh "docker container rm --force ${CONTAINER_NAME_UAT}"
+                sh "docker run --name ${CONTAINER_NAME_UAT} -d -p 9003:9000 ${env.IMAGE_NAME}"
             }
         }
 
