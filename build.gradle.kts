@@ -82,7 +82,7 @@ tasks.jacocoTestCoverageVerification {
 			limit {
 				counter = "BRANCH"
 				value = "COVEREDRATIO"
-				minimum = "1.0".toBigDecimal()
+				minimum = "0.7".toBigDecimal()
 			}
 		}
 
@@ -117,7 +117,7 @@ tasks.jacocoTestCoverageVerification {
 
 	classDirectories.setFrom(
 			sourceSets.main.get().output.asFileTree.matching {
-				exclude( "fourkeymetrics/Application.class", "**/JenkinsService*")
+				exclude( "fourkeymetrics/Application.class", "**/JenkinsService*","fourkeymetrics/model/**")
 			}
 	)
 }
