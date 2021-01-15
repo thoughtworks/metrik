@@ -6,64 +6,40 @@ pipeline {
     }
 
     environment {
+        REGISTRY_HOST =  '18.138.19.85:8004'
+        REGISTRY_CREDS = credentials('4km_private_registry')
         CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
+        IMAGE_NAME = "$REGISTRY_HOST/4key-metric-app:v$BUILD_NUMBER-$CURRENT_DATE"
+        CONTAINER_NAME_DEV = '4km-app-dev'
+        CONTAINER_NAME_UAT = '4km-app-uat'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Build Docker image') {
             steps {
-                checkout scm
+                sh "docker build -t $IMAGE_NAME ."
             }
         }
 
-        stage('style check') {
-        	steps {
-//         		sh "npm run lint"
-//         		sh "npm run lint:style"
-							echo "im in style check"
-        	}
-        }
-
-        stage('test') {
+        stage('Push Docker image') {
             steps {
-//                 sh "npm test"
-									echo "im in test"
-                }
-//             post {
-//             	always {
-//               	step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml'])
-//               }
-//             }
-        }
-
-        stage('build image') {
-
-            steps {
-//                 sh "docker build -t 4key-metric-app:v${env.BUILD_NUMBER}-${env.CURRENT_DATE} ."
-									echo "im in build image"
+                sh 'echo $REGISTRY_CREDS_PSW | docker login -u $REGISTRY_CREDS_USR --password-stdin $REGISTRY_HOST'
+                sh "docker push $IMAGE_NAME"
             }
         }
 
-        stage('deploy to dev') {
-        	steps {
-// 					sh "docker stack ..."
-						echo "im in deploy to dev"
-        	}
+        stage('Deploy to DEV') {
+            steps {
+                sh "if docker ps | grep '$CONTAINER_NAME_DEV'; then docker stop '$CONTAINER_NAME_DEV'; fi"
+                sh "docker run --name '$CONTAINER_NAME_DEV' -d -p 80:80 $IMAGE_NAME"
+            }
         }
 
-        stage('deploy to uat') {
-        	input {
-          	message "Should we continue?"
-          	ok "Yes, we should."
-          	submitter "alice,bob"
-          	parameters {
-          	    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-          	}
-          }
-        	steps {
-      			sh "docker stack ..."
-    				echo "im in deploy to uat"
-        	}
+        stage('Deploy to PROD') {
+            steps {
+                input 'Continue to deploy to PROD?'
+                echo 'Deploy to PROD...'
+            }
         }
     }
 }
