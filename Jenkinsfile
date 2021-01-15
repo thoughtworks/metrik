@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        pollSCM('*/2 * * * 1-5')
-    }
-
     environment {
         REGISTRY_HOST =  '18.138.19.85:8004'
         REGISTRY_CREDS = credentials('4km_private_registry')
