@@ -10,7 +10,6 @@ class DeploymentFrequencyService {
     @Autowired
     private lateinit var pipelineService: PipelineService
 
-    //    TODO: add effective calculation
     fun getDeploymentCount(pipelineID: String, targetStage: String, startTime: Long, endTime: Long): Int {
         val builds = pipelineService.getBuildsByTimeRange(pipelineID, startTime, endTime)
 
