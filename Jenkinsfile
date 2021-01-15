@@ -15,6 +15,8 @@ pipeline {
         REGISTRY_PWD = credentials('registryPassword')
         CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
         IMAGE_NAME = "${REGISTRY_HOST}/4-key-metrics-service:v${env.BUILD_NUMBER}-${env.CURRENT_DATE}"
+        CONTAINER_NAME_DEV = "4km-backend-dev"
+        CONTAINER_NAME_UAT = "4km-backend-uat"
     }
 
     stages {
@@ -48,10 +50,8 @@ pipeline {
             steps {
                 echo '-------------------------Deploy to DEV-------------------------'
 
-                sh "docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PWD} ${REGISTRY_HOST}"
-                sh "docker pull ${env.IMAGE_NAME}"
-
-                sh "docker run --name 4km-backend-dev -p 9000:9000 ${env.IMAGE_NAME}"
+                sh "if docker ps | grep ${CONTAINER_NAME_DEV}; then docker stop ${CONTAINER_NAME_DEV}; fi"
+                sh "docker run --name ${CONTAINER_NAME_DEV} -d -p 9000:9000 ${env.IMAGE_NAME}"
             }
         }
 
