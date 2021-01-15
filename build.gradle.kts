@@ -99,7 +99,6 @@ tasks.jacocoTestCoverageVerification {
 			 * filter class which not need to test
 			 * excludes = listOf("fourkeymetrics.service.HelloService")
 			 */
-			excludes = listOf("fourkeymetrics.service.HelloService")
 		}
 
 		rule {
@@ -113,13 +112,12 @@ tasks.jacocoTestCoverageVerification {
 			 * filter method which not need to test
 			 * excludes = listOf("fourkeymetrics.service.HelloService.sayHello(java.lang.String)")
 			 */
-			excludes = listOf("fourkeymetrics.service.HelloService.sayHello(java.lang.String)")
 		}
 	}
 
 	classDirectories.setFrom(
 			sourceSets.main.get().output.asFileTree.matching {
-				exclude( "fourkeymetrics/Application**", "**/JenkinsService*","fourkeymetrics/model/**")
+				exclude( "fourkeymetrics/Application**", "**/JenkinsService*", "**/model**", "**/config**")
 			}
 	)
 }
