@@ -25,7 +25,7 @@ internal class DeploymentFrequencyServiceTest {
     private lateinit var pipelineService: PipelineService
 
     /**
-     * test file: deployments-1.json
+     * test file: builds-1.json
      * build 1 : 2021-01-01, SUCCESS
      * build 2 : 2021-01-15, SUCCESS
      * build 3 : 2021-01-30, SUCCESS
@@ -37,7 +37,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTime = 1610236800L  // 2021-01-10
         val endTime = 1611100800L   // 2021-01-20
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-1.json").readText())
+        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-1.json").readText())
 
         `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
@@ -45,7 +45,7 @@ internal class DeploymentFrequencyServiceTest {
     }
 
     /**
-     * test file: deployments-2.json
+     * test file: builds-2.json
      * build 1 : 2021-01-01, FAILED
      * build 2 : 2021-01-15, SUCCESS
      * build 3 : 2021-01-30, SUCCESS
@@ -57,7 +57,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTime = 1609286400L  // 2020-12-30
         val endTime = 1612137600L   // 2021-02-01
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-2.json").readText())
+        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-2.json").readText())
 
         `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
@@ -65,7 +65,7 @@ internal class DeploymentFrequencyServiceTest {
     }
 
     /**
-     * test file: deployments-3.json
+     * test file: builds-3.json
      * build 1 : 2021-01-01, [build: SUCCESS, deploy to prod: SUCCESS]
      * build 2 : 2021-01-15, [build: SUCCESS, deploy to prod: FAILED]
      * build 3 : 2021-01-30, [build: FAILED, deploy to prod: SUCCESS]
@@ -77,7 +77,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTime = 1609286400L  // 2020-12-30
         val endTime = 1612137600L   // 2021-02-01
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-3.json").readText())
+        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-3.json").readText())
 
         `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
@@ -85,7 +85,7 @@ internal class DeploymentFrequencyServiceTest {
     }
 
     /**
-     * test file: deployments-4.json
+     * test file: builds-4.json
      * build 1 : 2021-12-01, [commitID: 0]
      * build 2 : 2021-01-01, [commitID: 1]
      * build 3 : 2021-01-15, [commitID: 1]
@@ -98,7 +98,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTime = 1609286400L  // 2020-12-30
         val endTime = 1612137600L   // 2021-02-01
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/deployments-4.json").readText())
+        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-4.json").readText())
 
         `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
