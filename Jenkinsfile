@@ -42,6 +42,7 @@ pipeline {
 
                 sh "docker container rm --force ${CONTAINER_NAME_DEV}"
                 sh "docker run --name ${CONTAINER_NAME_DEV} -d -p 9000:9000 ${env.IMAGE_NAME}"
+                sh "./check-container-status.sh ${CONTAINER_NAME_DEV}"
             }
         }
 
@@ -51,6 +52,7 @@ pipeline {
 
                 sh "docker container rm --force ${CONTAINER_NAME_UAT}"
                 sh "docker run --name ${CONTAINER_NAME_UAT} -d -p 9003:9000 ${env.IMAGE_NAME}"
+                sh "./check-container-status.sh ${CONTAINER_NAME_UAT}"
             }
         }
 
