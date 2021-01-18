@@ -13,7 +13,7 @@ do
           is_health_check_success=1
           break
    fi
-   sleep 1
+   sleep 3
    echo "continue check health for $container_name ${i} times..."
 done
 
