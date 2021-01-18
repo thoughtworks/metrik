@@ -6,10 +6,10 @@ WORKDIR $APP_HOME
 COPY build.gradle.kts settings.gradle.kts gradlew $APP_HOME/
 COPY gradle $APP_HOME/gradle
 
-RUN ./gradlew clean build --no-daemon || return 0
+RUN gradle clean build --no-daemon || return 0
 
 COPY . $APP_HOME
-RUN ./gradlew clean build --no-daemon
+RUN gradle clean build --no-daemon
 
 
 FROM adoptopenjdk:11-jre-hotspot
