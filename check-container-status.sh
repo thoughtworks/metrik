@@ -1,13 +1,14 @@
 #!/bin/bash
 
-port="$1"
+container_name="$1"
+port="$2"
 is_health_check_success=0
 
 
 for i in 1 2 3 4 5
 do
   echo "checking status times: $i"
-  health_check_url="http://localhost:${port}/actuator/health"
+  health_check_url="http://${container_name}:${port}/actuator/health"
   status=$(curl "${health_check_url}" | head -n 1)
   echo "the container $container_name status is: $status"
    if [[ ${status} == "{\"status\":\"UP\"}" ]]; then
