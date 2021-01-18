@@ -13,7 +13,7 @@ RUN gradle clean build --no-daemon
 
 
 FROM adoptopenjdk:11-jre-hotspot
-COPY --from=builder /app/build/libs/*.jar /app/sea-4-key-metrics-service.jar.jar
+COPY --from=builder /app/build/libs/*.jar /app/sea-4-key-metrics-service.jar
 COPY --from=builder /app/run.sh /app
 ENV APP_ENV dev
 
