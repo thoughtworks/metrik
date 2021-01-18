@@ -47,7 +47,7 @@ pipeline {
                         docker container rm $existing_container_id
                     fi
                     docker run --name $container_name -d -p 9000:9000 $IMAGE_NAME
-                    ./check-container-status.sh $container_name
+                    ./check-container-status.sh 9000
                 '''
             }
         }
@@ -65,8 +65,8 @@ pipeline {
                         docker container stop $existing_container_id
                         docker container rm $existing_container_id
                     fi
-                    docker run --name $container_name -d -p 9003:9003 $IMAGE_NAME
-                    ./check-container-status.sh $container_name
+                    docker run --name $container_name -d -p 9003:9000 $IMAGE_NAME
+                    ./check-container-status.sh 9003
                 '''
             }
         }

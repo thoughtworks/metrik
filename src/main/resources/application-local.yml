@@ -1,6 +1,4 @@
-mongodb:
-  host: 8.138.19.85
-  port: 9002
-  database: test
-  username: 4km
-  password: 4000km
+spring:
+  data:
+    mongodb:
+      uri: mongodb://4km:4000km@localhost:27017/4keymetrics

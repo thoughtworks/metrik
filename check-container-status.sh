@@ -1,16 +1,17 @@
 #!/bin/bash
 
-container_name="$1"
+port="$1"
 is_health_check_success=0
 
 echo "container name is $container_name"
-sleep 5
+
 for i in 1 2 3 4 5
 do
   echo "checking status times: $i"
-  status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
+  health_check_url="http://localhost:${port}/actuator/health"
+  status=$(curl "${health_check_url}" | head -n 1)
   echo "the container $container_name status is: $status"
-   if [[ ${status} == "running" ]]; then
+   if [[ ${status} == "{\"status\":\"UP\"}" ]]; then
           is_health_check_success=1
           break
    fi
