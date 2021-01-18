@@ -1,5 +1,4 @@
 FROM gradle:jdk11-hotspot as builder
-ENV GRADLE_OPTS -Dorg.gradle.daemon=false
 COPY . /app
 WORKDIR /app
 RUN ls -l; gradle clean build -i

@@ -4,6 +4,7 @@ container_name="$1"
 is_health_check_success=0
 
 echo "container name is $container_name"
+sleep 5
 for i in 1 2 3 4 5
 do
   echo "checking status times: $i"
