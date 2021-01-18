@@ -3,7 +3,7 @@ COPY . /app
 WORKDIR /app
 RUN ls -l; gradle clean build -i
 
-FROM adoptopenjdk:11-jdk-hotspot
+FROM adoptopenjdk:11-jre-hotspot
 COPY --from=builder /app/build/libs/*.jar /app/sea-4-key-metrics-service.jar.jar
 ENV APP_ENV dev
 
