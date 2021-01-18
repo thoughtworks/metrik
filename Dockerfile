@@ -3,7 +3,9 @@ FROM gradle:jdk11-hotspot as builder
 ENV APP_HOME=/app
 WORKDIR $APP_HOME
 
-COPY build.gradle.kts settings.gradle.kts gradlew $APP_HOME
+COPY build.gradle.ktssettings.gradle.kts gradlew $APP_HOME/
+COPY build.gradle.ktssettings.gradle.kts gradlew $APP_HOME/
+COPY build.gradle.ktssettings.gradle.kts gradlew $APP_HOME/
 COPY gradle $APP_HOME/gradle
 
 RUN ./gradlew clean build --no-daemon || return 0
