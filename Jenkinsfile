@@ -56,7 +56,10 @@ pipeline {
             steps {
                 echo '-------------------------Deploy to UAT-------------------------'
 
-                input 'Continue to deploy to UAT?'
+                timeout(5) {
+                    input 'Continue to deploy to UAT?'
+                }
+
                 sh '''
                     #!/bin/bash
                     container_name=4km-backend-uat
@@ -71,6 +74,12 @@ pipeline {
             }
         }
 
+    }
+
+    post {
+        failure {
+            echo 'Failed to deploy'
+        }
     }
 
 }
