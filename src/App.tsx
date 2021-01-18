@@ -1,14 +1,15 @@
-import { Button } from "antd";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import ReactDom from "react-dom";
+import { Routes } from "./Routes";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 export const App: FC = () => {
-	const [state] = useState(1);
-
 	return (
-		<div css={{ color: "red" }}>
-			Hello 4 key metrics <Button>Click me</Button>
-		</div>
+		<Router>
+			<Switch>
+				<Routes />
+			</Switch>
+		</Router>
 	);
 };
 
