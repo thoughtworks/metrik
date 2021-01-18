@@ -34,4 +34,4 @@ npm test
 
 ## Caveats
 * using git **pre-commit** hook to do type and code style checking, so if there's any type and code style errors. We won't let you commit your changes 
-* using git **pre-push hook** to do unit test checking, so if there's any unit test errors, Or you don't meet the test coverage threshold. We won't let you push your commits
+* using git **pre-push** hook to do unit test checking, so if there's any unit test errors, Or you don't meet the test coverage threshold. We won't let you push your commits
