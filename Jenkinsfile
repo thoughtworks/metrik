@@ -47,13 +47,14 @@ pipeline {
                         docker container rm $existing_container_id
                     fi
                     docker run --name $container_name -d -p 9000:9000 $IMAGE_NAME
+                    sh ./check-container-status.sh $container_name
                 '''
             }
         }
 
         stage('Deploy to UAT') {
             steps {
-                echo '-------------------------Deploy to UAT-------------------------'
+                echo '-------------------------Deploy to Prod-------------------------'
 
                 input 'Continue to deploy to PROD?'
                 echo 'Deploy to PROD...'

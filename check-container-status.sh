@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 container_name="$1"
 is_health_check_success=0
