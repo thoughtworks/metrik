@@ -1,4 +1,4 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://${DB_USER}:${DB_PASSWORD}@localhost:9002/4-Key-Metrics
+      uri: mongodb://${DB_USER}:${DB_PASSWORD}@mongodb:27017/4-Key-Metrics
