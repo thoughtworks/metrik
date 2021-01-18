@@ -1,13 +1,12 @@
 import { Button } from "antd";
 import React, { FC, useState } from "react";
 import ReactDom from "react-dom";
-import "./App.less";
 
 export const App: FC = () => {
 	const [state] = useState(1);
 
 	return (
-		<div className={"app"}>
+		<div css={{ color: "red" }}>
 			Hello 4 key metrics <Button>Click me</Button>
 		</div>
 	);

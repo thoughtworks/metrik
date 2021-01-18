@@ -3,11 +3,12 @@
 		"strict": true,
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"esModuleInterop": true,
 		"moduleResolution": "Node",
 		"skipLibCheck": true,
-		"noEmit": true
+		"noEmit": true,
+		"jsxImportSource": "@emotion/react"
 	},
 	"include": ["src"],
 	"exclude": ["node_modules"]

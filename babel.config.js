@@ -10,6 +10,7 @@ module.exports = {
 		],
 		"@babel/preset-react",
 		"@babel/preset-typescript",
+		["@emotion/babel-preset-css-prop"],
 	],
 	plugins: [
 		isTest
