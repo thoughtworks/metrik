@@ -24,9 +24,9 @@ repositories {
 	}
 }
 
-application {
-	mainClass.set("fourkeymetrics.Application")
-}
+//application {
+//	mainClass.set("fourkeymetrics.Application")
+//}
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")

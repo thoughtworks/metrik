@@ -1,6 +1,6 @@
 mongodb:
-  host: localhost
-  port: 12017
+  host: 8.138.19.85
+  port: 9002
   database: test
-  username: root
-  password: root
+  username: 4km
+  password: 4000km
