@@ -48,7 +48,7 @@ pipeline {
                         docker container rm $existing_container_id
                     fi
                     docker run --name $container_name -d -p 9000:9000 -e DB_USER=${DB_CREDS_USR} -e DB_PASSWORD=${DB_CREDS_PSW} --net=4km-docker_default $IMAGE_NAME
-                    ./check-container-status.sh 9000
+                    ./check-container-status.sh  $container_name 9000
                 '''
             }
         }
@@ -70,7 +70,7 @@ pipeline {
                         docker container rm $existing_container_id
                     fi
                     docker run --name $container_name -d -p 9003:9000 -e DB_USER=${DB_CREDS_USR} -e DB_PASSWORD=${DB_CREDS_PSW} --net=4km-docker_default $IMAGE_NAME
-                    ./check-container-status.sh 9003
+                    ./check-container-status.sh $container_name 9000
                 '''
             }
         }
