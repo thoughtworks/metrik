@@ -22,8 +22,6 @@ pipeline {
             steps {
                 echo '-------------------------Build Image-------------------------'
 
-                sh "echo ${DB_CREDS_USR}"
-                sh "echo ${DB_CREDS_PWD}"
                 sh "docker build -t $IMAGE_NAME ."
             }
         }
