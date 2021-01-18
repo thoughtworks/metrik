@@ -1,4 +1,4 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://4km:4000km@localhost:27017/4keymetrics
+      uri: mongodb://4km:4000km@localhost:27017/4-Key-Metrics

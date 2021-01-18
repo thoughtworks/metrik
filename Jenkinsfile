@@ -12,6 +12,7 @@ pipeline {
     environment {
         REGISTRY_HOST =  "18.138.19.85:8004"
         REGISTRY_CREDS = credentials('4km_private_registry')
+        DB_CREDS = credentials('4km_db_credential')
         CURRENT_DATE = sh(returnStdout: true, script: "date +'%Y%m%d'").trim()
         IMAGE_NAME = "${REGISTRY_HOST}/4-key-metrics-service:v${env.BUILD_NUMBER}-${env.CURRENT_DATE}"
     }
@@ -46,7 +47,7 @@ pipeline {
                         docker container stop $existing_container_id
                         docker container rm $existing_container_id
                     fi
-                    docker run --name $container_name -d -p 9000:9000 $IMAGE_NAME
+                    docker run --name $container_name -d -p 9000:9000 -e DB_USER=${DB_CREDS_USR} -e DB_PASSWORD=${DB_CREDS_PSW} $IMAGE_NAME
                     ./check-container-status.sh 9000
                 '''
             }
@@ -68,7 +69,7 @@ pipeline {
                         docker container stop $existing_container_id
                         docker container rm $existing_container_id
                     fi
-                    docker run --name $container_name -d -p 9003:9000 $IMAGE_NAME
+                    docker run --name $container_name -d -p 9003:9000 -e DB_USER=${DB_CREDS_USR} -e DB_PASSWORD=${DB_CREDS_PSW} $IMAGE_NAME
                     ./check-container-status.sh 9003
                 '''
             }
