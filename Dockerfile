@@ -1,18 +1,10 @@
-FROM openjdk:11
+FROM gradle:jdk11-hotspot as builder
+ENV GRADLE_OPTS -Dorg.gradle.daemon=false
+COPY . /app
+WORKDIR /app
+RUN ls -l; gradle clean build -i
 
-ENV APP_ENV dev
+FROM adoptopenjdk:11-jdk-hotspot
+COPY --from=builder /app/build/libs/*.jar /app.jar
 
-WORKDIR /usr/src/app/temp
-
-COPY . .
-
-RUN ./gradlew clean build
-
-COPY ./build/libs/*.jar /app/sea-4-key-metrics-service.jar
-COPY ./run.sh /app/
-
-RUN rm -rf ./*
-
-EXPOSE 9000
-
-CMD ["/app/run.sh"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
