@@ -14,7 +14,7 @@ internal class GlobalExceptionHandlerTest {
     }
 
     @Test
-    internal fun should_handle_application_exception() {
+    internal fun `should handle application exception`() {
         val responseEntity = globalExceptionHandler.handleAppException(ApplicationException(HttpStatus.BAD_REQUEST, "invalid request"))
 
         val errorResponse = responseEntity.body
