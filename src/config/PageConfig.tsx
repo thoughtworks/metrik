@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Alert, Divider, Row, Col, Typography, Layout, Steps } from "antd";
-import { css } from "@emotion/react";
+import { Form, Divider, Typography, Layout, Steps } from "antd";
+import { FieldsStep2 } from "./components/FieldsStep2";
+import { FieldsStep1 } from "./components/FieldsStep1";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -27,16 +28,11 @@ enum VerifyStatus {
 	Fail,
 }
 
-const backBtnStyles = css({
-	marginRight: 8,
-});
-
-const pipelinesTextStyles = css({ fontWeight: "bold", display: "inline-block", marginBottom: 12 });
-
 export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [errors, setErrors] = useState<FieldsErrors>({});
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
+	const [currentStep, setCurrentStep] = useState(0);
 	const onFinish = (values: any) => {
 		setErrors({});
 		setTimeout(() => {
@@ -56,31 +52,19 @@ export const PageConfig = () => {
 		});
 	};
 
-	const onVerify = () => {
-		const { pipelineTool, pipelineDomain, token } = form.getFieldsValue();
-		const currentError = {
-			pipelineTool: required(ERROR_MESSAGES.EMPTY_PIPELINE_TOOL)(pipelineTool),
-			pipelineDomain: required(ERROR_MESSAGES.EMPTY_DOMAIN_NAME)(pipelineDomain),
-			token: required(ERROR_MESSAGES.EMPTY_TOKEN)(token),
-		};
+	const toNextStep = () => {
+		setCurrentStep(currentStep + 1);
+	};
 
-		setErrors(prev => ({
-			...prev,
-			...currentError,
-		}));
-
-		if (!currentError.pipelineTool && !currentError.pipelineDomain && !currentError.token) {
-			setTimeout(() => {
-				setVerifyStatus(VerifyStatus.SUCCESS);
-			}, 2000);
-		}
+	const toPrevStep = () => {
+		setCurrentStep(currentStep - 1);
 	};
 
 	return (
 		<Layout style={{ height: "100vh" }}>
 			<Layout.Content>
 				<div css={{ width: 896, margin: "24px auto", padding: 24, background: "#fff" }}>
-					<Steps current={1} css={{ margin: "44px 0" }}>
+					<Steps current={currentStep} css={{ margin: "44px 0" }}>
 						<Step title="Create Dashboard" />
 						<Step title="Config Project" />
 						<Step title="Success" />
@@ -100,70 +84,10 @@ export const PageConfig = () => {
 						onFinish={onFinish}
 						onFinishFailed={onFinishFailed}
 						form={form}>
-						<Text css={pipelinesTextStyles}>Pipelines</Text>
-
-						<Row gutter={8} wrap={false}>
-							<Col span={8}>
-								<Form.Item
-									label="Pipeline Name"
-									name="pipelineName"
-									rules={[{ required: true }]}
-									validateStatus={errors.pipelineName ? "error" : "success"}
-									help={errors.pipelineName ? ERROR_MESSAGES.EMPTY_PIPELINE_NAME : ""}>
-									<Input />
-								</Form.Item>
-							</Col>
-						</Row>
-
-						<Row gutter={8} wrap={false}>
-							<Col span={4}>
-								<Form.Item
-									label="Pipeline Tool"
-									name="pipelineTool"
-									rules={[{ required: true }]}
-									validateStatus={errors.pipelineTool ? "error" : "success"}
-									help={errors.pipelineTool ? ERROR_MESSAGES.EMPTY_PIPELINE_TOOL : ""}>
-									<Input />
-								</Form.Item>
-							</Col>
-							<Col span={8}>
-								<Form.Item
-									label="Pipeline Domain"
-									name="pipelineDomain"
-									rules={[{ required: true }]}
-									validateStatus={errors.pipelineDomain ? "error" : "success"}
-									help={errors.pipelineDomain ? ERROR_MESSAGES.EMPTY_DOMAIN_NAME : ""}>
-									<Input />
-								</Form.Item>
-							</Col>
-							<Col span={8}>
-								<Form.Item
-									label="Token"
-									name="token"
-									rules={[{ required: true }]}
-									validateStatus={errors.token ? "error" : "success"}
-									help={errors.token ? ERROR_MESSAGES.EMPTY_TOKEN : ""}>
-									<Input />
-								</Form.Item>
-							</Col>
-							<Col span={1}>
-								<Form.Item label={" "} name={"verify"}>
-									<Button onClick={onVerify}>Verify</Button>
-								</Form.Item>
-							</Col>
-						</Row>
-						{verifyStatus === VerifyStatus.SUCCESS && <Alert message="success" type="success" />}
-						{verifyStatus === VerifyStatus.Fail && <Alert message="error" type="error" />}
-
-						<Divider />
-						<Row>
-							<Col span={24} style={{ textAlign: "right" }}>
-								<Button css={backBtnStyles}>Back</Button>
-								<Button type="primary" htmlType="submit">
-									Create
-								</Button>
-							</Col>
-						</Row>
+						{currentStep === 0 && <FieldsStep1 onNext={toNextStep} />}
+						{currentStep === 1 && (
+							<FieldsStep2 form={form} onNext={toNextStep} onBack={toPrevStep} />
+						)}
 					</Form>
 				</div>
 			</Layout.Content>
