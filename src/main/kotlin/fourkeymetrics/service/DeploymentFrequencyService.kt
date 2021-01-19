@@ -11,8 +11,8 @@ class DeploymentFrequencyService {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
-    fun getDeploymentCount(pipelineID: String, targetStage: String, startTime: Long, endTime: Long): Int {
-        val allBuilds = buildRepository.getAllBuilds(pipelineID).sortedBy { it.timestamp }
+    fun getDeploymentCount(pipelineId: String, targetStage: String, startTime: Long, endTime: Long): Int {
+        val allBuilds = buildRepository.getAllBuilds(pipelineId).sortedBy { it.timestamp }
 
         var validDeploymentCount = 0
         for (index in allBuilds.indices) {

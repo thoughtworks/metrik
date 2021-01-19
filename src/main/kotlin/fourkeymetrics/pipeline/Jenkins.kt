@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class Jenkins : Pipeline {
-    override fun hasPipeline(pipelineID: String): Boolean {
+    override fun hasPipeline(dashboardId: String, pipelineID: String): Boolean {
         TODO("Not yet implemented")
     }
 

@@ -19,21 +19,22 @@ class DeploymentFrequencyResource {
     private lateinit var pipeline: Pipeline
 
     @GetMapping("/api/deployment-frequency")
-    fun getDeploymentCount(@RequestParam pipelineID: String,
+    fun getDeploymentCount(@RequestParam dashboardId: String,
                            @RequestParam targetStage: String, @RequestParam startTime: Long,
-                           @RequestParam endTime: Long): ResponseEntity<DeploymentFrequencyResponse> {
-        if (isInvalidParameters(startTime, endTime, pipelineID, targetStage)) {
+                           @RequestParam endTime: Long,
+                           @RequestParam pipelineID: String): ResponseEntity<DeploymentFrequencyResponse> {
+        if (isInvalidParameters(dashboardId, startTime, endTime, pipelineID, targetStage)) {
             return ResponseEntity.badRequest().build()
         }
 
-        val deploymentCount = deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)
+        val deploymentCount = deploymentFrequencyService.getDeploymentCount(targetStage, pipelineID, startTime, endTime)
 
         return ResponseEntity.ok(DeploymentFrequencyResponse(deploymentCount))
     }
 
-    private fun isInvalidParameters(startTime: Long, endTime: Long, pipelineID: String, targetStage: String): Boolean {
+    private fun isInvalidParameters(dashboardId: String, startTime: Long, endTime: Long, pipelineID: String, targetStage: String): Boolean {
         return startTime > endTime ||
-                !pipeline.hasPipeline(pipelineID) ||
-                !pipeline.hasStageInLastBuild(pipelineID, targetStage)
+            !pipeline.hasPipeline(dashboardId, pipelineID) ||
+            !pipeline.hasStageInLastBuild(pipelineID, targetStage)
     }
 }

@@ -3,7 +3,7 @@ package fourkeymetrics.pipeline
 import fourkeymetrics.model.Build
 
 interface Pipeline {
-    fun hasPipeline(pipelineID: String): Boolean
+    fun hasPipeline(dashboardId: String, pipelineID: String): Boolean
 
     fun hasStageInLastBuild(pipelineID: String, targetStage: String): Boolean
 
