@@ -1,5 +1,3 @@
 package fourkeymetrics.model
 
-class PipelineConfiguration {
-
-}
+class PipelineConfiguration
