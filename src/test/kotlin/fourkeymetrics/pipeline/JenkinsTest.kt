@@ -37,6 +37,16 @@ internal class JenkinsTest {
     }
 
     @Test
+    internal fun `should return false given pipeline not exits in database`() {
+        val dashboardId = "dashboard ID"
+        val pipelineId = "fake pipeline"
+
+        `when`(pipelineRepository.getPipeline(dashboardId, pipelineId)).thenReturn(null)
+
+        assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isFalse
+    }
+
+    @Test
     internal fun `should return true given stage exits in last build`() {
         val pipelineId = "fake pipeline"
         val targetStage = "deploy to dev"
