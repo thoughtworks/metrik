@@ -46,26 +46,6 @@ internal class DeploymentFrequencyServiceTest {
     }
 
     /**
-     * test file: builds-2.json
-     * build 1 : 2021-01-01, FAILED
-     * build 2 : 2021-01-15, SUCCESS
-     * build 3 : 2021-01-30, SUCCESS
-     */
-    @Test
-    internal fun `should get deployment count with success build status given 2 success build when calculate deployment count`() {
-        val pipelineId = "test pipeline - master"
-        val targetStage = "deploy to prod"
-        val startTime = 1609286400L  // 2020-12-30
-        val endTime = 1612137600L   // 2021-02-01
-
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-2.json").readText())
-
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
-
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTime, endTime)).isEqualTo(2)
-    }
-
-    /**
      * test file: builds-3.json
      * build 1 : 2021-01-01, [build: SUCCESS, deploy to prod: SUCCESS]
      * build 2 : 2021-01-15, [build: SUCCESS, deploy to prod: FAILED]
