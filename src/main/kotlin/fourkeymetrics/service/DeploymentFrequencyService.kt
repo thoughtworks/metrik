@@ -2,16 +2,17 @@ package fourkeymetrics.service
 
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.BuildStatus
+import fourkeymetrics.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class DeploymentFrequencyService {
     @Autowired
-    private lateinit var pipelineService: PipelineService
+    private lateinit var buildRepository: BuildRepository
 
     fun getDeploymentCount(pipelineID: String, targetStage: String, startTime: Long, endTime: Long): Int {
-        val allBuilds = pipelineService.getAllBuilds(pipelineID).sortedBy { it.timestamp }
+        val allBuilds = buildRepository.getAllBuilds(pipelineID).sortedBy { it.timestamp }
 
         var validDeploymentCount = 0
         for (index in allBuilds.indices) {
@@ -43,7 +44,7 @@ class DeploymentFrequencyService {
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
             build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
-    private fun isBuildSuccess(build: Build) = build.status == BuildStatus.SUCCESS
+    private fun isBuildSuccess(build: Build) = build.result == BuildStatus.SUCCESS
 
     private fun isWithinTimeRange(build: Build, startTime: Long, endTime: Long) =
             build.timestamp in startTime..endTime
@@ -52,6 +53,6 @@ class DeploymentFrequencyService {
             if (previousBuild == null) {
                 true
             } else {
-                previousBuild.commits != currentBuild.commits
+                previousBuild.changeSets != currentBuild.changeSets
             }
 }

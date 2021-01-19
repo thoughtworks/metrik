@@ -1,82 +1,97 @@
 [
   {
-    "pipelineID": "test pipeline - master",
-    "buildNumber": 1,
-    "status": "FAILED",
+    "pipelineId": 1,
+    "number": 1,
+    "duration": 60420,
+    "result": "FAILED",
     "timestamp": 1609459200,
+    "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTime": 1609459300,
-        "duration": 1000
+        "startTimeMillis": 1609459300,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTime": 1609459400,
-        "duration": 2000
+        "startTimeMillis": 1609459400,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
       }
     ],
-    "commits": [
+    "changeSets": [
       {
-        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a112345",
-        "message": "this is a message",
-        "timestamp": 1609459200
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 1609459200,
+        "date": "2021-01-01 00:00:00 +0800"
       }
     ]
   },
   {
-    "pipelineID": "test pipeline - master",
-    "buildNumber": 2,
-    "status": "SUCCESS",
+    "pipelineId": 1,
+    "number": 2,
+    "duration": 60420,
+    "result": "SUCCESS",
     "timestamp": 1610668800,
+    "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTime": 1610668900,
-        "duration": 1000
+        "startTimeMillis": 1610668900,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTime": 1610669000,
-        "duration": 2000
+        "startTimeMillis": 1610669000,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
       }
     ],
-    "commits": [
+    "changeSets": [
       {
-        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a115678",
-        "message": "this is a message",
-        "timestamp": 1610668800
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a115678",
+        "msg": "this is a message",
+        "timestamp": 1610668800,
+        "date": "2021-01-15 00:00:00 +0800"
       }
     ]
   },
   {
-    "pipelineID": "test pipeline - master",
-    "buildNumber": 3,
-    "status": "SUCCESS",
+    "pipelineId": 1,
+    "number": 3,
+    "duration": 60420,
+    "result": "SUCCESS",
     "timestamp": 1611964800,
+    "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTime": 1611964900,
-        "duration": 1000
+        "startTimeMillis": 1611964900,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTime": 1611965000,
-        "duration": 2000
+        "startTimeMillis": 1611965000,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
       }
     ],
-    "commits": [
+    "changeSets": [
       {
-        "revisionNumber": "b9b775059d120a0dbf09fd40d2becea69a117899",
-        "message": "this is a message",
-        "timestamp": 1611964800
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a117899",
+        "msg": "this is a message",
+        "timestamp": 1611964800,
+        "date": "2021-01-30 00:00:00 +0800"
       }
     ]
   }

@@ -3,6 +3,7 @@ package fourkeymetrics.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.model.Build
+import fourkeymetrics.repository.BuildRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,7 +23,7 @@ internal class DeploymentFrequencyServiceTest {
     private lateinit var objectMapper: ObjectMapper
 
     @MockBean
-    private lateinit var pipelineService: PipelineService
+    private lateinit var buildRepository: BuildRepository
 
     /**
      * test file: builds-1.json
@@ -39,7 +40,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-1.json").readText())
 
-        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
+        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(1)
     }
@@ -59,7 +60,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-2.json").readText())
 
-        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
+        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
     }
@@ -79,7 +80,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-3.json").readText())
 
-        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
+        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
     }
@@ -100,7 +101,7 @@ internal class DeploymentFrequencyServiceTest {
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-4.json").readText())
 
-        `when`(pipelineService.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
+        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(mockBuildList)
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime)).isEqualTo(2)
     }
