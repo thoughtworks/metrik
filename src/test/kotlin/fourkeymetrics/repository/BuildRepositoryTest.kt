@@ -21,13 +21,13 @@ class BuildRepositoryTest {
     internal fun `should get all builds`(@Autowired mongoTemplate: MongoTemplate,
                                          @Autowired buildRepository: BuildRepository,
                                          @Autowired objectMapper: ObjectMapper) {
-        val pipelineID = "fake pipeline"
+        val pipelineId = "fake pipeline"
         val collectionName = "build"
 
         val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-1.json").readText())
 
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
-        assertThat(buildRepository.getAllBuilds(pipelineID)).hasSize(3)
+        assertThat(buildRepository.getAllBuilds(pipelineId)).hasSize(3)
     }
 }

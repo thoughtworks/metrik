@@ -27,20 +27,20 @@ internal class DeploymentFrequencyResourceTest {
     @Test
     internal fun `should get deployment count given time range and pipeline information`() {
         val dashboardId = "dashboard ID"
-        val pipelineID = "test pipeline ID"
+        val pipelineId = "test pipeline ID"
         val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipeline.hasPipeline(dashboardId, pipelineID)).thenReturn(true)
-        `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineID, startTime, endTime))
+        `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
+        `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId, startTime, endTime))
             .thenReturn(30)
-        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
 
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
-            .param("pipelineID", pipelineID)
+            .param("pipelineId", pipelineId)
             .param("targetStage", targetStage)
             .param("startTime", startTime.toString())
             .param("endTime", endTime.toString()))
@@ -51,17 +51,17 @@ internal class DeploymentFrequencyResourceTest {
     @Test
     internal fun `should return bad request given start time is after end time when get deployment count`() {
         val dashboardId = "dashboard ID"
-        val pipelineID = "test pipeline ID"
+        val pipelineId = "test pipeline ID"
         val targetStage = "UAT"
         val startTime = 1611964800L
         val endTime = 1609459200L
 
-        `when`(pipeline.hasPipeline(dashboardId, pipelineID)).thenReturn(true)
-        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
-            .param("pipelineID", pipelineID)
+            .param("pipelineId", pipelineId)
             .param("targetStage", targetStage)
             .param("startTime", startTime.toString())
             .param("endTime", endTime.toString()))
@@ -71,17 +71,17 @@ internal class DeploymentFrequencyResourceTest {
     @Test
     internal fun `should return bad request given pipeline ID does not exist when get deployment count`() {
         val dashboardId = "dashboard ID"
-        val pipelineID = "invalid pipeline ID"
+        val pipelineId = "invalid pipeline ID"
         val targetStage = "UAT"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipeline.hasPipeline(dashboardId, pipelineID)).thenReturn(false)
-        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(false)
+        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
-            .param("pipelineID", pipelineID)
+            .param("pipelineId", pipelineId)
             .param("targetStage", targetStage)
             .param("startTime", startTime.toString())
             .param("endTime", endTime.toString()))
@@ -91,17 +91,17 @@ internal class DeploymentFrequencyResourceTest {
     @Test
     internal fun `should return bad request given Stage name does not exist when get deployment count`() {
         val dashboardId = "dashboard ID"
-        val pipelineID = "pipeline ID"
+        val pipelineId = "pipeline ID"
         val targetStage = "invalid stage"
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipeline.hasPipeline(dashboardId, pipelineID)).thenReturn(true)
-        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(false)
+        `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
-            .param("pipelineID", pipelineID)
+            .param("pipelineId", pipelineId)
             .param("targetStage", targetStage)
             .param("startTime", startTime.toString())
             .param("endTime", endTime.toString()))

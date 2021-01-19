@@ -12,7 +12,7 @@ class BuildRepository {
 
     private val collectionName = "build"
 
-    fun getAllBuilds(pipelineID: String): List<Build> {
+    fun getAllBuilds(pipelineId: String): List<Build> {
         return mongoTemplate.findAll(Build::class.java, collectionName)
     }
 }

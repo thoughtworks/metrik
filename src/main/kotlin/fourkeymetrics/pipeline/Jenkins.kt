@@ -5,15 +5,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class Jenkins : Pipeline {
-    override fun hasPipeline(dashboardId: String, pipelineID: String): Boolean {
+    override fun hasPipeline(dashboardId: String, pipelineId: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun hasStageInLastBuild(pipelineID: String, targetStage: String): Boolean {
+    override fun hasStageInLastBuild(pipelineId: String, targetStage: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun fetchAllBuilds(pipelineID: String): List<Build> {
+    override fun fetchAllBuilds(pipelineId: String): List<Build> {
         TODO("Not yet implemented")
     }
 }
