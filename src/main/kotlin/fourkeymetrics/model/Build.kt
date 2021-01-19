@@ -8,18 +8,13 @@ enum class BuildStatus {
   ABORTED
 }
 
-data class Stage(var name: String, var status: BuildStatus, var startTimeMillis: Long,
-                 var durationMillis: Long, var pauseDurationMillis: Long) {
-  constructor() : this(Strings.EMPTY, BuildStatus.FAILED, 0, 0, 0)
-}
+data class Stage(var name: String = Strings.EMPTY, var status: BuildStatus = BuildStatus.FAILED,
+                 var startTimeMillis: Long = 0, var durationMillis: Long = 0,
+                 var pauseDurationMillis: Long = 0)
 
-data class Commit(var commitId: String, var timestamp: Long, var date: String, var msg: String) {
-  constructor() : this(Strings.EMPTY, 0, Strings.EMPTY, Strings.EMPTY)
-}
+data class Commit(var commitId: String = Strings.EMPTY, var timestamp: Long = 0,
+                  var date: String = Strings.EMPTY, var msg: String = Strings.EMPTY)
 
-data class Build(var pipelineId: Long, var number: Int, var result: BuildStatus,
-                 var duration: Long, var timestamp: Long, var url: String, var stages: List<Stage>,
-                 var changeSets: List<Commit>) {
-  constructor() : this(0, 0, BuildStatus.FAILED, 0, 0,
-      Strings.EMPTY, emptyList(), emptyList())
-}
+data class Build(var pipelineId: Long = 0, var number: Int = 0, var result: BuildStatus = BuildStatus.FAILED,
+                 var duration: Long = 0, var timestamp: Long = 0, var url: String = Strings.EMPTY,
+                 var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList())

@@ -1,11 +1,28 @@
 package fourkeymetrics.pipeline
 
 import fourkeymetrics.model.Build
+import fourkeymetrics.repository.BuildRepository
+import fourkeymetrics.repository.PipelineRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
-interface Pipeline {
-    fun hasPipeline(dashboardId: String, pipelineId: String): Boolean
+@Component
+abstract class Pipeline {
+    @Autowired
+    private lateinit var pipelineRepository: PipelineRepository
 
-    fun hasStageInLastBuild(pipelineId: String, targetStage: String): Boolean
+    @Autowired
+    private lateinit var buildRepository: BuildRepository
 
-    fun fetchAllBuilds(pipelineId: String): List<Build>
+    fun hasPipeline(dashboardId: String, pipelineId: String): Boolean {
+        return pipelineRepository.getPipeline(dashboardId, pipelineId) != null
+    }
+
+    fun hasStageInLastBuild(pipelineId: String, targetStage: String): Boolean {
+        val lastBuild = buildRepository.getLastBuild(pipelineId)
+
+        return lastBuild != null && lastBuild.stages.find { it.name == targetStage } != null
+    }
+
+    abstract fun fetchAllBuilds(pipelineId: String): List<Build>
 }

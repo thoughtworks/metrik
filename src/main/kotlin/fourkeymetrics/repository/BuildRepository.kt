@@ -15,4 +15,8 @@ class BuildRepository {
     fun getAllBuilds(pipelineId: String): List<Build> {
         return mongoTemplate.findAll(Build::class.java, collectionName)
     }
+
+    fun getLastBuild(pipelineId: String): Build? {
+        TODO()
+    }
 }
