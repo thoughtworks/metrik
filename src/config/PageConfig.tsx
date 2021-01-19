@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Divider, Typography, Layout, Steps } from "antd";
-import { FieldsStep2 } from "./components/FieldsStep2";
 import { FieldsStep1 } from "./components/FieldsStep1";
+import { FieldsStep2 } from "./components/FieldsStep2";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -37,6 +37,7 @@ export const PageConfig = () => {
 		setErrors({});
 		setTimeout(() => {
 			setVerifyStatus(VerifyStatus.Fail);
+			toNextStep();
 		}, 2000);
 		console.log("on finish", values);
 	};
@@ -84,9 +85,11 @@ export const PageConfig = () => {
 						onFinish={onFinish}
 						onFinishFailed={onFinishFailed}
 						form={form}>
-						{currentStep === 0 && <FieldsStep1 onNext={toNextStep} />}
+						{currentStep === 0 && (
+							<FieldsStep1 form={form} onNext={toNextStep} setErrors={setErrors} errors={errors} />
+						)}
 						{currentStep === 1 && (
-							<FieldsStep2 form={form} onNext={toNextStep} onBack={toPrevStep} />
+							<FieldsStep2 form={form} onBack={toPrevStep} setErrors={setErrors} errors={errors} />
 						)}
 					</Form>
 				</div>

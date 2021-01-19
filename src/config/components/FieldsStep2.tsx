@@ -3,17 +3,9 @@ import { Form, Input, Button, Alert, Divider, Row, Col, Typography } from "antd"
 import { css } from "@emotion/react";
 import { FormInstance } from "antd/es/form";
 import { ERROR_MESSAGES } from "../../constants/errorMessages";
+import { required } from "../../utils/validates";
 
 const { Text } = Typography;
-
-const required = (errorMsg: string) => (value?: string) => (value ? null : errorMsg);
-
-interface FieldsErrors {
-	pipelineName?: string | null;
-	pipelineTool?: string | null;
-	pipelineDomain?: string | null;
-	token?: string | null;
-}
 
 enum VerifyStatus {
 	DEFAULT,
@@ -28,12 +20,12 @@ const backBtnStyles = css({
 const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marginBottom: 12 });
 
 /* eslint-disable react/prop-types */
-export const FieldsStep2: FC<{ form: FormInstance; onNext: () => void; onBack: () => void }> = ({
-	form,
-	onBack,
-	onNext,
-}) => {
-	const [errors, setErrors] = useState<FieldsErrors>({});
+export const FieldsStep2: FC<{
+	form: FormInstance;
+	onBack: () => void;
+	errors: any; // TODO: add types later
+	setErrors: any; // TODO: add types later
+}> = ({ form, onBack, errors, setErrors }) => {
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 
 	const onVerify = () => {
@@ -44,7 +36,8 @@ export const FieldsStep2: FC<{ form: FormInstance; onNext: () => void; onBack: (
 			token: required(ERROR_MESSAGES.EMPTY_TOKEN)(token),
 		};
 
-		setErrors(prev => ({
+		// TODO: add types later
+		setErrors((prev: any) => ({
 			...prev,
 			...currentError,
 		}));
@@ -123,12 +116,7 @@ export const FieldsStep2: FC<{ form: FormInstance; onNext: () => void; onBack: (
 						}}>
 						Back
 					</Button>
-					<Button
-						type="primary"
-						htmlType="submit"
-						onClick={() => {
-							onNext();
-						}}>
+					<Button type="primary" htmlType="submit">
 						Create
 					</Button>
 				</Col>
