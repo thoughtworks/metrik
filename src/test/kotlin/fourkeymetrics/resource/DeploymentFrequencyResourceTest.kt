@@ -1,7 +1,7 @@
 package fourkeymetrics.resource
 
 import fourkeymetrics.service.DeploymentFrequencyService
-import fourkeymetrics.service.PipelineService
+import fourkeymetrics.pipeline.Pipeline
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +22,7 @@ internal class DeploymentFrequencyResourceTest {
     private lateinit var deploymentFrequencyService: DeploymentFrequencyService
 
     @MockBean
-    private lateinit var pipelineService: PipelineService
+    private lateinit var pipeline: Pipeline
 
     @Test
     internal fun `should get deployment count given time range and pipeline information`() {
@@ -31,10 +31,10 @@ internal class DeploymentFrequencyResourceTest {
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipeline.hasPipeline(pipelineID)).thenReturn(true)
         `when`(deploymentFrequencyService.getDeploymentCount(pipelineID, targetStage, startTime, endTime))
                 .thenReturn(30)
-        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
 
 
         mockMvc.perform(get("/api/deployment-frequency")
@@ -53,8 +53,8 @@ internal class DeploymentFrequencyResourceTest {
         val startTime = 1611964800L
         val endTime = 1609459200L
 
-        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
-        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
                 .param("pipelineID", pipelineID)
@@ -71,8 +71,8 @@ internal class DeploymentFrequencyResourceTest {
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(false)
-        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(true)
+        `when`(pipeline.hasPipeline(pipelineID)).thenReturn(false)
+        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
                 .param("pipelineID", pipelineID)
@@ -89,8 +89,8 @@ internal class DeploymentFrequencyResourceTest {
         val startTime = 1609459200L
         val endTime = 1611964800L
 
-        `when`(pipelineService.hasPipeline(pipelineID)).thenReturn(true)
-        `when`(pipelineService.hasStage(pipelineID, targetStage)).thenReturn(false)
+        `when`(pipeline.hasPipeline(pipelineID)).thenReturn(true)
+        `when`(pipeline.hasStageInLastBuild(pipelineID, targetStage)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
                 .param("pipelineID", pipelineID)

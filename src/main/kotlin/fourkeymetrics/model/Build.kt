@@ -18,6 +18,8 @@ data class Commit(var commitId: String, var timestamp: Long, var date: String, v
 }
 
 data class Build(var pipelineId: Long, var number: Int, var result: BuildStatus,
-                 var duration: Long, var timestamp: Long, var url: String, var stages: List<Stage>, var changeSets: List<Commit>) {
-  constructor() : this(0, 0, BuildStatus.FAILED, 0, 0, Strings.EMPTY, emptyList(), emptyList())
+                 var duration: Long, var timestamp: Long, var url: String, var stages: List<Stage>,
+                 var changeSets: List<Commit>) {
+  constructor() : this(0, 0, BuildStatus.FAILED, 0, 0,
+      Strings.EMPTY, emptyList(), emptyList())
 }

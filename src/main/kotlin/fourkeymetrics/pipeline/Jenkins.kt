@@ -1,19 +1,19 @@
-package fourkeymetrics.service
+package fourkeymetrics.pipeline
 
 import fourkeymetrics.model.Build
 import org.springframework.stereotype.Service
 
 @Service
-class JenkinsService : PipelineService {
+class Jenkins : Pipeline {
     override fun hasPipeline(pipelineID: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun hasStage(pipelineID: String, targetStage: String): Boolean {
+    override fun hasStageInLastBuild(pipelineID: String, targetStage: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun getAllBuilds(pipelineID: String): List<Build> {
+    override fun fetchAllBuilds(pipelineID: String): List<Build> {
         TODO("Not yet implemented")
     }
 }
