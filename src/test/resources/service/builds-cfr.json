@@ -47,7 +47,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "SUCCESS",
+        "status": "FAILED",
         "name": "deploy to prod",
         "startTimeMillis": 1609459400,
         "durationMillis": 2000,

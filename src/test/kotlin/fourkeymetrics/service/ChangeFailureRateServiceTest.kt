@@ -34,7 +34,7 @@ class ChangeFailureRateServiceTest {
      * build 5 : 1611974800, SUCCESS (deploy to uat)
      */
     @Test
-    fun `should get deployment count within time range given 1 valid build inside when calculate deployment count`() {
+    fun `should get change failure rate within time range given 3 valid build inside when calculate CFR`() {
         val pipelineId = "1"
         val targetStage = "deploy to prod"
         // build 2 - build 5
@@ -53,6 +53,29 @@ class ChangeFailureRateServiceTest {
                 startTime,
                 endTime
             )
-        ).isEqualTo(1/2F)
+        ).isEqualTo(1/3F)
+    }
+
+    @Test
+    fun `should get zero within time range given no valid build when calculate CFR`() {
+        val pipelineId = "1"
+        val targetStage = "deploy to prod"
+        // build 2 - build 5
+        val startTime = 1611974800L
+        val endTime = 1611974800L
+
+        val mockBuildList: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
+
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
+
+        assertThat(
+            changeFailureRateService.getChangeFailureRate(
+                pipelineId,
+                targetStage,
+                startTime,
+                endTime
+            )
+        ).isEqualTo(0F)
     }
 }
