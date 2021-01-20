@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 class MetricsApplicationService {
 
     fun retrieve4KeyMetrics(
+        dashboardId: String,
         pipelineId: String,
         targetStage: String,
         startTime: Long,

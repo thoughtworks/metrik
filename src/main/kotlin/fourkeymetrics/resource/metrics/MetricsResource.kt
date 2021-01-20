@@ -23,6 +23,13 @@ class MetricsResource {
         @RequestParam endTime: Long,
         @RequestParam unit: MetricUnit
     ): FourKeyMetricsResponse {
-        return metricsApplicationService.retrieve4KeyMetrics(pipelineId, targetStage, startTime, endTime, unit)
+        return metricsApplicationService.retrieve4KeyMetrics(
+            dashboardId,
+            pipelineId,
+            targetStage,
+            startTime,
+            endTime,
+            unit
+        )
     }
 }

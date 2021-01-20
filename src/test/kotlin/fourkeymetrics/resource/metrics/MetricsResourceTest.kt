@@ -44,6 +44,7 @@ internal class MetricsResourceTest {
         )
         `when`(
             metricsApplicationService.retrieve4KeyMetrics(
+                dashboardId,
                 pipelineId,
                 targetStage,
                 startTime,
