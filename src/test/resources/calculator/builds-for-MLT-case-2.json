@@ -11,14 +11,14 @@
         "status": "SUCCESS",
         "name": "build",
         "startTimeMillis": 3,
-        "durationMillis": 1000,
+        "durationMillis": 1,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 4,
-        "durationMillis": 2000,
+        "durationMillis": 1,
         "pauseDurationMillis": 0
       }
     ],

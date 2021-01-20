@@ -43,6 +43,6 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(2.5, leadTimeForChangeValue)
+        assertEquals(3.5, leadTimeForChangeValue)
     }
 }

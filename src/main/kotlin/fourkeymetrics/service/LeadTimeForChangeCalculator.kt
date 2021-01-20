@@ -1,31 +1,93 @@
 package fourkeymetrics.service
 
 import fourkeymetrics.model.Build
+import fourkeymetrics.model.BuildStatus
 
 class LeadTimeForChangeCalculator {
+
     fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Double {
-        val targetBuilds: List<Build> = allBuilds.filter { it.timestamp in startTimestamp..endTimestamp }
+
+        val buildOrderByTimestampAscending = allBuilds.sortedWith(compareBy { it.timestamp })
+
+        val lastSuccessfulDeploymentBuild = findLastBuildWithSuccessfulDeployment(
+            buildOrderByTimestampAscending,
+            startTimestamp,
+            endTimestamp,
+            targetStage
+        ) ?: return NO_VALUE
+
+        val firstSuccessfulDeploymentBuild = findFirstBuildWithSuccessfulDeployment(
+            buildOrderByTimestampAscending,
+            startTimestamp,
+            targetStage
+        )
+
+        val targetBuilds: List<Build> = filterBuildsByTimeRange(
+            lastSuccessfulDeploymentBuild,
+            firstSuccessfulDeploymentBuild,
+            buildOrderByTimestampAscending
+        )
 
         if (targetBuilds.isEmpty()) {
-            return 0.0
+            return NO_VALUE
         }
 
-        for (build in targetBuilds) {
-            val targetedStage = build.stages.find { it.name == targetStage }
+        val deploymentStage = lastSuccessfulDeploymentBuild.stages.find {
+            it.name == targetStage && it.status == BuildStatus.SUCCESS
+        }
+        val deployTimestamp = deploymentStage!!.startTimeMillis + deploymentStage.durationMillis
 
-            if (targetedStage != null) {
-                val deploymentTimeStamp = targetedStage.startTimeMillis
+        return targetBuilds.flatMap { it.changeSets }.map { deployTimestamp - it.timestamp }.average()
+    }
 
-                var commitTime: Long = 0
-                for (commit in build.changeSets) {
-                    commitTime += deploymentTimeStamp - commit.timestamp
-                }
-                val leadTimeForChange = commitTime.toDouble() / build.changeSets.size
+    private fun filterBuildsByTimeRange(
+        lastSuccessfulDeploymentBuild: Build,
+        firstSuccessfulDeploymentBuild: Build?,
+        buildOrderByTimestampAscending: List<Build>
+    ): List<Build> {
+        val buildRangeEndTimestamp = lastSuccessfulDeploymentBuild.timestamp
+        val buildRangeStartTimestamp = firstSuccessfulDeploymentBuild?.timestamp ?: EARLIEST_TIMESTAMP
 
-                return leadTimeForChange
+        val targetBuilds: List<Build> =
+            buildOrderByTimestampAscending.filter {
+                it.timestamp > buildRangeStartTimestamp && it.timestamp <= buildRangeEndTimestamp
             }
-        }
+        return targetBuilds
+    }
 
-        return 0.0
+    private fun findLastBuildWithSuccessfulDeployment(
+        builds: List<Build>,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String
+    ): Build? {
+        return builds.find {
+            val deployStage = it.stages.find {
+                it.startTimeMillis + it.durationMillis in startTimestamp..endTimestamp
+                        && it.name == targetStage
+                        && it.status == BuildStatus.SUCCESS
+            }
+            deployStage != null
+        }
+    }
+
+    private fun findFirstBuildWithSuccessfulDeployment(
+        builds: List<Build>,
+        startTimestamp: Long,
+        targetStage: String
+    ): Build? {
+        return builds.find {
+            val deployStage = it.stages.find {
+                it.startTimeMillis + it.durationMillis < startTimestamp
+                        && it.name == targetStage
+                        && it.status == BuildStatus.SUCCESS
+            }
+            deployStage != null
+        }
+    }
+
+    companion object {
+        private const val NO_VALUE: Double = 0.0
+        private const val EARLIEST_TIMESTAMP: Long = 0
     }
 }
