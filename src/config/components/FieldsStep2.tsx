@@ -1,10 +1,11 @@
 import React, { useState, FC } from "react";
-import { Form, Input, Button, Alert, Divider, Row, Col, Typography } from "antd";
+import { Form, Input, Button, Alert, Divider, Row, Col, Typography, Select } from "antd";
 import { css } from "@emotion/react";
 import { FormInstance } from "antd/es/form";
 import { ERROR_MESSAGES } from "../../constants/errorMessages";
 import { required } from "../../utils/validates";
 
+const { Option } = Select;
 const { Text } = Typography;
 
 enum VerifyStatus {
@@ -75,7 +76,9 @@ export const FieldsStep2: FC<{
 						rules={[{ required: true }]}
 						validateStatus={errors.pipelineTool ? "error" : "success"}
 						help={errors.pipelineTool ? ERROR_MESSAGES.EMPTY_PIPELINE_TOOL : ""}>
-						<Input />
+						<Select>
+							<Option value="jenkins">Jenkins</Option>
+						</Select>
 					</Form.Item>
 				</Col>
 				<Col span={8}>

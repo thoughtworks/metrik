@@ -81,7 +81,12 @@ export const PageConfig = () => {
 					</div>
 					<Divider />
 
-					<Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
+					<Form
+						layout="vertical"
+						onFinish={onFinish}
+						onFinishFailed={onFinishFailed}
+						form={form}
+						initialValues={{ pipelineTool: "jenkins" }}>
 						<FieldsStep1
 							form={form}
 							onNext={toNextStep}
