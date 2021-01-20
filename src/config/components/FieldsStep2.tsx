@@ -25,7 +25,8 @@ export const FieldsStep2: FC<{
 	onBack: () => void;
 	errors: any; // TODO: add types later
 	setErrors: any; // TODO: add types later
-}> = ({ form, onBack, errors, setErrors }) => {
+	visible?: boolean;
+}> = ({ form, onBack, errors, setErrors, visible = true }) => {
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 
 	const onVerify = () => {
@@ -50,7 +51,7 @@ export const FieldsStep2: FC<{
 	};
 
 	return (
-		<>
+		<div css={{ display: visible ? "block" : "none" }}>
 			<Text css={groupTitleStyles}>Pipelines</Text>
 
 			<Row gutter={8} wrap={false}>
@@ -98,7 +99,7 @@ export const FieldsStep2: FC<{
 					</Form.Item>
 				</Col>
 				<Col span={1}>
-					<Form.Item label={" "} name={"verify"}>
+					<Form.Item label={" "}>
 						<Button onClick={onVerify}>Verify</Button>
 					</Form.Item>
 				</Col>
@@ -121,7 +122,7 @@ export const FieldsStep2: FC<{
 					</Button>
 				</Col>
 			</Row>
-		</>
+		</div>
 	);
 };
 /* eslint-disable react/prop-types */

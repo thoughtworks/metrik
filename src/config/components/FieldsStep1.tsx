@@ -15,9 +15,10 @@ export const FieldsStep1: FC<{
 	setErrors: any; // TODO: add types later
 	onNext: () => void;
 	form: FormInstance;
-}> = ({ onNext, form, errors, setErrors }) => {
+	visible?: boolean;
+}> = ({ onNext, form, errors, setErrors, visible = true }) => {
 	return (
-		<>
+		<div css={{ display: visible ? "block" : "none" }}>
 			<Text css={groupTitleStyles}>Dashboard Name</Text>
 
 			<Row gutter={8} wrap={false}>
@@ -54,7 +55,7 @@ export const FieldsStep1: FC<{
 					</Button>
 				</Col>
 			</Row>
-		</>
+		</div>
 	);
 };
 /* eslint-disable react/prop-types */

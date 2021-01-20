@@ -54,10 +54,12 @@ export const PageConfig = () => {
 	};
 
 	const toNextStep = () => {
+		setErrors({});
 		setCurrentStep(currentStep + 1);
 	};
 
 	const toPrevStep = () => {
+		setErrors({});
 		setCurrentStep(currentStep - 1);
 	};
 
@@ -79,18 +81,21 @@ export const PageConfig = () => {
 					</div>
 					<Divider />
 
-					<Form
-						layout="vertical"
-						name="basic"
-						onFinish={onFinish}
-						onFinishFailed={onFinishFailed}
-						form={form}>
-						{currentStep === 0 && (
-							<FieldsStep1 form={form} onNext={toNextStep} setErrors={setErrors} errors={errors} />
-						)}
-						{currentStep === 1 && (
-							<FieldsStep2 form={form} onBack={toPrevStep} setErrors={setErrors} errors={errors} />
-						)}
+					<Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
+						<FieldsStep1
+							form={form}
+							onNext={toNextStep}
+							setErrors={setErrors}
+							errors={errors}
+							visible={currentStep === 0}
+						/>
+						<FieldsStep2
+							form={form}
+							onBack={toPrevStep}
+							setErrors={setErrors}
+							errors={errors}
+							visible={currentStep === 1}
+						/>
 					</Form>
 				</div>
 			</Layout.Content>
