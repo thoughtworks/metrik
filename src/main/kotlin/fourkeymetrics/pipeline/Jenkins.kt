@@ -6,7 +6,7 @@ import fourkeymetrics.dto.BuildDetailsDTO
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.Commit
 import fourkeymetrics.model.Stage
-import fourkeymetrics.repository.PipelineRepository
+import fourkeymetrics.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
@@ -14,10 +14,10 @@ import kotlin.streams.toList
 
 @Service
 class Jenkins(@Autowired private var restTemplate: RestTemplate,
-              @Autowired private var pipelineRepository: PipelineRepository) : Pipeline() {
+              @Autowired private var dashboardRepository: DashboardRepository) : Pipeline() {
     override fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build> {
-        val pipelineConfiguration = pipelineRepository.getPipeline(dashboardId, pipelineId)!!
-        val username = pipelineConfiguration.userName
+        val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
+        val username = pipelineConfiguration.username
         val token = pipelineConfiguration.token
         val baseUrl = pipelineConfiguration.url
 

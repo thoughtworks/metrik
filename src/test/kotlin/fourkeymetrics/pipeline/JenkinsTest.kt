@@ -6,7 +6,7 @@ import fourkeymetrics.model.Build
 import fourkeymetrics.model.PipelineConfiguration
 import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.BuildRepository
-import fourkeymetrics.repository.PipelineRepository
+import fourkeymetrics.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate
 
 
 @ExtendWith(SpringExtension::class)
-@Import(Jenkins::class, PipelineRepository::class, BuildRepository::class, ObjectMapper::class,
+@Import(Jenkins::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
     RestTemplate::class)
 @RestClientTest
 internal class JenkinsTest {
@@ -38,7 +38,7 @@ internal class JenkinsTest {
     private lateinit var restTemplate: RestTemplate
 
     @MockBean
-    private lateinit var pipelineRepository: PipelineRepository
+    private lateinit var dashboardRepository: DashboardRepository
 
     @MockBean
     private lateinit var buildRepository: BuildRepository
@@ -48,7 +48,7 @@ internal class JenkinsTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
 
-        `when`(pipelineRepository.getPipeline(dashboardId, pipelineId)).thenReturn(PipelineConfiguration())
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration())
 
         assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isTrue
     }
@@ -58,7 +58,7 @@ internal class JenkinsTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
 
-        `when`(pipelineRepository.getPipeline(dashboardId, pipelineId)).thenReturn(null)
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(null)
 
         assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isFalse
     }
@@ -75,7 +75,7 @@ internal class JenkinsTest {
         val getBuildDetailUrl = "http://$username:$token@$baseUrl/82/wfapi/describe"
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
-        `when`(pipelineRepository.getPipeline(dashboardId, pipelineId)).thenReturn(PipelineConfiguration(username, token, baseUrl))
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration(username = username, token = token, url = baseUrl))
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(), MediaType.APPLICATION_JSON))
         mockServer.expect(requestTo(getBuildDetailUrl))

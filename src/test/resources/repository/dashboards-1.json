@@ -1,0 +1,15 @@
+[
+  {
+    "id": "fake-dashboard",
+    "name": "4-key",
+    "pipelineConfigurations": [
+      {
+        "id": "fake-pipeline",
+        "username": "username",
+        "token": "fake-token",
+        "url": "test.com",
+        "type": "JENKINS"
+      }
+    ]
+  }
+]

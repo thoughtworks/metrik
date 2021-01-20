@@ -2,20 +2,20 @@ package fourkeymetrics.pipeline
 
 import fourkeymetrics.model.Build
 import fourkeymetrics.repository.BuildRepository
-import fourkeymetrics.repository.PipelineRepository
+import fourkeymetrics.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 abstract class Pipeline {
     @Autowired
-    private lateinit var pipelineRepository: PipelineRepository
+    private lateinit var dashboardRepository: DashboardRepository
 
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
     fun hasPipeline(dashboardId: String, pipelineId: String): Boolean {
-        return pipelineRepository.getPipeline(dashboardId, pipelineId) != null
+        return dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId) != null
     }
 
     fun hasStageInTimeRange(pipelineId: String, targetStage: String, startTimestamp: Long,
