@@ -2,25 +2,19 @@ import React, { useState } from "react";
 import { Form, Divider, Typography, Layout, Steps } from "antd";
 import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
+import { VerifyStatus } from "../__types__/base";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
-
-enum VerifyStatus {
-	DEFAULT,
-	SUCCESS,
-	Fail,
-}
 
 export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState(0);
 	const onFinish = (values: any) => {
-		setTimeout(() => {
-			setVerifyStatus(VerifyStatus.Fail);
+		verifyPipeline().then(() => {
 			toNextStep();
-		}, 2000);
+		});
 		console.log("on finish", values);
 	};
 
@@ -31,6 +25,19 @@ export const PageConfig = () => {
 	const toPrevStep = () => {
 		setCurrentStep(currentStep - 1);
 	};
+
+	const handleVerify = () => {
+		verifyPipeline().then(() => {
+			setVerifyStatus(VerifyStatus.SUCCESS);
+		});
+	};
+
+	const verifyPipeline = () =>
+		new Promise(resolve => {
+			setTimeout(() => {
+				resolve({ code: 200, msg: "verify success" });
+			}, 2000);
+		});
 
 	return (
 		<Layout style={{ height: "100vh" }}>
@@ -66,6 +73,8 @@ export const PageConfig = () => {
 									onBack={toPrevStep}
 									formValues={formValues}
 									visible={currentStep === 1}
+									verifyStatus={verifyStatus}
+									onVerify={handleVerify}
 								/>
 							</>
 						)}
