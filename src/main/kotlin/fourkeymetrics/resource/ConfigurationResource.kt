@@ -12,7 +12,7 @@ class ConfigurationResource {
     @Autowired
     private lateinit var configurationService: ConfigurationService
 
-    @GetMapping("/pipeline/verify")
+    @GetMapping("/api/pipeline/verify")
     fun verifyPipeline(
         @RequestParam url: String,
         @RequestParam token: String,

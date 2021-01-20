@@ -43,7 +43,8 @@ class DeploymentFrequencyService {
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
         build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
-    private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long, endTimestamp: Long, targetStage: String) =
+    private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long,
+                                             endTimestamp: Long, targetStage: String) =
         build.stages.find { it.name == targetStage }?.startTimeMillis in startTimestamp..endTimestamp
 
     private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
