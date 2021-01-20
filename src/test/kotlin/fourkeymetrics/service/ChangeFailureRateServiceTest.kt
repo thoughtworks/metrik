@@ -56,11 +56,19 @@ class ChangeFailureRateServiceTest {
         ).isEqualTo(1/3F)
     }
 
+    /**
+     * test file: builds-cfr.json
+     * build 1 : 1606780800, SUCCESS (deploy to prod)
+     * build 2 : 1609459200, FAILED (deploy to prod)
+     * build 3 : 1610668800, SUCCESS (deploy to prod)
+     * build 4 : 1611964800, SUCCESS (deploy to prod)
+     * build 5 : 1611974800, SUCCESS (deploy to uat)
+     */
     @Test
     fun `should get zero within time range given no valid build when calculate CFR`() {
         val pipelineId = "1"
         val targetStage = "deploy to prod"
-        // build 2 - build 5
+        // build 5
         val startTimestamp = 1611974800L
         val endTimestamp = 1611974800L
 

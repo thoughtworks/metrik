@@ -3,6 +3,8 @@ package fourkeymetrics.service
 import fourkeymetrics.model.BuildStatus
 import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.BuildRepository
+import fourkeymetrics.utils.getLocalDateTimeFromTimestampMillis
+import fourkeymetrics.utils.getLocalDateTimeFromTimestampSec
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -22,11 +24,17 @@ class ChangeFailureRateService {
         endTimestamp: Long
     ): Float {
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
+        val startTime = getLocalDateTimeFromTimestampSec(startTimestamp)
+        val endTime = getLocalDateTimeFromTimestampSec(endTimestamp)
         val statusCountMap = allBuilds.asSequence()
-            .filter { it.timestamp in startTimestamp..endTimestamp }
-            .flatMap { it.stages.asSequence() }
+            .flatMap {
+                it.stages.asSequence() }
             .filter {
-                this.filterStages(it, targetStage)
+                val stageStartTime = getLocalDateTimeFromTimestampMillis(it.startTimeMillis)
+                !startTime.isAfter(stageStartTime) && !endTime.isBefore(stageStartTime)
+            }
+            .filter {
+                this.filterStagesByName(it, targetStage)
             }
             .groupingBy { it.status }
             .eachCount()
@@ -39,7 +47,7 @@ class ChangeFailureRateService {
         }
     }
 
-    internal fun filterStages(stage: Stage, targetStage: String): Boolean {
+    internal fun filterStagesByName(stage: Stage, targetStage: String): Boolean {
         return stage.name == targetStage && stage.status in TARGET_STAGE_STATUS_LIST
     }
 }
