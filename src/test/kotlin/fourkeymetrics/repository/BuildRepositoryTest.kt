@@ -30,4 +30,27 @@ class BuildRepositoryTest {
 
         assertThat(buildRepository.getAllBuilds(pipelineId)).hasSize(3)
     }
+
+    /**
+     * test file: builds-2.json
+     * build 1 : 2021-01-01, [build: SUCCESS]
+     * build 2 : 2021-01-15, [build: SUCCESS]
+     * build 3 : 2021-01-20, [build: SUCCESS]
+     * build 4 : 2021-01-30, [build: SUCCESS]
+     */
+    @Test
+    internal fun `should get builds by time period`(@Autowired mongoTemplate: MongoTemplate,
+                                                    @Autowired buildRepository: BuildRepository,
+                                                    @Autowired objectMapper: ObjectMapper) {
+        val pipelineId = "fake pipeline"
+        val collectionName = "build"
+        val startTimestamp = 1610668800L //2021-01-01
+        val endTimestamp = 1611100800L //2021-01-20
+
+        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-2.json").readText())
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertThat(buildRepository.getBuildsByTimePeriod(pipelineId, startTimestamp, endTimestamp)).hasSize(3)
+    }
 }

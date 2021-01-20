@@ -29,21 +29,21 @@ internal class DeploymentFrequencyResourceTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "test pipeline ID"
         val targetStage = "UAT"
-        val startTime = 1609459200L
-        val endTime = 1611964800L
+        val startTimestamp = 1609459200L
+        val endTimestamp = 1611964800L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
-        `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId, startTime, endTime))
+        `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId, startTimestamp, endTimestamp))
             .thenReturn(30)
-        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
+        `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(true)
 
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
             .param("pipelineId", pipelineId)
             .param("targetStage", targetStage)
-            .param("startTime", startTime.toString())
-            .param("endTime", endTime.toString()))
+            .param("startTime", startTimestamp.toString())
+            .param("endTime", endTimestamp.toString()))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.deploymentCount").value(30))
     }
@@ -57,7 +57,7 @@ internal class DeploymentFrequencyResourceTest {
         val endTime = 1609459200L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
-        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
+        `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTime, endTime)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
@@ -77,7 +77,7 @@ internal class DeploymentFrequencyResourceTest {
         val endTime = 1611964800L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(false)
-        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(true)
+        `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTime, endTime)).thenReturn(true)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)
@@ -97,7 +97,7 @@ internal class DeploymentFrequencyResourceTest {
         val endTime = 1611964800L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
-        `when`(pipeline.hasStageInLastBuild(pipelineId, targetStage)).thenReturn(false)
+        `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTime, endTime)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)

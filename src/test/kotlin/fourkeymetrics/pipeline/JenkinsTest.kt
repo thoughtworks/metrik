@@ -64,38 +64,6 @@ internal class JenkinsTest {
     }
 
     @Test
-    internal fun `should return true given stage exits in last build`() {
-        val pipelineId = "fake pipeline"
-        val targetStage = "deploy to dev"
-        val lastBuild = Build(stages = listOf(Stage(name = targetStage), Stage(name = "build")))
-
-        `when`(buildRepository.getLastBuild(pipelineId)).thenReturn(lastBuild)
-
-        assertThat(jenkins.hasStageInLastBuild(pipelineId, targetStage)).isTrue
-    }
-
-    @Test
-    internal fun `should return false given stage not exits in last build`() {
-        val pipelineId = "fake pipeline"
-        val targetStage = "deploy to dev"
-        val lastBuild = Build(stages = listOf(Stage(name = "clone"), Stage(name = "build")))
-
-        `when`(buildRepository.getLastBuild(pipelineId)).thenReturn(lastBuild)
-
-        assertThat(jenkins.hasStageInLastBuild(pipelineId, targetStage)).isFalse
-    }
-
-    @Test
-    internal fun `should return false given no builds exist in pipeline`() {
-        val pipelineId = "fake pipeline"
-        val targetStage = "deploy to dev"
-
-        `when`(buildRepository.getLastBuild(pipelineId)).thenReturn(null)
-
-        assertThat(jenkins.hasStageInLastBuild(pipelineId, targetStage)).isFalse
-    }
-
-    @Test
     internal fun `should return all builds from Jenkins given pipeline ID`() {
         val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
@@ -115,5 +83,33 @@ internal class JenkinsTest {
 
         val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-1.json").readText())
         assertThat(jenkins.fetchAllBuilds(dashboardId, pipelineId)).isEqualTo(expectedBuilds)
+    }
+
+    @Test
+    internal fun `should return true given stage exists in builds filtered by time range`() {
+        val pipelineId = "fake pipeline"
+        val targetStage = "deploy to dev"
+        val startTimestamp = 100000L
+        val endTimestamp = 200000L
+
+        val lastBuild = Build(stages = listOf(Stage(name = targetStage), Stage(name = "build")))
+
+        `when`(buildRepository.getBuildsByTimePeriod(pipelineId, startTimestamp, endTimestamp)).thenReturn(listOf(lastBuild))
+
+        assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
+    }
+
+    @Test
+    internal fun `should return false given stage not exists in builds filtered by time range`() {
+        val pipelineId = "fake pipeline"
+        val targetStage = "deploy to dev"
+        val startTimestamp = 100000L
+        val endTimestamp = 200000L
+
+        val lastBuild = Build(stages = listOf(Stage(name = "clone"), Stage(name = "build")))
+
+        `when`(buildRepository.getBuildsByTimePeriod(pipelineId, startTimestamp, endTimestamp)).thenReturn(listOf(lastBuild))
+
+        assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }
 }

@@ -32,11 +32,11 @@ class DeploymentFrequencyResource {
         return ResponseEntity.ok(DeploymentFrequencyResponse(deploymentCount))
     }
 
-    private fun isInvalidParameters(dashboardId: String, startTime: Long, endTime: Long,
+    private fun isInvalidParameters(dashboardId: String, startTimestamp: Long, endTimestamp: Long,
                                     pipelineId: String,
                                     targetStage: String): Boolean {
-        return startTime > endTime ||
+        return startTimestamp > endTimestamp ||
                 !pipeline.hasPipeline(dashboardId, pipelineId) ||
-                !pipeline.hasStageInLastBuild(pipelineId, targetStage)
+                !pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)
     }
 }

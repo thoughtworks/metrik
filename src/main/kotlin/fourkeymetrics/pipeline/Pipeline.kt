@@ -18,10 +18,13 @@ abstract class Pipeline {
         return pipelineRepository.getPipeline(dashboardId, pipelineId) != null
     }
 
-    fun hasStageInLastBuild(pipelineId: String, targetStage: String): Boolean {
-        val lastBuild = buildRepository.getLastBuild(pipelineId)
+    fun hasStageInTimeRange(pipelineId: String, targetStage: String, startTimestamp: Long,
+                            endTimestamp: Long): Boolean {
+        val buildsInTimeRange = buildRepository.getBuildsByTimePeriod(pipelineId,
+            startTimestamp, endTimestamp)
 
-        return lastBuild != null && lastBuild.stages.find { it.name == targetStage } != null
+        return buildsInTimeRange.isNotEmpty() && buildsInTimeRange.flatMap { it.stages }
+            .find { it.name == targetStage } != null
     }
 
     abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
