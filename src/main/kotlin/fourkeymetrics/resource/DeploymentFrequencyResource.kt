@@ -20,11 +20,11 @@ class DeploymentFrequencyResource {
 
     @GetMapping("/api/deployment-frequency")
     fun getDeploymentCount(@RequestParam dashboardId: String,
-                           @RequestParam targetStage: String,
+                           @RequestParam pipelineId: String,
                            @RequestParam startTimestamp: Long,
                            @RequestParam endTimestamp: Long,
-                           @RequestParam pipelineId: String): ResponseEntity<DeploymentFrequencyResponse> {
-        if (isInvalidParameters(dashboardId, startTimestamp, endTimestamp, pipelineId, targetStage)) {
+                           @RequestParam targetStage: String): ResponseEntity<DeploymentFrequencyResponse> {
+        if (isInvalidParameters(dashboardId, pipelineId, endTimestamp, startTimestamp, targetStage)) {
             return ResponseEntity.badRequest().build()
         }
 
@@ -34,8 +34,8 @@ class DeploymentFrequencyResource {
         return ResponseEntity.ok(DeploymentFrequencyResponse(deploymentCount))
     }
 
-    private fun isInvalidParameters(dashboardId: String, startTimestamp: Long, endTimestamp: Long,
-                                    pipelineId: String,
+    private fun isInvalidParameters(dashboardId: String, pipelineId: String, endTimestamp: Long,
+                                    startTimestamp: Long,
                                     targetStage: String): Boolean {
         return startTimestamp > endTimestamp ||
             !pipeline.hasPipeline(dashboardId, pipelineId) ||

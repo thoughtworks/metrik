@@ -27,9 +27,9 @@ internal class DeploymentFrequencyServiceTest {
 
     /**
      * test file: builds-1.json
-     * build 1 : 2021-01-01, SUCCESS
-     * build 2 : 2021-01-15, SUCCESS
-     * build 3 : 2021-01-30, SUCCESS
+     * build 1 : deploy to prod, SUCCESS, 2021-01-01
+     * build 2 : deploy to prod, SUCCESS, 2021-01-15
+     * build 3 : deploy to prod, SUCCESS, 2021-01-30
      */
     @Test
     internal fun `should get deployment count within time range given 1 valid build inside when calculate deployment count`() {

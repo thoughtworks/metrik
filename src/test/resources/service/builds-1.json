@@ -10,14 +10,14 @@
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1609459300,
+        "startTimeMillis": 1609459200,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1609459400,
+        "startTimeMillis": 1609459200,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -42,14 +42,14 @@
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1610668900,
+        "startTimeMillis": 1610668800,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1610669000,
+        "startTimeMillis": 1610668800,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -74,14 +74,14 @@
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1611964900,
+        "startTimeMillis": 1611964800,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1611965000,
+        "startTimeMillis": 1611964800,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }

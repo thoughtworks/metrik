@@ -23,7 +23,7 @@ class DeploymentFrequencyService {
                 allBuilds[index - 1]
             }
 
-            if (isInvalidBuild(currentBuild, startTimestamp, endTimestamp, targetStage, prevBuild)) {
+            if (isInvalidBuild(prevBuild, currentBuild, startTimestamp, endTimestamp, targetStage)) {
                 continue
             }
 
@@ -33,23 +33,23 @@ class DeploymentFrequencyService {
         return validDeploymentCount
     }
 
-    private fun isInvalidBuild(currentBuild: Build, startTimestamp: Long, endTimestamp: Long,
-                               targetStage: String, prevBuild: Build?): Boolean {
-        return !isWithinTimeRange(currentBuild, startTimestamp, endTimestamp) ||
-                !isTargetStageSuccess(currentBuild, targetStage) ||
-                !isEffectiveDeployment(prevBuild, currentBuild)
+    private fun isInvalidBuild(prevBuild: Build?, currentBuild: Build, startTimestamp: Long,
+                               endTimestamp: Long, targetStage: String): Boolean {
+        return !isTargetStageWithinTimeRange(currentBuild, startTimestamp, endTimestamp, targetStage) ||
+            !isTargetStageSuccess(currentBuild, targetStage) ||
+            !isEffectiveDeployment(prevBuild, currentBuild)
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
-            build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
+        build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
-    private fun isWithinTimeRange(build: Build, startTimestamp: Long, endTimestamp: Long) =
-            build.timestamp in startTimestamp..endTimestamp
+    private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long, endTimestamp: Long, targetStage: String) =
+        build.stages.find { it.name == targetStage }?.startTimeMillis in startTimestamp..endTimestamp
 
     private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
-            if (previousBuild == null) {
-                true
-            } else {
-                previousBuild.changeSets != currentBuild.changeSets
-            }
+        if (previousBuild == null) {
+            true
+        } else {
+            previousBuild.changeSets != currentBuild.changeSets
+        }
 }
