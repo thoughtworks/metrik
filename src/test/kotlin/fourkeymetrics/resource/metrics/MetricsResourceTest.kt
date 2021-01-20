@@ -4,7 +4,7 @@ import fourkeymetrics.model.MetricUnit
 import fourkeymetrics.resource.MetricsResource
 import fourkeymetrics.resource.metrics.representation.FourKeyMetricsResponse
 import fourkeymetrics.resource.metrics.representation.LEVEL
-import fourkeymetrics.resource.metrics.representation.Metric
+import fourkeymetrics.model.Metric
 import fourkeymetrics.resource.metrics.representation.Metrics
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`

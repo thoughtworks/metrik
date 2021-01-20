@@ -1,10 +1,10 @@
 package fourkeymetrics.resource.metrics.representation
 
+import fourkeymetrics.model.Metric
+
 enum class LEVEL {
     ELITE, HIGH, MEDIUM, LOW
 }
-
-data class Metric(val level: LEVEL, val value: String, val from: Long, val to: Long)
 
 data class Metrics(val summary: Metric, val details: List<Metric>)
 
