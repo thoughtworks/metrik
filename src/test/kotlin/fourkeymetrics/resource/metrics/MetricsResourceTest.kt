@@ -5,6 +5,7 @@ import fourkeymetrics.resource.MetricsResource
 import fourkeymetrics.resource.metrics.representation.FourKeyMetricsResponse
 import fourkeymetrics.resource.metrics.representation.LEVEL
 import fourkeymetrics.model.Metric
+import fourkeymetrics.resource.metrics.representation.MetricWithLevel
 import fourkeymetrics.resource.metrics.representation.Metrics
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -34,8 +35,9 @@ internal class MetricsResourceTest {
         val level = LEVEL.ELITE
         val value = "10.2"
 
-        val metric = Metric(level, value, startTime, endTime)
-        val metrics = Metrics(metric, listOf(metric, metric))
+        val metric = Metric(value, startTime, endTime)
+        val metricWithLevel = MetricWithLevel(level, metric)
+        val metrics = Metrics(metricWithLevel, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
             deploymentFrequency = metrics,
             leadTimeForChange = metrics,
@@ -63,14 +65,13 @@ internal class MetricsResourceTest {
                 .param("unit", metricUnit.toString())
         )
             .andExpect(jsonPath("$.deploymentFrequency.summary.level").value("ELITE"))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.value").value(value))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.from").value(startTime))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.to").value(endTime))
+            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.value").value(value))
+            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.startTimestamp").value(startTime))
+            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.endTimestamp").value(endTime))
             .andExpect(jsonPath("$.deploymentFrequency.details.length()").value(2))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].from").value(startTime))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].to").value(endTime))
+            .andExpect(jsonPath("$.deploymentFrequency.details[0].startTimestamp").value(startTime))
+            .andExpect(jsonPath("$.deploymentFrequency.details[0].endTimestamp").value(endTime))
             .andExpect(jsonPath("$.deploymentFrequency.details[0].value").value(value))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].level").value("ELITE"))
             .andExpect(jsonPath("$.leadTimeForChange").isNotEmpty)
             .andExpect(jsonPath("$.timeToRestoreService").isNotEmpty)
             .andExpect(jsonPath("$.changeFailureRate").isNotEmpty)
