@@ -44,8 +44,8 @@ class BuildRepositoryTest {
                                                     @Autowired objectMapper: ObjectMapper) {
         val pipelineId = "fake pipeline"
         val collectionName = "build"
-        val startTimestamp = 1610668800L //2021-01-01
-        val endTimestamp = 1611100800L //2021-01-20
+        val startTimestamp = 1610668800000L //2021-01-01
+        val endTimestamp = 1611100800000L //2021-01-20
 
         val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-2.json").readText())
 

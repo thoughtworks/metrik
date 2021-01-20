@@ -29,8 +29,8 @@ internal class MetricsResourceTest {
         val dashboardId = "test dashboard Id"
         val pipelineId = "test pipeline Id"
         val targetStage = "Deploy to UAT"
-        val startTime = 1609459200L
-        val endTime = 1611964800L
+        val startTime = 1609459200000L
+        val endTime = 1611964800000L
         val metricUnit = MetricUnit.Fortnightly
         val level = LEVEL.ELITE
         val value = "10.2"

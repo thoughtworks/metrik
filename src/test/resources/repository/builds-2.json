@@ -4,7 +4,7 @@
     "number": 1,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1609459200,
+    "timestamp": 1609459200000,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [],
     "changeSets": []
@@ -14,7 +14,7 @@
     "number": 2,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1610668800,
+    "timestamp": 1610668800000,
     "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [],
     "changeSets": []
@@ -24,7 +24,7 @@
     "number": 3,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1611100800,
+    "timestamp": 1611100800000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [],
     "changeSets": []
@@ -34,7 +34,7 @@
     "number": 4,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1611964800,
+    "timestamp": 1611964800000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [],
     "changeSets": []
