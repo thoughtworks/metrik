@@ -79,14 +79,16 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
     }
 
 
-    override fun verifyPipeline(url: String, username: String, token: String): Boolean {
+    override fun verifyPipeline(url: String, username: String, token: String) {
         val headers = setAuthHeader(username, token)
         val entity = HttpEntity<String>("", headers)
         try {
             val response = restTemplate.exchange<String>(
                 "$url/wfapi/", HttpMethod.GET, entity
             )
-            return response.statusCode.is2xxSuccessful
+            if (!response.statusCode.is2xxSuccessful){
+                throw ApplicationException(response.statusCode,response.body!!)
+            }
         } catch (e: HttpClientErrorException) {
             throw ApplicationException(e.statusCode, e.message!!)
         }
