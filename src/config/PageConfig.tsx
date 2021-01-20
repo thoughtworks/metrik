@@ -6,22 +6,6 @@ import { FieldsStep2 } from "./components/FieldsStep2";
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
 
-const ERROR_MESSAGES = {
-	EMPTY_PIPELINE_NAME: "Please input pipeline name",
-	EMPTY_PIPELINE_TOOL: "Please input pipeline tool",
-	EMPTY_DOMAIN_NAME: "Please input pipeline domain",
-	EMPTY_TOKEN: "Please input token",
-};
-
-const required = (errorMsg: string) => (value?: string) => (value ? null : errorMsg);
-
-interface FieldsErrors {
-	pipelineName?: string | null;
-	pipelineTool?: string | null;
-	pipelineDomain?: string | null;
-	token?: string | null;
-}
-
 enum VerifyStatus {
 	DEFAULT,
 	SUCCESS,
@@ -30,11 +14,9 @@ enum VerifyStatus {
 
 export const PageConfig = () => {
 	const [form] = Form.useForm();
-	const [errors, setErrors] = useState<FieldsErrors>({});
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState(0);
 	const onFinish = (values: any) => {
-		setErrors({});
 		setTimeout(() => {
 			setVerifyStatus(VerifyStatus.Fail);
 			toNextStep();
@@ -42,24 +24,11 @@ export const PageConfig = () => {
 		console.log("on finish", values);
 	};
 
-	const onFinishFailed = (errorInfo: any) => {
-		const { pipelineName, pipelineTool, pipelineDomain, token } = errorInfo.values;
-
-		setErrors({
-			pipelineName: required(ERROR_MESSAGES.EMPTY_PIPELINE_NAME)(pipelineName),
-			pipelineTool: required(ERROR_MESSAGES.EMPTY_PIPELINE_TOOL)(pipelineTool),
-			pipelineDomain: required(ERROR_MESSAGES.EMPTY_PIPELINE_TOOL)(pipelineDomain),
-			token: required(ERROR_MESSAGES.EMPTY_PIPELINE_TOOL)(token),
-		});
-	};
-
 	const toNextStep = () => {
-		setErrors({});
 		setCurrentStep(currentStep + 1);
 	};
 
 	const toPrevStep = () => {
-		setErrors({});
 		setCurrentStep(currentStep - 1);
 	};
 
@@ -84,23 +53,22 @@ export const PageConfig = () => {
 					<Form
 						layout="vertical"
 						onFinish={onFinish}
-						onFinishFailed={onFinishFailed}
 						form={form}
 						initialValues={{ pipelineTool: "jenkins" }}>
-						<FieldsStep1
-							form={form}
-							onNext={toNextStep}
-							setErrors={setErrors}
-							errors={errors}
-							visible={currentStep === 0}
-						/>
-						<FieldsStep2
-							form={form}
-							onBack={toPrevStep}
-							setErrors={setErrors}
-							errors={errors}
-							visible={currentStep === 1}
-						/>
+						{formValues => (
+							<>
+								<FieldsStep1
+									onNext={toNextStep}
+									visible={currentStep === 0}
+									formValues={formValues}
+								/>
+								<FieldsStep2
+									onBack={toPrevStep}
+									formValues={formValues}
+									visible={currentStep === 1}
+								/>
+							</>
+						)}
 					</Form>
 				</div>
 			</Layout.Content>

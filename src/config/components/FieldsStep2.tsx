@@ -1,9 +1,7 @@
 import React, { useState, FC } from "react";
 import { Form, Input, Button, Alert, Divider, Row, Col, Typography, Select } from "antd";
 import { css } from "@emotion/react";
-import { FormInstance } from "antd/es/form";
 import { ERROR_MESSAGES } from "../../constants/errorMessages";
-import { required } from "../../utils/validates";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -22,33 +20,16 @@ const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marg
 
 /* eslint-disable react/prop-types */
 export const FieldsStep2: FC<{
-	form: FormInstance;
+	formValues: { [key: string]: any };
 	onBack: () => void;
-	errors: any; // TODO: add types later
-	setErrors: any; // TODO: add types later
 	visible?: boolean;
-}> = ({ form, onBack, errors, setErrors, visible = true }) => {
+}> = ({ onBack, formValues, visible = true }) => {
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 
 	const onVerify = () => {
-		const { pipelineTool, pipelineDomain, token } = form.getFieldsValue();
-		const currentError = {
-			pipelineTool: required(ERROR_MESSAGES.EMPTY_PIPELINE_TOOL)(pipelineTool),
-			pipelineDomain: required(ERROR_MESSAGES.EMPTY_DOMAIN_NAME)(pipelineDomain),
-			token: required(ERROR_MESSAGES.EMPTY_TOKEN)(token),
-		};
-
-		// TODO: add types later
-		setErrors((prev: any) => ({
-			...prev,
-			...currentError,
-		}));
-
-		if (!currentError.pipelineTool && !currentError.pipelineDomain && !currentError.token) {
-			setTimeout(() => {
-				setVerifyStatus(VerifyStatus.SUCCESS);
-			}, 2000);
-		}
+		setTimeout(() => {
+			setVerifyStatus(VerifyStatus.SUCCESS);
+		}, 2000);
 	};
 
 	return (
@@ -60,9 +41,7 @@ export const FieldsStep2: FC<{
 					<Form.Item
 						label="Pipeline Name"
 						name="pipelineName"
-						rules={[{ required: true }]}
-						validateStatus={errors.pipelineName ? "error" : "success"}
-						help={errors.pipelineName ? ERROR_MESSAGES.EMPTY_PIPELINE_NAME : ""}>
+						rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME }]}>
 						<Input />
 					</Form.Item>
 				</Col>
@@ -73,9 +52,7 @@ export const FieldsStep2: FC<{
 					<Form.Item
 						label="Pipeline Tool"
 						name="pipelineTool"
-						rules={[{ required: true }]}
-						validateStatus={errors.pipelineTool ? "error" : "success"}
-						help={errors.pipelineTool ? ERROR_MESSAGES.EMPTY_PIPELINE_TOOL : ""}>
+						rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL }]}>
 						<Select>
 							<Option value="jenkins">Jenkins</Option>
 						</Select>
@@ -85,9 +62,7 @@ export const FieldsStep2: FC<{
 					<Form.Item
 						label="Pipeline Domain"
 						name="pipelineDomain"
-						rules={[{ required: true }]}
-						validateStatus={errors.pipelineDomain ? "error" : "success"}
-						help={errors.pipelineDomain ? ERROR_MESSAGES.EMPTY_DOMAIN_NAME : ""}>
+						rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
 						<Input />
 					</Form.Item>
 				</Col>
@@ -95,15 +70,19 @@ export const FieldsStep2: FC<{
 					<Form.Item
 						label="Token"
 						name="token"
-						rules={[{ required: true }]}
-						validateStatus={errors.token ? "error" : "success"}
-						help={errors.token ? ERROR_MESSAGES.EMPTY_TOKEN : ""}>
+						rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_TOKEN }]}>
 						<Input />
 					</Form.Item>
 				</Col>
 				<Col span={1}>
 					<Form.Item label={" "}>
-						<Button onClick={onVerify}>Verify</Button>
+						<Button
+							onClick={onVerify}
+							disabled={
+								!formValues.pipelineTool || !formValues.pipelineDomain || !formValues.token
+							}>
+							Verify
+						</Button>
 					</Form.Item>
 				</Col>
 			</Row>
@@ -113,14 +92,18 @@ export const FieldsStep2: FC<{
 			<Divider />
 			<Row>
 				<Col span={24} style={{ textAlign: "right" }}>
-					<Button
-						css={backBtnStyles}
-						onClick={() => {
-							onBack();
-						}}>
+					<Button css={backBtnStyles} onClick={onBack}>
 						Back
 					</Button>
-					<Button type="primary" htmlType="submit">
+					<Button
+						type="primary"
+						htmlType="submit"
+						disabled={
+							!formValues.pipelineName ||
+							!formValues.pipelineTool ||
+							!formValues.pipelineDomain ||
+							!formValues.token
+						}>
 						Create
 					</Button>
 				</Col>
