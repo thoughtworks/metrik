@@ -18,12 +18,12 @@ class ChangeFailureRateService {
     fun getChangeFailureRate(
         pipelineId: String,
         targetStage: String,
-        startTime: Long,
-        endTime: Long
+        startTimestamp: Long,
+        endTimestamp: Long
     ): Float {
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
         val statusCountMap = allBuilds.asSequence()
-            .filter { it.timestamp in startTime..endTime }
+            .filter { it.timestamp in startTimestamp..endTimestamp }
             .flatMap { it.stages.asSequence() }
             .filter {
                 this.filterStages(it, targetStage)

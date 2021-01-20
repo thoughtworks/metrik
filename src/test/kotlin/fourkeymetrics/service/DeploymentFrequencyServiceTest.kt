@@ -35,14 +35,14 @@ internal class DeploymentFrequencyServiceTest {
     internal fun `should get deployment count within time range given 1 valid build inside when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTime = 1610236800L  // 2021-01-10
-        val endTime = 1611100800L   // 2021-01-20
+        val startTimestamp = 1610236800L  // 2021-01-10
+        val endTimestamp = 1611100800L   // 2021-01-20
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-1.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTime, endTime)).isEqualTo(1)
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(1)
     }
 
     /**
@@ -55,14 +55,14 @@ internal class DeploymentFrequencyServiceTest {
     internal fun `should get deployment count with success target stage status when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTime = 1609286400L  // 2020-12-30
-        val endTime = 1612137600L   // 2021-02-01
+        val startTimestamp = 1609286400L  // 2020-12-30
+        val endTimestamp = 1612137600L   // 2021-02-01
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-3.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTime, endTime)).isEqualTo(2)
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
     }
 
     /**
@@ -76,13 +76,13 @@ internal class DeploymentFrequencyServiceTest {
     internal fun `should get deployment count with effective deployments only when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTime = 1609286400L  // 2020-12-30
-        val endTime = 1612137600L   // 2021-02-01
+        val startTimestamp = 1609286400L  // 2020-12-30
+        val endTimestamp = 1612137600L   // 2021-02-01
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-4.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTime, endTime)).isEqualTo(2)
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
     }
 }

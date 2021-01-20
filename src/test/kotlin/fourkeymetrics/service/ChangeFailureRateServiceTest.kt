@@ -38,8 +38,8 @@ class ChangeFailureRateServiceTest {
         val pipelineId = "1"
         val targetStage = "deploy to prod"
         // build 2 - build 5
-        val startTime = 1609459200L
-        val endTime = 1611994800L
+        val startTimestamp = 1609459200L
+        val endTimestamp = 1611994800L
 
         val mockBuildList: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
@@ -50,8 +50,8 @@ class ChangeFailureRateServiceTest {
             changeFailureRateService.getChangeFailureRate(
                 pipelineId,
                 targetStage,
-                startTime,
-                endTime
+                startTimestamp,
+                endTimestamp
             )
         ).isEqualTo(1/3F)
     }
@@ -61,8 +61,8 @@ class ChangeFailureRateServiceTest {
         val pipelineId = "1"
         val targetStage = "deploy to prod"
         // build 2 - build 5
-        val startTime = 1611974800L
-        val endTime = 1611974800L
+        val startTimestamp = 1611974800L
+        val endTimestamp = 1611974800L
 
         val mockBuildList: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
@@ -73,8 +73,8 @@ class ChangeFailureRateServiceTest {
             changeFailureRateService.getChangeFailureRate(
                 pipelineId,
                 targetStage,
-                startTime,
-                endTime
+                startTimestamp,
+                endTimestamp
             )
         ).isEqualTo(0F)
     }

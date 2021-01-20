@@ -33,9 +33,9 @@ class DeploymentFrequencyService {
         return validDeploymentCount
     }
 
-    private fun isInvalidBuild(currentBuild: Build, startTime: Long, endTime: Long,
+    private fun isInvalidBuild(currentBuild: Build, startTimestamp: Long, endTimestamp: Long,
                                targetStage: String, prevBuild: Build?): Boolean {
-        return !isWithinTimeRange(currentBuild, startTime, endTime) ||
+        return !isWithinTimeRange(currentBuild, startTimestamp, endTimestamp) ||
                 !isTargetStageSuccess(currentBuild, targetStage) ||
                 !isEffectiveDeployment(prevBuild, currentBuild)
     }
@@ -43,8 +43,8 @@ class DeploymentFrequencyService {
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
             build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
-    private fun isWithinTimeRange(build: Build, startTime: Long, endTime: Long) =
-            build.timestamp in startTime..endTime
+    private fun isWithinTimeRange(build: Build, startTimestamp: Long, endTimestamp: Long) =
+            build.timestamp in startTimestamp..endTimestamp
 
     private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
             if (previousBuild == null) {
