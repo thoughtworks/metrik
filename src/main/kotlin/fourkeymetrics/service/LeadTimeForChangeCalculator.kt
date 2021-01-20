@@ -1,16 +1,31 @@
 package fourkeymetrics.service
 
 import fourkeymetrics.model.Build
-import fourkeymetrics.model.Metric
 
 class LeadTimeForChangeCalculator {
-    fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Metric {
-        val deployTimes = allBuilds.filter { it.timestamp in startTimestamp..endTimestamp }
+    fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Double {
+        val targetBuilds: List<Build> = allBuilds.filter { it.timestamp in startTimestamp..endTimestamp }
 
-        print(targetStage)
-        if (deployTimes.size == 0) {
-            return Metric("10",startTimestamp,endTimestamp)
+        if (targetBuilds.isEmpty()) {
+            return 0.0
         }
-        return Metric("10",startTimestamp,endTimestamp)
+
+        for (build in targetBuilds) {
+            val targetedStage = build.stages.find { it.name == targetStage }
+
+            if (targetedStage != null) {
+                val deploymentTimeStamp = targetedStage.startTimeMillis
+
+                var commitTime: Long = 0
+                for (commit in build.changeSets) {
+                    commitTime += deploymentTimeStamp - commit.timestamp
+                }
+                val leadTimeForChange = commitTime.toDouble() / build.changeSets.size
+
+                return leadTimeForChange
+            }
+        }
+
+        return 0.0
     }
 }

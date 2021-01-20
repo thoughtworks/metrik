@@ -10,14 +10,14 @@
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 2,
+        "startTimeMillis": 3,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 3,
+        "startTimeMillis": 4,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -27,6 +27,12 @@
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
         "timestamp": 1,
+        "date": "2021-01-01 00:00:00 +0800"
+      },
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 2,
         "date": "2021-01-01 00:00:00 +0800"
       }
     ]
