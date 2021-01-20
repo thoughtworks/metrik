@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Divider, Typography, Layout, Steps } from "antd";
+import { Divider, Form, Layout, Steps, Typography } from "antd";
 import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { VerifyStatus } from "../__types__/base";
@@ -50,10 +50,15 @@ export const PageConfig = () => {
 					</Steps>
 					<div css={{ width: 440, marginBottom: 32 }}>
 						<Text type={"secondary"}>Instructions:</Text>
-						<Paragraph type={"secondary"}>
-							The 4 key metrics is displayed based on PIPELINE and GIT data. Please configure the
-							project data source you want to detect here.
-						</Paragraph>
+						{currentStep === 0 && (
+							<Paragraph type={"secondary"}>Please Input your dashboard name</Paragraph>
+						)}
+						{currentStep === 1 && (
+							<Paragraph type={"secondary"}>
+								The 4 key metrics is displayed based on PIPELINE and GIT data. Please configure the
+								project data source you want to detect here.
+							</Paragraph>
+						)}
 					</div>
 					<Divider />
 

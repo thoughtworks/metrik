@@ -1,5 +1,10 @@
 import React from "react";
+import { Nav } from "../components/Nav";
 
 export const PageDashboard = () => {
-	return <div>dashboard</div>;
+	return (
+		<div>
+			<Nav />
+		</div>
+	);
 };
