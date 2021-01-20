@@ -30,7 +30,7 @@ class ConfigurationResourceTest {
         val type = "JENKINS"
         Mockito.doNothing().`when`(configurationService).verifyPipeline(url,username, token,type)
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/pipeline/verify")
+            MockMvcRequestBuilders.get("/api/pipeline/verify")
             .param("url", url)
             .param("type", type)
             .param("username", username)
@@ -46,7 +46,7 @@ class ConfigurationResourceTest {
         val type = "JENKINS"
         Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"")).`when`(configurationService).verifyPipeline(url,username, token,type)
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/pipeline/verify")
+            MockMvcRequestBuilders.get("/api/pipeline/verify")
                 .param("url", url)
                 .param("type", type)
                 .param("username", username)
