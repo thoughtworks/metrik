@@ -24,5 +24,5 @@ abstract class Pipeline {
         return lastBuild != null && lastBuild.stages.find { it.name == targetStage } != null
     }
 
-    abstract fun fetchAllBuilds(pipelineId: String): List<Build>
+    abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
 }

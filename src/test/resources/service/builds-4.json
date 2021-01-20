@@ -1,6 +1,6 @@
 [
   {
-    "pipelineId": 1,
+    "pipelineId": "1",
     "number": 1,
     "duration": 60420,
     "result": "SUCCESS",
@@ -32,7 +32,7 @@
     ]
   },
   {
-    "pipelineId": 1,
+    "pipelineId": "1",
     "number": 2,
     "duration": 60420,
     "result": "SUCCESS",
@@ -64,7 +64,7 @@
     ]
   },
   {
-    "pipelineId": 1,
+    "pipelineId": "1",
     "number": 3,
     "duration": 60420,
     "result": "SUCCESS",
@@ -96,7 +96,7 @@
     ]
   },
   {
-    "pipelineId": 1,
+    "pipelineId": "1",
     "number": 4,
     "duration": 60420,
     "result": "SUCCESS",
