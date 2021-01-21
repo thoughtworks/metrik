@@ -22,7 +22,7 @@
         "pauseDurationMillis": 0
       }
     ],
-    "changeSets": [
+"changeSets": [
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",

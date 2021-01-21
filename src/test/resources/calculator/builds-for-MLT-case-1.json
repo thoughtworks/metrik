@@ -4,21 +4,21 @@
     "number": 1,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1609459200,
+    "timestamp": 3,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 3,
+        "startTimeMillis": 4,
         "durationMillis": 1,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 4,
-        "durationMillis": 1,
+        "startTimeMillis": 6,
+"durationMillis": 1,
         "pauseDurationMillis": 0
       }
     ],

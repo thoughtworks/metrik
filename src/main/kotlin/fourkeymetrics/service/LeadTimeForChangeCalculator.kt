@@ -28,16 +28,17 @@ class LeadTimeForChangeCalculator {
             buildOrderByTimestampAscending
         )
 
-        if (targetBuilds.isEmpty()) {
-            return NO_VALUE
-        }
-
         val deploymentStage = lastSuccessfulDeploymentBuild.stages.find {
             it.name == targetStage && it.status == BuildStatus.SUCCESS
         }
         val deployTimestamp = deploymentStage!!.startTimeMillis + deploymentStage.durationMillis
 
-        return targetBuilds.flatMap { it.changeSets }.map { deployTimestamp - it.timestamp }.average()
+        val average = targetBuilds.flatMap { it.changeSets }.map { deployTimestamp - it.timestamp }.average()
+
+        if (average.isNaN()){
+            return NO_VALUE
+        }
+        return average
     }
 
     private fun filterBuildsByTimeRange(
@@ -61,7 +62,7 @@ class LeadTimeForChangeCalculator {
         endTimestamp: Long,
         targetStage: String
     ): Build? {
-        return builds.find {
+        return builds.findLast {
             val deployStage = it.stages.find {
                 it.startTimeMillis + it.durationMillis in startTimestamp..endTimestamp
                         && it.name == targetStage
