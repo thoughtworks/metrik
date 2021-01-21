@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.model.Build
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -74,6 +75,12 @@ class BuildRepositoryTest {
 
         val builds: List<Build> = mongoTemplate.findAll(collectionName)
 
-        assertThat(builds).hasSize(3).containsAll(buildsToSave)
+        assertThat(builds).hasSize(3)
+
+        val ids = builds.map { it.pipelineId }
+
+        val expectedIds = buildsToSave.map { it.pipelineId }
+
+        assertTrue(ids.containsAll(expectedIds))
     }
 }

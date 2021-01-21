@@ -42,12 +42,12 @@ class Build(
         startTimestamp: Long,
         endTimestamp: Long
     ): Boolean {
-        val stage = this.stages.find {
+        return this.stages.any {
             it.name == deployStageName
                     && it.status == stageStatus
                     && it.getStageDoneTime() in startTimestamp..endTimestamp
         }
-        return stage != null
+
     }
 
     fun containsGivenDeploymentBeforeGivenTimestamp(
@@ -55,12 +55,11 @@ class Build(
         stageStatus: BuildStatus,
         timestamp: Long
     ): Boolean {
-        val stage = this.stages.find {
+        return this.stages.any {
             it.name == deployStageName
                     && it.status == stageStatus
                     && it.getStageDoneTime() < timestamp
         }
-        return stage != null
     }
 
 

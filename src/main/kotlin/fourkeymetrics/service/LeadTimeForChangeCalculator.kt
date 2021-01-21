@@ -7,7 +7,7 @@ class LeadTimeForChangeCalculator {
 
     fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Double {
 
-        val buildOrderByTimestampAscending = allBuilds.sortedWith(compareBy { it.timestamp })
+        val buildOrderByTimestampAscending = allBuilds.sortedBy{ it.timestamp }
 
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
