@@ -64,7 +64,7 @@ class LeadTimeForChangeCalculator {
     ): Build? {
         return builds.findLast {
             val deployStage = it.stages.find {
-                it.startTimeMillis + it.durationMillis in startTimestamp..endTimestamp
+                it.startTimeMillis + it.durationMillis + it.pauseDurationMillis in startTimestamp..endTimestamp
                         && it.name == targetStage
                         && it.status == BuildStatus.SUCCESS
             }
@@ -79,7 +79,7 @@ class LeadTimeForChangeCalculator {
     ): Build? {
         return builds.find {
             val deployStage = it.stages.find {
-                it.startTimeMillis + it.durationMillis < startTimestamp
+                it.startTimeMillis + it.durationMillis + it.pauseDurationMillis < startTimestamp
                         && it.name == targetStage
                         && it.status == BuildStatus.SUCCESS
             }

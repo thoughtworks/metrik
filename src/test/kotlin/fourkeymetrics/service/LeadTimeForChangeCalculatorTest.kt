@@ -52,7 +52,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-3.json").readText()
         )
-        val startTimestamp = 7L
+        val startTimestamp = 8L
         val endTimestamp = 20L
         val targetStage = "deploy to prod"
 
@@ -63,12 +63,12 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `case here is only 1 deployment and the deployment time is the end time`() {
+    internal fun `case 4 here is only 1 deployment and the deployment time is the end time`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-4.json").readText()
         )
         val startTimestamp = 1L
-        val endTimestamp = 7L
+        val endTimestamp = 8L
         val targetStage = "deploy to prod"
 
         val leadTimeForChangeValue: Double =
@@ -82,8 +82,8 @@ internal class LeadTimeForChangeCalculatorTest {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5.json").readText()
         )
-        val startTimestamp = 8L
-        val endTimestamp = 12L
+        val startTimestamp = 10L
+        val endTimestamp = 14L
         val targetStage = "deploy to prod"
 
         val leadTimeForChangeValue: Double =

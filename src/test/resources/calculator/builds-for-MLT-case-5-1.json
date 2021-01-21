@@ -19,7 +19,7 @@
         "name": "deploy to prod",
         "startTimeMillis": 6,
         "durationMillis": 1,
-        "pauseDurationMillis": 0
+        "pauseDurationMillis": 1
       }
     ],
     "changeSets": [
@@ -45,7 +45,7 @@
         "name": "deploy to prod",
         "startTimeMillis": 11,
         "durationMillis": 1,
-        "pauseDurationMillis": 0
+        "pauseDurationMillis": 1
       }
     ],
     "changeSets": [
@@ -71,7 +71,7 @@
         "name": "deploy to prod",
         "startTimeMillis": 15,
         "durationMillis": 1,
-        "pauseDurationMillis": 0
+        "pauseDurationMillis": 1
       }
     ],
     "changeSets": [
