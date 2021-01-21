@@ -10,7 +10,7 @@ import fourkeymetrics.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -83,6 +83,7 @@ internal class JenkinsTest {
 
         val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-1.json").readText())
         assertThat(jenkins.fetchAllBuilds(dashboardId, pipelineId)).isEqualTo(expectedBuilds)
+        verify(buildRepository, only()).save(expectedBuilds)
     }
 
     @Test

@@ -7,6 +7,7 @@ import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.Commit
 import fourkeymetrics.model.Stage
+import fourkeymetrics.repository.BuildRepository
 import fourkeymetrics.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -22,7 +23,8 @@ import kotlin.streams.toList
 
 @Service
 class Jenkins(@Autowired private var restTemplate: RestTemplate,
-              @Autowired private var dashboardRepository: DashboardRepository) : Pipeline() {
+              @Autowired private var dashboardRepository: DashboardRepository,
+              @Autowired private var buildRepository: BuildRepository) : Pipeline() {
     override fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
         val username = pipelineConfiguration.username
@@ -31,7 +33,7 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
 
         val buildSummaries = getBuildSummariesFromJenkins(username, token, baseUrl)
 
-        return buildSummaries.parallelStream().map { buildSummary ->
+        val builds = buildSummaries.parallelStream().map { buildSummary ->
             val buildDetails = getBuildDetailsFromJenkins(username, token, baseUrl, buildSummary)
 
             Build(pipelineId,
@@ -44,6 +46,10 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
                 constructBuildCommits(buildSummary).flatten()
             )
         }.toList()
+
+        buildRepository.save(builds)
+
+        return builds
     }
 
     private fun constructBuildCommits(buildSummary: BuildSummaryDTO): List<List<Commit>> {
@@ -86,8 +92,8 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
             val response = restTemplate.exchange<String>(
                 "$url/wfapi/", HttpMethod.GET, entity
             )
-            if (!response.statusCode.is2xxSuccessful){
-                throw ApplicationException(response.statusCode,response.body!!)
+            if (!response.statusCode.is2xxSuccessful) {
+                throw ApplicationException(response.statusCode, response.body!!)
             }
         } catch (e: HttpClientErrorException) {
             throw ApplicationException(e.statusCode, e.message!!)

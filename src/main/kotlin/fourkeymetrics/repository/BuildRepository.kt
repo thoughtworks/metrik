@@ -23,4 +23,8 @@ class BuildRepository {
         val query = Query.query(Criteria.where("timestamp").gte(startTimestamp).lte(endTimestamp))
         return mongoTemplate.find(query, collectionName)
     }
+
+    fun save(builds: List<Build>) {
+        builds.parallelStream().forEach { mongoTemplate.save(it, collectionName) }
+    }
 }
