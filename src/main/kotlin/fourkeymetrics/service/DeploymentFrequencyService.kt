@@ -47,6 +47,7 @@ class DeploymentFrequencyService {
                                              endTimestamp: Long, targetStage: String): Boolean {
         val stage = build.stages.find { it.name == targetStage }
         val deploymentFinishTimestamp = stage?.startTimeMillis?.plus(stage.durationMillis)
+            ?.plus(stage.pauseDurationMillis)
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp
     }

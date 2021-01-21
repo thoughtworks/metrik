@@ -82,8 +82,8 @@
         "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1611964800000,
-        "durationMillis": 86400000,
-        "pauseDurationMillis": 0
+        "durationMillis": 36400000,
+        "pauseDurationMillis": 56400000
       }
     ],
     "changeSets": [
