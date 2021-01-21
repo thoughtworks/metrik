@@ -1,35 +1,21 @@
 import { css } from "@emotion/react";
 import React, { FC } from "react";
-import logo from "../assets/images/logo.png";
+import Title from "../assets/icons/Title";
+import Logo from "../assets/icons/Logo";
 
 const headerStyles = css({
-	height: 64,
-	padding: "8px 24px",
+	padding: "0 30px",
 	boxShadow: "0 2px 4px #f0f1f2",
 	backgroundColor: "#ffffff",
 	display: "flex",
 	alignItems: "center",
 });
 
-const logoStyles = css({
-	height: 32,
-	width: 32,
-});
-
-const logoTextStyles = css({
-	fontsSize: 24,
-	color: "#096DD9",
-	marginLeft: 10,
-});
-
 const Header: FC = () => {
 	return (
 		<div css={headerStyles}>
-			<img src={logo} css={logoStyles} alt="logo" />
-			<span css={logoTextStyles}>
-				<span>4 KEY </span>
-				<span css={css({ fontWeight: "bold" })}>METRICS</span>
-			</span>
+			<Logo />
+			<Title css={{ marginLeft: 8 }} />
 		</div>
 	);
 };

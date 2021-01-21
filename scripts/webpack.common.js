@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WebpackBarPlugin = require("webpackbar");
-const { ENTRY_PATH, OUTPUT_PATH, PUBLIC_HTML_PATH, FAVICON_PATH, isDev } = require("./constants");
+const { ENTRY_PATH, OUTPUT_PATH, PUBLIC_HTML_PATH, isDev } = require("./constants");
 
 module.exports = {
 	entry: ENTRY_PATH,
@@ -100,7 +100,6 @@ module.exports = {
 
 		new HtmlWebpackPlugin({
 			template: PUBLIC_HTML_PATH,
-			favicon: FAVICON_PATH,
 		}),
 		new WebpackBarPlugin({
 			name: isDev ? "compiling" : "building",
