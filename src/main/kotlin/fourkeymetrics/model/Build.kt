@@ -31,7 +31,7 @@ data class Commit(
 
 class Build(
     var pipelineId: String = Strings.EMPTY, var number: Int = 0,
-    var result: BuildStatus = BuildStatus.FAILED, var duration: Long = 0,
+    var result: BuildStatus? = BuildStatus.FAILED, var duration: Long = 0,
     var timestamp: Long = 0, var url: String = Strings.EMPTY,
     var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList()
 ) {
