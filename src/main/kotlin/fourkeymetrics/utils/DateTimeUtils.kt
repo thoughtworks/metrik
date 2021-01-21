@@ -7,6 +7,8 @@ import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 import java.util.*
 
+internal const val FORTNIGHTLY_DAYS = 13L
+
 fun getLocalDateTimeFromTimestampMillis(timestamp: Long): LocalDateTime {
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId())
 }
@@ -26,11 +28,32 @@ fun splitTimeRangeMonthly(
             .map { it.atEndOfMonth().atTime(LocalTime.MAX) }
             .forEach {
                 timeRanges.add(Pair(tempStartTime, it))
-                tempStartTime = it.toLocalDate().plusDays(1L).atStartOfDay()
+                tempStartTime = it.plusNanos(1)
             }
         timeRanges.add(Pair(tempStartTime, endTime))
         timeRanges.toList()
     } else {
         listOf(Pair(startTime, endTime))
     }
+}
+
+fun splitTimeRangeFortnightly(
+    startTimestampMillis: Long,
+    endTimestampMillis: Long
+): List<Pair<LocalDateTime, LocalDateTime>> {
+
+    val startTime = getLocalDateTimeFromTimestampMillis(startTimestampMillis)
+    val endTime = getLocalDateTimeFromTimestampMillis(endTimestampMillis)
+    val timeRanges = mutableListOf<Pair<LocalDateTime, LocalDateTime>>()
+
+    var tempEndTime = endTime
+    var tempStartTime = tempEndTime.toLocalDate().minusDays(FORTNIGHTLY_DAYS).atStartOfDay()
+
+    while (tempStartTime.isAfter(startTime)) {
+        timeRanges.add(Pair(tempStartTime, tempEndTime))
+        tempEndTime = tempStartTime.minusNanos(1)
+        tempStartTime = tempEndTime.toLocalDate().minusDays(FORTNIGHTLY_DAYS).atStartOfDay()
+    }
+    timeRanges.add(Pair(startTime, tempEndTime))
+    return timeRanges.asReversed().toList()
 }
