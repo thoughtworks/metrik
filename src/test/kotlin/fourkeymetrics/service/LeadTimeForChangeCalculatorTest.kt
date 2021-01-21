@@ -44,7 +44,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(5.5, leadTimeForChangeValue)
+        assertEquals(6.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -59,7 +59,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(5.5, leadTimeForChangeValue)
+        assertEquals(6.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -74,7 +74,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(5.5, leadTimeForChangeValue)
+        assertEquals(6.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -89,7 +89,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(5.5, leadTimeForChangeValue)
+        assertEquals(6.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -119,7 +119,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(6.5, leadTimeForChangeValue)
+        assertEquals(7.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -134,7 +134,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(6.5, leadTimeForChangeValue)
+        assertEquals(7.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -149,7 +149,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(6.5, leadTimeForChangeValue)
+        assertEquals(7.5, leadTimeForChangeValue)
     }
 
     @Test
@@ -157,14 +157,14 @@ internal class LeadTimeForChangeCalculatorTest {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-9.json").readText()
         )
-        val startTimestamp = 11L
-        val endTimestamp = 16L
+        val startTimestamp = 13L
+        val endTimestamp = 17L
         val targetStage = "deploy to prod"
 
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(8.0, leadTimeForChangeValue)
+        assertEquals(9.0, leadTimeForChangeValue)
     }
 
 }

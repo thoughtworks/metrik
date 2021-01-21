@@ -9,39 +9,40 @@ class LeadTimeForChangeCalculator {
 
         val buildOrderByTimestampAscending = allBuilds.sortedWith(compareBy { it.timestamp })
 
-        val lastSuccessfulDeploymentBuild = findLastBuildWithSuccessfulDeployment(
-            buildOrderByTimestampAscending,
-            startTimestamp,
-            endTimestamp,
-            targetStage
-        ) ?: return NO_VALUE
+        val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
+            it.containsGivenDeploymentInGivenTimeRange(
+                targetStage,
+                BuildStatus.SUCCESS, startTimestamp,
+                endTimestamp
+            )
+        } ?: return NO_VALUE
 
-        val firstSuccessfulDeploymentBuild = findFirstBuildWithSuccessfulDeployment(
-            buildOrderByTimestampAscending,
-            startTimestamp,
-            targetStage
-        )
+        val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.find {
+            it.containsGivenDeploymentBeforeGivenTimestamp(
+                targetStage,
+                BuildStatus.SUCCESS, startTimestamp
+            )
+        }
 
-        val targetBuilds: List<Build> = filterBuildsByTimeRange(
+        val targetBuilds: List<Build> = filterBuildsBetweenGivenRange(
             lastSuccessfulDeploymentBuild,
             firstSuccessfulDeploymentBuild,
             buildOrderByTimestampAscending
         )
 
-        val deploymentStage = lastSuccessfulDeploymentBuild.stages.find {
-            it.name == targetStage && it.status == BuildStatus.SUCCESS
-        }
-        val deployTimestamp = deploymentStage!!.startTimeMillis + deploymentStage.durationMillis
+        val deploymentStage = lastSuccessfulDeploymentBuild.findGivenStage(targetStage, BuildStatus.SUCCESS)
 
-        val average = targetBuilds.flatMap { it.changeSets }.map { deployTimestamp - it.timestamp }.average()
+        val deployDoneTimestamp = deploymentStage!!.getStageDoneTime()
 
-        if (average.isNaN()){
+        val average = targetBuilds.flatMap { it.changeSets }.map { deployDoneTimestamp - it.timestamp }.average()
+
+        if (average.isNaN()) {
             return NO_VALUE
         }
         return average
     }
 
-    private fun filterBuildsByTimeRange(
+    private fun filterBuildsBetweenGivenRange(
         lastSuccessfulDeploymentBuild: Build,
         firstSuccessfulDeploymentBuild: Build?,
         buildOrderByTimestampAscending: List<Build>
@@ -54,37 +55,6 @@ class LeadTimeForChangeCalculator {
                 it.timestamp > buildRangeStartTimestamp && it.timestamp <= buildRangeEndTimestamp
             }
         return targetBuilds
-    }
-
-    private fun findLastBuildWithSuccessfulDeployment(
-        builds: List<Build>,
-        startTimestamp: Long,
-        endTimestamp: Long,
-        targetStage: String
-    ): Build? {
-        return builds.findLast {
-            val deployStage = it.stages.find {
-                it.startTimeMillis + it.durationMillis + it.pauseDurationMillis in startTimestamp..endTimestamp
-                        && it.name == targetStage
-                        && it.status == BuildStatus.SUCCESS
-            }
-            deployStage != null
-        }
-    }
-
-    private fun findFirstBuildWithSuccessfulDeployment(
-        builds: List<Build>,
-        startTimestamp: Long,
-        targetStage: String
-    ): Build? {
-        return builds.find {
-            val deployStage = it.stages.find {
-                it.startTimeMillis + it.durationMillis + it.pauseDurationMillis < startTimestamp
-                        && it.name == targetStage
-                        && it.status == BuildStatus.SUCCESS
-            }
-            deployStage != null
-        }
     }
 
     companion object {
