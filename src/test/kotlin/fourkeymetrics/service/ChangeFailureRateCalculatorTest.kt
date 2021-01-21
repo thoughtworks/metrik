@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(ChangeFailureRateService::class, ObjectMapper::class)
-class ChangeFailureRateServiceTest {
+@Import(ChangeFailureRateCalculator::class, ObjectMapper::class)
+class ChangeFailureRateCalculatorTest {
     @Autowired
-    private lateinit var changeFailureRateService: ChangeFailureRateService
+    private lateinit var changeFailureRateCalculator: ChangeFailureRateCalculator
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -47,7 +47,7 @@ class ChangeFailureRateServiceTest {
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
         assertThat(
-            changeFailureRateService.getChangeFailureRate(
+            changeFailureRateCalculator.getChangeFailureRate(
                 pipelineId,
                 targetStage,
                 startTimestamp,
@@ -78,7 +78,7 @@ class ChangeFailureRateServiceTest {
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
         assertThat(
-            changeFailureRateService.getChangeFailureRate(
+            changeFailureRateCalculator.getChangeFailureRate(
                 pipelineId,
                 targetStage,
                 startTimestamp,
