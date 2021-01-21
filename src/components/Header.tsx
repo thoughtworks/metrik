@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import React, { FC } from "react";
 import Title from "../assets/icons/Title";
 import Logo from "../assets/icons/Logo";
+import { Link } from "react-router-dom";
 
 const headerStyles = css({
 	padding: "0 30px",
@@ -13,10 +14,12 @@ const headerStyles = css({
 
 const Header: FC = () => {
 	return (
-		<div css={headerStyles}>
-			<Logo />
-			<Title css={{ marginLeft: 8 }} />
-		</div>
+		<Link to={"/"}>
+			<div css={headerStyles}>
+				<Logo />
+				<Title css={{ marginLeft: 8 }} />
+			</div>
+		</Link>
 	);
 };
 
