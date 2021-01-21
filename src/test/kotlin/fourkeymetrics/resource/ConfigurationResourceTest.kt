@@ -26,15 +26,15 @@ class ConfigurationResourceTest {
     internal fun `should return Ok when jenkins domain is valid `(){
         val url = "http://jenkins.io/"
         val username = "user"
-        val token = "token"
+        val credential = "credential"
         val type = "JENKINS"
-        Mockito.doNothing().`when`(configurationService).verifyPipeline(url,username, token,type)
+        Mockito.doNothing().`when`(configurationService).verifyPipeline(url,username, credential,type)
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/pipeline/verify")
             .param("url", url)
             .param("type", type)
             .param("username", username)
-            .param("token", token))
+            .param("credential", credential))
             .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
@@ -42,15 +42,15 @@ class ConfigurationResourceTest {
     internal fun `should return 404 when jenkins domain is not valid `(){
         val url = "http://jenkins.io/notfound"
         val username = "user"
-        val token = "token"
+        val credential = "credential"
         val type = "JENKINS"
-        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"")).`when`(configurationService).verifyPipeline(url,username, token,type)
+        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"")).`when`(configurationService).verifyPipeline(url,username, credential,type)
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/pipeline/verify")
                 .param("url", url)
                 .param("type", type)
                 .param("username", username)
-                .param("token", token))
+                .param("credential", credential))
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 }

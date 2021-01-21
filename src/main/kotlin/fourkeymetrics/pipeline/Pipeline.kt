@@ -23,12 +23,13 @@ abstract class Pipeline {
         val buildsInTimeRange = buildRepository.getBuildsByTimePeriod(pipelineId,
             startTimestamp, endTimestamp)
 
-        return buildsInTimeRange.isNotEmpty() && buildsInTimeRange.flatMap { it.stages }
-            .find { it.name == targetStage } != null
+        return buildsInTimeRange.isNotEmpty() && buildsInTimeRange.asSequence()
+            .flatMap { it.stages.asSequence() }
+            .any { it.name == targetStage }
     }
 
     abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
 
-    abstract fun verifyPipeline(url:String,username:String,token:String)
+    abstract fun verifyPipeline(url: String, username: String, credential: String)
 
 }

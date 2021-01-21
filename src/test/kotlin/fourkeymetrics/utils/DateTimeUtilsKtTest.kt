@@ -21,12 +21,22 @@ internal class DateTimeUtilsKtTest {
 
         assertEquals(
             listOf(
-                Pair(startTime, LocalDate.parse("2020-09-30").atTime(LocalTime.MAX)),
                 Pair(
-                    LocalDate.parse("2020-10-01").atStartOfDay(),
-                    LocalDate.parse("2020-10-31").atTime(LocalTime.MAX)
+                    startTimestamp,
+                    LocalDate.parse("2020-09-30").atTime(LocalTime.MAX)
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 ),
-                Pair(LocalDate.parse("2020-11-01").atStartOfDay(), endTime)
+                Pair(
+                    LocalDate.parse("2020-10-01").atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    LocalDate.parse("2020-10-31").atTime(LocalTime.MAX)
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                ),
+                Pair(
+                    LocalDate.parse("2020-11-01").atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    endTimestamp
+                )
             ), timeRangeList
         )
     }
@@ -40,7 +50,7 @@ internal class DateTimeUtilsKtTest {
         val endTimestamp = endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val timeRangeList = splitTimeRangeMonthly(startTimestamp, endTimestamp)
 
-        assertEquals(listOf(Pair(startTime, endTime)), timeRangeList)
+        assertEquals(listOf(Pair(startTimestamp, endTimestamp)), timeRangeList)
     }
 
     @Test
@@ -53,14 +63,21 @@ internal class DateTimeUtilsKtTest {
 
         assertEquals(
             listOf(
-                Pair(startTime, LocalDate.parse("2020-09-02").atTime(LocalTime.MAX)),
                 Pair(
-                    LocalDate.parse("2020-09-03").atStartOfDay(),
-                    LocalDate.parse("2020-09-16").atTime(LocalTime.MAX)
+                    startTimestamp,
+                    LocalDate.parse("2020-09-02").atTime(LocalTime.MAX)
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 ),
                 Pair(
-                    LocalDate.parse("2020-09-17").atStartOfDay(),
-                    endTime
+                    LocalDate.parse("2020-09-03").atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    LocalDate.parse("2020-09-16").atTime(LocalTime.MAX)
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                ),
+                Pair(
+                    LocalDate.parse("2020-09-17").atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    endTimestamp
                 )
             ),
             timeRangeList
@@ -77,7 +94,7 @@ internal class DateTimeUtilsKtTest {
 
         assertEquals(
             listOf(
-                Pair(startTime, endTime),
+                Pair(startTimestamp, endTimestamp),
             ),
             timeRangeList
         )

@@ -11,8 +11,8 @@ class MetricsApplicationService {
         dashboardId: String,
         pipelineId: String,
         targetStage: String,
-        startTime: Long,
-        endTime: Long,
+        startTimeMillis: Long,
+        endTimeMillis: Long,
         unit: MetricUnit
     ): FourKeyMetricsResponse {
         TODO("Not yet implemented")

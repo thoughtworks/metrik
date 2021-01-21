@@ -15,11 +15,11 @@ class ConfigurationResource {
     @GetMapping("/api/pipeline/verify")
     fun verifyPipeline(
         @RequestParam url: String,
-        @RequestParam token: String,
+        @RequestParam credential: String,
         @RequestParam username: String,
         @RequestParam type: String
     ) {
-        configurationService.verifyPipeline(url, username, token, type)
+        configurationService.verifyPipeline(url, username, credential, type)
     }
 
 

@@ -1,8 +1,8 @@
 package fourkeymetrics.pipeline
 
-import fourkeymetrics.dto.BuildSummaryCollectionDTO
-import fourkeymetrics.dto.BuildSummaryDTO
-import fourkeymetrics.dto.BuildDetailsDTO
+import fourkeymetrics.pipeline.dto.BuildSummaryCollectionDTO
+import fourkeymetrics.pipeline.dto.BuildSummaryDTO
+import fourkeymetrics.pipeline.dto.BuildDetailsDTO
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.Commit
@@ -29,13 +29,13 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
     override fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
         val username = pipelineConfiguration.username
-        val token = pipelineConfiguration.token
+        val credential = pipelineConfiguration.credential
         val baseUrl = pipelineConfiguration.url
 
-        val buildSummaries = getBuildSummariesFromJenkins(username, token, baseUrl)
+        val buildSummaries = getBuildSummariesFromJenkins(username, credential, baseUrl)
 
         val builds = buildSummaries.parallelStream().map { buildSummary ->
-            val buildDetails = getBuildDetailsFromJenkins(username, token, baseUrl, buildSummary)
+            val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
 
             Build(pipelineId,
                 buildSummary.number,
@@ -68,18 +68,18 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
         }
     }
 
-    private fun getBuildDetailsFromJenkins(username: String, token: String, baseUrl: String,
+    private fun getBuildDetailsFromJenkins(username: String, credential: String, baseUrl: String,
                                            buildSummary: BuildSummaryDTO): BuildDetailsDTO {
-        val headers = setAuthHeader(username, token)
+        val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>(headers)
         val buildDetailResponse: ResponseEntity<BuildDetailsDTO> =
             restTemplate.exchange("http://$baseUrl/${buildSummary.number}/wfapi/describe", HttpMethod.GET, entity)
         return buildDetailResponse.body!!
     }
 
-    private fun getBuildSummariesFromJenkins(username: String, token: String,
+    private fun getBuildSummariesFromJenkins(username: String, credential: String,
                                              baseUrl: String): List<BuildSummaryDTO> {
-        val headers = setAuthHeader(username, token)
+        val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>(headers)
         val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
             restTemplate.exchange("http://$baseUrl/api/json?tree=allBuilds[building,number," +
@@ -88,8 +88,8 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
     }
 
 
-    override fun verifyPipeline(url: String, username: String, token: String) {
-        val headers = setAuthHeader(username, token)
+    override fun verifyPipeline(url: String, username: String, credential: String) {
+        val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>("", headers)
         try {
             val response = restTemplate.exchange<String>(
@@ -104,9 +104,9 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
 
     }
 
-    private fun setAuthHeader(username: String, token: String): HttpHeaders {
+    private fun setAuthHeader(username: String, credential: String): HttpHeaders {
         val headers = HttpHeaders()
-        val auth = "$username:$token"
+        val auth = "$username:$credential"
         val encodedAuth = Base64.getEncoder().encodeToString(auth.toByteArray(Charset.forName("UTF-8")))
         val authHeader = "Basic $encodedAuth"
         headers.set("Authorization", authHeader)

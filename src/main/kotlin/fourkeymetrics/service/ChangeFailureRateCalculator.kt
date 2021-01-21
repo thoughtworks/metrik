@@ -1,14 +1,12 @@
 package fourkeymetrics.service
 
 import fourkeymetrics.model.BuildStatus
-import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.BuildRepository
-import fourkeymetrics.utils.getLocalDateTimeFromTimestampMillis
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ChangeFailureRateService {
+class ChangeFailureRateCalculator {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
@@ -19,22 +17,20 @@ class ChangeFailureRateService {
     fun getChangeFailureRate(
         pipelineId: String,
         targetStage: String,
-        startTimestamp: Long,
-        endTimestamp: Long
+        startTimestampMillis: Long,
+        endTimestampMillis: Long
     ): Float {
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
-        val startTime =  getLocalDateTimeFromTimestampMillis(startTimestamp)
-        val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
         val statusCountMap = allBuilds.asSequence()
             .flatMap {
-                it.stages.asSequence() }
-            .filter {
-                val stageStartTime = getLocalDateTimeFromTimestampMillis(it.startTimeMillis)
-                !startTime.isAfter(stageStartTime) && !endTime.isBefore(stageStartTime)
+                it.stages.asSequence()
             }
             .filter {
-                this.filterStagesByName(it, targetStage)
+                val stageEndTime = it.startTimeMillis + it.durationMillis + it.pauseDurationMillis
+                stageEndTime in startTimestampMillis..endTimestampMillis
             }
+            .filter { it.name == targetStage }
+            .filter { it.status in TARGET_STAGE_STATUS_LIST }
             .groupingBy { it.status }
             .eachCount()
 
@@ -44,9 +40,5 @@ class ChangeFailureRateService {
         } else {
             0F
         }
-    }
-
-    internal fun filterStagesByName(stage: Stage, targetStage: String): Boolean {
-        return stage.name == targetStage && stage.status in TARGET_STAGE_STATUS_LIST
     }
 }

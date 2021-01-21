@@ -5,7 +5,7 @@ import org.apache.logging.log4j.util.Strings
 data class PipelineConfiguration(
     val pipelineId: String = Strings.EMPTY,
     val username: String = Strings.EMPTY,
-    val token: String = Strings.EMPTY,
+    val credential: String = Strings.EMPTY,
     val url: String = Strings.EMPTY,
     var type: PipelineType = PipelineType.JENKINS
 )
