@@ -3,3 +3,9 @@ export enum VerifyStatus {
 	SUCCESS,
 	Fail,
 }
+
+export enum ConfigStep {
+	CREATE_DASHBOARD,
+	CONFIG_PIPELINE,
+	CONFIG_SUCCESS,
+}
