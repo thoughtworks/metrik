@@ -82,7 +82,7 @@
         "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1611964800000,
-        "durationMillis": 2000,
+        "durationMillis": 86400000,
         "pauseDurationMillis": 0
       }
     ],

@@ -27,16 +27,16 @@ internal class DeploymentFrequencyServiceTest {
 
     /**
      * test file: builds-1.json
-     * build 1 : deploy to prod, SUCCESS, 2021-01-01
-     * build 2 : deploy to prod, SUCCESS, 2021-01-15
-     * build 3 : deploy to prod, SUCCESS, 2021-01-30
+     * build 1 : deploy to prod, SUCCESS, start at 2021-01-01, end at 2021-01-01
+     * build 2 : deploy to prod, SUCCESS, start at 2021-01-15, end at 2021-01-15
+     * build 3 : deploy to prod, SUCCESS, start at 2021-01-30, end at 2021-02-01
      */
     @Test
     internal fun `should get deployment count within time range given 1 valid build inside when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
         val startTimestamp = 1610236800000L  // 2021-01-10
-        val endTimestamp = 1611100800000L   // 2021-01-20
+        val endTimestamp = 1611100800000L   // 2021-01-30
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-1.json").readText())
 

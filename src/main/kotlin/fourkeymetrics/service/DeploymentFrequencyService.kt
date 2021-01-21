@@ -44,8 +44,12 @@ class DeploymentFrequencyService {
         build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
     private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long,
-                                             endTimestamp: Long, targetStage: String) =
-        build.stages.find { it.name == targetStage }?.startTimeMillis in startTimestamp..endTimestamp
+                                             endTimestamp: Long, targetStage: String): Boolean {
+        val stage = build.stages.find { it.name == targetStage }
+        val deploymentFinishTimestamp = stage?.startTimeMillis?.plus(stage.durationMillis)
+
+        return deploymentFinishTimestamp in startTimestamp..endTimestamp
+    }
 
     private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
         if (previousBuild == null) {
