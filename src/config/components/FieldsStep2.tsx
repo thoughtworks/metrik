@@ -42,7 +42,7 @@ export const FieldsStep2: FC<{
 					name="pipelineTool"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL }]}>
 					<Select>
-						<Option value="jenkins">Jenkins</Option>
+						<Option value="JENKINS">Jenkins</Option>
 					</Select>
 				</Form.Item>
 			</Col>
@@ -54,7 +54,15 @@ export const FieldsStep2: FC<{
 					<Input />
 				</Form.Item>
 			</Col>
-			<Col span={8}>
+			<Col span={4}>
+				<Form.Item
+					label="Username"
+					name="username"
+					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
+					<Input />
+				</Form.Item>
+			</Col>
+			<Col span={5}>
 				<Form.Item
 					label="Token"
 					name="token"
@@ -66,7 +74,12 @@ export const FieldsStep2: FC<{
 				<Form.Item label={" "}>
 					<Button
 						onClick={onVerify}
-						disabled={!formValues.pipelineTool || !formValues.pipelineDomain || !formValues.token}>
+						disabled={
+							!formValues.pipelineTool ||
+							!formValues.pipelineDomain ||
+							!formValues.token ||
+							!formValues.username
+						}>
 						Verify
 					</Button>
 				</Form.Item>

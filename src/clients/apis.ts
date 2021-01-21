@@ -12,6 +12,7 @@ export const pipelineConfig = createRequest<PipelineConfigRequest>(() => ({
 }));
 
 interface PipelineVerifyRequest {
+	url: string;
 	username: string;
 	token: string;
 	type: "JENKINS";

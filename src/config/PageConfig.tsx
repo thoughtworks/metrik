@@ -3,15 +3,25 @@ import { Divider, Form, Layout, Steps, Typography } from "antd";
 import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { VerifyStatus } from "../__types__/base";
+import { pipelineVerify } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
+
+interface ConfigFormValues {
+	dashboardName: string;
+	pipelineName: string;
+	pipelineTool: string;
+	pipelineDomain: string;
+	username: string;
+	token: string;
+}
 
 export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState(0);
-	const onFinish = (values: any) => {
+	const onFinish = (values: ConfigFormValues) => {
 		verifyPipeline().then(() => {
 			toNextStep();
 		});
@@ -32,12 +42,15 @@ export const PageConfig = () => {
 		});
 	};
 
-	const verifyPipeline = () =>
-		new Promise(resolve => {
-			setTimeout(() => {
-				resolve({ code: 200, msg: "verify success" });
-			}, 2000);
+	const verifyPipeline = () => {
+		const { token, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
+		return pipelineVerify({
+			url: pipelineDomain,
+			token,
+			username,
+			type: pipelineTool,
 		});
+	};
 
 	return (
 		<Layout style={{ height: "100vh" }}>
