@@ -28,8 +28,8 @@ internal class DashboardRepositoryTest {
 
     @Test
     internal fun `should get pipeline configuration given pipeline already exist in DB`() {
-        val dashboardId = "fake-dashboard"
-        val pipelineId = "fake-pipeline"
+        val dashboardId = "dashboardId"
+        val pipelineId = "pipelineId"
         val collectionName = "dashboard"
 
         val dashboardToSave: List<Dashboard> = objectMapper.readValue(
@@ -48,8 +48,8 @@ internal class DashboardRepositoryTest {
 
     @Test
     internal fun `should get null given dashboard not exists in DB`() {
-        val dashboardId = "fake-dashboard"
-        val pipelineId = "fake-pipeline"
+        val dashboardId = "dashboardId"
+        val pipelineId = "pipelineId"
 
         val configuration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)
 

@@ -3,9 +3,9 @@ package fourkeymetrics.dto
 import fourkeymetrics.model.BuildStatus
 import org.apache.logging.log4j.util.Strings
 
-data class AllBuildDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())
+data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())
 
-data class BuildSummaryDTO(val number: Int = 0, val result: BuildStatus = BuildStatus.FAILED,
+data class BuildSummaryDTO(val number: Int = 0, val result: BuildStatus? = BuildStatus.FAILED,
                            val duration: Long = 0,
                            val timestamp: Long = 0,
                            val url: String = Strings.EMPTY,

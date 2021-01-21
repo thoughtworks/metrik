@@ -20,8 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @Import(BuildRepository::class, ObjectMapper::class)
 class BuildRepositoryTest {
     @BeforeEach
-    internal fun setUp(@Autowired buildRepository: BuildRepository,
-                       @Autowired mongoTemplate: MongoTemplate) {
+    internal fun setUp(@Autowired mongoTemplate: MongoTemplate) {
         val collectionName = "build"
         mongoTemplate.dropCollection(collectionName)
     }

@@ -1,6 +1,6 @@
 [
   {
-    "id": "fake-dashboard",
+    "dashboardId": "fake-dashboard",
     "name": "4-key",
     "pipelineConfigurations": []
   }

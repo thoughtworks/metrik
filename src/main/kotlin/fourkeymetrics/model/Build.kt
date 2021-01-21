@@ -5,7 +5,9 @@ import org.apache.logging.log4j.util.Strings
 enum class BuildStatus {
     SUCCESS,
     FAILED,
-    ABORTED
+    ABORTED,
+    FAILURE,
+    IN_PROGRESS
 }
 
 class Stage(
