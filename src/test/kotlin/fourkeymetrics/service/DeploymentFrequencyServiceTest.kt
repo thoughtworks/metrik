@@ -27,16 +27,16 @@ internal class DeploymentFrequencyServiceTest {
 
     /**
      * test file: builds-1.json
-     * build 1 : 2021-01-01, SUCCESS
-     * build 2 : 2021-01-15, SUCCESS
-     * build 3 : 2021-01-30, SUCCESS
+     * build 1 : deploy to prod, SUCCESS, start at 2021-01-01, end at 2021-01-01
+     * build 2 : deploy to prod, SUCCESS, start at 2021-01-15, end at 2021-01-15
+     * build 3 : deploy to prod, SUCCESS, start at 2021-01-30, end at 2021-02-01
      */
     @Test
     internal fun `should get deployment count within time range given 1 valid build inside when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTimestamp = 1610236800L  // 2021-01-10
-        val endTimestamp = 1611100800L   // 2021-01-20
+        val startTimestamp = 1610236800000L  // 2021-01-10
+        val endTimestamp = 1611100800000L   // 2021-01-30
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-1.json").readText())
 
@@ -55,8 +55,8 @@ internal class DeploymentFrequencyServiceTest {
     internal fun `should get deployment count with success target stage status when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTimestamp = 1609286400L  // 2020-12-30
-        val endTimestamp = 1612137600L   // 2021-02-01
+        val startTimestamp = 1609286400000L  // 2020-12-30
+        val endTimestamp = 1612137600000L   // 2021-02-01
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-3.json").readText())
 
@@ -76,8 +76,8 @@ internal class DeploymentFrequencyServiceTest {
     internal fun `should get deployment count with effective deployments only when calculate deployment count`() {
         val pipelineId = "test pipeline - master"
         val targetStage = "deploy to prod"
-        val startTimestamp = 1609286400L  // 2020-12-30
-        val endTimestamp = 1612137600L   // 2021-02-01
+        val startTimestamp = 1609286400000L  // 2020-12-30
+        val endTimestamp = 1612137600000L   // 2021-02-01
 
         val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-4.json").readText())
 

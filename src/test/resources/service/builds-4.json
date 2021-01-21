@@ -4,20 +4,20 @@
     "number": 1,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1606780800,
+    "timestamp": 1606780800000,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1606780900,
+        "startTimeMillis": 1606780900000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1606781000,
+        "startTimeMillis": 1606781000000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -26,7 +26,7 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a000000",
         "msg": "this is a message",
-        "timestamp": 1606780000,
+        "timestamp": 1606780000000,
         "date": "2020-12-01 00:00:00 +0800"
       }
     ]
@@ -36,20 +36,20 @@
     "number": 2,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1609459200,
+    "timestamp": 1609459200000,
     "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1609459300,
+        "startTimeMillis": 1609459300000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1609459400,
+        "startTimeMillis": 1609459400000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -58,7 +58,7 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 1609459200,
+        "timestamp": 1609459200000,
         "date": "2021-01-01 00:00:00 +0800"
       }
     ]
@@ -68,20 +68,20 @@
     "number": 3,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1610668800,
+    "timestamp": 1610668800000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1610668900,
+        "startTimeMillis": 1610668900000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1610669000,
+        "startTimeMillis": 1610669000000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -90,7 +90,7 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 1609459200,
+        "timestamp": 1609459200000,
         "date": "2021-01-01 00:00:00 +0800"
       }
     ]
@@ -100,20 +100,20 @@
     "number": 4,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 1611964800,
+    "timestamp": 1611964800000,
     "url": "http://localhost:8001/job/4km-backend/4/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 1611964900,
+        "startTimeMillis": 1611964900000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 1611965000,
+        "startTimeMillis": 1611965000000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
       }
@@ -122,7 +122,7 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a117899",
         "msg": "this is a message",
-        "timestamp": 1611964800,
+        "timestamp": 1611964800000,
         "date": "2021-01-30 00:00:00 +0800"
       }
     ]

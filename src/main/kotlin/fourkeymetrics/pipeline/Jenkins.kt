@@ -3,13 +3,21 @@ package fourkeymetrics.pipeline
 import fourkeymetrics.dto.AllBuildDTO
 import fourkeymetrics.dto.BuildSummaryDTO
 import fourkeymetrics.dto.BuildDetailsDTO
+import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.Commit
 import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.exchange
+import java.nio.charset.Charset
+import java.util.Base64
 import kotlin.streams.toList
 
 @Service
@@ -69,4 +77,31 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
             AllBuildDTO::class.java)
         return allBuildsResponse.body!!.allBuilds
     }
+
+
+    override fun verifyPipeline(url: String, username: String, token: String) {
+        val headers = setAuthHeader(username, token)
+        val entity = HttpEntity<String>("", headers)
+        try {
+            val response = restTemplate.exchange<String>(
+                "$url/wfapi/", HttpMethod.GET, entity
+            )
+            if (!response.statusCode.is2xxSuccessful){
+                throw ApplicationException(response.statusCode,response.body!!)
+            }
+        } catch (e: HttpClientErrorException) {
+            throw ApplicationException(e.statusCode, e.message!!)
+        }
+
+    }
+
+    private fun setAuthHeader(username: String, token: String): HttpHeaders {
+        val headers = HttpHeaders()
+        val auth = "$username:$token"
+        val encodedAuth = Base64.getEncoder().encodeToString(auth.toByteArray(Charset.forName("UTF-8")))
+        val authHeader = "Basic $encodedAuth"
+        headers.set("Authorization", authHeader)
+        return headers
+    }
+
 }

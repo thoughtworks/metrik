@@ -28,4 +28,7 @@ abstract class Pipeline {
     }
 
     abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
+
+    abstract fun verifyPipeline(url:String,username:String,token:String)
+
 }

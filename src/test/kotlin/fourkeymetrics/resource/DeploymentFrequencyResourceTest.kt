@@ -29,8 +29,8 @@ internal class DeploymentFrequencyResourceTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "test pipeline ID"
         val targetStage = "UAT"
-        val startTimestamp = 1609459200L
-        val endTimestamp = 1611964800L
+        val startTimestamp = 1609459200000L
+        val endTimestamp = 1611964800000L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
         `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId, startTimestamp, endTimestamp))
@@ -53,8 +53,8 @@ internal class DeploymentFrequencyResourceTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "test pipeline ID"
         val targetStage = "UAT"
-        val startTimestamp = 1611964800L
-        val endTimestamp = 1609459200L
+        val startTimestamp = 1611964800000L
+        val endTimestamp = 1609459200000L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
         `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(true)
@@ -73,8 +73,8 @@ internal class DeploymentFrequencyResourceTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "invalid pipeline ID"
         val targetStage = "UAT"
-        val startTimestamp = 1609459200L
-        val endTimestamp = 1611964800L
+        val startTimestamp = 1609459200000L
+        val endTimestamp = 1611964800000L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(false)
         `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(true)
@@ -93,8 +93,8 @@ internal class DeploymentFrequencyResourceTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "pipeline ID"
         val targetStage = "invalid stage"
-        val startTimestamp = 1609459200L
-        val endTimestamp = 1611964800L
+        val startTimestamp = 1609459200000L
+        val endTimestamp = 1611964800000L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
         `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(false)
