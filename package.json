@@ -10,7 +10,8 @@
 		"build:prod:analyze": "cross-env NODE_ENV=prod ENABLE_ANALYZER=true webpack --config ./scripts/webpack.prod.js",
 		"test": "cross-env NODE_ENV=test jest --passWithNoTests",
 		"lint": "tsc && eslint --fix '**/*.{js,jsx,ts,tsx}'",
-		"lint:style": "stylelint --fix '**/*.{css,less}'"
+		"lint:style": "stylelint --fix '**/*.{css,less}'",
+		"icons": "npx @svgr/cli --out-dir=./src/assets/icons --typescript src/assets/source/*.svg"
 	},
 	"husky": {
 		"hooks": {
