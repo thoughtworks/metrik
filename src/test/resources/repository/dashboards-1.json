@@ -6,7 +6,7 @@
       {
         "pipelineId": "pipelineId",
         "username": "username",
-        "token": "fake-token",
+        "credential": "fake-credential",
         "url": "test.com",
         "type": "JENKINS"
       }

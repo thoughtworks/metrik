@@ -13,9 +13,9 @@ class ConfigurationService {
     @Autowired
     private lateinit var jenkins: Jenkins
 
-    fun verifyPipeline(url:String,username:String,token:String,type: String){
+    fun verifyPipeline(url:String,username:String,credential:String,type: String){
         if (type == PipelineType.JENKINS.name) {
-            jenkins.verifyPipeline(url, username,token)
+            jenkins.verifyPipeline(url, username,credential)
         }else{
             throw  ApplicationException(HttpStatus.BAD_REQUEST,"Pipeline type not support")
         }

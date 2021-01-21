@@ -26,14 +26,14 @@ class ConfigurationServiceTest {
     internal fun `should not throw exception when type is jenkins`(){
         val url = "http://jenkins.io"
         val username = "name"
-        val token = "token"
+        val credential = "credential"
         val type = "JENKINS"
-        Mockito.doNothing().`when`(jenkins).verifyPipeline(url, username, token)
+        Mockito.doNothing().`when`(jenkins).verifyPipeline(url, username, credential)
         Assertions.assertThatCode {
             configurationService.verifyPipeline(
                 url,
                 username,
-                token,
+                credential,
                 type
             )
         }.doesNotThrowAnyException()
@@ -43,14 +43,14 @@ class ConfigurationServiceTest {
     internal fun `should  throw exception when type is not jenkins`() {
         val url = "http://jenkins.io"
         val username = "name"
-        val token = "token"
+        val credential = "credential"
         val type = "Bamboo"
-        Mockito.doNothing().`when`(jenkins).verifyPipeline(url, username, token)
+        Mockito.doNothing().`when`(jenkins).verifyPipeline(url, username, credential)
         Assertions.assertThatThrownBy {
             configurationService.verifyPipeline(
                 url,
                 username,
-                token,
+                credential,
                 type
             )
         }.hasMessage("Pipeline type not support")
@@ -60,14 +60,14 @@ class ConfigurationServiceTest {
     internal fun `should  throw exception when verify pipeline is not found`() {
         val url = "http://jenkins.io/dd"
         val username = "name"
-        val token = "token"
+        val credential = "credential"
         val type = "JENKINS"
-        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"the url is not found")).`when`(jenkins).verifyPipeline(url, username, token)
+        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"the url is not found")).`when`(jenkins).verifyPipeline(url, username, credential)
         Assertions.assertThatThrownBy {
             configurationService.verifyPipeline(
                 url,
                 username,
-                token,
+                credential,
                 type
             )
         }.hasMessage("the url is not found")

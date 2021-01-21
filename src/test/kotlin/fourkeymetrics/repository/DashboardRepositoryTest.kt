@@ -41,7 +41,7 @@ internal class DashboardRepositoryTest {
 
         assertThat(configuration).isNotNull
         assertThat(configuration!!.url).isEqualTo("test.com")
-        assertThat(configuration.token).isEqualTo("fake-token")
+        assertThat(configuration.credential).isEqualTo("fake-credential")
         assertThat(configuration.username).isEqualTo("username")
         assertThat(configuration.type).isEqualTo(PipelineType.JENKINS)
     }
