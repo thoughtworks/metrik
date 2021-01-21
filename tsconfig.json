@@ -10,6 +10,6 @@
 		"noEmit": true,
 		"jsxImportSource": "@emotion/react"
 	},
-	"include": ["src"],
+	"include": ["src", "test"],
 	"exclude": ["node_modules"]
 }
