@@ -1,10 +1,10 @@
 [
   {
-    "id": "fake-dashboard",
+    "dashboardId": "dashboardId",
     "name": "4-key",
     "pipelineConfigurations": [
       {
-        "id": "fake-pipeline",
+        "pipelineId": "pipelineId",
         "username": "username",
         "token": "fake-token",
         "url": "test.com",

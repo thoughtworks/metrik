@@ -70,9 +70,9 @@ internal class JenkinsTest {
         val username = "fake-user"
         val token = "fake-token"
         val baseUrl = "localhost"
-        val getBuildSummariesUrl = "http://$username:$token@$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
+        val getBuildSummariesUrl = "http://$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
             "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "http://$username:$token@$baseUrl/82/wfapi/describe"
+        val getBuildDetailUrl = "http://$baseUrl/82/wfapi/describe"
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration(username = username, token = token, url = baseUrl))

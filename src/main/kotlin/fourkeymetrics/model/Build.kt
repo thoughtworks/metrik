@@ -5,7 +5,9 @@ import org.apache.logging.log4j.util.Strings
 enum class BuildStatus {
     SUCCESS,
     FAILED,
-    ABORTED
+    ABORTED,
+    FAILURE,
+    IN_PROGRESS
 }
 
 data class Stage(
@@ -25,6 +27,6 @@ data class Commit(
 
 data class Build(
     var pipelineId: String = Strings.EMPTY, var number: Int = 0,
-                 var result: BuildStatus = BuildStatus.FAILED, var duration: Long = 0,
-                 var timestamp: Long = 0, var url: String = Strings.EMPTY,
-                 var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList())
+    var result: BuildStatus? = BuildStatus.FAILED, var duration: Long = 0,
+    var timestamp: Long = 0, var url: String = Strings.EMPTY,
+    var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList())

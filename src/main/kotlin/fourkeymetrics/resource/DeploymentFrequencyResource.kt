@@ -28,7 +28,7 @@ class DeploymentFrequencyResource {
             return ResponseEntity.badRequest().build()
         }
 
-        val deploymentCount = deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId,
+        val deploymentCount = deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage,
             startTimestamp, endTimestamp)
 
         return ResponseEntity.ok(DeploymentFrequencyResponse(deploymentCount))

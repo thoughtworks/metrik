@@ -1,6 +1,6 @@
 package fourkeymetrics.pipeline
 
-import fourkeymetrics.dto.AllBuildDTO
+import fourkeymetrics.dto.BuildSummaryCollectionDTO
 import fourkeymetrics.dto.BuildSummaryDTO
 import fourkeymetrics.dto.BuildDetailsDTO
 import fourkeymetrics.exception.ApplicationException
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -69,18 +70,20 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
 
     private fun getBuildDetailsFromJenkins(username: String, token: String, baseUrl: String,
                                            buildSummary: BuildSummaryDTO): BuildDetailsDTO {
-        val buildDetailResponse = restTemplate.getForEntity(
-            "http://$username:$token@$baseUrl/${buildSummary.number}/wfapi/describe",
-            BuildDetailsDTO::class.java)
+        val headers = setAuthHeader(username, token)
+        val entity = HttpEntity<String>(headers)
+        val buildDetailResponse: ResponseEntity<BuildDetailsDTO> =
+            restTemplate.exchange("http://$baseUrl/${buildSummary.number}/wfapi/describe", HttpMethod.GET, entity)
         return buildDetailResponse.body!!
     }
 
     private fun getBuildSummariesFromJenkins(username: String, token: String,
                                              baseUrl: String): List<BuildSummaryDTO> {
-        val allBuildsResponse = restTemplate.getForEntity(
-            "http://$username:$token@$baseUrl/api/json?tree=allBuilds[building,number," +
-                "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
-            AllBuildDTO::class.java)
+        val headers = setAuthHeader(username, token)
+        val entity = HttpEntity<String>(headers)
+        val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
+            restTemplate.exchange("http://$baseUrl/api/json?tree=allBuilds[building,number," +
+                "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]", HttpMethod.GET, entity)
         return allBuildsResponse.body!!.allBuilds
     }
 

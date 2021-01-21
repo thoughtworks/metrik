@@ -33,7 +33,7 @@ internal class DeploymentFrequencyResourceTest {
         val endTimestamp = 1611964800000L
 
         `when`(pipeline.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
-        `when`(deploymentFrequencyService.getDeploymentCount(targetStage, pipelineId, startTimestamp, endTimestamp))
+        `when`(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp))
             .thenReturn(30)
         `when`(pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(true)
 
