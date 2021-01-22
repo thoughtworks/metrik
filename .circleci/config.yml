@@ -7,7 +7,7 @@ orbs:
 jobs:
   test_build_push_deploy:
     docker:
-      - image: circleci/openjdk:11.0-jdk
+      - image: circleci/openjdk:11.0.8-jdk
 
     steps:
       - checkout
@@ -15,7 +15,10 @@ jobs:
       - restore_cache:
           keys:
             - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+
+      - restore_cache:
+          keys:
+            - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
       - run:
           name: Run tests and build artifact
@@ -29,7 +32,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle/caches
-          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
       - setup_remote_docker:
           version: 19.03.13
