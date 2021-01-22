@@ -31,11 +31,13 @@ class ConfigurationResource {
         configurationService.verifyPipeline(url, username, credential, type)
     }
 
+    // TODO: 2021/1/22 without test
     @PostMapping("api/pipeline/config")
     fun save(@RequestBody config: ConfigurationVo):Dashboard{
         return configurationService.save(config)
     }
 
+    // TODO: 2021/1/22 without test
     @PutMapping("api/dashboard/{dashboardId}/pipeline/{pipelineId}/config/")
     fun update(@RequestBody config: PipelineConfigurationVo,
                @PathVariable("dashboardId") dashboardId:String,
