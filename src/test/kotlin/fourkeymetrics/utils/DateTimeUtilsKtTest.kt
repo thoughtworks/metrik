@@ -8,6 +8,8 @@ import java.time.LocalTime
 
 internal class DateTimeUtilsKtTest {
 
+    private var dateTimeUtils: DateTimeUtils = DateTimeUtils()
+
     @Test
     fun `should get range list of 3 pair given from Sep_1 to Nov_3 when split time range monthly`() {
 
@@ -16,7 +18,7 @@ internal class DateTimeUtilsKtTest {
         val endTime = LocalDate.parse("2020-11-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
 
-        val timeRangeList = splitTimeRangeMonthly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRangeMonthly(startTimestamp, endTimestamp)
 
         assertEquals(
             listOf(
@@ -43,7 +45,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = splitTimeRangeMonthly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRangeMonthly(startTimestamp, endTimestamp)
 
         assertEquals(listOf(Pair(startTimestamp, endTimestamp)), timeRangeList)
     }
@@ -54,7 +56,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-30").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRangeFortnightly(startTimestamp, endTimestamp)
 
         assertEquals(
             listOf(
@@ -81,7 +83,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRangeFortnightly(startTimestamp, endTimestamp)
 
         assertEquals(
             listOf(
