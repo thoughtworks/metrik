@@ -20,12 +20,15 @@ abstract class Pipeline {
 
     fun hasStageInTimeRange(pipelineId: String, targetStage: String, startTimestamp: Long,
                             endTimestamp: Long): Boolean {
-        val buildsInTimeRange = buildRepository.getBuildsByTimePeriod(pipelineId,
-            startTimestamp, endTimestamp)
+        val allBuilds = buildRepository.getAllBuilds(pipelineId)
 
-        return buildsInTimeRange.isNotEmpty() && buildsInTimeRange.asSequence()
-            .flatMap { it.stages.asSequence() }
-            .any { it.name == targetStage }
+        return allBuilds
+                .asSequence()
+                .flatMap { it.stages.asSequence() }
+                .filter {
+                    (it.startTimeMillis + it.durationMillis + it.pauseDurationMillis) in startTimestamp..endTimestamp
+                }
+                .any { it.name == targetStage }
     }
 
     abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
