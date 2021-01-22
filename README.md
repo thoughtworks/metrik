@@ -1,6 +1,8 @@
 # SEA-4-Key-Metrics-frontend
 
-ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend
+ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend 
+
+[![CircleCI](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-dashboard.svg?style=svg&circle-token=a24dd401b150eb6be14792c72f9d522fe945eb4c)](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-dashboard)
 
 # Requirement
 Node Version >= 10
