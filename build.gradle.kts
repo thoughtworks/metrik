@@ -137,7 +137,7 @@ tasks.check {
 
 detekt {
 	toolVersion = "1.15.0"
-	config = files("config/detekt/detekt.yml")
+	config = files("gradle/detekt/detekt.yml")
 	buildUponDefaultConfig = true
 
 	reports {
@@ -152,4 +152,4 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 	exclude("fourkeymetrics/Application.kt")
 }
 
-apply(from = "config/git-hooks/install-git-hooks.gradle")
+apply(from = "gradle/git-hooks/install-git-hooks.gradle")
