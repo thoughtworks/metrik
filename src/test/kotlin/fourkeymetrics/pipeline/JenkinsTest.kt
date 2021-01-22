@@ -7,6 +7,7 @@ import fourkeymetrics.model.PipelineConfiguration
 import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.BuildRepository
 import fourkeymetrics.repository.DashboardRepository
+import fourkeymetrics.repository.pipeline.Jenkins
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,7 +26,7 @@ import org.springframework.web.client.RestTemplate
 
 @ExtendWith(SpringExtension::class)
 @Import(Jenkins::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
-    RestTemplate::class)
+        RestTemplate::class)
 @RestClientTest
 internal class JenkinsTest {
     @Autowired
@@ -71,19 +72,19 @@ internal class JenkinsTest {
         val credential = "fake-credential"
         val baseUrl = "localhost"
         val getBuildSummariesUrl = "http://$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "http://$baseUrl/82/wfapi/describe"
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration(username = username, credential = credential, url = baseUrl))
         mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(), MediaType.APPLICATION_JSON))
+                .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(), MediaType.APPLICATION_JSON))
         mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(), MediaType.APPLICATION_JSON))
+                .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(), MediaType.APPLICATION_JSON))
 
-        val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-1.json").readText())
+        val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
         val allBuilds = jenkins.fetchAllBuilds(dashboardId, pipelineId)
-        assertThat(allBuilds.get(0).pipelineId).isEqualTo(expectedBuilds.get(0).pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, only()).save(allBuilds)
     }
 
@@ -94,9 +95,10 @@ internal class JenkinsTest {
         val startTimestamp = 100000L
         val endTimestamp = 200000L
 
-        val lastBuild = Build(stages = listOf(Stage(name = targetStage), Stage(name = "build")))
+        val lastBuild = Build(stages = listOf(Stage(name = targetStage, startTimeMillis = 100000L),
+                Stage(name = "another stage", startTimeMillis = 100000L)))
 
-        `when`(buildRepository.getBuildsByTimePeriod(pipelineId, startTimestamp, endTimestamp)).thenReturn(listOf(lastBuild))
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
         assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
     }
@@ -108,9 +110,10 @@ internal class JenkinsTest {
         val startTimestamp = 100000L
         val endTimestamp = 200000L
 
-        val lastBuild = Build(stages = listOf(Stage(name = "clone"), Stage(name = "build")))
+        val lastBuild = Build(stages = listOf(Stage(name = "clone"), Stage(name = "build"),
+                Stage(name = targetStage, startTimeMillis = 150000L, durationMillis = 30000L, pauseDurationMillis = 50000L)))
 
-        `when`(buildRepository.getBuildsByTimePeriod(pipelineId, startTimestamp, endTimestamp)).thenReturn(listOf(lastBuild))
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
         assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }

@@ -26,8 +26,7 @@ class ChangeFailureRateCalculator {
                 it.stages.asSequence()
             }
             .filter {
-                val stageEndTime = it.startTimeMillis + it.durationMillis + it.pauseDurationMillis
-                stageEndTime in startTimestampMillis..endTimestampMillis
+                it.getStageDoneTime() in startTimestampMillis..endTimestampMillis
             }
             .filter { it.name == targetStage }
             .filter { it.status in TARGET_STAGE_STATUS_LIST }

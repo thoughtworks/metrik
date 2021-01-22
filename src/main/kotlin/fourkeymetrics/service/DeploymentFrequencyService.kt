@@ -36,26 +36,18 @@ class DeploymentFrequencyService {
     private fun isInvalidBuild(prevBuild: Build?, currentBuild: Build, startTimestamp: Long,
                                endTimestamp: Long, targetStage: String): Boolean {
         return !isTargetStageWithinTimeRange(currentBuild, startTimestamp, endTimestamp, targetStage) ||
-            !isTargetStageSuccess(currentBuild, targetStage) ||
-            !isEffectiveDeployment(prevBuild, currentBuild)
+                !isTargetStageSuccess(currentBuild, targetStage)
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
-        build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
+            build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
 
     private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long,
                                              endTimestamp: Long, targetStage: String): Boolean {
         val stage = build.stages.find { it.name == targetStage }
         val deploymentFinishTimestamp = stage?.startTimeMillis?.plus(stage.durationMillis)
-            ?.plus(stage.pauseDurationMillis)
+                ?.plus(stage.pauseDurationMillis)
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp
     }
-
-    private fun isEffectiveDeployment(previousBuild: Build?, currentBuild: Build) =
-        if (previousBuild == null) {
-            true
-        } else {
-            previousBuild.changeSets != currentBuild.changeSets
-        }
 }
