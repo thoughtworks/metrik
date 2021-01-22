@@ -14,6 +14,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -101,6 +102,8 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
             }
         } catch (e: HttpClientErrorException) {
             throw ApplicationException(e.statusCode, e.message!!)
+        } catch (e:IllegalArgumentException ){
+            throw ApplicationException(HttpStatus.BAD_REQUEST, e.message!!)
         }
 
     }
