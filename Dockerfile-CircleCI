@@ -1,0 +1,10 @@
+FROM adoptopenjdk:11-jre-hotspot
+
+COPY build/libs/*.jar /app/sea-4-key-metrics-service.jar
+COPY run.sh /app
+
+ENV APP_ENV dev
+
+EXPOSE 9000
+
+CMD ["/app/run.sh"]
