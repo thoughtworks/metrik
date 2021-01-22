@@ -6,8 +6,8 @@ import fourkeymetrics.model.PipelineConfiguration
 import fourkeymetrics.model.PipelineType
 import fourkeymetrics.repository.pipeline.Jenkins
 import fourkeymetrics.repository.DashboardRepository
-import fourkeymetrics.vo.ConfigurationVo
-import fourkeymetrics.vo.PipelineConfigurationVo
+import fourkeymetrics.resource.configuration.DashboardConfigurationRequest
+import fourkeymetrics.resource.configuration.PipelineConfigurationRequest
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,7 +30,7 @@ class ConfigurationService {
             }
     }
 
-    fun save(config: ConfigurationVo) :Dashboard{
+    fun save(config: DashboardConfigurationRequest) :Dashboard{
         verifyPipeline(config.pipeline.url,config.pipeline.username,config.pipeline.token,config.pipeline.type)
         val dashboards = dashboardRepository.getDashBoardDetailByName(config.dashboardName)
         val dashboard: Dashboard
@@ -53,11 +53,11 @@ class ConfigurationService {
        return dashboardRepository.save(dashboard)
     }
 
-    private fun buildNewPipelineConfiguration(config: ConfigurationVo): PipelineConfiguration {
+    private fun buildNewPipelineConfiguration(config: DashboardConfigurationRequest): PipelineConfiguration {
         return updatePipelineConfig(ObjectId().toString(), config.pipeline)
     }
 
-    fun update(config: PipelineConfigurationVo,dashboardId:String,pipelineId:String): PipelineConfiguration{
+    fun update(config: PipelineConfigurationRequest, dashboardId:String, pipelineId:String): PipelineConfiguration{
         verifyPipeline(config.url,config.username,config.token,config.type)
         val pipeline = updatePipelineConfig(pipelineId, config)
         return dashboardRepository.updatePipeline(dashboardId,pipelineId,pipeline)
@@ -66,7 +66,7 @@ class ConfigurationService {
 
     private fun updatePipelineConfig(
         pipelineId: String,
-        config: PipelineConfigurationVo
+        config: PipelineConfigurationRequest
     ): PipelineConfiguration {
         val pipeline = PipelineConfiguration(
             id = pipelineId,

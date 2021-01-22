@@ -1,6 +1,7 @@
 package fourkeymetrics.resource
 
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.resource.configuration.ConfigurationResource
 import fourkeymetrics.service.ConfigurationService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito

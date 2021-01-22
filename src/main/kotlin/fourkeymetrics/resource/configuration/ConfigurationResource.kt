@@ -1,10 +1,8 @@
-package fourkeymetrics.resource
+package fourkeymetrics.resource.configuration
 
 import fourkeymetrics.model.Dashboard
 import fourkeymetrics.model.PipelineConfiguration
 import fourkeymetrics.service.ConfigurationService
-import fourkeymetrics.vo.ConfigurationVo
-import fourkeymetrics.vo.PipelineConfigurationVo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -31,15 +29,13 @@ class ConfigurationResource {
         configurationService.verifyPipeline(url, username, credential, type)
     }
 
-    // TODO: 2021/1/22 without test
     @PostMapping("api/pipeline/config")
-    fun save(@RequestBody config: ConfigurationVo):Dashboard{
+    fun save(@RequestBody config: DashboardConfigurationRequest):Dashboard{
         return configurationService.save(config)
     }
 
-    // TODO: 2021/1/22 without test
     @PutMapping("api/dashboard/{dashboardId}/pipeline/{pipelineId}/config/")
-    fun update(@RequestBody config: PipelineConfigurationVo,
+    fun update(@RequestBody config: PipelineConfigurationRequest,
                @PathVariable("dashboardId") dashboardId:String,
                @PathVariable("pipelineId") pipelineId:String ):PipelineConfiguration{
       return  configurationService.update(config,dashboardId,pipelineId)

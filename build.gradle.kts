@@ -123,9 +123,12 @@ tasks.jacocoTestCoverageVerification {
 					"**/config**",
 					"**/pipeline**",
 					"**/dto**",
-					"**/MetricsApplicationService**",
-					"**/LeadTimeForChangeCalculator**",
-					"**/TestResource**"
+					"**/TestResource**",
+					"**/ConfigurationService**",
+					"**/ConfigurationResource**",
+					"**/DashboardRepository**",
+					"**/**Request**",
+					"**/**Response**"
 				)
 			}
 	)

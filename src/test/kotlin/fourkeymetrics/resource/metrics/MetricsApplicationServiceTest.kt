@@ -1,11 +1,10 @@
 package fourkeymetrics.resource.metrics
 
 import fourkeymetrics.model.Build
+import fourkeymetrics.model.LEVEL
 import fourkeymetrics.model.Metric
 import fourkeymetrics.model.MetricUnit
 import fourkeymetrics.repository.BuildRepository
-import fourkeymetrics.resource.metrics.representation.LEVEL
-import fourkeymetrics.resource.metrics.representation.MetricWithLevel
 import fourkeymetrics.service.ChangeFailureRateCalculator
 import fourkeymetrics.service.LeadTimeForChangeCalculator
 import fourkeymetrics.utils.DateTimeUtils
@@ -15,10 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
-import org.mockito.Mockito.anyLong
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.beans.factory.annotation.Autowired
 
 @ExtendWith(MockitoExtension::class)
 internal class MetricsApplicationServiceTest {
@@ -74,7 +70,7 @@ internal class MetricsApplicationServiceTest {
 
         assertEquals(
             fourKeyMetricsResponse.leadTimeForChange.summary,
-            MetricWithLevel(LEVEL.LOW, Metric(2.0, 1, 10))
+            Metric(2.0, LEVEL.LOW, 1, 10)
         )
         assertTrue(
             fourKeyMetricsResponse.leadTimeForChange.details.containsAll(
@@ -87,7 +83,7 @@ internal class MetricsApplicationServiceTest {
 
         assertEquals(
             fourKeyMetricsResponse.changeFailureRate.summary,
-            MetricWithLevel(LEVEL.LOW, Metric(0.5, 1, 10))
+            Metric(0.5, LEVEL.LOW, 1, 10)
         )
 
         assertTrue(

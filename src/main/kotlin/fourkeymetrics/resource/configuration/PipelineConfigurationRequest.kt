@@ -1,6 +1,6 @@
-package fourkeymetrics.vo
+package fourkeymetrics.resource.configuration
 
-data class PipelineConfigurationVo(
+data class PipelineConfigurationRequest(
     val name:String,
     val url:String,
     val username:String,

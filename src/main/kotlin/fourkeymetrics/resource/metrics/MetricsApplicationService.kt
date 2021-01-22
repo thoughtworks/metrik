@@ -1,12 +1,11 @@
 package fourkeymetrics.resource.metrics
 
 import fourkeymetrics.model.Build
+import fourkeymetrics.model.LEVEL
 import fourkeymetrics.model.Metric
 import fourkeymetrics.model.MetricUnit
 import fourkeymetrics.repository.BuildRepository
 import fourkeymetrics.resource.metrics.representation.FourKeyMetricsResponse
-import fourkeymetrics.resource.metrics.representation.LEVEL
-import fourkeymetrics.resource.metrics.representation.MetricWithLevel
 import fourkeymetrics.resource.metrics.representation.Metrics
 import fourkeymetrics.service.ChangeFailureRateCalculator
 import fourkeymetrics.service.LeadTimeForChangeCalculator
@@ -70,10 +69,7 @@ class MetricsApplicationService {
         calculator: MetricValueCalculator
     ): Metrics {
         val valueForWholeRange = calculator.calculate(allBuilds, startTimeMillis, endTimeMillis, targetStage)
-        val summary = MetricWithLevel(
-            LEVEL.LOW,
-            Metric(valueForWholeRange, startTimeMillis, endTimeMillis)
-        )
+        val summary = Metric(valueForWholeRange, LEVEL.LOW, startTimeMillis, endTimeMillis)
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =

@@ -1,11 +1,10 @@
 package fourkeymetrics.resource.metrics
 
+import fourkeymetrics.model.LEVEL
 import fourkeymetrics.model.MetricUnit
 import fourkeymetrics.resource.MetricsResource
 import fourkeymetrics.resource.metrics.representation.FourKeyMetricsResponse
-import fourkeymetrics.resource.metrics.representation.LEVEL
 import fourkeymetrics.model.Metric
-import fourkeymetrics.resource.metrics.representation.MetricWithLevel
 import fourkeymetrics.resource.metrics.representation.Metrics
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -36,8 +35,8 @@ internal class MetricsResourceTest {
         val value = 10.2
 
         val metric = Metric(value, startTime, endTime)
-        val metricWithLevel = MetricWithLevel(level, metric)
-        val metrics = Metrics(metricWithLevel, listOf(metric, metric))
+        val summary = Metric(value, level, startTime, endTime)
+        val metrics = Metrics(summary, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
             leadTimeForChange = metrics,
             changeFailureRate = metrics
@@ -63,9 +62,9 @@ internal class MetricsResourceTest {
                 .param("unit", metricUnit.toString())
         )
             .andExpect(jsonPath("$.leadTimeForChange.summary.level").value("ELITE"))
-            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.value").value(value))
-            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.startTimestamp").value(startTime))
-            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.endTimestamp").value(endTime))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.value").value(value))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.startTimestamp").value(startTime))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.endTimestamp").value(endTime))
             .andExpect(jsonPath("$.leadTimeForChange.details.length()").value(2))
             .andExpect(jsonPath("$.leadTimeForChange.details[0].startTimestamp").value(startTime))
             .andExpect(jsonPath("$.leadTimeForChange.details[0].endTimestamp").value(endTime))
