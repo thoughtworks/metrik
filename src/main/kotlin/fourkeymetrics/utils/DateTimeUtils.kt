@@ -1,5 +1,6 @@
 package fourkeymetrics.utils
 
+import fourkeymetrics.model.MetricUnit
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -20,7 +21,19 @@ class DateTimeUtils {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId())
     }
 
-    fun splitTimeRangeMonthly(
+    fun splitTimeRange(
+        startTimestampMillis: Long,
+        endTimestampMillis: Long,
+        unit: MetricUnit
+    ): List<Pair<Long, Long>> {
+        return when (unit) {
+            MetricUnit.Monthly -> splitTimeRangeMonthly(startTimestampMillis, endTimestampMillis)
+            MetricUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestampMillis, endTimestampMillis)
+        }
+
+    }
+
+    private fun splitTimeRangeMonthly(
         startTimestampMillis: Long,
         endTimestampMillis: Long
     ): List<Pair<Long, Long>> {
@@ -44,7 +57,7 @@ class DateTimeUtils {
         }
     }
 
-    fun splitTimeRangeFortnightly(
+    private fun splitTimeRangeFortnightly(
         startTimestampMillis: Long,
         endTimestampMillis: Long
     ): List<Pair<Long, Long>> {

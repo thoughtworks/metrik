@@ -1,5 +1,6 @@
 package fourkeymetrics.utils
 
+import fourkeymetrics.model.MetricUnit
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -18,7 +19,7 @@ internal class DateTimeUtilsKtTest {
         val endTime = LocalDate.parse("2020-11-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
 
-        val timeRangeList = dateTimeUtils.splitTimeRangeMonthly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Monthly)
 
         assertEquals(
             listOf(
@@ -45,7 +46,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRangeMonthly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Monthly)
 
         assertEquals(listOf(Pair(startTimestamp, endTimestamp)), timeRangeList)
     }
@@ -56,7 +57,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-30").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Fortnightly)
 
         assertEquals(
             listOf(
@@ -83,7 +84,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Fortnightly)
 
         assertEquals(
             listOf(
