@@ -2,9 +2,9 @@ package fourkeymetrics.service
 
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.BuildStatus
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class ChangeFailureRateCalculator : MetricValueCalculator {
 
     companion object {

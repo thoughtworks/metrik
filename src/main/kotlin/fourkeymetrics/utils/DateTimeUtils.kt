@@ -22,23 +22,23 @@ class DateTimeUtils {
     }
 
     fun splitTimeRange(
-        startTimestampMillis: Long,
-        endTimestampMillis: Long,
+        startTimestamp: Long,
+        endTimestamp: Long,
         unit: MetricUnit
     ): List<Pair<Long, Long>> {
         return when (unit) {
-            MetricUnit.Monthly -> splitTimeRangeMonthly(startTimestampMillis, endTimestampMillis)
-            MetricUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestampMillis, endTimestampMillis)
+            MetricUnit.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
+            MetricUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
         }
 
     }
 
     private fun splitTimeRangeMonthly(
-        startTimestampMillis: Long,
-        endTimestampMillis: Long
+        startTimestamp: Long,
+        endTimestamp: Long
     ): List<Pair<Long, Long>> {
-        val startTime = getLocalDateTimeFromTimestampMillis(startTimestampMillis)
-        val endTime = getLocalDateTimeFromTimestampMillis(endTimestampMillis)
+        val startTime = getLocalDateTimeFromTimestampMillis(startTimestamp)
+        val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
         val months = ChronoUnit.MONTHS.between(startTime, endTime)
         return if (months >= 1) {
             val timeRanges = mutableListOf<Pair<Long, Long>>()
@@ -50,20 +50,20 @@ class DateTimeUtils {
                     timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), it.toDefaultZoneEpochMill()))
                     tempStartTime = it.plusNanos(1) // next period start time
                 }
-            timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), endTimestampMillis))
+            timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), endTimestamp))
             timeRanges.toList()
         } else {
-            listOf(Pair(startTimestampMillis, endTimestampMillis))
+            listOf(Pair(startTimestamp, endTimestamp))
         }
     }
 
     private fun splitTimeRangeFortnightly(
-        startTimestampMillis: Long,
-        endTimestampMillis: Long
+        startTimestamp: Long,
+        endTimestamp: Long
     ): List<Pair<Long, Long>> {
 
-        val startTime = getLocalDateTimeFromTimestampMillis(startTimestampMillis)
-        val endTime = getLocalDateTimeFromTimestampMillis(endTimestampMillis)
+        val startTime = getLocalDateTimeFromTimestampMillis(startTimestamp)
+        val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
         val timeRanges = mutableListOf<Pair<Long, Long>>()
 
         var tempEndTime = endTime
@@ -74,7 +74,7 @@ class DateTimeUtils {
             tempEndTime = tempStartTime.minusNanos(1)
             tempStartTime = tempEndTime.minusDays(FORTNIGHTLY_DAYS - 1).atStartOfDay()
         }
-        timeRanges.add(Pair(startTimestampMillis, tempEndTime.toDefaultZoneEpochMill()))
+        timeRanges.add(Pair(startTimestamp, tempEndTime.toDefaultZoneEpochMill()))
         return timeRanges.asReversed().toList()
     }
 

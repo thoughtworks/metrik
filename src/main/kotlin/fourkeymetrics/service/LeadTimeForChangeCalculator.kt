@@ -2,7 +2,9 @@ package fourkeymetrics.service
 
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.BuildStatus
+import org.springframework.stereotype.Component
 
+@Component
 class LeadTimeForChangeCalculator : MetricValueCalculator {
 
     companion object {

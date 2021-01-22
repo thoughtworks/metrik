@@ -33,15 +33,13 @@ internal class MetricsResourceTest {
         val endTime = 1611964800000L
         val metricUnit = MetricUnit.Fortnightly
         val level = LEVEL.ELITE
-        val value = "10.2"
+        val value = 10.2
 
         val metric = Metric(value, startTime, endTime)
         val metricWithLevel = MetricWithLevel(level, metric)
         val metrics = Metrics(metricWithLevel, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
-            deploymentFrequency = metrics,
             leadTimeForChange = metrics,
-            timeToRestoreService = metrics,
             changeFailureRate = metrics
         )
         `when`(
@@ -64,16 +62,14 @@ internal class MetricsResourceTest {
                 .param("endTime", endTime.toString())
                 .param("unit", metricUnit.toString())
         )
-            .andExpect(jsonPath("$.deploymentFrequency.summary.level").value("ELITE"))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.value").value(value))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.startTimestamp").value(startTime))
-            .andExpect(jsonPath("$.deploymentFrequency.summary.metric.endTimestamp").value(endTime))
-            .andExpect(jsonPath("$.deploymentFrequency.details.length()").value(2))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].startTimestamp").value(startTime))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].endTimestamp").value(endTime))
-            .andExpect(jsonPath("$.deploymentFrequency.details[0].value").value(value))
-            .andExpect(jsonPath("$.leadTimeForChange").isNotEmpty)
-            .andExpect(jsonPath("$.timeToRestoreService").isNotEmpty)
+            .andExpect(jsonPath("$.leadTimeForChange.summary.level").value("ELITE"))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.value").value(value))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.startTimestamp").value(startTime))
+            .andExpect(jsonPath("$.leadTimeForChange.summary.metric.endTimestamp").value(endTime))
+            .andExpect(jsonPath("$.leadTimeForChange.details.length()").value(2))
+            .andExpect(jsonPath("$.leadTimeForChange.details[0].startTimestamp").value(startTime))
+            .andExpect(jsonPath("$.leadTimeForChange.details[0].endTimestamp").value(endTime))
+            .andExpect(jsonPath("$.leadTimeForChange.details[0].value").value(value))
             .andExpect(jsonPath("$.changeFailureRate").isNotEmpty)
     }
 }
