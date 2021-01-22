@@ -64,13 +64,13 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 5,
+        "timestamp": 6,
         "date": "2021-01-01 00:00:00 +0800"
       },
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 6,
+        "timestamp": 7,
         "date": "2021-01-01 00:00:00 +0800"
       }
     ]
@@ -110,6 +110,12 @@
         "msg": "this is a message",
         "timestamp": 11,
         "date": "2021-01-01 00:00:00 +0800"
+      },
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 12,
+        "date": "2021-01-01 00:00:00 +0800"
       }
     ]
   },
@@ -118,20 +124,20 @@
     "number": 4,
     "duration": 60420,
     "result": "SUCCESS",
-    "timestamp": 15,
+    "timestamp": 18,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
       {
         "status": "SUCCESS",
         "name": "build",
-        "startTimeMillis": 15,
+        "startTimeMillis": 19,
         "durationMillis": 1,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
         "name": "deploy to prod",
-        "startTimeMillis": 17,
+        "startTimeMillis": 21,
         "durationMillis": 1,
         "pauseDurationMillis": 1
       }
@@ -140,13 +146,13 @@
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 14,
+        "timestamp": 16,
         "date": "2021-01-01 00:00:00 +0800"
       },
       {
         "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
         "msg": "this is a message",
-        "timestamp": 13,
+        "timestamp": 17,
         "date": "2021-01-01 00:00:00 +0800"
       }
     ]

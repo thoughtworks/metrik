@@ -5,10 +5,14 @@ import fourkeymetrics.model.BuildStatus
 
 class LeadTimeForChangeCalculator {
 
+
+    companion object {
+        private const val NO_VALUE: Double = 0.0
+        private const val EARLIEST_TIMESTAMP: Long = 0
+    }
+
     fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Double {
-
-        val buildOrderByTimestampAscending = allBuilds.sortedBy{ it.timestamp }
-
+        val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
                 targetStage,
@@ -16,30 +20,45 @@ class LeadTimeForChangeCalculator {
                 endTimestamp
             )
         } ?: return NO_VALUE
-
         val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.find {
             it.containsGivenDeploymentBeforeGivenTimestamp(
                 targetStage,
                 BuildStatus.SUCCESS, startTimestamp
             )
         }
-
-        val targetBuilds: List<Build> = filterBuildsBetweenGivenRange(
+        val buildsInScope = filterBuildsBetweenGivenRange(
             lastSuccessfulDeploymentBuild,
             firstSuccessfulDeploymentBuild,
             buildOrderByTimestampAscending
         )
 
-        val deploymentStage = lastSuccessfulDeploymentBuild.findGivenStage(targetStage, BuildStatus.SUCCESS)
+        val buildsGroupedByEachDeployment: MutableMap<DeploymentTimestamp, List<Build>> = mutableMapOf()
 
-        val deployDoneTimestamp = deploymentStage!!.getStageDoneTime()
+        var buildIndex = 0
+        var fromIndex = 0
 
-        val average = targetBuilds.flatMap { it.changeSets }.map { deployDoneTimestamp - it.timestamp }.average()
+        while (buildIndex < buildsInScope.size) {
+            val deployStage = buildsInScope.get(buildIndex).findGivenStage(targetStage, BuildStatus.SUCCESS)
+            if (deployStage != null) {
+                val buildsInOneDeployment = buildsInScope.subList(fromIndex, buildIndex + 1)
+                buildsGroupedByEachDeployment[DeploymentTimestamp(deployStage.getStageDoneTime())] =
+                    buildsInOneDeployment
+                fromIndex = buildIndex + 1
+            }
+            buildIndex++
+        }
 
-        if (average.isNaN()) {
+        val flatMap = buildsGroupedByEachDeployment.flatMap { element ->
+            element.value.flatMap { build -> build.changeSets }.map { commit -> element.key.value - commit.timestamp }
+        }
+        val averageValue = flatMap.average()
+
+
+        if (averageValue.isNaN()) {
             return NO_VALUE
         }
-        return average
+
+        return averageValue
     }
 
     private fun filterBuildsBetweenGivenRange(
@@ -56,9 +75,6 @@ class LeadTimeForChangeCalculator {
             }
         return targetBuilds
     }
-
-    companion object {
-        private const val NO_VALUE: Double = 0.0
-        private const val EARLIEST_TIMESTAMP: Long = 0
-    }
 }
+
+data class DeploymentTimestamp(val value: Long)
