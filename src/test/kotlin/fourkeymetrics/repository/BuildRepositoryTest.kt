@@ -33,7 +33,7 @@ class BuildRepositoryTest {
         val pipelineId = "fake pipeline"
         val collectionName = "build"
 
-        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-1.json").readText())
+        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-1.json").readText())
 
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
@@ -46,7 +46,7 @@ class BuildRepositoryTest {
                                                      @Autowired objectMapper: ObjectMapper) {
         val collectionName = "build"
 
-        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-3.json").readText())
+        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-3.json").readText())
 
         buildRepository.save(buildsToSave)
 

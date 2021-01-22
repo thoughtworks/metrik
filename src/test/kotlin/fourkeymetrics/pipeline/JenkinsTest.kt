@@ -81,7 +81,7 @@ internal class JenkinsTest {
         mockServer.expect(requestTo(getBuildDetailUrl))
                 .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(), MediaType.APPLICATION_JSON))
 
-        val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-1.json").readText())
+        val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
         val allBuilds = jenkins.fetchAllBuilds(dashboardId, pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, only()).save(allBuilds)
