@@ -64,25 +64,4 @@ internal class DeploymentFrequencyServiceTest {
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
     }
-
-    /**
-     * test file: builds-4.json
-     * build 1 : 2021-12-01, [commitID: 0]
-     * build 2 : 2021-01-01, [commitID: 1]
-     * build 3 : 2021-01-15, [commitID: 1]
-     * build 4 : 2021-01-30, [commitID: 2]
-     */
-    @Test
-    internal fun `should get deployment count with effective deployments only when calculate deployment count`() {
-        val pipelineId = "test pipeline - master"
-        val targetStage = "deploy to prod"
-        val startTimestamp = 1609286400000L  // 2020-12-30
-        val endTimestamp = 1612137600000L   // 2021-02-01
-
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-4.json").readText())
-
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
-
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
-    }
 }
