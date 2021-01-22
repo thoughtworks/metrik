@@ -7,6 +7,7 @@ import fourkeymetrics.model.PipelineConfiguration
 import fourkeymetrics.model.Stage
 import fourkeymetrics.repository.BuildRepository
 import fourkeymetrics.repository.DashboardRepository
+import fourkeymetrics.repository.pipeline.Jenkins
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

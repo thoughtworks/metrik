@@ -1,6 +1,6 @@
 package fourkeymetrics.resource
 
-import fourkeymetrics.pipeline.Pipeline
+import fourkeymetrics.repository.pipeline.Pipeline
 import fourkeymetrics.service.DeploymentFrequencyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

@@ -1,8 +1,8 @@
-package fourkeymetrics.pipeline
+package fourkeymetrics.repository.pipeline
 
-import fourkeymetrics.pipeline.dto.BuildSummaryCollectionDTO
-import fourkeymetrics.pipeline.dto.BuildSummaryDTO
-import fourkeymetrics.pipeline.dto.BuildDetailsDTO
+import fourkeymetrics.repository.pipeline.dto.BuildSummaryCollectionDTO
+import fourkeymetrics.repository.pipeline.dto.BuildSummaryDTO
+import fourkeymetrics.repository.pipeline.dto.BuildDetailsDTO
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.Commit

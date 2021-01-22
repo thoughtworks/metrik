@@ -1,4 +1,4 @@
-package fourkeymetrics.pipeline
+package fourkeymetrics.repository.pipeline
 
 import fourkeymetrics.model.Build
 import fourkeymetrics.repository.BuildRepository

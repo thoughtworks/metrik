@@ -2,7 +2,7 @@ package fourkeymetrics.service
 
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.model.PipelineType
-import fourkeymetrics.pipeline.Jenkins
+import fourkeymetrics.repository.pipeline.Jenkins
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service

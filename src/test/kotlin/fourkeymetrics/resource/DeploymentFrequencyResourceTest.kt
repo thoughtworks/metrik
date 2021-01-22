@@ -1,7 +1,7 @@
 package fourkeymetrics.resource
 
 import fourkeymetrics.service.DeploymentFrequencyService
-import fourkeymetrics.pipeline.Pipeline
+import fourkeymetrics.repository.pipeline.Pipeline
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired

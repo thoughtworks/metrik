@@ -2,7 +2,7 @@ package fourkeymetrics.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.pipeline.Jenkins
+import fourkeymetrics.repository.pipeline.Jenkins
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
