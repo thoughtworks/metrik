@@ -126,7 +126,8 @@ tasks.jacocoTestCoverageVerification {
 					"**/pipeline**",
 					"**/dto**",
 					"**/MetricsApplicationService**",
-					"**/LeadTimeForChangeCalculator**"
+					"**/LeadTimeForChangeCalculator**",
+					"**/TestResource**"
 				)
 			}
 	)
