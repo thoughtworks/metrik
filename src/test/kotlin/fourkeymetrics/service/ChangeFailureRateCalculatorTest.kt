@@ -22,9 +22,6 @@ class ChangeFailureRateCalculatorTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @MockBean
-    private lateinit var buildRepository: BuildRepository
-
     /**
      * test file: builds-cfr.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod)
@@ -35,7 +32,6 @@ class ChangeFailureRateCalculatorTest {
      */
     @Test
     fun `should get change failure rate within time range given 3 valid build inside when calculate CFR`() {
-        val pipelineId = "1"
         val targetStage = "deploy to prod"
         // build 2 - build 5
         val startTimestamp = 1609459200000L
@@ -44,16 +40,14 @@ class ChangeFailureRateCalculatorTest {
         val mockBuildList: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
 
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
-
         assertThat(
-            changeFailureRateCalculator.getChangeFailureRate(
-                pipelineId,
-                targetStage,
+            changeFailureRateCalculator.calculate(
+                mockBuildList,
                 startTimestamp,
-                endTimestamp
+                endTimestamp,
+                targetStage
             )
-        ).isEqualTo(1/3F)
+        ).isEqualTo(1 / 3.0)
     }
 
     /**
@@ -75,15 +69,13 @@ class ChangeFailureRateCalculatorTest {
         val mockBuildList: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
 
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
-
         assertThat(
-            changeFailureRateCalculator.getChangeFailureRate(
-                pipelineId,
-                targetStage,
+            changeFailureRateCalculator.calculate(
+                mockBuildList,
                 startTimestamp,
-                endTimestamp
+                endTimestamp,
+                targetStage
             )
-        ).isEqualTo(0F)
+        ).isEqualTo(0.0)
     }
 }

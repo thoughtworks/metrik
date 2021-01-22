@@ -1,32 +1,28 @@
 package fourkeymetrics.service
 
+import fourkeymetrics.model.Build
 import fourkeymetrics.model.BuildStatus
-import fourkeymetrics.repository.BuildRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ChangeFailureRateCalculator {
-    @Autowired
-    private lateinit var buildRepository: BuildRepository
+class ChangeFailureRateCalculator : MetricValueCalculator {
 
     companion object {
         private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
     }
 
-    fun getChangeFailureRate(
-        pipelineId: String,
-        targetStage: String,
-        startTimestampMillis: Long,
-        endTimestampMillis: Long
-    ): Float {
-        val allBuilds = buildRepository.getAllBuilds(pipelineId)
+    override fun calculate(
+        allBuilds: List<Build>,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String
+    ): Double {
         val statusCountMap = allBuilds.asSequence()
             .flatMap {
                 it.stages.asSequence()
             }
             .filter {
-                it.getStageDoneTime() in startTimestampMillis..endTimestampMillis
+                it.getStageDoneTime() in startTimestamp..endTimestamp
             }
             .filter { it.name == targetStage }
             .filter { it.status in TARGET_STAGE_STATUS_LIST }
@@ -35,9 +31,9 @@ class ChangeFailureRateCalculator {
 
         val totalCount = statusCountMap.values.sum()
         return if (totalCount > 0) {
-            statusCountMap.getOrDefault(BuildStatus.FAILED, 0).toFloat() / totalCount
+            statusCountMap.getOrDefault(BuildStatus.FAILED, 0).toDouble() / totalCount
         } else {
-            0F
+            0.0
         }
     }
 }

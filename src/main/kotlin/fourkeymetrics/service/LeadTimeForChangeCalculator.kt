@@ -3,14 +3,16 @@ package fourkeymetrics.service
 import fourkeymetrics.model.Build
 import fourkeymetrics.model.BuildStatus
 
-class LeadTimeForChangeCalculator {
+class LeadTimeForChangeCalculator : MetricValueCalculator {
 
     companion object {
         private const val NO_VALUE: Double = 0.0
         private const val EARLIEST_TIMESTAMP: Long = 0
     }
 
-    fun calculate(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): Double {
+    override fun calculate(
+        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
+    ): Double {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
