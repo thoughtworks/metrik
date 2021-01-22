@@ -24,5 +24,14 @@ class ConfigurationResource {
         configurationService.verifyPipeline(url, username, credential, type)
     }
 
+    @PostMapping("api/pipeline/config")
+    fun save(@RequestBody config: ConfigurationVo):Dashboard{
+        return configurationService.save(config)
+    }
+
+    @PutMapping("api/dashboard/{dashboardId}/pipeline/{pipelineId}/config/")
+    fun update(@RequestBody config: PipelineConfigurationVo,@PathVariable("dashboardId") dashboardId:String,@PathVariable("pipelineId") pipelineId:String ):PipelineConfiguration{
+      return  configurationService.update(config,dashboardId,pipelineId)
+    }
 
 }
