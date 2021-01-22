@@ -19,4 +19,8 @@ class BuildRepository {
     fun save(builds: List<Build>) {
         builds.parallelStream().forEach { mongoTemplate.save(it, collectionName) }
     }
+
+    fun clear() {
+        mongoTemplate.dropCollection(collectionName)
+    }
 }

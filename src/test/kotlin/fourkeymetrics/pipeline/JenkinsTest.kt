@@ -85,7 +85,8 @@ internal class JenkinsTest {
         val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
         val allBuilds = jenkins.fetchAllBuilds(dashboardId, pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, only()).save(allBuilds)
+        verify(buildRepository, times(1)).clear()
+        verify(buildRepository, times(1)).save(allBuilds)
     }
 
     @Test

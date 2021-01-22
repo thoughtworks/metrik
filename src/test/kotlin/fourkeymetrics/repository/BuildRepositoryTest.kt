@@ -60,4 +60,18 @@ class BuildRepositoryTest {
 
         assertTrue(ids.containsAll(expectedIds))
     }
+
+    @Test
+    internal fun `should remove all collection data`(@Autowired mongoTemplate: MongoTemplate,
+                                                     @Autowired buildRepository: BuildRepository,
+                                                     @Autowired objectMapper: ObjectMapper) {
+        val collectionName = "build"
+        val buildsToSave: List<Build> = objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-2.json").readText())
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        buildRepository.clear()
+
+        val builds: List<Build> = mongoTemplate.findAll(collectionName)
+        assertThat(builds).hasSize(0)
+    }
 }

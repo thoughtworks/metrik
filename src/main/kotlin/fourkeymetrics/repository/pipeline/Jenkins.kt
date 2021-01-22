@@ -48,6 +48,7 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
             )
         }.toList()
 
+        buildRepository.clear()
         buildRepository.save(builds)
 
         return builds
