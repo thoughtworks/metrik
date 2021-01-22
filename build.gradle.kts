@@ -119,16 +119,13 @@ tasks.jacocoTestCoverageVerification {
 			sourceSets.main.get().output.asFileTree.matching {
 				exclude(
 					"fourkeymetrics/Application**",
-					"**/model**",
-					"**/config**",
-					"**/pipeline**",
+					"**/applicationconfig**",
 					"**/dto**",
-					"**/TestResource**",
-					"**/ConfigurationService**",
-					"**/ConfigurationResource**",
-					"**/DashboardRepository**",
-					"**/**Request**",
-					"**/**Response**"
+					"**/vo**",
+					"**/model/**",
+					"**/Jenkins**",
+					"**/Pipeline**",
+					"**/dashboardconfiguration**"
 				)
 			}
 	)

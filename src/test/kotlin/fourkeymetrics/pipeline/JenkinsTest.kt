@@ -2,12 +2,10 @@ package fourkeymetrics.pipeline
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.model.Build
-import fourkeymetrics.model.PipelineConfiguration
-import fourkeymetrics.model.Stage
-import fourkeymetrics.repository.BuildRepository
-import fourkeymetrics.repository.DashboardRepository
-import fourkeymetrics.repository.pipeline.Jenkins
+import fourkeymetrics.dashboardconfiguration.DashboardRepository
+import fourkeymetrics.dashboardconfiguration.model.PipelineConfiguration
+import fourkeymetrics.metric.model.Build
+import fourkeymetrics.metric.model.Stage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,8 +23,10 @@ import org.springframework.web.client.RestTemplate
 
 
 @ExtendWith(SpringExtension::class)
-@Import(Jenkins::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
-        RestTemplate::class)
+@Import(
+    Jenkins::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
+    RestTemplate::class
+)
 @RestClientTest
 internal class JenkinsTest {
     @Autowired
@@ -49,7 +49,12 @@ internal class JenkinsTest {
         val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
 
-        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration())
+        `when`(
+            dashboardRepository.getPipelineConfiguration(
+                dashboardId,
+                pipelineId
+            )
+        ).thenReturn(PipelineConfiguration())
 
         assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isTrue
     }
@@ -76,13 +81,30 @@ internal class JenkinsTest {
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
-        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(PipelineConfiguration(username = username, credential = credential, url = baseUrl))
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(
+            PipelineConfiguration(
+                username = username,
+                credential = credential,
+                url = baseUrl
+            )
+        )
         mockServer.expect(requestTo(getBuildSummariesUrl))
-                .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(), MediaType.APPLICATION_JSON))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
         mockServer.expect(requestTo(getBuildDetailUrl))
-                .andRespond(withSuccess(this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(), MediaType.APPLICATION_JSON))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
 
-        val expectedBuilds: List<Build> = objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
+        val expectedBuilds: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
         val allBuilds = jenkins.fetchAllBuilds(dashboardId, pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).clear()
@@ -96,8 +118,12 @@ internal class JenkinsTest {
         val startTimestamp = 100000L
         val endTimestamp = 200000L
 
-        val lastBuild = Build(stages = listOf(Stage(name = targetStage, startTimeMillis = 100000L),
-                Stage(name = "another stage", startTimeMillis = 100000L)))
+        val lastBuild = Build(
+            stages = listOf(
+                Stage(name = targetStage, startTimeMillis = 100000L),
+                Stage(name = "another stage", startTimeMillis = 100000L)
+            )
+        )
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
@@ -111,8 +137,17 @@ internal class JenkinsTest {
         val startTimestamp = 100000L
         val endTimestamp = 200000L
 
-        val lastBuild = Build(stages = listOf(Stage(name = "clone"), Stage(name = "build"),
-                Stage(name = targetStage, startTimeMillis = 150000L, durationMillis = 30000L, pauseDurationMillis = 50000L)))
+        val lastBuild = Build(
+            stages = listOf(
+                Stage(name = "clone"), Stage(name = "build"),
+                Stage(
+                    name = targetStage,
+                    startTimeMillis = 150000L,
+                    durationMillis = 30000L,
+                    pauseDurationMillis = 50000L
+                )
+            )
+        )
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
