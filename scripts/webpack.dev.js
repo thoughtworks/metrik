@@ -13,6 +13,9 @@ const devConfig = {
 		overlay: true,
 		open: true,
 		historyApiFallback: true,
+		proxy: {
+			"/api": "http://localhost:9000",
+		},
 	},
 };
 
