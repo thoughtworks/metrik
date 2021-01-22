@@ -73,7 +73,7 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
         val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>(headers)
         val buildDetailResponse: ResponseEntity<BuildDetailsDTO> =
-            restTemplate.exchange("http://$baseUrl/${buildSummary.number}/wfapi/describe", HttpMethod.GET, entity)
+            restTemplate.exchange("$baseUrl/${buildSummary.number}/wfapi/describe", HttpMethod.GET, entity)
         return buildDetailResponse.body!!
     }
 
@@ -82,7 +82,7 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
         val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>(headers)
         val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
-            restTemplate.exchange("http://$baseUrl/api/json?tree=allBuilds[building,number," +
+            restTemplate.exchange("$baseUrl/api/json?tree=allBuilds[building,number," +
                 "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]", HttpMethod.GET, entity)
         return allBuildsResponse.body!!.allBuilds
     }

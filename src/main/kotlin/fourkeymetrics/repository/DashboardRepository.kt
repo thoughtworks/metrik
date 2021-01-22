@@ -18,8 +18,8 @@ class DashboardRepository {
     private val collectionName = "dashboard"
 
     fun getPipelineConfiguration(dashboardId: String, pipelineId: String): PipelineConfiguration? {
-        val query = Query.query(Criteria.where("dashboardId").isEqualTo(dashboardId))
+        val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
         val dashboard: Dashboard? = mongoTemplate.findOne(query, collectionName)
-        return dashboard?.pipelineConfigurations?.find { it.pipelineId == pipelineId }
+        return dashboard?.pipelineConfigurations?.find { it.id == pipelineId }
     }
 }
