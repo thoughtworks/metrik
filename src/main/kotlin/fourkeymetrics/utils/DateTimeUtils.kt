@@ -9,10 +9,12 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-internal const val FORTNIGHTLY_DAYS = 14L
-
 @Component
 class DateTimeUtils {
+
+    companion object {
+        private const val FORTNIGHTLY_DAYS: Long = 14L
+    }
 
     private fun getLocalDateTimeFromTimestampMillis(timestamp: Long): LocalDateTime {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId())

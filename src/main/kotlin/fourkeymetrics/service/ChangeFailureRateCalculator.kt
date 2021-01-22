@@ -11,7 +11,7 @@ class ChangeFailureRateCalculator {
     private lateinit var buildRepository: BuildRepository
 
     companion object {
-        val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
+        private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
     }
 
     fun getChangeFailureRate(
