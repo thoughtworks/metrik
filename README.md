@@ -1,4 +1,4 @@
-# SEA-4-Key-Metrics-frontend
+# SEA-4-Key-Metrics-dashboard
 
 ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend 
 
