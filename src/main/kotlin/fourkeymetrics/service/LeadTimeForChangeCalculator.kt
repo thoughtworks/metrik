@@ -5,7 +5,6 @@ import fourkeymetrics.model.BuildStatus
 
 class LeadTimeForChangeCalculator {
 
-
     companion object {
         private const val NO_VALUE: Double = 0.0
         private const val EARLIEST_TIMESTAMP: Long = 0
@@ -32,6 +31,13 @@ class LeadTimeForChangeCalculator {
             buildOrderByTimestampAscending
         )
 
+        return calculateMLT(buildsInScope, targetStage)
+    }
+
+    private fun calculateMLT(
+        buildsInScope: List<Build>,
+        targetStage: String
+    ): Double {
         val buildsGroupedByEachDeployment: MutableMap<DeploymentTimestamp, List<Build>> = mutableMapOf()
 
         var buildIndex = 0
