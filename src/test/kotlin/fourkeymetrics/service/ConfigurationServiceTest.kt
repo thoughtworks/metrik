@@ -2,6 +2,7 @@ package fourkeymetrics.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.repository.DashboardRepository
 import fourkeymetrics.repository.pipeline.Jenkins
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -21,6 +22,9 @@ class ConfigurationServiceTest {
 
     @MockBean
     private lateinit var jenkins: Jenkins
+
+    @MockBean
+    private lateinit var dashboardRepository: DashboardRepository
 
     @Test
     internal fun `should not throw exception when type is jenkins`(){
