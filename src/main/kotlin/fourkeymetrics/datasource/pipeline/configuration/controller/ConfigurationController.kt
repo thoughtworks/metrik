@@ -1,9 +1,9 @@
-package fourkeymetrics.datasource.pipeline.configuration
+package fourkeymetrics.datasource.pipeline.configuration.controller
 
 import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
 import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
-import fourkeymetrics.datasource.pipeline.configuration.vo.DashboardConfigurationRequest
-import fourkeymetrics.datasource.pipeline.configuration.vo.PipelineConfigurationRequest
+import fourkeymetrics.datasource.pipeline.configuration.controller.vo.DashboardConfigurationRequest
+import fourkeymetrics.datasource.pipeline.configuration.controller.vo.PipelineConfigurationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

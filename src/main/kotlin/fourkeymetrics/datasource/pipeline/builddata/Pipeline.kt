@@ -1,4 +1,4 @@
-package fourkeymetrics.datasource.pipeline.configuration.repository.pipeline
+package fourkeymetrics.datasource.pipeline.builddata
 
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
 import fourkeymetrics.metric.model.Build

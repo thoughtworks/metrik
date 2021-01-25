@@ -3,7 +3,7 @@ package fourkeymetrics.datasource.pipeline.configuration
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
-import fourkeymetrics.datasource.pipeline.configuration.model.PipelineType
+import fourkeymetrics.datasource.pipeline.sharedmodel.PipelineType
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

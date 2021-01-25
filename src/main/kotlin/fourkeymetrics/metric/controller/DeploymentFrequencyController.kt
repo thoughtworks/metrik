@@ -1,6 +1,6 @@
 package fourkeymetrics.metric
 
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.Pipeline
+import fourkeymetrics.datasource.pipeline.builddata.Pipeline
 import fourkeymetrics.metric.calculator.DeploymentFrequencyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package fourkeymetrics.datasource.pipeline.configuration.repository.pipeline
+package fourkeymetrics.datasource.pipeline.builddata
 
 import fourkeymetrics.metric.model.Build
 import org.springframework.beans.factory.annotation.Autowired

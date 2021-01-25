@@ -1,8 +1,8 @@
-package fourkeymetrics.datasource.pipeline.configuration.repository.pipeline
+package fourkeymetrics.datasource.pipeline.builddata
 
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.dto.BuildSummaryCollectionDTO
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.dto.BuildSummaryDTO
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.dto.BuildDetailsDTO
+import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryCollectionDTO
+import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryDTO
+import fourkeymetrics.datasource.pipeline.builddata.dto.BuildDetailsDTO
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.Commit

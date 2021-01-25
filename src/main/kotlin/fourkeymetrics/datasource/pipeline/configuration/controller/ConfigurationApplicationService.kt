@@ -1,13 +1,13 @@
-package fourkeymetrics.datasource.pipeline.configuration
+package fourkeymetrics.datasource.pipeline.configuration.controller
 
 import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
 import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
-import fourkeymetrics.datasource.pipeline.configuration.model.PipelineType
+import fourkeymetrics.datasource.pipeline.sharedmodel.PipelineType
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
-import fourkeymetrics.datasource.pipeline.configuration.vo.DashboardConfigurationRequest
-import fourkeymetrics.datasource.pipeline.configuration.vo.PipelineConfigurationRequest
+import fourkeymetrics.datasource.pipeline.configuration.controller.vo.DashboardConfigurationRequest
+import fourkeymetrics.datasource.pipeline.configuration.controller.vo.PipelineConfigurationRequest
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.Jenkins
+import fourkeymetrics.datasource.pipeline.builddata.Jenkins
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

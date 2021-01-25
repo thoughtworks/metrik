@@ -1,7 +1,7 @@
 package fourkeymetrics.metric.controller
 
 import fourkeymetrics.metric.calculator.DeploymentFrequencyService
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.Pipeline
+import fourkeymetrics.datasource.pipeline.builddata.Pipeline
 import fourkeymetrics.metric.DeploymentFrequencyController
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`

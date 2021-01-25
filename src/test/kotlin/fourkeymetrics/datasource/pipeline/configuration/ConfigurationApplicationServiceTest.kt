@@ -1,9 +1,10 @@
 package fourkeymetrics.datasource.pipeline.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fourkeymetrics.datasource.pipeline.configuration.controller.ConfigurationApplicationService
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.Jenkins
+import fourkeymetrics.datasource.pipeline.builddata.Jenkins
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

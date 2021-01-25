@@ -1,4 +1,4 @@
-package fourkeymetrics.datasource.pipeline.configuration.repository.pipeline
+package fourkeymetrics.datasource.pipeline.builddata
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

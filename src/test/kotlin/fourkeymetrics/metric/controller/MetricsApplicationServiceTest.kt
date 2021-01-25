@@ -1,6 +1,6 @@
 package fourkeymetrics.metric.controller
 
-import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.BuildRepository
+import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
 import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metric.model.Build
