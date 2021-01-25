@@ -73,12 +73,14 @@ jobs:
                 docker container rm \$CURRENT_CONTAINER_ID
               fi
 
-              echo \"Cleaning up...\"
+              echo \"Untag old image...\"
               docker rmi -f ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
-              docker system prune -f
 
-              echo \"Deploying...\"
+              echo \"Deploying with the latest image...\"
               docker run --name \$CONTAINER_NAME -d -p 80:80 --net=4km-docker_default --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
+
+              echo \"Cleaning up...\"
+              docker system prune -f
             "
 
 workflows:
