@@ -192,7 +192,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 7 : star time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
-    internal fun `case 6 there are three deployments but only the middle 1 deployment finish time in the time range and there are some other build without ssuccessful deployment between them`() {
+    internal fun `case 6 there are multiple builds with different status and there are three deployment with the middle one in time range`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-6.json").readText()
         )
@@ -218,7 +218,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 6 : star time 26: deploy to prod, ABORTED, deployment finish time 30, two commits time: 22, 23
      */
     @Test
-    internal fun `case 7 there are three deployments but only the middle 1 deployment finish time in the time range and there are some other build with wrong order without successsful deployment between them`() {
+    internal fun `case 7 there are multiple builds with different status and wrong order and there are three deployment with the middle one in time range`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-7.json").readText()
         )
@@ -243,7 +243,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 7 : star time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
-    internal fun `case 8 there is no deployment before time range where thereAreTwoDeploymentsAndTheFirstDeploymentFinishTimeInTheTimeRangeAndTheredAreSomeOtherBuildsWithoutSuccesssfulDeploymentBetween`() {
+    internal fun `case 8 there are two deployments before the time range`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-8.json").readText()
         )
@@ -294,7 +294,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * result  = (  (44*4-37-38-33-34) + (34*2-16-17) + (17*5-10-11-12-6-7)  )/11
      */
     @Test
-    internal fun `case 10 there are 4 deployments and the last 3 in the time range and there are other buildsWithoutDeploymentBetween`() {
+    internal fun `case 10 there are 4 deployments and the last 3 in the time range`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-10.json").readText()
         )
