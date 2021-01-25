@@ -125,7 +125,7 @@ tasks.jacocoTestCoverageVerification {
 					"**/model/**",
 					"**/Jenkins**",
 					"**/Pipeline**",
-					"**/dashboardconfiguration**"
+					"**/datasource/pipeline/configuration**"
 				)
 			}
 	)
