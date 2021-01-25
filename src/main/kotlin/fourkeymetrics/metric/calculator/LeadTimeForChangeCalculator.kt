@@ -23,7 +23,7 @@ class LeadTimeForChangeCalculator : MetricValueCalculator {
                 endTimestamp
             )
         } ?: return NO_VALUE
-        val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.find {
+        val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentBeforeGivenTimestamp(
                 targetStage,
                 BuildStatus.SUCCESS, startTimestamp
@@ -58,10 +58,10 @@ class LeadTimeForChangeCalculator : MetricValueCalculator {
             buildIndex++
         }
 
-        val flatMap = buildsGroupedByEachDeployment.flatMap { element ->
+        val commitLeadTimeList = buildsGroupedByEachDeployment.flatMap { element ->
             element.value.flatMap { build -> build.changeSets }.map { commit -> element.key.value - commit.timestamp }
         }
-        val averageValue = flatMap.average()
+        val averageValue = commitLeadTimeList.average()
 
 
         if (averageValue.isNaN()) {

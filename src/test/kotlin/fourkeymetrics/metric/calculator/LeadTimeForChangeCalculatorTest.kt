@@ -80,7 +80,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : star time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      */
     @Test
-    internal fun `case 4 here is only 1 deployment and the deployment time is the end time`() {
+    internal fun `case 4 there is only 1 deployment and the deployment time is the end time`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-4.json").readText()
         )
@@ -135,6 +135,47 @@ internal class LeadTimeForChangeCalculatorTest {
             leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(0.0, leadTimeForChangeValue)
+    }
+
+    /**
+     * test file: builds-for-MLT-case-5-2.json
+     * build 1 : star time 8: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 8, 8
+     */
+    @Test
+    internal fun `case 5-2 there are one deployments with two commits with zero lead time for change`() {
+        val allBuilds: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/calculator/builds-for-MLT-case-5-2.json").readText()
+        )
+        val startTimestamp = 8L
+        val endTimestamp = 8L
+        val targetStage = "deploy to prod"
+
+        val leadTimeForChangeValue: Double =
+            leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
+
+        assertEquals(0.0, leadTimeForChangeValue)
+    }
+
+    /**
+     * test file: builds-for-MLT-case-5-3.json
+     * build 1 : star time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
+     * build 2 : star time 8: deploy to prod, SUCCESS, deployment finish time 13, two commits time: 4, 5
+     * build 3 : star time 12: deploy to prod, SUCCESS, deployment finish time 17, two commits time: 10, 11
+     * build 4 : star time 18: deploy to prod, SUCCESS, deployment finish time 23, two commits time: 14, 15
+     */
+    @Test
+    internal fun `case 5-3 there are four deployments and the third deployment is in the time range`() {
+        val allBuilds: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/calculator/builds-for-MLT-case-5-3.json").readText()
+        )
+        val startTimestamp = 16L
+        val endTimestamp = 18L
+        val targetStage = "deploy to prod"
+
+        val leadTimeForChangeValue: Double =
+            leadTimeForChangeCalculator.calculate(allBuilds, startTimestamp, endTimestamp, targetStage)
+
+        assertEquals(6.5, leadTimeForChangeValue)
     }
 
     /**
