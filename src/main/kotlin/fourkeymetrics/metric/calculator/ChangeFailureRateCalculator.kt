@@ -5,13 +5,13 @@ import fourkeymetrics.metric.model.BuildStatus
 import org.springframework.stereotype.Component
 
 @Component
-class ChangeFailureRateCalculator : MetricValueCalculator {
+class ChangeFailureRateCalculator : MetricCalculator {
 
     companion object {
         private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
     }
 
-    override fun calculate(
+    override fun calculateValue(
         allBuilds: List<Build>,
         startTimestamp: Long,
         endTimestamp: Long,

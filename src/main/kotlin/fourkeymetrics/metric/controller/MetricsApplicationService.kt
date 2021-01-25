@@ -8,7 +8,7 @@ import fourkeymetrics.metric.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metric.controller.vo.Metrics
 import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metric.calculator.MetricValueCalculator
+import fourkeymetrics.metric.calculator.MetricCalculator
 import fourkeymetrics.metric.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -65,14 +65,14 @@ class MetricsApplicationService {
         endTimeMillis: Long,
         targetStage: String,
         timeRangeByUnit: List<Pair<Long, Long>>,
-        calculator: MetricValueCalculator
+        calculator: MetricCalculator
     ): Metrics {
-        val valueForWholeRange = calculator.calculate(allBuilds, startTimeMillis, endTimeMillis, targetStage)
+        val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
         val summary = Metric(valueForWholeRange, LEVEL.LOW, startTimeMillis, endTimeMillis)
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculate(allBuilds, it.first, it.second, targetStage)
+                    calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
                 Metric(valueForUnitRange, it.first, it.second)
             }
         return Metrics(summary, details)

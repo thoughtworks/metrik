@@ -38,7 +38,7 @@ class ChangeFailureRateCalculatorTest {
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
 
         assertThat(
-            changeFailureRateCalculator.calculate(
+            changeFailureRateCalculator.calculateValue(
                 mockBuildList,
                 startTimestamp,
                 endTimestamp,
@@ -66,7 +66,7 @@ class ChangeFailureRateCalculatorTest {
             objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
 
         assertThat(
-            changeFailureRateCalculator.calculate(
+            changeFailureRateCalculator.calculateValue(
                 mockBuildList,
                 startTimestamp,
                 endTimestamp,

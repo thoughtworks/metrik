@@ -5,14 +5,14 @@ import fourkeymetrics.metric.model.BuildStatus
 import org.springframework.stereotype.Component
 
 @Component
-class LeadTimeForChangeCalculator : MetricValueCalculator {
+class LeadTimeForChangeCalculator : MetricCalculator {
 
     companion object {
         private const val NO_VALUE: Double = 0.0
         private const val EARLIEST_TIMESTAMP: Long = 0
     }
 
-    override fun calculate(
+    override fun calculateValue(
         allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
     ): Double {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
