@@ -2,6 +2,7 @@ package fourkeymetrics.metric.calculator
 
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.BuildStatus
+import fourkeymetrics.metric.model.LEVEL
 import org.springframework.stereotype.Component
 
 @Component
@@ -35,5 +36,9 @@ class ChangeFailureRateCalculator : MetricCalculator {
         } else {
             0.0
         }
+    }
+
+    override fun calculateLevel(value: Double): LEVEL {
+        return LEVEL.LOW
     }
 }

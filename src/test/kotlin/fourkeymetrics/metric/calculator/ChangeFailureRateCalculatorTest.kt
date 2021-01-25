@@ -3,7 +3,9 @@ package fourkeymetrics.metric.calculator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.metric.model.Build
+import fourkeymetrics.metric.model.LEVEL
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -73,5 +75,10 @@ class ChangeFailureRateCalculatorTest {
                 targetStage
             )
         ).isEqualTo(0.0)
+    }
+
+    @Test
+    internal fun `should return level is low`() {
+        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(1.0))
     }
 }
