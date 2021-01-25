@@ -6,9 +6,10 @@ export const pipelineVerify = createRequest<PipelineVerifyRequest>(requestParams
 	params: requestParams,
 }));
 
-export const pipelineConfig = createRequest<PipelineConfigRequest>(() => ({
+export const postPipelineConfig = createRequest<PipelineConfigRequest>(pipelineConfig => ({
 	url: "/api/pipeline/config",
 	method: "POST",
+	data: pipelineConfig,
 }));
 
 interface PipelineVerifyRequest {

@@ -4,7 +4,7 @@ import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { pipelineVerify } from "../clients/apis";
+import { pipelineVerify, postPipelineConfig } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -22,11 +22,19 @@ export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
-	const onFinish = (values: ConfigFormValues) => {
-		verifyPipeline().then(() => {
-			toNextStep();
+	const onFinish = async (values: ConfigFormValues) => {
+		await verifyPipeline();
+		await postPipelineConfig({
+			dashboardName: values.dashboardName,
+			pipeline: {
+				name: values.pipelineName,
+				url: values.pipelineDomain,
+				username: values.username,
+				token: values.token,
+				type: values.pipelineTool,
+			},
 		});
-		console.log("on finish", values);
+		toNextStep();
 	};
 
 	const toNextStep = () => {
