@@ -19,7 +19,7 @@ axiosInstance.interceptors.response.use(
 		notification.error({
 			message: error.message,
 			duration: 3,
-			placement: "bottomRight",
+			placement: "topRight",
 		});
 		return Promise.reject(error);
 	}
