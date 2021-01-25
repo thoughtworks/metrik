@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { notification } from "antd";
 
 const axiosInstance = axios.create({});
 
@@ -11,3 +12,15 @@ export const createRequest = <TReq, TResp = any>(
 
 	return createFn;
 };
+
+axiosInstance.interceptors.response.use(
+	response => response,
+	error => {
+		notification.error({
+			message: error.message,
+			duration: 3,
+			placement: "bottomRight",
+		});
+		return Promise.reject(error);
+	}
+);
