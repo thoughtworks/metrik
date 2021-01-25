@@ -68,10 +68,10 @@ class LeadTimeForChangeCalculator : MetricCalculator {
         var buildIndex = 0
         var fromIndex = 0
 
-        while (buildIndex < buildsInScope.size) {
+        while (buildIndex in buildsInScope.indices) {
             val deployStage = buildsInScope[buildIndex].findGivenStage(targetStage, BuildStatus.SUCCESS)
             if (deployStage != null) {
-                val buildsInOneDeployment = buildsInScope.subList(fromIndex, buildIndex + 1)
+                val buildsInOneDeployment: List<Build> = buildsInScope.subList(fromIndex, buildIndex + 1)
                 buildsGroupedByEachDeployment[DeploymentTimestamp(deployStage.getStageDoneTime())] =
                     buildsInOneDeployment
                 fromIndex = buildIndex + 1
