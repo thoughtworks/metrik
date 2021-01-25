@@ -1,13 +1,14 @@
 package fourkeymetrics.metric.controller
 
-import fourkeymetrics.metric.model.LEVEL
-import fourkeymetrics.metric.model.Metric
-import fourkeymetrics.metric.model.MetricUnit
 import fourkeymetrics.datasource.pipeline.configuration.repository.pipeline.BuildRepository
 import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metric.model.Build
-import org.junit.jupiter.api.Assertions.*
+import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.Metric
+import fourkeymetrics.metric.model.MetricUnit
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -50,6 +51,7 @@ internal class MetricsApplicationServiceTest {
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(0.5)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(0.4)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
@@ -57,6 +59,7 @@ internal class MetricsApplicationServiceTest {
 
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(2.0)
+        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(1.0)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
