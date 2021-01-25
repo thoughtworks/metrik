@@ -62,13 +62,6 @@ class Build(
         }
     }
 
-    fun containsGivenDeployment(deployStageName: String, stageStatus: BuildStatus): Boolean {
-        return this.stages.any {
-            it.name == deployStageName
-                    && it.status == stageStatus
-        }
-    }
-
     fun findGivenStage(deployStageName: String, stageStatus: BuildStatus): Stage? {
         return this.stages.find {
             it.name == deployStageName && it.status == stageStatus

@@ -48,7 +48,7 @@ class LeadTimeForChangeCalculator : MetricValueCalculator {
         var fromIndex = 0
 
         while (buildIndex < buildsInScope.size) {
-            val deployStage = buildsInScope.get(buildIndex).findGivenStage(targetStage, BuildStatus.SUCCESS)
+            val deployStage = buildsInScope[buildIndex].findGivenStage(targetStage, BuildStatus.SUCCESS)
             if (deployStage != null) {
                 val buildsInOneDeployment = buildsInScope.subList(fromIndex, buildIndex + 1)
                 buildsGroupedByEachDeployment[DeploymentTimestamp(deployStage.getStageDoneTime())] =
@@ -79,11 +79,9 @@ class LeadTimeForChangeCalculator : MetricValueCalculator {
         val buildRangeEndTimestamp = lastSuccessfulDeploymentBuild.timestamp
         val buildRangeStartTimestamp = firstSuccessfulDeploymentBuild?.timestamp ?: EARLIEST_TIMESTAMP
 
-        val targetBuilds: List<Build> =
-            buildOrderByTimestampAscending.filter {
-                it.timestamp > buildRangeStartTimestamp && it.timestamp <= buildRangeEndTimestamp
-            }
-        return targetBuilds
+        return buildOrderByTimestampAscending.filter {
+            it.timestamp in (buildRangeStartTimestamp + 1)..buildRangeEndTimestamp
+        }
     }
 }
 
