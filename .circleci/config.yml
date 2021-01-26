@@ -23,7 +23,7 @@ jobs:
 
       - run:
           name: Run tests and build artifact
-          command: ./gradlew clean build
+          command: ./gradlew build
 
       - save_cache:
           paths:
@@ -63,7 +63,7 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,${TAG}
+          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')-$(echo $CIRCLE_SHA1 | cut -c -7)
 
   deploy_to_dev:
     docker:
