@@ -1,6 +1,9 @@
 package fourkeymetrics.metric.calculator
 
-import fourkeymetrics.metric.model.*
+import fourkeymetrics.metric.model.Build
+import fourkeymetrics.metric.model.BuildStatus
+import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.MetricUnit
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,43 +19,25 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         TODO("Not yet implemented")
     }
 
-    fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
-                           targetStage: String): List<Stage> {
-        val targetStages = allBuilds.flatMap { build -> build.stages }.filter { stage -> stage.name == targetStage }
-        val lastSuccessfulDeploymentBuildBeforeGivenTime = allBuilds.findLast {
-            it.containsGivenDeploymentBeforeGivenTimestamp(
-                targetStage,
-                BuildStatus.SUCCESS,
+    fun findSelectedBuilds(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
+                           targetStage: String): List<Build> {
+        val firstSuccessfulDeploymentBuild = allBuilds.findLast {
+            it.containsGivenDeploymentBeforeGivenTimestamp(targetStage, BuildStatus.SUCCESS,
                 startTimestamp
             )
-        } ?: return targetStages.filter { it.getStageDoneTime() <= endTimestamp }
-
-        val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBuildBeforeGivenTime
-            .stages.find { it.name == targetStage }!!.getStageDoneTime()
-
-        return targetStages.filter {
-            it.getStageDoneTime() in
-                (lastSuccessfulDeploymentTimestamp.plus(1)).rangeTo(endTimestamp)
         }
-    }
 
-    fun generateRestoredBuildPairs(selectedStages: List<Stage>): List<Pair<Stage, Stage>> {
-        val restoredStagePairs: MutableList<Pair<Stage, Stage>> = emptyList<Pair<Stage, Stage>>().toMutableList()
-        var index = 0
-        while (index < selectedStages.size) {
-            if (selectedStages[index].status == BuildStatus.FAILED) {
-                var successfulStageIndex = index + 1
-                while (successfulStageIndex < selectedStages.size) {
-                    if (selectedStages[successfulStageIndex].status == BuildStatus.SUCCESS) {
-                        restoredStagePairs.add(Pair(selectedStages[index], selectedStages[successfulStageIndex]))
-                        index = successfulStageIndex
-                        break
-                    }
-                    successfulStageIndex++
-                }
+        if (firstSuccessfulDeploymentBuild == null) {
+            return allBuilds.filter {
+                it.stages.find { stage -> stage.name == targetStage }?.getStageDoneTime()!! <= endTimestamp
             }
-            index++
         }
-        return restoredStagePairs
+
+        val timestamp = firstSuccessfulDeploymentBuild.stages.find {
+            stage -> stage.name == targetStage }?.getStageDoneTime()
+        return allBuilds.filter {
+            it.stages.find { stage -> stage.name == targetStage }!!.getStageDoneTime() in
+                (timestamp?.plus(1))?.rangeTo(endTimestamp) ?: emptyList<Build>()
+        }
     }
 }
