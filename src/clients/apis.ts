@@ -31,3 +31,19 @@ interface PipelineConfigurationVo {
 	token: string;
 	type: string;
 }
+
+export interface DashboardResponse {
+	id: string;
+	name: string;
+	pipelineConfigurations: PipelineConfiguration[];
+}
+
+export interface PipelineConfiguration {
+	id: string;
+	name: string;
+	lastUpdateTime: number;
+	username?: string;
+	credential?: string;
+	type: string;
+	url: string;
+}

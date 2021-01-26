@@ -104,6 +104,7 @@
 		"webpackbar": "^5.0.0-3"
 	},
 	"dependencies": {
+		"@ant-design/icons": "^4.4.0",
 		"@babel/runtime-corejs3": "^7.12.5",
 		"@emotion/react": "^11.1.4",
 		"@types/webpack": "^4.41.25",
