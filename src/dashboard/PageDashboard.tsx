@@ -1,10 +1,11 @@
 import React from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form, Checkbox } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../constants/date-format";
+import { MultipleCascader } from "../components/MultipleCascader";
 
 const { Text, Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -92,6 +93,9 @@ export const PageDashboard = () => {
 					</Col>
 					<Col span={4} style={{ textAlign: "right" }}>
 						<Button>Apply</Button>
+					</Col>
+					<Col span={10}>
+						<MultipleCascader />
 					</Col>
 				</Row>
 			</Form>
