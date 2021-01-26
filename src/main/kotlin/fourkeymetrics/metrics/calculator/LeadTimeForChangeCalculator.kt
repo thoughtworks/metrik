@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.BuildStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
@@ -16,7 +16,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
+            allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
     ): Double {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
@@ -64,8 +64,8 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     private fun calculateMLT(
-        buildsInScope: List<Build>,
-        targetStage: String
+            buildsInScope: List<Build>,
+            targetStage: String
     ): Double {
         val buildsGroupedByEachDeployment: MutableMap<DeploymentTimestamp, List<Build>> = mutableMapOf()
 
@@ -91,9 +91,9 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     private fun filterBuildsBetweenGivenRange(
-        lastSuccessfulDeploymentBuild: Build,
-        firstSuccessfulDeploymentBuild: Build?,
-        buildOrderByTimestampAscending: List<Build>
+            lastSuccessfulDeploymentBuild: Build,
+            firstSuccessfulDeploymentBuild: Build?,
+            buildOrderByTimestampAscending: List<Build>
     ): List<Build> {
         val buildRangeEndTimestamp = lastSuccessfulDeploymentBuild.timestamp
         val buildRangeStartTimestamp = firstSuccessfulDeploymentBuild?.timestamp ?: EARLIEST_TIMESTAMP

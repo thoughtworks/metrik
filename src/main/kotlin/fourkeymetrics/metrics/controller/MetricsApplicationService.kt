@@ -7,7 +7,7 @@ import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metrics.calculator.MetricsCalculator
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
-import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.common.model.Build
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +26,7 @@ class MetricsApplicationService {
     private lateinit var buildRepository: BuildRepository
 
     @Autowired
-    private lateinit var dateTimeUtils: DateTimeUtils
+    private lateinit var timeRangeSplitter: TimeRangeSplitter
 
     fun retrieve4KeyMetrics(
         pipelineId: String,
@@ -37,7 +37,7 @@ class MetricsApplicationService {
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
-        val timeRangeByUnit: List<Pair<Long, Long>> = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, unit)
+        val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
 
         return FourKeyMetricsResponse(
             generateMetrics(
@@ -68,13 +68,13 @@ class MetricsApplicationService {
     }
 
     private fun generateMetrics(
-        allBuilds: List<Build>,
-        startTimeMillis: Long,
-        endTimeMillis: Long,
-        targetStage: String,
-        timeRangeByUnit: List<Pair<Long, Long>>,
-        unit: MetricsUnit,
-        calculator: MetricsCalculator
+            allBuilds: List<Build>,
+            startTimeMillis: Long,
+            endTimeMillis: Long,
+            targetStage: String,
+            timeRangeByUnit: List<Pair<Long, Long>>,
+            unit: MetricsUnit,
+            calculator: MetricsCalculator
     ): MetricsInfo {
         val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
         val summary = Metrics(

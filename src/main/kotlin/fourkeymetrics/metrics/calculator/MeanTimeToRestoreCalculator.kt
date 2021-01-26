@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.BuildStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component

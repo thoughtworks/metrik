@@ -1,4 +1,4 @@
-package fourkeymetrics
+package fourkeymetrics.applicationconfig
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @EnableSwagger2
 @Configuration
-class SwaggerUIWebConfiguration {
+class SwaggerUIConfiguration {
     @Bean
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)

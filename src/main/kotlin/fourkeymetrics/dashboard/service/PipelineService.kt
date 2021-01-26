@@ -2,7 +2,7 @@ package fourkeymetrics.dashboard.service
 
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.common.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

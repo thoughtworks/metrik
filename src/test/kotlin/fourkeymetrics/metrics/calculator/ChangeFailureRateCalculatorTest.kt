@@ -2,7 +2,7 @@ package fourkeymetrics.metrics.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.common.model.Build
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.assertj.core.api.Assertions.assertThat

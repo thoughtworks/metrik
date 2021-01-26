@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.BuildStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
@@ -17,10 +17,10 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-        allBuilds: List<Build>,
-        startTimestamp: Long,
-        endTimestamp: Long,
-        targetStage: String
+            allBuilds: List<Build>,
+            startTimestamp: Long,
+            endTimestamp: Long,
+            targetStage: String
     ): Double {
         val statusCountMap = allBuilds.asSequence()
             .flatMap {

@@ -6,9 +6,9 @@ import fourkeymetrics.dashboard.service.jenkins.dto.BuildSummaryDTO
 import fourkeymetrics.dashboard.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.metrics.model.Commit
-import fourkeymetrics.metrics.model.Stage
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Commit
+import fourkeymetrics.common.model.Stage
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -41,13 +41,13 @@ class JenkinsService(@Autowired private var restTemplate: RestTemplate,
             val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
 
             Build(pipelineId,
-                buildSummary.number,
-                buildSummary.result,
-                buildSummary.duration,
-                buildSummary.timestamp,
-                buildSummary.url,
-                constructBuildStages(buildDetails),
-                constructBuildCommits(buildSummary).flatten()
+                    buildSummary.number,
+                    buildSummary.result,
+                    buildSummary.duration,
+                    buildSummary.timestamp,
+                    buildSummary.url,
+                    constructBuildStages(buildDetails),
+                    constructBuildCommits(buildSummary).flatten()
             )
         }.toList()
 
@@ -68,7 +68,7 @@ class JenkinsService(@Autowired private var restTemplate: RestTemplate,
     private fun constructBuildStages(buildDetails: BuildDetailsDTO): List<Stage> {
         return buildDetails.stages.map { stageDTO ->
             Stage(stageDTO.name, stageDTO.status, stageDTO.startTimeMillis,
-                stageDTO.durationMillis, stageDTO.pauseDurationMillis)
+                    stageDTO.durationMillis, stageDTO.pauseDurationMillis)
         }
     }
 

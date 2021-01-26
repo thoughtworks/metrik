@@ -1,6 +1,6 @@
 package fourkeymetrics.dashboard.service.jenkins.dto
 
-import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.common.model.BuildStatus
 import org.apache.logging.log4j.util.Strings
 
 data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())

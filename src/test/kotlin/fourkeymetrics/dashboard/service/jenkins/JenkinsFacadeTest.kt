@@ -5,8 +5,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.BuildRepository
-import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.metrics.model.Stage
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Stage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -120,10 +120,10 @@ internal class JenkinsFacadeTest {
         val endTimestamp = 200000L
 
         val lastBuild = Build(
-            stages = listOf(
-                Stage(name = targetStage, startTimeMillis = 100000L),
-                Stage(name = "another stage", startTimeMillis = 100000L)
-            )
+                stages = listOf(
+                        Stage(name = targetStage, startTimeMillis = 100000L),
+                        Stage(name = "another stage", startTimeMillis = 100000L)
+                )
         )
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
@@ -139,15 +139,15 @@ internal class JenkinsFacadeTest {
         val endTimestamp = 200000L
 
         val lastBuild = Build(
-            stages = listOf(
-                Stage(name = "clone"), Stage(name = "build"),
-                Stage(
-                    name = targetStage,
-                    startTimeMillis = 150000L,
-                    durationMillis = 30000L,
-                    pauseDurationMillis = 50000L
+                stages = listOf(
+                        Stage(name = "clone"), Stage(name = "build"),
+                        Stage(
+                                name = targetStage,
+                                startTimeMillis = 150000L,
+                                durationMillis = 30000L,
+                                pauseDurationMillis = 50000L
+                        )
                 )
-            )
         )
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))

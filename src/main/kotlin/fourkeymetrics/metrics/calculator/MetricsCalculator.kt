@@ -1,6 +1,6 @@
 package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.common.model.Build
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 

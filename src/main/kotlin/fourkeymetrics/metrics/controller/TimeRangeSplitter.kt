@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Component
-class DateTimeUtils {
+class TimeRangeSplitter {
 
     companion object {
         private const val FORTNIGHTLY_DAYS: Long = 14L
@@ -21,7 +21,7 @@ class DateTimeUtils {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId())
     }
 
-    fun splitTimeRange(
+    fun split(
         startTimestamp: Long,
         endTimestamp: Long,
         unit: MetricsUnit

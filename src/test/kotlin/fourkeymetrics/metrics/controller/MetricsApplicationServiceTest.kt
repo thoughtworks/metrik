@@ -1,16 +1,14 @@
 package fourkeymetrics.metrics.controller
 
+import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metrics.model.Build
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -31,7 +29,7 @@ internal class MetricsApplicationServiceTest {
     private lateinit var buildRepository: BuildRepository
 
     @Mock
-    private lateinit var dateTimeUtils: DateTimeUtils
+    private lateinit var timeRangeSplitter: TimeRangeSplitter
 
     @InjectMocks
     private lateinit var metricsApplicationService: MetricsApplicationService
@@ -48,7 +46,7 @@ internal class MetricsApplicationServiceTest {
         val unit = MetricsUnit.Fortnightly
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(expectedBuilds)
-        `when`(dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, unit))
+        `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(0.5)
