@@ -144,7 +144,7 @@
         "name": "deploy to prod",
         "startTimeMillis": 1609603200000,
         "durationMillis": 1000,
-        "pauseDurationMillis": 20
+        "pauseDurationMillis": 10
       }
     ],
     "changeSets": []
