@@ -2,7 +2,7 @@ package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.metrics.model.Build
 import fourkeymetrics.metrics.model.BuildStatus
-import fourkeymetrics.datasource.dashboard.repository.BuildRepository
+import fourkeymetrics.dashboard.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

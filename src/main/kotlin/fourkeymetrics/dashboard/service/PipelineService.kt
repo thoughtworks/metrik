@@ -1,13 +1,13 @@
-package fourkeymetrics.datasource.dashboard.facade
+package fourkeymetrics.dashboard.service
 
-import fourkeymetrics.datasource.dashboard.repository.BuildRepository
-import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.BuildRepository
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.metrics.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-abstract class PipelineFacade {
+abstract class PipelineService {
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 

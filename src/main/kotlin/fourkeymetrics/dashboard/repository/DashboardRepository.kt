@@ -1,7 +1,7 @@
-package fourkeymetrics.datasource.dashboard.repository
+package fourkeymetrics.dashboard.repository
 
-import fourkeymetrics.datasource.dashboard.model.Dashboard
-import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
+import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
@@ -19,10 +19,10 @@ class DashboardRepository {
 
     private val collectionName = "dashboard"
 
-    fun getPipelineConfiguration(dashboardId: String, pipelineId: String): PipelineConfiguration? {
+    fun getPipelineConfiguration(dashboardId: String, pipelineId: String): Pipeline? {
         val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
         val dashboard: Dashboard? = mongoTemplate.findOne(query, collectionName)
-        return dashboard?.pipelineConfigurations?.find { it.id == pipelineId }
+        return dashboard?.pipelines?.find { it.id == pipelineId }
     }
 
     fun getDashBoardDetailByName(name: String): List<Dashboard> {
@@ -39,8 +39,8 @@ class DashboardRepository {
     fun updatePipeline(
         dashboardId: String,
         pipelineId: String,
-        pipeline: PipelineConfiguration
-    ): PipelineConfiguration {
+        pipeline: Pipeline
+    ): Pipeline {
         val query = Query()
         query.addCriteria(
             Criteria.where("_id").`is`(dashboardId)

@@ -1,10 +1,10 @@
-package fourkeymetrics.datasource.dashboard.facade.jenkins
+package fourkeymetrics.dashboard.service.jenkins
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
-import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
-import fourkeymetrics.datasource.dashboard.repository.BuildRepository
+import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.metrics.model.Build
 import fourkeymetrics.metrics.model.Stage
 import org.assertj.core.api.Assertions.assertThat
@@ -25,13 +25,13 @@ import org.springframework.web.client.RestTemplate
 
 @ExtendWith(SpringExtension::class)
 @Import(
-    JenkinsFacade::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
+    JenkinsService::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
     RestTemplate::class
 )
 @RestClientTest
 internal class JenkinsFacadeTest {
     @Autowired
-    private lateinit var jenkinsFacade: JenkinsFacade
+    private lateinit var jenkinsFacade: JenkinsService
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -55,7 +55,7 @@ internal class JenkinsFacadeTest {
                 dashboardId,
                 pipelineId
             )
-        ).thenReturn(PipelineConfiguration())
+        ).thenReturn(Pipeline())
 
         assertThat(jenkinsFacade.hasPipeline(dashboardId, pipelineId)).isTrue
     }
@@ -83,11 +83,11 @@ internal class JenkinsFacadeTest {
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(
-            PipelineConfiguration(
-                username = username,
-                credential = credential,
-                url = baseUrl
-            )
+                Pipeline(
+                        username = username,
+                        credential = credential,
+                        url = baseUrl
+                )
         )
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(

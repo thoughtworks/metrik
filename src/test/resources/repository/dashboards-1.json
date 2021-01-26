@@ -2,7 +2,7 @@
   {
     "id": "dashboardId",
     "name": "4-key",
-    "pipelineConfigurations": [
+    "pipelines": [
       {
         "id": "pipelineId",
         "username": "username",

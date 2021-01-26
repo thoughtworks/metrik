@@ -1,6 +1,6 @@
-package fourkeymetrics.datasource.dashboard.controller.vo
+package fourkeymetrics.dashboard.controller.vo
 
-data class PipelineConfigurationRequest(
+data class PipelineRequest(
     val name:String,
     val url:String,
     val username:String,

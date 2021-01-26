@@ -125,7 +125,7 @@ tasks.jacocoTestCoverageVerification {
                 "**/dto**",
                 "**/vo**",
                 "**/model/**",
-                "**/datasource/dashboard**",
+                "**/dashboard/**",
                 "**/calculator/MeanTimeToRestoreCalculator**"
             )
         }

@@ -1,10 +1,10 @@
-package fourkeymetrics.datasource.dashboard
+package fourkeymetrics.dashboard
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import fourkeymetrics.datasource.dashboard.controller.ConfigurationApplicationService
-import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.controller.DashboardApplicationService
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.datasource.dashboard.facade.jenkins.JenkinsFacade
+import fourkeymetrics.dashboard.service.jenkins.JenkinsService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -16,13 +16,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(ConfigurationApplicationService::class, ObjectMapper::class)
-class ConfigurationApplicationServiceTest {
+@Import(DashboardApplicationService::class, ObjectMapper::class)
+class DashboardApplicationServiceTest {
     @Autowired
-    private lateinit var configurationApplicationService: ConfigurationApplicationService
+    private lateinit var dashboardApplicationService: DashboardApplicationService
 
     @MockBean
-    private lateinit var jenkinsFacade: JenkinsFacade
+    private lateinit var jenkinsFacade: JenkinsService
 
     @MockBean
     private lateinit var dashboardRepository: DashboardRepository
@@ -35,7 +35,7 @@ class ConfigurationApplicationServiceTest {
         val type = "JENKINS"
         Mockito.doNothing().`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatCode {
-            configurationApplicationService.verifyPipeline(
+            dashboardApplicationService.verifyPipeline(
                 url,
                 username,
                 credential,
@@ -52,7 +52,7 @@ class ConfigurationApplicationServiceTest {
         val type = "Bamboo"
         Mockito.doNothing().`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatThrownBy {
-            configurationApplicationService.verifyPipeline(
+            dashboardApplicationService.verifyPipeline(
                 url,
                 username,
                 credential,
@@ -69,7 +69,7 @@ class ConfigurationApplicationServiceTest {
         val type = "JENKINS"
         Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"the url is not found")).`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatThrownBy {
-            configurationApplicationService.verifyPipeline(
+            dashboardApplicationService.verifyPipeline(
                 url,
                 username,
                 credential,

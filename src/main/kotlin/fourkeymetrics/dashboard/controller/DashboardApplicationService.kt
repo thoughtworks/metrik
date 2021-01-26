@@ -1,23 +1,23 @@
-package fourkeymetrics.datasource.dashboard.controller
+package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.datasource.dashboard.model.Dashboard
-import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
-import fourkeymetrics.datasource.dashboard.model.PipelineType
-import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
-import fourkeymetrics.datasource.dashboard.controller.vo.DashboardConfigurationRequest
-import fourkeymetrics.datasource.dashboard.controller.vo.PipelineConfigurationRequest
+import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.model.PipelineType
+import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.controller.vo.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.datasource.dashboard.facade.jenkins.JenkinsFacade
+import fourkeymetrics.dashboard.service.jenkins.JenkinsService
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
-class ConfigurationApplicationService {
+class DashboardApplicationService {
 
     @Autowired
-    private lateinit var jenkinsFacade: JenkinsFacade
+    private lateinit var jenkinsFacade: JenkinsService
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
@@ -30,34 +30,34 @@ class ConfigurationApplicationService {
         }
     }
 
-    fun save(config: DashboardConfigurationRequest): Dashboard {
+    fun save(config: DashboardRequest): Dashboard {
         verifyPipeline(config.pipeline.url, config.pipeline.username, config.pipeline.token, config.pipeline.type)
         val dashboards = dashboardRepository.getDashBoardDetailByName(config.dashboardName)
         val dashboard: Dashboard
         val pipeline = buildNewPipelineConfiguration(config)
         if (dashboards.isEmpty()) {
             dashboard = Dashboard(
-                name = config.dashboardName,
-                pipelineConfigurations = listOf(
-                    pipeline
-                )
+                    name = config.dashboardName,
+                    pipelines = listOf(
+                            pipeline
+                    )
             )
         } else {
             dashboard = dashboards[0]
-            val pipelines = dashboard.pipelineConfigurations.toMutableList()
+            val pipelines = dashboard.pipelines.toMutableList()
             pipelines.add(
                 pipeline
             )
-            dashboard.pipelineConfigurations = pipelines
+            dashboard.pipelines = pipelines
         }
         return dashboardRepository.save(dashboard)
     }
 
-    private fun buildNewPipelineConfiguration(config: DashboardConfigurationRequest): PipelineConfiguration {
+    private fun buildNewPipelineConfiguration(config: DashboardRequest): Pipeline {
         return updatePipelineConfig(ObjectId().toString(), config.pipeline)
     }
 
-    fun update(config: PipelineConfigurationRequest, dashboardId: String, pipelineId: String): PipelineConfiguration {
+    fun update(config: PipelineRequest, dashboardId: String, pipelineId: String): Pipeline {
         verifyPipeline(config.url, config.username, config.token, config.type)
         val pipeline = updatePipelineConfig(pipelineId, config)
         return dashboardRepository.updatePipeline(dashboardId, pipelineId, pipeline)
@@ -66,15 +66,15 @@ class ConfigurationApplicationService {
 
     private fun updatePipelineConfig(
         pipelineId: String,
-        config: PipelineConfigurationRequest
-    ): PipelineConfiguration {
-        val pipeline = PipelineConfiguration(
-            id = pipelineId,
-            name = config.name,
-            url = config.url,
-            username = config.username,
-            credential = config.token,
-            type = PipelineType.valueOf(config.type)
+        config: PipelineRequest
+    ): Pipeline {
+        val pipeline = Pipeline(
+                id = pipelineId,
+                name = config.name,
+                url = config.url,
+                username = config.username,
+                credential = config.token,
+                type = PipelineType.valueOf(config.type)
         )
         return pipeline
     }

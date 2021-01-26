@@ -1,9 +1,9 @@
-package fourkeymetrics.datasource.dashboard.controller
+package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.datasource.dashboard.model.Dashboard
-import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
-import fourkeymetrics.datasource.dashboard.controller.vo.DashboardConfigurationRequest
-import fourkeymetrics.datasource.dashboard.controller.vo.PipelineConfigurationRequest
+import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.controller.vo.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable
 
 
 @RestController
-class ConfigurationController {
+class DashboardController {
 
     @Autowired
-    private lateinit var configurationApplicationService: ConfigurationApplicationService
+    private lateinit var dashboardApplicationService: DashboardApplicationService
 
     @GetMapping("/api/pipeline/verify")
     fun verifyPipeline(
@@ -27,22 +27,22 @@ class ConfigurationController {
         @RequestParam credential: String,
         @RequestParam type: String
     ) {
-        configurationApplicationService.verifyPipeline(url, username, credential, type)
+        dashboardApplicationService.verifyPipeline(url, username, credential, type)
     }
 
     @GetMapping("/api/dashboards/{id}")
 
 
     @PostMapping("api/pipeline/config")
-    fun save(@RequestBody config: DashboardConfigurationRequest): Dashboard {
-        return configurationApplicationService.save(config)
+    fun save(@RequestBody config: DashboardRequest): Dashboard {
+        return dashboardApplicationService.save(config)
     }
 
     @PutMapping("api/dashboard/{dashboardId}/pipeline/{pipelineId}/config/")
-    fun update(@RequestBody config: PipelineConfigurationRequest,
+    fun update(@RequestBody config: PipelineRequest,
                @PathVariable("dashboardId") dashboardId:String,
-               @PathVariable("pipelineId") pipelineId:String ): PipelineConfiguration {
-      return  configurationApplicationService.update(config,dashboardId,pipelineId)
+               @PathVariable("pipelineId") pipelineId:String ): Pipeline {
+      return  dashboardApplicationService.update(config,dashboardId,pipelineId)
     }
 
 }

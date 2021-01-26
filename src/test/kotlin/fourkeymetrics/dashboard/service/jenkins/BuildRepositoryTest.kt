@@ -1,8 +1,8 @@
-package fourkeymetrics.datasource.dashboard.facade.jenkins
+package fourkeymetrics.dashboard.service.jenkins
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.datasource.dashboard.repository.BuildRepository
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.metrics.model.Build
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue

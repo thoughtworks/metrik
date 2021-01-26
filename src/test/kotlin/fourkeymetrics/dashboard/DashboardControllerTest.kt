@@ -1,7 +1,7 @@
-package fourkeymetrics.datasource.dashboard
+package fourkeymetrics.dashboard
 
-import fourkeymetrics.datasource.dashboard.controller.ConfigurationApplicationService
-import fourkeymetrics.datasource.dashboard.controller.ConfigurationController
+import fourkeymetrics.dashboard.controller.DashboardApplicationService
+import fourkeymetrics.dashboard.controller.DashboardController
 import fourkeymetrics.exception.ApplicationException
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -13,13 +13,13 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@WebMvcTest(controllers = [ConfigurationController::class])
-class ConfigurationControllerTest {
+@WebMvcTest(controllers = [DashboardController::class])
+class DashboardControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var configurationApplicationService: ConfigurationApplicationService
+    private lateinit var dashboardApplicationService: DashboardApplicationService
 
 
 
@@ -29,7 +29,7 @@ class ConfigurationControllerTest {
         val username = "user"
         val credential = "credential"
         val type = "JENKINS"
-        Mockito.doNothing().`when`(configurationApplicationService).verifyPipeline(url,username, credential,type)
+        Mockito.doNothing().`when`(dashboardApplicationService).verifyPipeline(url,username, credential,type)
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/pipeline/verify")
             .param("url", url)
@@ -45,7 +45,7 @@ class ConfigurationControllerTest {
         val username = "user"
         val credential = "credential"
         val type = "JENKINS"
-        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"")).`when`(configurationApplicationService).verifyPipeline(url,username, credential,type)
+        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"")).`when`(dashboardApplicationService).verifyPipeline(url,username, credential,type)
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/pipeline/verify")
                 .param("url", url)
