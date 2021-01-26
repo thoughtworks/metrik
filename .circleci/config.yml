@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Build and tag Docker image
           command: |
-            TAG=v${CIRCLE_BUILD_NUM}-$(date '+%Y%m%d')
+            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')
             docker build -f ./Dockerfile-CircleCI -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:$TAG -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
 
       - aws-cli/install
@@ -44,7 +44,7 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,v${CIRCLE_BUILD_NUM}-$(date '+%Y%m%d')
+          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')
 
   deploy_to_dev:
     docker:
