@@ -50,7 +50,7 @@ internal class MetricsControllerTest {
         ).thenReturn(expectedResponse)
 
         mockMvc.perform(
-            get("/api/metrics")
+            get("/api/pipeline/metrics")
                 .param("pipelineId", pipelineId)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())

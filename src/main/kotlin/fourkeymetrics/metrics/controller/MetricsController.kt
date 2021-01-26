@@ -13,7 +13,7 @@ class MetricsController {
     @Autowired
     private lateinit var metricsApplicationService: MetricsApplicationService
 
-    @GetMapping("/api/metrics")
+    @GetMapping("/api/pipeline/metrics")
     fun getFourKeyMetrics(
         @RequestParam pipelineId: String,
         @RequestParam targetStage: String,
