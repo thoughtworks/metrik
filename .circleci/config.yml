@@ -10,6 +10,9 @@ jobs:
       - image: circleci/openjdk:11.0.8-jdk
     resource_class: medium
 
+    environment:
+      DOCKER_IMAGE_TAG: v<< pipeline.number >>-$(date '+%Y%m%d')-$(echo $CIRCLE_SHA1 | cut -c -7)
+
     steps:
       - checkout
 
@@ -50,8 +53,7 @@ jobs:
       - run:
           name: Build and tag Docker image
           command: |
-            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')
-            docker build -f ./Dockerfile-CircleCI -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:$TAG -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
+            docker build -f ./Dockerfile-CircleCI -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:${DOCKER_IMAGE_TAG} -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
 
       - aws-cli/install
 
@@ -63,7 +65,7 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')
+          tag: latest,${DOCKER_IMAGE_TAG}
 
   deploy_to_dev:
     docker:
