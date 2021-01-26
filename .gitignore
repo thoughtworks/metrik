@@ -34,3 +34,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### macOS Temporary Files ###
+.DS_Store
