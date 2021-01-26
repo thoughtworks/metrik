@@ -19,7 +19,8 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         TODO("Not yet implemented")
     }
 
-    fun findSelectedBuilds(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String): List<Build> {
+    fun findSelectedBuilds(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
+                           targetStage: String): List<Build> {
         val firstSuccessfulDeploymentBuild = allBuilds.findLast {
             it.containsGivenDeploymentBeforeGivenTimestamp(targetStage, BuildStatus.SUCCESS,
                 startTimestamp
@@ -32,9 +33,11 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
             }
         }
 
-        val timestamp = firstSuccessfulDeploymentBuild.stages.find { stage -> stage.name == targetStage }?.getStageDoneTime()
+        val timestamp = firstSuccessfulDeploymentBuild.stages.find {
+            stage -> stage.name == targetStage }?.getStageDoneTime()
         return allBuilds.filter {
-            it.stages.find { stage -> stage.name == targetStage }!!.getStageDoneTime() in (timestamp?.plus(1))?.rangeTo(endTimestamp) ?: emptyList<Build>()
+            it.stages.find { stage -> stage.name == targetStage }!!.getStageDoneTime() in
+                (timestamp?.plus(1))?.rangeTo(endTimestamp) ?: emptyList<Build>()
         }
     }
 }
