@@ -6,8 +6,8 @@ import { Route } from "react-router-dom";
 export const Routes = () => {
 	return (
 		<>
-			<Route path={"/"} component={PageDashboard} exact></Route>
-			<Route path={"/config"} component={PageConfig} exact></Route>
+			<Route path={"/"} component={PageDashboard} exact />
+			<Route path={"/config"} component={PageConfig} exact />
 		</>
 	);
 };

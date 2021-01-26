@@ -62,7 +62,7 @@ export const PageConfig = () => {
 	};
 
 	return (
-		<Layout style={{ height: "100vh" }}>
+		<Layout style={{ minHeight: "100vh" }}>
 			<Layout.Content>
 				<div css={{ width: 896, margin: "24px auto", padding: 24, background: "#fff" }}>
 					{currentStep !== ConfigStep.CONFIG_SUCCESS ? (
