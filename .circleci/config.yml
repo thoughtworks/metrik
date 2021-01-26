@@ -6,8 +6,14 @@ orbs:
 
 jobs:
   test_build_push:
+    parallelism: 5 # Refer: https://circleci.com/docs/2.0/configuration-reference/#docker-executor
+    environment:
+      # Configure the JVM and Gradle to avoid OOM errors
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
       - image: circleci/openjdk:11.0.8-jdk
+    resource_class: medium
 
     steps:
       - checkout
@@ -21,8 +27,25 @@ jobs:
             - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
       - run:
-          name: Run tests and build artifact
-          command: ./gradlew clean build
+          name: Run tests in parallel # Refer: https://circleci.com/docs/2.0/parallelism-faster-jobs/
+          command: |
+            cd src/test/kotlin
+
+            CLASSNAMES=$(circleci tests glob "**/*.kt" \
+              | cut -c 1- | sed 's@/@.@g' \
+              | sed 's/.\{5\}$//' \
+              | circleci tests split --split-by=timings --timings-type=classname)
+
+            cd ../../..
+
+            GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
+            echo "Prepared arguments for Gradle: $GRADLE_ARGS"
+
+            ./gradlew test $GRADLE_ARGS
+
+      #      - run:
+      #          name: Run tests and build artifact
+      #          command: ./gradlew clean build
 
       - save_cache:
           paths:
@@ -34,6 +57,14 @@ jobs:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
+      - run:
+          name: Assemble JAR
+          command: |
+            # Skip this for other nodes
+            if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
+              ./gradlew assemble
+            fi
+
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -41,7 +72,7 @@ jobs:
       - run:
           name: Build and tag Docker image
           command: |
-            TAG=v${CIRCLE_BUILD_NUM}-$(date '+%Y%m%d')
+            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')
             docker build -f ./Dockerfile-CircleCI -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:$TAG -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
 
       - aws-cli/install
@@ -54,11 +85,12 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,v${CIRCLE_BUILD_NUM}-$(date '+%Y%m%d')
+          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')
 
   deploy_to_dev:
     docker:
       - image: cimg/base:2021.01
+    resource_class: small
 
     steps:
       - add_ssh_keys:
