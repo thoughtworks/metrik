@@ -33,6 +33,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation ("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
@@ -119,6 +120,7 @@ tasks.jacocoTestCoverageVerification {
 			sourceSets.main.get().output.asFileTree.matching {
 				exclude(
 					"fourkeymetrics/Application**",
+					"fourkeymetrics/SwaggerUIWebConfiguration",
 					"**/applicationconfig**",
 					"**/dto**",
 					"**/vo**",
