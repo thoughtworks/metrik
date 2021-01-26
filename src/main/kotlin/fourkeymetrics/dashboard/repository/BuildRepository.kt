@@ -1,12 +1,17 @@
 package fourkeymetrics.dashboard.repository
 
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
+import fourkeymetrics.metric.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.data.mongodb.core.find
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 
 @Component
@@ -22,7 +27,17 @@ class BuildRepository {
     }
 
     fun save(builds: List<Build>) {
-        builds.parallelStream().forEach { mongoTemplate.save(it, collectionName) }
+        builds.parallelStream().forEach {
+            val query = Query()
+            query.addCriteria(Criteria.where("pipelineId").`is`(it.pipelineId).and("number").`is`(it.number))
+            val found = mongoTemplate.findAndReplace(
+                query,
+                it,
+                collectionName
+            )
+            if (found == null) {
+                mongoTemplate.save(it, collectionName) }
+            }
     }
 
     fun clear() {
