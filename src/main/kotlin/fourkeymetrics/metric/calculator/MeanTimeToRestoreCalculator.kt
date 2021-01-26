@@ -15,7 +15,7 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         TODO("Not yet implemented")
     }
 
-    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
         TODO("Not yet implemented")
     }
 

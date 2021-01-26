@@ -41,7 +41,7 @@ class LeadTimeForChangeCalculator : MetricCalculator {
         return calculateMLT(buildsInScope, targetStage)
     }
 
-    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
         val days: Double = value / MILLI_SECONDS_FOR_ONE_DAY
 
         return when {

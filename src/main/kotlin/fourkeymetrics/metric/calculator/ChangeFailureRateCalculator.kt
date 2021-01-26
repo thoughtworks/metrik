@@ -42,7 +42,7 @@ class ChangeFailureRateCalculator : MetricCalculator {
         }
     }
 
-    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
         return when {
             value < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE
             LEVEL_ELITE_UPPER_LIMIT <= value && value < LEVEL_HIGH_UPPER_LIMIT -> LEVEL.HIGH
