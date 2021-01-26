@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { PipelineConfiguration } from "../../clients/apis";
+import { Link } from "react-router-dom";
 
 const dataSource: PipelineConfiguration[] = [
 	{
@@ -53,9 +54,11 @@ const ConfigSuccess: FC = () => {
 						following projects
 					</span>
 				</div>
-				<Button type={"primary"} size={"large"}>
-					Go to Dashboard
-				</Button>
+				<Link to={"/"}>
+					<Button type={"primary"} size={"large"}>
+						Go to Dashboard
+					</Button>
+				</Link>
 			</div>
 			<DashboardConfig pipelineConfigurations={dataSource} />
 		</div>

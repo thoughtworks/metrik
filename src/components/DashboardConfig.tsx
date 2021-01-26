@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import { PipelineConfiguration } from "../clients/apis";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 
@@ -23,7 +23,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfiguratio
 			rowKey={"id"}
 			dataSource={pipelineConfigurations}
 			expandable={{
-				columnWidth: 45,
+				columnWidth: "5%",
 				expandedRowRender: ToolConfig,
 				expandIcon: ({ expanded, onExpand, record }) =>
 					expanded ? (
@@ -32,10 +32,31 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfiguratio
 						<RightOutlined onClick={e => onExpand(record, e)} />
 					),
 			}}>
-			<Column<PipelineConfiguration> title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<PipelineConfiguration> title={"Tool"} dataIndex={"type"} />
-			<Column<PipelineConfiguration> title={"Last update time"} dataIndex={"lastUpdateTime"} />
-			<Column<PipelineConfiguration> title={"Action"} />
+			<Column<PipelineConfiguration> width={"20%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<PipelineConfiguration> width={"25%"} title={"Tool"} dataIndex={"type"} />
+			<Column<PipelineConfiguration>
+				width={"25%"}
+				title={"Last update time"}
+				dataIndex={"lastUpdateTime"}
+			/>
+			<Column<PipelineConfiguration>
+				width={"25%"}
+				title={() => (
+					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+						Actions <Button type={"link"}>+Add Project</Button>
+					</div>
+				)}
+				render={() => (
+					<div>
+						<Button type={"link"} css={{ padding: "4px 4px 4px 0" }}>
+							Duplicate
+						</Button>
+						<Button type={"link"} css={{ padding: 4 }}>
+							Config
+						</Button>
+					</div>
+				)}
+			/>
 		</Table>
 	);
 };
@@ -59,12 +80,16 @@ const ToolConfig = (config: PipelineConfiguration) => {
 				".ant-table-cell": {
 					background: "#fafafa",
 				},
+				".ant-table-thead .ant-table-cell": {
+					fontWeight: "normal",
+					opacity: 0.8,
+				},
 			}}
 			pagination={false}
 			rowKey={"id"}
 			dataSource={data}>
-			<Column<ToolConfig> title={"Type"} dataIndex={"type"} />
-			<Column<ToolConfig> title={"Tool"} dataIndex={"tool"} />
+			<Column<ToolConfig> width={"20%"} title={"Type"} dataIndex={"type"} />
+			<Column<ToolConfig> width={"27%"} title={"Tool"} dataIndex={"tool"} />
 			<Column<ToolConfig> title={"URL"} dataIndex={"url"} />
 		</Table>
 	);
