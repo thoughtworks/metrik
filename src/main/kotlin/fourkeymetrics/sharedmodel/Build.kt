@@ -1,4 +1,4 @@
-package fourkeymetrics.metric.model
+package fourkeymetrics.metrics.model
 
 import org.apache.logging.log4j.util.Strings
 

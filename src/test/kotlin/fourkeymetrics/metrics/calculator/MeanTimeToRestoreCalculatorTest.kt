@@ -1,8 +1,8 @@
-package fourkeymetrics.metric.calculator
+package fourkeymetrics.metrics.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.metric.model.Build
+import fourkeymetrics.metrics.model.Build
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

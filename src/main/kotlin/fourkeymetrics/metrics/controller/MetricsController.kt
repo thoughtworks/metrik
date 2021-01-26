@@ -1,7 +1,7 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
-import fourkeymetrics.metric.model.MetricUnit
-import fourkeymetrics.metric.controller.vo.FourKeyMetricsResponse
+import fourkeymetrics.metrics.model.MetricsUnit
+import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -19,7 +19,7 @@ class MetricsController {
         @RequestParam targetStage: String,
         @RequestParam startTime: Long,
         @RequestParam endTime: Long,
-        @RequestParam unit: MetricUnit
+        @RequestParam unit: MetricsUnit
     ): FourKeyMetricsResponse {
         return metricsApplicationService.retrieve4KeyMetrics(
             pipelineId,

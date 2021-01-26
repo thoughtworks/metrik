@@ -1,6 +1,6 @@
 package fourkeymetrics.datasource.pipeline.builddata.dto
 
-import fourkeymetrics.metric.model.BuildStatus
+import fourkeymetrics.metrics.model.BuildStatus
 import org.apache.logging.log4j.util.Strings
 
 data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())

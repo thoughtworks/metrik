@@ -1,13 +1,13 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
 import fourkeymetrics.exception.BadRequestException
-import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
-import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.LEVEL
-import fourkeymetrics.metric.model.Metric
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
+import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.LEVEL
+import fourkeymetrics.metrics.model.Metrics
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -45,7 +45,7 @@ internal class MetricsApplicationServiceTest {
         val startTimestamp: Long = 1
         val endTimestamp: Long = 10
         val expectedBuilds = emptyList<Build>()
-        val unit = MetricUnit.Fortnightly
+        val unit = MetricsUnit.Fortnightly
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(expectedBuilds)
         `when`(dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, unit))
@@ -74,27 +74,27 @@ internal class MetricsApplicationServiceTest {
 
         assertEquals(
             fourKeyMetricsResponse.leadTimeForChange.summary,
-            Metric(2.0, LEVEL.HIGH, 1, 10)
+            Metrics(2.0, LEVEL.HIGH, 1, 10)
         )
         assertTrue(
             fourKeyMetricsResponse.leadTimeForChange.details.containsAll(
                 listOf(
-                    Metric(1.0, 1, 5),
-                    Metric(3.0, 6, 10)
+                    Metrics(1.0, 1, 5),
+                    Metrics(3.0, 6, 10)
                 )
             )
         )
 
         assertEquals(
             fourKeyMetricsResponse.changeFailureRate.summary,
-            Metric(0.5, LEVEL.HIGH, 1, 10)
+            Metrics(0.5, LEVEL.HIGH, 1, 10)
         )
 
         assertTrue(
             fourKeyMetricsResponse.changeFailureRate.details.containsAll(
                 listOf(
-                    Metric(0.4, 1, 5),
-                    Metric(0.6, 6, 10)
+                    Metrics(0.4, 1, 5),
+                    Metrics(0.6, 6, 10)
                 )
             )
         )
@@ -109,7 +109,7 @@ internal class MetricsApplicationServiceTest {
                 "deploy to prod",
                 1,
                 1,
-                MetricUnit.Fortnightly
+                MetricsUnit.Fortnightly
             )
         }
     }

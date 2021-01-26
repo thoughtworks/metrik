@@ -1,15 +1,15 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
 import fourkeymetrics.exception.BadRequestException
-import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
-import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metric.calculator.MetricCalculator
-import fourkeymetrics.metric.controller.vo.FourKeyMetricsResponse
-import fourkeymetrics.metric.controller.vo.Metrics
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.Metric
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
+import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
+import fourkeymetrics.metrics.calculator.MetricsCalculator
+import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
+import fourkeymetrics.metrics.controller.vo.MetricsInfo
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.Metrics
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -33,7 +33,7 @@ class MetricsApplicationService {
         targetStage: String,
         startTimestamp: Long,
         endTimestamp: Long,
-        unit: MetricUnit
+        unit: MetricsUnit
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
@@ -73,11 +73,11 @@ class MetricsApplicationService {
         endTimeMillis: Long,
         targetStage: String,
         timeRangeByUnit: List<Pair<Long, Long>>,
-        unit: MetricUnit,
-        calculator: MetricCalculator
-    ): Metrics {
+        unit: MetricsUnit,
+        calculator: MetricsCalculator
+    ): MetricsInfo {
         val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
-        val summary = Metric(
+        val summary = Metrics(
             valueForWholeRange,
             calculator.calculateLevel(valueForWholeRange, unit),
             startTimeMillis,
@@ -87,8 +87,8 @@ class MetricsApplicationService {
             .map {
                 val valueForUnitRange =
                     calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
-                Metric(valueForUnitRange, it.first, it.second)
+                Metrics(valueForUnitRange, it.first, it.second)
             }
-        return Metrics(summary, details)
+        return MetricsInfo(summary, details)
     }
 }

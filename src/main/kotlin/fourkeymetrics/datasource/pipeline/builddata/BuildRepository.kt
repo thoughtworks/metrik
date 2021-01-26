@@ -1,6 +1,6 @@
 package fourkeymetrics.datasource.pipeline.builddata
 
-import fourkeymetrics.metric.model.Build
+import fourkeymetrics.metrics.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find

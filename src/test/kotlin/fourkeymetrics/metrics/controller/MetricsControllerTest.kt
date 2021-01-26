@@ -1,10 +1,10 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
-import fourkeymetrics.metric.model.LEVEL
-import fourkeymetrics.metric.model.MetricUnit
-import fourkeymetrics.metric.controller.vo.FourKeyMetricsResponse
-import fourkeymetrics.metric.model.Metric
-import fourkeymetrics.metric.controller.vo.Metrics
+import fourkeymetrics.metrics.model.LEVEL
+import fourkeymetrics.metrics.model.MetricsUnit
+import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
+import fourkeymetrics.metrics.model.Metrics
+import fourkeymetrics.metrics.controller.vo.MetricsInfo
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,13 +28,13 @@ internal class MetricsControllerTest {
         val targetStage = "Deploy to UAT"
         val startTime = 1609459200000L
         val endTime = 1611964800000L
-        val metricUnit = MetricUnit.Fortnightly
+        val metricUnit = MetricsUnit.Fortnightly
         val level = LEVEL.ELITE
         val value = 10.2
 
-        val metric = Metric(value, startTime, endTime)
-        val summary = Metric(value, level, startTime, endTime)
-        val metrics = Metrics(summary, listOf(metric, metric))
+        val metric = Metrics(value, startTime, endTime)
+        val summary = Metrics(value, level, startTime, endTime)
+        val metrics = MetricsInfo(summary, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
             leadTimeForChange = metrics,
             changeFailureRate = metrics

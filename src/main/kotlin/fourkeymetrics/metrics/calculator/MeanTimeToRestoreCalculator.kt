@@ -1,13 +1,13 @@
-package fourkeymetrics.metric.calculator
+package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.BuildStatus
-import fourkeymetrics.metric.model.LEVEL
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.metrics.model.LEVEL
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
 
 @Component
-class MeanTimeToRestoreCalculator : MetricCalculator {
+class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
                                 endTimestamp: Long, targetStage: String): Double {
@@ -15,7 +15,7 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         TODO("Not yet implemented")
     }
 
-    override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
         TODO("Not yet implemented")
     }
 

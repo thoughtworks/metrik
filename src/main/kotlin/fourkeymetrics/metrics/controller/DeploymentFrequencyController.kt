@@ -1,7 +1,7 @@
-package fourkeymetrics.metric
+package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.datasource.pipeline.builddata.Pipeline
-import fourkeymetrics.metric.calculator.DeploymentFrequencyService
+import fourkeymetrics.metrics.calculator.DeploymentFrequencyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,6 +1,6 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -19,7 +19,7 @@ internal class DateTimeUtilsKtTest {
         val endTime = LocalDate.parse("2020-11-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
 
-        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Monthly)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricsUnit.Monthly)
 
         assertEquals(
             listOf(
@@ -46,7 +46,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Monthly)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricsUnit.Monthly)
 
         assertEquals(listOf(Pair(startTimestamp, endTimestamp)), timeRangeList)
     }
@@ -57,7 +57,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-30").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Fortnightly)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricsUnit.Fortnightly)
 
         assertEquals(
             listOf(
@@ -84,7 +84,7 @@ internal class DateTimeUtilsKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricUnit.Fortnightly)
+        val timeRangeList = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, MetricsUnit.Fortnightly)
 
         assertEquals(
             listOf(

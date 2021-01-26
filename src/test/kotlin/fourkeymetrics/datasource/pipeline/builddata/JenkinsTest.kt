@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
 import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.Stage
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.Stage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

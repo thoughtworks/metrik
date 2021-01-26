@@ -1,13 +1,13 @@
-package fourkeymetrics.metric.calculator
+package fourkeymetrics.metrics.calculator
 
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.BuildStatus
-import fourkeymetrics.metric.model.LEVEL
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.BuildStatus
+import fourkeymetrics.metrics.model.LEVEL
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
 
 @Component
-class LeadTimeForChangeCalculator : MetricCalculator {
+class LeadTimeForChangeCalculator : MetricsCalculator {
 
     companion object {
         private const val NO_VALUE: Double = Double.NaN
@@ -41,7 +41,7 @@ class LeadTimeForChangeCalculator : MetricCalculator {
         return calculateMLT(buildsInScope, targetStage)
     }
 
-    override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
         val days: Double = value / MILLI_SECONDS_FOR_ONE_DAY
 
         return when {

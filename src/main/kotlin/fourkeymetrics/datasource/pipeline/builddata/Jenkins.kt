@@ -4,9 +4,9 @@ import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryCollectionDT
 import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryDTO
 import fourkeymetrics.datasource.pipeline.builddata.dto.BuildDetailsDTO
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.metric.model.Build
-import fourkeymetrics.metric.model.Commit
-import fourkeymetrics.metric.model.Stage
+import fourkeymetrics.metrics.model.Build
+import fourkeymetrics.metrics.model.Commit
+import fourkeymetrics.metrics.model.Stage
 import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity

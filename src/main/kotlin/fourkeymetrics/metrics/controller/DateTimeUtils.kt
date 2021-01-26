@@ -1,6 +1,6 @@
-package fourkeymetrics.metric.controller
+package fourkeymetrics.metrics.controller
 
-import fourkeymetrics.metric.model.MetricUnit
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -24,11 +24,11 @@ class DateTimeUtils {
     fun splitTimeRange(
         startTimestamp: Long,
         endTimestamp: Long,
-        unit: MetricUnit
+        unit: MetricsUnit
     ): List<Pair<Long, Long>> {
         return when (unit) {
-            MetricUnit.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
-            MetricUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+            MetricsUnit.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
+            MetricsUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
         }
 
     }
