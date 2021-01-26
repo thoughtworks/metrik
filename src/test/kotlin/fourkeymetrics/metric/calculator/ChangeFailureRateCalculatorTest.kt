@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.MetricUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -78,7 +79,23 @@ class ChangeFailureRateCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is low`() {
-        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(1.0))
+    internal fun `should return level low given value is 0_45 when calculate level`() {
+        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45, MetricUnit.Fortnightly))
     }
+
+    @Test
+    internal fun `should return level medium given value is 0_3 when calculate level`() {
+        assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3, MetricUnit.Fortnightly))
+    }
+
+    @Test
+    internal fun `should return level high given value is 0_3 when calculate level`() {
+        assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15, MetricUnit.Fortnightly))
+    }
+
+    @Test
+    internal fun `should return level elite given value lower than 0_15 when calculate level`() {
+        assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14, MetricUnit.Fortnightly))
+    }
+
 }

@@ -3,6 +3,7 @@ package fourkeymetrics.metric.calculator
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.BuildStatus
 import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.MetricUnit
 import org.springframework.stereotype.Component
 
 @Component
@@ -40,7 +41,7 @@ class LeadTimeForChangeCalculator : MetricCalculator {
         return calculateMLT(buildsInScope, targetStage)
     }
 
-    override fun calculateLevel(value: Double): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
         val days: Double = value / MILLI_SECONDS_FOR_ONE_DAY
 
         return when {

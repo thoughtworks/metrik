@@ -3,6 +3,7 @@ package fourkeymetrics.metric.calculator
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.BuildStatus
 import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.MetricUnit
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,7 +15,7 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         TODO("Not yet implemented")
     }
 
-    override fun calculateLevel(value: Double): LEVEL {
+    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
         TODO("Not yet implemented")
     }
 

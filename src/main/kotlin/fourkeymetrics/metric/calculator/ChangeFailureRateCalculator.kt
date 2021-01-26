@@ -3,6 +3,7 @@ package fourkeymetrics.metric.calculator
 import fourkeymetrics.metric.model.Build
 import fourkeymetrics.metric.model.BuildStatus
 import fourkeymetrics.metric.model.LEVEL
+import fourkeymetrics.metric.model.MetricUnit
 import org.springframework.stereotype.Component
 
 @Component
@@ -10,6 +11,9 @@ class ChangeFailureRateCalculator : MetricCalculator {
 
     companion object {
         private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
+        private const val LEVEL_ELITE_UPPER_LIMIT = 0.15
+        private const val LEVEL_HIGH_UPPER_LIMIT = 0.3
+        private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45
     }
 
     override fun calculateValue(
@@ -38,7 +42,12 @@ class ChangeFailureRateCalculator : MetricCalculator {
         }
     }
 
-    override fun calculateLevel(value: Double): LEVEL {
-        return LEVEL.LOW
+    override fun calculateLevel(value: Double, unit: MetricUnit): LEVEL {
+        return when {
+            value < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE
+            LEVEL_ELITE_UPPER_LIMIT <= value && value < LEVEL_HIGH_UPPER_LIMIT -> LEVEL.HIGH
+            LEVEL_HIGH_UPPER_LIMIT <= value && value < LEVEL_MEDIUM_UPPER_LIMIT -> LEVEL.MEDIUM
+            else -> LEVEL.LOW
+        }
     }
 }

@@ -50,19 +50,21 @@ internal class MetricsApplicationServiceTest {
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(0.5)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.LOW)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(0.4)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
             .thenReturn(0.6)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.HIGH)
 
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(2.0)
-        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
+        `when`(leadTimeForChangeCalculator.calculateLevel(2.0, unit)).thenReturn(LEVEL.LOW)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(1.0)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
             .thenReturn(3.0)
+        `when`(leadTimeForChangeCalculator.calculateLevel(2.0, unit)).thenReturn(LEVEL.HIGH)
 
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
             pipelineId, targetStage, startTimestamp, endTimestamp, unit
@@ -70,7 +72,7 @@ internal class MetricsApplicationServiceTest {
 
         assertEquals(
             fourKeyMetricsResponse.leadTimeForChange.summary,
-            Metric(2.0, LEVEL.LOW, 1, 10)
+            Metric(2.0, LEVEL.HIGH, 1, 10)
         )
         assertTrue(
             fourKeyMetricsResponse.leadTimeForChange.details.containsAll(
@@ -83,7 +85,7 @@ internal class MetricsApplicationServiceTest {
 
         assertEquals(
             fourKeyMetricsResponse.changeFailureRate.summary,
-            Metric(0.5, LEVEL.LOW, 1, 10)
+            Metric(0.5, LEVEL.HIGH, 1, 10)
         )
 
         assertTrue(
@@ -94,7 +96,6 @@ internal class MetricsApplicationServiceTest {
                 )
             )
         )
-
     }
 
 }

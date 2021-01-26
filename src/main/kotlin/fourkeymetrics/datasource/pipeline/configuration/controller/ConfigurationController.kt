@@ -30,6 +30,9 @@ class ConfigurationController {
         configurationApplicationService.verifyPipeline(url, username, credential, type)
     }
 
+    @GetMapping("/api/dashboards/{id}")
+
+
     @PostMapping("api/pipeline/config")
     fun save(@RequestBody config: DashboardConfigurationRequest): Dashboard {
         return configurationApplicationService.save(config)

@@ -44,7 +44,8 @@ class MetricsApplicationService {
                 endTimestamp,
                 targetStage,
                 timeRangeByUnit,
-                leadTimeForChangeCalculator
+                unit,
+                leadTimeForChangeCalculator,
             ),
             generateMetrics(
                 allBuilds,
@@ -52,7 +53,8 @@ class MetricsApplicationService {
                 endTimestamp,
                 targetStage,
                 timeRangeByUnit,
-                changeFailureRateCalculator
+                unit,
+                changeFailureRateCalculator,
             )
         )
     }
@@ -63,11 +65,16 @@ class MetricsApplicationService {
         endTimeMillis: Long,
         targetStage: String,
         timeRangeByUnit: List<Pair<Long, Long>>,
+        unit: MetricUnit,
         calculator: MetricCalculator
     ): Metrics {
         val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
-        val summary =
-            Metric(valueForWholeRange, calculator.calculateLevel(valueForWholeRange), startTimeMillis, endTimeMillis)
+        val summary = Metric(
+            valueForWholeRange,
+            calculator.calculateLevel(valueForWholeRange, unit),
+            startTimeMillis,
+            endTimeMillis
+        )
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
