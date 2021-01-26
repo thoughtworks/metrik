@@ -25,7 +25,7 @@ class UpdatingService {
 
 
     fun update(dashboardId: String, pipelineId: String): Long? {
-        val lastUpdate = updateRepository.getLastUpdate()
+        val lastUpdate = updateRepository.getLastUpdate(dashboardId)
         val currentTimeMillis = System.currentTimeMillis()
         val builds: List<Build>
 
@@ -44,7 +44,7 @@ class UpdatingService {
         }
 
         buildRepository.save(builds)
-        updateRepository.save(UpdateRecord(currentTimeMillis))
+        updateRepository.save(UpdateRecord(dashboardId, currentTimeMillis))
 
         return currentTimeMillis
     }

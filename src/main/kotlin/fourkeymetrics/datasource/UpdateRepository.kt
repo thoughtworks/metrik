@@ -1,22 +1,28 @@
 package fourkeymetrics.datasource
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Component
 
 @Component
 class UpdateRepository {
-    fun add() {
-        TODO("Not yet implemented")
-    }
+
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
+
+    private val collectionName = "update"
 
     fun save(record: UpdateRecord) {
-        TODO("Not yet implemented")
+        mongoTemplate.save(record, collectionName)
     }
 
-    fun getLastUpdate(): UpdateRecord? {
-        TODO("Not yet implemented")
+    fun getLastUpdate(dashboardId: String): UpdateRecord? {
+        return mongoTemplate.findAll(UpdateRecord::class.java, collectionName)
+            .filter { it.dashboardId == dashboardId }
+            .maxByOrNull { it.updateTimestamp }
     }
 }
 
 
-data class UpdateRecord(val updateTimestamp: Long)
+data class UpdateRecord(val dashboardId: String, val updateTimestamp: Long)
 

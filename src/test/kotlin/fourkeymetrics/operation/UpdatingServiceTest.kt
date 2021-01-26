@@ -41,7 +41,7 @@ internal class UpdatingServiceTest {
         val pipelineId = "fake-pipeline-id"
         val builds = listOf(Build())
 
-        `when`(updateRepository.getLastUpdate()).thenReturn(null)
+        `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(null)
         `when`(jenkins.fetchBuilds(dashboardId, pipelineId, 0)).thenReturn(builds)
 
         val updatedTimestamp = updatingService.update(dashboardId, pipelineId)
@@ -58,12 +58,13 @@ internal class UpdatingServiceTest {
         val pipelineId = "fake-pipeline-id"
         val builds = listOf(Build())
         val lastUpdateRecord = UpdateRecord(
+            dashboardId,
             1610668800000
         )
 
         val startTimestamp = lastUpdateRecord.updateTimestamp - 14 * 24 * 60 * 60 * 1000L
 
-        `when`(updateRepository.getLastUpdate()).thenReturn(lastUpdateRecord)
+        `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(lastUpdateRecord)
         `when`(jenkins.fetchBuilds(dashboardId, pipelineId, startTimestamp)).thenReturn(builds)
 
         val updateTimestamp = updatingService.update(dashboardId, pipelineId)
@@ -80,12 +81,13 @@ internal class UpdatingServiceTest {
         val pipelineId = "fake-pipeline-id"
         val builds = listOf(Build())
         val lastUpdateRecord = UpdateRecord(
+            dashboardId,
             1610668800000
         )
 
         val startTimestamp = lastUpdateRecord.updateTimestamp - 14 * 24 * 60 * 60 * 1000L
 
-        `when`(updateRepository.getLastUpdate()).thenReturn(lastUpdateRecord)
+        `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(lastUpdateRecord)
         `when`(jenkins.fetchBuilds(dashboardId, pipelineId, startTimestamp)).thenThrow(RuntimeException())
 
         val updateTimestamp = updatingService.update(dashboardId, pipelineId)
