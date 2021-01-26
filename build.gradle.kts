@@ -120,7 +120,7 @@ tasks.jacocoTestCoverageVerification {
         sourceSets.main.get().output.asFileTree.matching {
             exclude(
                 "fourkeymetrics/Application**",
-                "fourkeymetrics/SwaggerUIWebConfiguration",
+                "**/SwaggerUIWebConfiguration**",
                 "**/applicationconfig**",
                 "**/dto**",
                 "**/vo**",
