@@ -24,7 +24,6 @@ internal class MetricsControllerTest {
 
     @Test
     internal fun `should return metrics response when call api`() {
-        val dashboardId = "test dashboard Id"
         val pipelineId = "test pipeline Id"
         val targetStage = "Deploy to UAT"
         val startTime = 1609459200000L
@@ -42,7 +41,6 @@ internal class MetricsControllerTest {
         )
         `when`(
             metricsApplicationService.retrieve4KeyMetrics(
-                dashboardId,
                 pipelineId,
                 targetStage,
                 startTime,
@@ -53,7 +51,6 @@ internal class MetricsControllerTest {
 
         mockMvc.perform(
             get("/api/metrics")
-                .param("dashboardId", dashboardId)
                 .param("pipelineId", pipelineId)
                 .param("targetStage", targetStage)
                 .param("startTime", startTime.toString())

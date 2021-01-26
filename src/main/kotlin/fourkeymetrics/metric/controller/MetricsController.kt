@@ -15,7 +15,6 @@ class MetricsController {
 
     @GetMapping("/api/metrics")
     fun getFourKeyMetrics(
-        @RequestParam dashboardId: String,
         @RequestParam pipelineId: String,
         @RequestParam targetStage: String,
         @RequestParam startTime: Long,
@@ -23,7 +22,6 @@ class MetricsController {
         @RequestParam unit: MetricUnit
     ): FourKeyMetricsResponse {
         return metricsApplicationService.retrieve4KeyMetrics(
-            dashboardId,
             pipelineId,
             targetStage,
             startTime,

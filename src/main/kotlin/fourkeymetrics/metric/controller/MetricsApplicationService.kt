@@ -28,7 +28,6 @@ class MetricsApplicationService {
     private lateinit var dateTimeUtils: DateTimeUtils
 
     fun retrieve4KeyMetrics(
-        dashboardId: String,
         pipelineId: String,
         targetStage: String,
         startTimestamp: Long,

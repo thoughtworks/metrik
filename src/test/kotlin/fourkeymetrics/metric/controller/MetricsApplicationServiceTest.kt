@@ -38,7 +38,6 @@ internal class MetricsApplicationServiceTest {
     @Test
     fun `should return correct metric response`() {
 
-        val dashboardId = "dashboardId"
         val pipelineId = "pipelineId"
         val targetStage = "deploy to prod"
         val startTimestamp: Long = 1
@@ -66,8 +65,7 @@ internal class MetricsApplicationServiceTest {
             .thenReturn(3.0)
 
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
-            dashboardId, pipelineId, targetStage, startTimestamp,
-            endTimestamp, unit
+            pipelineId, targetStage, startTimestamp, endTimestamp, unit
         )
 
         assertEquals(
