@@ -3,6 +3,9 @@ package fourkeymetrics.metrics.calculator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.metric.model.BuildStatus
+import fourkeymetrics.metric.model.Stage
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -12,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @Import(MeanTimeToRestoreCalculator::class, ObjectMapper::class)
-internal class MeanTimeToRestoreCalculatorTest{
+internal class MeanTimeToRestoreCalculatorTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
@@ -30,7 +33,7 @@ internal class MeanTimeToRestoreCalculatorTest{
      * build 7 : deploy to prod, SUCCESS, end at 2021-01-05
      */
     @Test
-    internal fun `should return selected builds given all builds`() {
+    internal fun `should return selected stages given all builds`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-1.json").readText()
         )
@@ -39,9 +42,9 @@ internal class MeanTimeToRestoreCalculatorTest{
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = "deploy to prod"
 
-        val selectedBuilds =  meanTimeToRestoreCalculator.findSelectedBuilds(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val selectedStages = meanTimeToRestoreCalculator.findSelectedStages(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertTrue(selectedBuilds.size == 5)
+        assertTrue(selectedStages.size == 5)
     }
 
     /**
@@ -55,7 +58,7 @@ internal class MeanTimeToRestoreCalculatorTest{
      * build 7 : deploy to prod, SUCCESS, end at 2021-01-05
      */
     @Test
-    internal fun `should contain first build given builds all failed before begin time`() {
+    internal fun `should contain first stage given builds all failed before begin time`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-2.json").readText()
         )
@@ -64,8 +67,53 @@ internal class MeanTimeToRestoreCalculatorTest{
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = "deploy to prod"
 
-        val selectedBuilds =  meanTimeToRestoreCalculator.findSelectedBuilds(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val selectedStages = meanTimeToRestoreCalculator.findSelectedStages(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertTrue(selectedBuilds.size == 6)
+        assertTrue(selectedStages.size == 6)
+        assertThat(selectedStages[0].name).isEqualTo(targetStage)
+        assertThat(selectedStages[0].status).isEqualTo(BuildStatus.FAILED)
+        assertThat(selectedStages[0].startTimeMillis).isEqualTo(1609171200000L)
+    }
+
+    @Test
+    internal fun `should return restored build stages given selected builds`() {
+        val targetStage = "deploy to prod"
+
+        val selectedBuilds: List<Build> = objectMapper.readValue(
+            this.javaClass.getResource("/calculator/builds-for-MTTR-restored-pair-case-1.json").readText()
+        )
+
+        val selectedStages: List<Stage> = selectedBuilds.flatMap { build -> build.stages }.filter { stage -> stage.name == targetStage }
+
+        val restoredStagePairs = meanTimeToRestoreCalculator.generateRestoredBuildPairs(selectedStages)
+
+        assertThat(restoredStagePairs.size).isEqualTo(2)
+        assertThat(restoredStagePairs[0].first.status).isEqualTo(BuildStatus.FAILED)
+        assertThat(restoredStagePairs[0].first.startTimeMillis).isEqualTo(1609257600000L)
+        assertThat(restoredStagePairs[0].second.status).isEqualTo(BuildStatus.SUCCESS)
+        assertThat(restoredStagePairs[0].second.startTimeMillis).isEqualTo(1609459200000L)
+        assertThat(restoredStagePairs[1].first.status).isEqualTo(BuildStatus.FAILED)
+        assertThat(restoredStagePairs[1].first.startTimeMillis).isEqualTo(1609516800000L)
+        assertThat(restoredStagePairs[1].second.status).isEqualTo(BuildStatus.SUCCESS)
+        assertThat(restoredStagePairs[1].second.startTimeMillis).isEqualTo(1609603200000L)
+    }
+
+    @Test
+    internal fun `should return restored build stages given selected builds with last stage is failed`() {
+        val targetStage = "deploy to prod"
+
+        val selectedBuilds: List<Build> = objectMapper.readValue(
+            this.javaClass.getResource("/calculator/builds-for-MTTR-restored-pair-case-2.json").readText()
+        )
+
+        val selectedStages: List<Stage> = selectedBuilds.flatMap { build -> build.stages }.filter { stage -> stage.name == targetStage }
+
+        val restoredStagePairs = meanTimeToRestoreCalculator.generateRestoredBuildPairs(selectedStages)
+
+        assertThat(restoredStagePairs.size).isEqualTo(1)
+        assertThat(restoredStagePairs[0].first.status).isEqualTo(BuildStatus.FAILED)
+        assertThat(restoredStagePairs[0].first.startTimeMillis).isEqualTo(1609344000000L)
+        assertThat(restoredStagePairs[0].second.status).isEqualTo(BuildStatus.SUCCESS)
+        assertThat(restoredStagePairs[0].second.startTimeMillis).isEqualTo(1609459200000L)
     }
 }
