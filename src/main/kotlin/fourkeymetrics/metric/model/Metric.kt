@@ -1,7 +1,7 @@
 package fourkeymetrics.metric.model
 
 enum class LEVEL {
-    ELITE, HIGH, MEDIUM, LOW
+    ELITE, HIGH, MEDIUM, LOW, INVALID
 }
 
 data class Metric(val value: Double, val level: LEVEL?, val startTimestamp: Long, val endTimestamp: Long) {

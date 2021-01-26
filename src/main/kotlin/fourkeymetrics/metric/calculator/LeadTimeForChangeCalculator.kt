@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class LeadTimeForChangeCalculator : MetricCalculator {
 
     companion object {
-        private const val NO_VALUE: Double = 0.0
+        private const val NO_VALUE: Double = Double.NaN
         private const val EARLIEST_TIMESTAMP: Long = 0
         private const val MILLI_SECONDS_FOR_ONE_DAY = 24 * 60 * 60 * 1000
     }
@@ -54,8 +54,11 @@ class LeadTimeForChangeCalculator : MetricCalculator {
             days >= 1 -> {
                 LEVEL.HIGH
             }
-            else -> {
+            days >= 0 -> {
                 LEVEL.ELITE
+            }
+            else -> {
+                LEVEL.INVALID
             }
         }
     }
@@ -83,14 +86,8 @@ class LeadTimeForChangeCalculator : MetricCalculator {
         val commitLeadTimeList = buildsGroupedByEachDeployment.flatMap { element ->
             element.value.flatMap { build -> build.changeSets }.map { commit -> element.key.value - commit.timestamp }
         }
-        val averageValue = commitLeadTimeList.average()
 
-
-        if (averageValue.isNaN()) {
-            return NO_VALUE
-        }
-
-        return averageValue
+        return commitLeadTimeList.average()
     }
 
     private fun filterBuildsBetweenGivenRange(

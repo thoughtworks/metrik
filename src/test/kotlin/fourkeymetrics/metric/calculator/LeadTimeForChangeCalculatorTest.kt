@@ -36,7 +36,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(0.0, leadTimeForChangeValue)
+        assertEquals(Double.NaN, leadTimeForChangeValue)
     }
 
     /**
@@ -138,7 +138,7 @@ internal class LeadTimeForChangeCalculatorTest {
         val leadTimeForChangeValue: Double =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(0.0, leadTimeForChangeValue)
+        assertEquals(Double.NaN, leadTimeForChangeValue)
     }
 
     /**
@@ -371,5 +371,23 @@ internal class LeadTimeForChangeCalculatorTest {
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricUnit.Fortnightly)
 
         assertEquals(LEVEL.ELITE, level)
+    }
+
+    @Test
+    internal fun `should return level is elite when MLT value is equals to 0 day`() {
+        val mltValue: Double = 0.5 * milliSecondsForOneDay
+
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
+
+        assertEquals(LEVEL.ELITE, level)
+    }
+
+    @Test
+    internal fun `should return level is invalid when MLT value is NAN`() {
+        val mltValue: Double = Double.NaN
+
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
+
+        assertEquals(LEVEL.INVALID, level)
     }
 }
