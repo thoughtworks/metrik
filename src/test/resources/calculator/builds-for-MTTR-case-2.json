@@ -1,0 +1,177 @@
+[
+  {
+    "pipelineId": "1",
+    "number": 1,
+    "duration": 60420,
+    "result": "FAILURE",
+    "timestamp": 1609171000000,
+    "url": "http://localhost:8001/job/4km-backend/1/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609171100000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609171200000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 2,
+    "duration": 60420,
+    "result": "FAILURE",
+    "timestamp": 1609257400000,
+    "url": "http://localhost:8001/job/4km-backend/2/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609257500000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609257600000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 3,
+    "duration": 60420,
+    "result": "FAILURE",
+    "timestamp": 1609343000000,
+    "url": "http://localhost:8001/job/4km-backend/3/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609343500000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609344000000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 4,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609459000000,
+    "url": "http://localhost:8001/job/4km-backend/4/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609459100000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609459200000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 5,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609516600000,
+    "url": "http://localhost:8001/job/4km-backend/5/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609516700000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609516800000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 6,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609603100000,
+    "url": "http://localhost:8001/job/4km-backend/6/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609603150000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609603200000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 7,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609776000000,
+    "url": "http://localhost:8001/job/4km-backend/6/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609776000000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609776000000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  }
+]
