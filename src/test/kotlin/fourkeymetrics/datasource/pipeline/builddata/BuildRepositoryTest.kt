@@ -27,7 +27,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get all builds`(@Autowired mongoTemplate: MongoTemplate,
+    internal fun `should get all builds belonging to this pipeline`(@Autowired mongoTemplate: MongoTemplate,
                                          @Autowired buildRepository: BuildRepository,
                                          @Autowired objectMapper: ObjectMapper) {
         val pipelineId = "fake pipeline"
