@@ -31,9 +31,9 @@ jobs:
           command: |
             cd src/test/kotlin
 
-            CLASSNAMES=$(circleci tests glob "**/*.kt" \
-              | cut -c 1- | sed 's@/@.@g' \
-              | sed 's/.\{5\}$//' \
+            CLASSNAMES=$(circleci tests glob "**/*Test.kt" \
+              | sed 's@/@.@g' \
+              | sed 's/.kt//' \
               | circleci tests split --split-by=timings --timings-type=classname)
 
             cd ../../..
