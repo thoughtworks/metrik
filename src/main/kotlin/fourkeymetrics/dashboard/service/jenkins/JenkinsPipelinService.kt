@@ -37,24 +37,20 @@ class JenkinsPipelinService(@Autowired private var restTemplate: RestTemplate,
 
         val buildSummaries = getBuildSummariesFromJenkins(username, credential, baseUrl)
 
-        val builds = buildSummaries.parallelStream().map { buildSummary ->
+        return buildSummaries.parallelStream().map { buildSummary ->
             val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
 
-            Build(pipelineId,
-                    buildSummary.number,
-                    buildSummary.result,
-                    buildSummary.duration,
-                    buildSummary.timestamp,
-                    buildSummary.url,
-                    constructBuildStages(buildDetails),
-                    constructBuildCommits(buildSummary).flatten()
+            Build(
+                pipelineId,
+                buildSummary.number,
+                buildSummary.result,
+                buildSummary.duration,
+                buildSummary.timestamp,
+                buildSummary.url,
+                constructBuildStages(buildDetails),
+                constructBuildCommits(buildSummary).flatten()
             )
         }.toList()
-
-        buildRepository.clear()
-        buildRepository.save(builds)
-
-        return builds
     }
 
     private fun constructBuildCommits(buildSummary: BuildSummaryDTO): List<List<Commit>> {
