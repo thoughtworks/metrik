@@ -1,7 +1,8 @@
-package fourkeymetrics.datasource.pipeline.builddata
+package fourkeymetrics.datasource.dashboard.facade.jenkins
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import fourkeymetrics.datasource.dashboard.repository.BuildRepository
 import fourkeymetrics.metrics.model.Build
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -28,8 +29,8 @@ class BuildRepositoryTest {
 
     @Test
     internal fun `should get all builds belonging to this pipeline`(@Autowired mongoTemplate: MongoTemplate,
-                                         @Autowired buildRepository: BuildRepository,
-                                         @Autowired objectMapper: ObjectMapper) {
+                                                                    @Autowired buildRepository: BuildRepository,
+                                                                    @Autowired objectMapper: ObjectMapper) {
         val pipelineId = "fake pipeline"
         val collectionName = "build"
 

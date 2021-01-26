@@ -1,13 +1,13 @@
-package fourkeymetrics.datasource.pipeline.configuration.controller
+package fourkeymetrics.datasource.dashboard.controller
 
-import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
-import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
-import fourkeymetrics.datasource.pipeline.sharedmodel.PipelineType
-import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
-import fourkeymetrics.datasource.pipeline.configuration.controller.vo.DashboardConfigurationRequest
-import fourkeymetrics.datasource.pipeline.configuration.controller.vo.PipelineConfigurationRequest
+import fourkeymetrics.datasource.dashboard.model.Dashboard
+import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
+import fourkeymetrics.datasource.dashboard.model.PipelineType
+import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
+import fourkeymetrics.datasource.dashboard.controller.vo.DashboardConfigurationRequest
+import fourkeymetrics.datasource.dashboard.controller.vo.PipelineConfigurationRequest
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.datasource.pipeline.builddata.Jenkins
+import fourkeymetrics.datasource.dashboard.facade.jenkins.JenkinsFacade
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service
 class ConfigurationApplicationService {
 
     @Autowired
-    private lateinit var jenkins: Jenkins
+    private lateinit var jenkinsFacade: JenkinsFacade
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
     fun verifyPipeline(url: String, username: String, credential: String, type: String) {
         if (type == PipelineType.JENKINS.name) {
-            jenkins.verifyPipeline(url, username, credential)
+            jenkinsFacade.verifyPipelineConfiguration(url, username, credential)
         } else {
             throw  ApplicationException(HttpStatus.BAD_REQUEST, "Pipeline type not support")
         }

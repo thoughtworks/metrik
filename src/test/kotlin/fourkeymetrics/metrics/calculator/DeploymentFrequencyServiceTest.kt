@@ -3,7 +3,7 @@ package fourkeymetrics.metrics.calculator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.metrics.model.Build
-import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
+import fourkeymetrics.datasource.dashboard.repository.BuildRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

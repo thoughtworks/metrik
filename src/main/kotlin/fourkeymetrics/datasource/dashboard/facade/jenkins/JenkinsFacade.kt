@@ -1,13 +1,15 @@
-package fourkeymetrics.datasource.pipeline.builddata
+package fourkeymetrics.datasource.dashboard.facade.jenkins
 
-import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryCollectionDTO
-import fourkeymetrics.datasource.pipeline.builddata.dto.BuildSummaryDTO
-import fourkeymetrics.datasource.pipeline.builddata.dto.BuildDetailsDTO
+import fourkeymetrics.datasource.dashboard.facade.PipelineFacade
+import fourkeymetrics.datasource.dashboard.facade.jenkins.dto.BuildSummaryCollectionDTO
+import fourkeymetrics.datasource.dashboard.facade.jenkins.dto.BuildSummaryDTO
+import fourkeymetrics.datasource.dashboard.facade.jenkins.dto.BuildDetailsDTO
+import fourkeymetrics.datasource.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.metrics.model.Build
 import fourkeymetrics.metrics.model.Commit
 import fourkeymetrics.metrics.model.Stage
-import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
+import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -23,11 +25,11 @@ import java.util.Base64
 import kotlin.streams.toList
 
 @Service
-class Jenkins(@Autowired private var restTemplate: RestTemplate,
-              @Autowired private var dashboardRepository: DashboardRepository,
-              @Autowired private var buildRepository: BuildRepository
-) : Pipeline() {
-    override fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build> {
+class JenkinsFacade(@Autowired private var restTemplate: RestTemplate,
+                    @Autowired private var dashboardRepository: DashboardRepository,
+                    @Autowired private var buildRepository: BuildRepository
+) : PipelineFacade() {
+    override fun syncBuilds(dashboardId: String, pipelineId: String): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
         val username = pipelineConfiguration.username
         val credential = pipelineConfiguration.credential
@@ -91,7 +93,7 @@ class Jenkins(@Autowired private var restTemplate: RestTemplate,
     }
 
 
-    override fun verifyPipeline(url: String, username: String, credential: String) {
+    override fun verifyPipelineConfiguration(url: String, username: String, credential: String) {
         val headers = setAuthHeader(username, credential)
         val entity = HttpEntity<String>("", headers)
         try {

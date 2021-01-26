@@ -1,12 +1,13 @@
-package fourkeymetrics.datasource.pipeline.builddata
+package fourkeymetrics.datasource.dashboard.facade
 
-import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
+import fourkeymetrics.datasource.dashboard.repository.BuildRepository
+import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
 import fourkeymetrics.metrics.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-abstract class Pipeline {
+abstract class PipelineFacade {
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
@@ -30,8 +31,8 @@ abstract class Pipeline {
                 .any { it.name == targetStage }
     }
 
-    abstract fun fetchAllBuilds(dashboardId: String, pipelineId: String): List<Build>
+    abstract fun syncBuilds(dashboardId: String, pipelineId: String): List<Build>
 
-    abstract fun verifyPipeline(url: String, username: String, credential: String)
+    abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 
 }

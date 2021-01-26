@@ -1,9 +1,10 @@
-package fourkeymetrics.datasource.pipeline.builddata
+package fourkeymetrics.datasource.dashboard.facade.jenkins
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import fourkeymetrics.datasource.pipeline.configuration.repository.DashboardRepository
-import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
+import fourkeymetrics.datasource.dashboard.repository.DashboardRepository
+import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
+import fourkeymetrics.datasource.dashboard.repository.BuildRepository
 import fourkeymetrics.metrics.model.Build
 import fourkeymetrics.metrics.model.Stage
 import org.assertj.core.api.Assertions.assertThat
@@ -24,13 +25,13 @@ import org.springframework.web.client.RestTemplate
 
 @ExtendWith(SpringExtension::class)
 @Import(
-    Jenkins::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
+    JenkinsFacade::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
     RestTemplate::class
 )
 @RestClientTest
-internal class JenkinsTest {
+internal class JenkinsFacadeTest {
     @Autowired
-    private lateinit var jenkins: Jenkins
+    private lateinit var jenkinsFacade: JenkinsFacade
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -56,7 +57,7 @@ internal class JenkinsTest {
             )
         ).thenReturn(PipelineConfiguration())
 
-        assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isTrue
+        assertThat(jenkinsFacade.hasPipeline(dashboardId, pipelineId)).isTrue
     }
 
     @Test
@@ -66,7 +67,7 @@ internal class JenkinsTest {
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(null)
 
-        assertThat(jenkins.hasPipeline(dashboardId, pipelineId)).isFalse
+        assertThat(jenkinsFacade.hasPipeline(dashboardId, pipelineId)).isFalse
     }
 
     @Test
@@ -105,7 +106,7 @@ internal class JenkinsTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkins.fetchAllBuilds(dashboardId, pipelineId)
+        val allBuilds = jenkinsFacade.syncBuilds(dashboardId, pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).clear()
         verify(buildRepository, times(1)).save(allBuilds)
@@ -127,7 +128,7 @@ internal class JenkinsTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
+        assertThat(jenkinsFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
     }
 
     @Test
@@ -151,6 +152,6 @@ internal class JenkinsTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkins.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+        assertThat(jenkinsFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }
 }

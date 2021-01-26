@@ -1,7 +1,7 @@
-package fourkeymetrics.datasource.pipeline.configuration
+package fourkeymetrics.datasource.dashboard
 
-import fourkeymetrics.datasource.pipeline.configuration.controller.ConfigurationApplicationService
-import fourkeymetrics.datasource.pipeline.configuration.controller.ConfigurationController
+import fourkeymetrics.datasource.dashboard.controller.ConfigurationApplicationService
+import fourkeymetrics.datasource.dashboard.controller.ConfigurationController
 import fourkeymetrics.exception.ApplicationException
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito

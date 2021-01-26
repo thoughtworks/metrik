@@ -1,4 +1,4 @@
-package fourkeymetrics.datasource.pipeline.configuration.controller.vo
+package fourkeymetrics.datasource.dashboard.controller.vo
 
 data class DashboardConfigurationRequest(
     val dashboardName: String,

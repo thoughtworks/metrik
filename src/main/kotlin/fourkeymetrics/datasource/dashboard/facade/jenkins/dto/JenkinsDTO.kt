@@ -1,4 +1,4 @@
-package fourkeymetrics.datasource.pipeline.builddata.dto
+package fourkeymetrics.datasource.dashboard.facade.jenkins.dto
 
 import fourkeymetrics.metrics.model.BuildStatus
 import org.apache.logging.log4j.util.Strings

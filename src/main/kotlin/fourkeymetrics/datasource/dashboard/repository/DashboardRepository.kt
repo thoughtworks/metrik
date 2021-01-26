@@ -1,7 +1,7 @@
-package fourkeymetrics.datasource.pipeline.configuration.repository
+package fourkeymetrics.datasource.dashboard.repository
 
-import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
-import fourkeymetrics.datasource.pipeline.configuration.model.PipelineConfiguration
+import fourkeymetrics.datasource.dashboard.model.Dashboard
+import fourkeymetrics.datasource.dashboard.model.PipelineConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find

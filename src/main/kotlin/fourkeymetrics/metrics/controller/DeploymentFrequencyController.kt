@@ -1,6 +1,6 @@
 package fourkeymetrics.metrics.controller
 
-import fourkeymetrics.datasource.pipeline.builddata.Pipeline
+import fourkeymetrics.datasource.dashboard.facade.PipelineFacade
 import fourkeymetrics.metrics.calculator.DeploymentFrequencyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -16,7 +16,7 @@ class DeploymentFrequencyController {
     private lateinit var deploymentFrequencyService: DeploymentFrequencyService
 
     @Autowired
-    private lateinit var pipeline: Pipeline
+    private lateinit var pipelineFacade: PipelineFacade
 
     @GetMapping("/api/deployment-frequency")
     fun getDeploymentCount(@RequestParam dashboardId: String,
@@ -38,7 +38,7 @@ class DeploymentFrequencyController {
                                     startTimestamp: Long,
                                     targetStage: String): Boolean {
         return startTimestamp > endTimestamp ||
-            !pipeline.hasPipeline(dashboardId, pipelineId) ||
-            !pipeline.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)
+            !pipelineFacade.hasPipeline(dashboardId, pipelineId) ||
+            !pipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)
     }
 }
