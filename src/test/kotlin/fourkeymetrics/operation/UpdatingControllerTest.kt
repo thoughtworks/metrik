@@ -22,8 +22,10 @@ class UpdatingControllerTest {
     @Test
     internal fun `should return update timestamp when update all build data success`() {
         val updatedTimestamp: Long = 12345
+        val dashboardId = "fake-dashboard-id"
+        val pipelineId = "fake-pipeline-id"
 
-        `when`(updatingService.update()).thenReturn(updatedTimestamp)
+        `when`(updatingService.update(dashboardId, pipelineId)).thenReturn(updatedTimestamp)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/build"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -32,7 +34,10 @@ class UpdatingControllerTest {
 
     @Test
     internal fun `should return 500 when update all build data failed`() {
-        `when`(updatingService.update()).thenReturn(null)
+        val dashboardId = "fake-dashboard-id"
+        val pipelineId = "fake-pipeline-id"
+
+        `when`(updatingService.update(dashboardId, pipelineId)).thenReturn(null)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/build"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)
