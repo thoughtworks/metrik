@@ -1,15 +1,15 @@
 import React from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
+import moment from "moment";
+import { dateFormatYYYYMMDD } from "../constants/date-format";
 
 const { Text, Title } = Typography;
+const { RangePicker } = DatePicker;
 
 const containerStyles = css({
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "space-between",
 	padding: "29px 32px",
 });
 
@@ -42,32 +42,59 @@ const fullScreenIconStyles = css({
 	color: PRIMARY_COLOR,
 });
 
+const headerStyles = css({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+});
+
 const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
 
 export const PageDashboard = () => {
 	return (
 		<div css={containerStyles}>
-			<div>
-				<Title level={2} style={{ marginBottom: 0 }}>
-					4KM
-				</Title>
-				<Text type={"secondary"}>The latest available data end at : 3 Jun, 2020</Text>
-				<Button type="link" icon={<SyncOutlined />}>
-					Sync Data
-				</Button>
-			</div>
-			<div>
-				<span css={dividerStyles}>
-					<span css={settingStyles}>
-						<SettingOutlined />
-						<Text css={settingTextStyles}>Pipeline Setting</Text>
+			<div css={headerStyles}>
+				<div>
+					<Title level={2} style={{ marginBottom: 0 }}>
+						4KM
+					</Title>
+					<Text type={"secondary"}>The latest available data end at : 3 Jun, 2020</Text>
+					<Button type="link" icon={<SyncOutlined />}>
+						Sync Data
+					</Button>
+				</div>
+				<div>
+					<span css={dividerStyles}>
+						<span css={settingStyles}>
+							<SettingOutlined />
+							<Text css={settingTextStyles}>Pipeline Setting</Text>
+						</span>
 					</span>
-				</span>
-				<span css={fullScreenStyles}>
-					<FullscreenOutlined css={fullScreenIconStyles} />
-					<Text css={fullScreenTextStyles}>Full Screen</Text>
-				</span>
+					<span css={fullScreenStyles}>
+						<FullscreenOutlined css={fullScreenIconStyles} />
+						<Text css={fullScreenTextStyles}>Full Screen</Text>
+					</span>
+				</div>
 			</div>
+			<Form layout={"vertical"} css={{ marginTop: 16 }}>
+				<Row gutter={8} wrap={false}>
+					<Col span={8}>
+						<Form.Item label="Duration" name="duration">
+							<RangePicker
+								format={dateFormatYYYYMMDD}
+								clearIcon={false}
+								defaultValue={[
+									moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
+									moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+								]}
+							/>
+						</Form.Item>
+					</Col>
+					<Col span={4} style={{ textAlign: "right" }}>
+						<Button>Apply</Button>
+					</Col>
+				</Row>
+			</Form>
 		</div>
 	);
 };
