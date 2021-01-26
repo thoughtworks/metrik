@@ -1,6 +1,7 @@
 package fourkeymetrics.metric.controller
 
 import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
+import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metric.model.Build
@@ -8,6 +9,7 @@ import fourkeymetrics.metric.model.LEVEL
 import fourkeymetrics.metric.model.Metric
 import fourkeymetrics.metric.model.MetricUnit
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -98,4 +100,17 @@ internal class MetricsApplicationServiceTest {
         )
     }
 
+    @Test
+    fun `should throw bad request given start time later than end time`() {
+        assertThrows(BadRequestException::class.java
+        ) {
+            metricsApplicationService.retrieve4KeyMetrics(
+                "pipelineId",
+                "deploy to prod",
+                1,
+                1,
+                MetricUnit.Fortnightly
+            )
+        }
+    }
 }

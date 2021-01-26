@@ -1,6 +1,7 @@
 package fourkeymetrics.metric.controller
 
 import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
+import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metric.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metric.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metric.calculator.MetricCalculator
@@ -34,6 +35,7 @@ class MetricsApplicationService {
         endTimestamp: Long,
         unit: MetricUnit
     ): FourKeyMetricsResponse {
+        validateTime(startTimestamp, endTimestamp)
         val allBuilds = buildRepository.getAllBuilds(pipelineId)
         val timeRangeByUnit: List<Pair<Long, Long>> = dateTimeUtils.splitTimeRange(startTimestamp, endTimestamp, unit)
 
@@ -57,6 +59,12 @@ class MetricsApplicationService {
                 changeFailureRateCalculator,
             )
         )
+    }
+
+    private fun validateTime(startTimestamp: Long, endTimestamp: Long) {
+        if (startTimestamp >= endTimestamp) {
+            throw BadRequestException("start time should be earlier than end time")
+        }
     }
 
     private fun generateMetrics(
