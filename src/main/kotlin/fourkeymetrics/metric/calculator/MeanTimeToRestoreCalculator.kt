@@ -2,14 +2,28 @@ package fourkeymetrics.metric.calculator
 
 import fourkeymetrics.metric.model.*
 import org.springframework.stereotype.Component
+import java.math.RoundingMode
 
 @Component
 class MeanTimeToRestoreCalculator : MetricCalculator {
 
+    companion object {
+        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
+    }
+
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
                                 endTimestamp: Long, targetStage: String): Double {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
-        TODO("Not yet implemented")
+        val selectedStages = findSelectedStages(buildOrderByTimestampAscending,
+            startTimestamp, endTimestamp, targetStage)
+
+        val restoredPairs = generateRestoredPairs(selectedStages)
+
+        val totalTimeToRestore = restoredPairs.map {
+            (it.second.getStageDoneTime().minus(it.first.getStageDoneTime())) / MILLISECOND_TO_HOURS
+        }.sum()
+
+        return totalTimeToRestore.div(restoredPairs.size).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
     }
 
     override fun calculateLevel(value: Double, unit: MetricUnit?): LEVEL {
@@ -36,7 +50,7 @@ class MeanTimeToRestoreCalculator : MetricCalculator {
         }
     }
 
-    fun generateRestoredBuildPairs(selectedStages: List<Stage>): List<Pair<Stage, Stage>> {
+    fun generateRestoredPairs(selectedStages: List<Stage>): List<Pair<Stage, Stage>> {
         val restoredStagePairs: MutableList<Pair<Stage, Stage>> = emptyList<Pair<Stage, Stage>>().toMutableList()
         var index = 0
         while (index < selectedStages.size) {
