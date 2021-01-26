@@ -6,11 +6,6 @@ orbs:
 
 jobs:
   test_build_push:
-    parallelism: 5 # Refer: https://circleci.com/docs/2.0/configuration-reference/#docker-executor
-    environment:
-      # Configure the JVM and Gradle to avoid OOM errors
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
       - image: circleci/openjdk:11.0.8-jdk
     resource_class: medium
@@ -27,25 +22,8 @@ jobs:
             - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
       - run:
-          name: Run tests in parallel # Refer: https://circleci.com/docs/2.0/parallelism-faster-jobs/
-          command: |
-            cd src/test/kotlin
-
-            CLASSNAMES=$(circleci tests glob "**/*Test.kt" \
-              | sed 's@/@.@g' \
-              | sed 's/.kt//' \
-              | circleci tests split --split-by=timings --timings-type=classname)
-
-            cd ../../..
-
-            GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
-            echo "Prepared arguments for Gradle: $GRADLE_ARGS"
-
-            ./gradlew test $GRADLE_ARGS
-
-      #      - run:
-      #          name: Run tests and build artifact
-      #          command: ./gradlew clean build
+          name: Run tests and build artifact
+          command: ./gradlew clean build
 
       - save_cache:
           paths:
