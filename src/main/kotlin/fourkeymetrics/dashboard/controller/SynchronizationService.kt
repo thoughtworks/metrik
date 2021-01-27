@@ -1,9 +1,6 @@
 package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.common.model.Build
-import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.service.PipelineService
-import fourkeymetrics.datasource.UpdateRecord
 import fourkeymetrics.datasource.UpdateRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -15,9 +12,6 @@ class SynchronizationService {
     }
 
     @Autowired
-    private lateinit var buildRepository: BuildRepository
-
-    @Autowired
     private lateinit var updateRepository: UpdateRepository
 
     @Autowired
@@ -27,10 +21,9 @@ class SynchronizationService {
     fun update(dashboardId: String, pipelineId: String): Long? {
         val lastUpdate = updateRepository.getLastUpdate(dashboardId)
         val currentTimeMillis = System.currentTimeMillis()
-        val builds: List<Build>
 
         try {
-            builds = if (lastUpdate == null) {
+            if (lastUpdate == null) {
                 pipelineService.syncBuilds(dashboardId, pipelineId, 0)
             } else {
                 pipelineService.syncBuilds(
@@ -42,9 +35,6 @@ class SynchronizationService {
         } catch (e: RuntimeException) {
             return null
         }
-
-        buildRepository.save(builds)
-        updateRepository.save(UpdateRecord(dashboardId, currentTimeMillis))
 
         return currentTimeMillis
     }

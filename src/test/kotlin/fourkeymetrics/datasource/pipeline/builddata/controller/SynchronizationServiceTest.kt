@@ -2,7 +2,6 @@ package fourkeymetrics.datasource.pipeline.builddata.controller
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.controller.SynchronizationService
-import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsService
 import fourkeymetrics.datasource.UpdateRecord
 import fourkeymetrics.datasource.UpdateRepository
@@ -23,9 +22,6 @@ internal class SynchronizationServiceTest {
     private lateinit var synchronizationService: SynchronizationService
 
     @MockBean
-    private lateinit var buildRepository: BuildRepository
-
-    @MockBean
     private lateinit var updateRepository: UpdateRepository
 
     @MockBean
@@ -35,7 +31,7 @@ internal class SynchronizationServiceTest {
 
 
     @Test
-    internal fun `should save all builds when there is no previous update`() {
+    internal fun `should sync builds when there is no previous update`() {
         val dashboardId = "fake-dashboard-id"
         val pipelineId = "fake-pipeline-id"
         val builds = listOf(Build())
@@ -45,8 +41,7 @@ internal class SynchronizationServiceTest {
 
         val updatedTimestamp = synchronizationService.update(dashboardId, pipelineId)
 
-        verify(buildRepository, times(1)).save(builds)
-        verify(updateRepository, times(1)).save(any(UpdateRecord::class.java))
+        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, 0)
 
         assertThat(updatedTimestamp).isNotNull
     }
@@ -68,8 +63,7 @@ internal class SynchronizationServiceTest {
 
         val updateTimestamp = synchronizationService.update(dashboardId, pipelineId)
 
-        verify(buildRepository, times(1)).save(builds)
-        verify(updateRepository, times(1)).save(any(UpdateRecord::class.java))
+        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, startTimestamp)
 
         assertThat(updateTimestamp).isNotNull
     }
@@ -78,7 +72,6 @@ internal class SynchronizationServiceTest {
     internal fun `should not save any builds if fetch data from pipeline failed`() {
         val dashboardId = "fake-dashboard-id"
         val pipelineId = "fake-pipeline-id"
-        val builds = listOf(Build())
         val lastUpdateRecord = UpdateRecord(
             dashboardId,
             1610668800000
@@ -91,7 +84,6 @@ internal class SynchronizationServiceTest {
 
         val updateTimestamp = synchronizationService.update(dashboardId, pipelineId)
 
-        verify(buildRepository, never()).save(builds)
         verify(updateRepository, never()).save(any(UpdateRecord::class.java))
 
         assertThat(updateTimestamp).isNull()
