@@ -2,13 +2,14 @@ package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.UpdateRecord
 import fourkeymetrics.dashboard.repository.UpdateRepository
 import fourkeymetrics.dashboard.service.PipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class SynchronizationService {
+class SynchronizationApplicationService {
     companion object {
         private const val TWO_WEEKS_TIMESTAMP = 14 * 24 * 60 * 60 * 1000L
     }
@@ -44,10 +45,20 @@ class SynchronizationService {
         if (synchronizeFailed) {
             return lastSyncRecord?.updateTimestamp
         }
+
+        updateRepository.save(
+            UpdateRecord(dashboardId, currentTimeMillis)
+        )
         return currentTimeMillis
+    }
+
+    fun getLastSyncTimestamp(dashboardId: String): Long? {
+        val lastSyncRecord = updateRepository.getLastUpdate(dashboardId) ?: return null
+        return lastSyncRecord.updateTimestamp
     }
 
     private fun getPipelines(dashboardId: String): List<Pipeline> {
         return dashboardRepository.getPipelineConfiguration(dashboardId)
     }
+
 }

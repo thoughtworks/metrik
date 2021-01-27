@@ -1,7 +1,7 @@
 package fourkeymetrics.datasource.pipeline.builddata.controller
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.dashboard.controller.SynchronizationService
+import fourkeymetrics.dashboard.controller.SynchronizationApplicationService
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.UpdateRecord
@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(SynchronizationService::class, DashboardRepository::class)
-internal class SynchronizationServiceTest {
+@Import(SynchronizationApplicationService::class, DashboardRepository::class)
+internal class SynchronizationApplicationServiceTest {
     @Autowired
-    private lateinit var synchronizationService: SynchronizationService
+    private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
     @MockBean
     private lateinit var updateRepository: UpdateRepository
@@ -45,9 +45,10 @@ internal class SynchronizationServiceTest {
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, 0)).thenReturn(builds)
 
-        val updatedTimestamp = synchronizationService.synchronize(dashboardId)
+        val updatedTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
         verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, 0)
+        verify(updateRepository, times(1)).save(any(UpdateRecord::class.java))
 
         assertThat(updatedTimestamp).isNotNull
     }
@@ -68,11 +69,12 @@ internal class SynchronizationServiceTest {
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenReturn(builds)
 
-        val updateTimestamp = synchronizationService.synchronize(dashboardId)
+        val updateTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
         verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, startTimestamp)
+        verify(updateRepository, times(1)).save(any(UpdateRecord::class.java))
 
-        assertThat(updateTimestamp).isNotNull
+        assertThat(updateTimestamp).isGreaterThan(lastUpdateRecord.updateTimestamp)
     }
 
     @Test
@@ -90,10 +92,25 @@ internal class SynchronizationServiceTest {
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenThrow(RuntimeException())
 
-        val updateTimestamp = synchronizationService.synchronize(dashboardId)
+        val updateTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
         verify(updateRepository, never()).save(any(UpdateRecord::class.java))
 
         assertThat(updateTimestamp).isEqualTo(lastUpdateRecord.updateTimestamp)
+    }
+
+    @Test
+    internal fun `should get last synchronization time`() {
+        val dashboardId = "fake-dashboard-id"
+        val lastUpdateRecord = UpdateRecord(
+            dashboardId,
+            1610668800000
+        )
+
+        `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(lastUpdateRecord)
+
+        val updatedTimestamp = synchronizationApplicationService.getLastSyncTimestamp(dashboardId)
+
+        assertThat(updatedTimestamp).isEqualTo(lastUpdateRecord.updateTimestamp)
     }
 }
