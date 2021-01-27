@@ -1,15 +1,15 @@
-package fourkeymetrics.operation
+package fourkeymetrics.dashboard.controller
 
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.dashboard.repository.BuildRepository
+import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.datasource.UpdateRecord
 import fourkeymetrics.datasource.UpdateRepository
-import fourkeymetrics.datasource.pipeline.builddata.BuildRepository
-import fourkeymetrics.datasource.pipeline.builddata.Pipeline
-import fourkeymetrics.metric.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UpdatingService {
+class SynchronizationService {
     companion object {
         private const val TWO_WEEKS_TIMESTAMP = 14 * 24 * 60 * 60 * 1000L
     }
@@ -21,7 +21,7 @@ class UpdatingService {
     private lateinit var updateRepository: UpdateRepository
 
     @Autowired
-    private lateinit var pipeline: Pipeline
+    private lateinit var pipelineService: PipelineService
 
 
     fun update(dashboardId: String, pipelineId: String): Long? {
@@ -31,15 +31,15 @@ class UpdatingService {
 
         try {
             builds = if (lastUpdate == null) {
-                pipeline.fetchBuilds(dashboardId, pipelineId, 0)
+                pipelineService.syncBuilds(dashboardId, pipelineId, 0)
             } else {
-                pipeline.fetchBuilds(
+                pipelineService.syncBuilds(
                     dashboardId,
                     pipelineId,
                     lastUpdate.updateTimestamp - TWO_WEEKS_TIMESTAMP
                 )
             }
-        } catch (e: Exception) {
+        } catch (e: RuntimeException) {
             return null
         }
 

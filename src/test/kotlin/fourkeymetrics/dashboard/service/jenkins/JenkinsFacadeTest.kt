@@ -106,7 +106,7 @@ internal class JenkinsFacadeTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkinsPipelinFacade.syncBuilds(dashboardId, pipelineId)
+        val allBuilds = jenkinsPipelinFacade.syncBuilds(dashboardId, pipelineId, 0L)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
     }
 

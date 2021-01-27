@@ -31,7 +31,7 @@ abstract class PipelineService {
                 .any { it.name == targetStage }
     }
 
-    abstract fun syncBuilds(dashboardId: String, pipelineId: String): List<Build>
+    abstract fun syncBuilds(dashboardId: String, pipelineId: String, queryStartTimestamp: Long = 0L): List<Build>
 
     abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 

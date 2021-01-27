@@ -29,7 +29,7 @@ class JenkinsPipelinService(@Autowired private var restTemplate: RestTemplate,
                             @Autowired private var dashboardRepository: DashboardRepository,
                             @Autowired private var buildRepository: BuildRepository
 ) : PipelineService() {
-    override fun syncBuilds(dashboardId: String, pipelineId: String): List<Build> {
+    override fun syncBuilds(dashboardId: String, pipelineId: String, queryStartTimestamp: Long): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
         val username = pipelineConfiguration.username
         val credential = pipelineConfiguration.credential

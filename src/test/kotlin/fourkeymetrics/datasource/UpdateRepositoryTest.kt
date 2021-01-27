@@ -43,6 +43,17 @@ internal class UpdateRepositoryTest {
     }
 
     @Test
+    internal fun `should get null when there is no previous update for the dashboard`() {
+        val dashboardId = "fake-dashboard-id"
+
+        mongoTemplate.save(UpdateRecord(dashboardId, 100000000), collectionName)
+
+        val lastUpdate = updateRepository.getLastUpdate("another-dashboard-id")
+
+        assertThat(lastUpdate).isNull()
+    }
+
+    @Test
     internal fun `should get null when there is no previous update`() {
         val dashboardId = "fake-dashboard-id"
 

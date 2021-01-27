@@ -1,5 +1,7 @@
-package fourkeymetrics.operation
+package fourkeymetrics.datasource.pipeline.builddata.controller
 
+import fourkeymetrics.dashboard.controller.SynchronizationController
+import fourkeymetrics.dashboard.controller.SynchronizationService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,14 +12,14 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@WebMvcTest(controllers = [UpdatingController::class])
-@Import(UpdatingService::class)
-class UpdatingControllerTest {
+@WebMvcTest(controllers = [SynchronizationController::class])
+@Import(SynchronizationService::class)
+class SynchronizationControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var updatingService: UpdatingService
+    private lateinit var synchronizationService: SynchronizationService
 
     @Test
     internal fun `should return update timestamp when update all build data success`() {
@@ -25,9 +27,9 @@ class UpdatingControllerTest {
         val dashboardId = "fake-dashboard-id"
         val pipelineId = "fake-pipeline-id"
 
-        `when`(updatingService.update(dashboardId, pipelineId)).thenReturn(updatedTimestamp)
+        `when`(synchronizationService.update(dashboardId, pipelineId)).thenReturn(updatedTimestamp)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/build"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.updateTimestamp").value(updatedTimestamp))
     }
@@ -37,9 +39,9 @@ class UpdatingControllerTest {
         val dashboardId = "fake-dashboard-id"
         val pipelineId = "fake-pipeline-id"
 
-        `when`(updatingService.update(dashboardId, pipelineId)).thenReturn(null)
+        `when`(synchronizationService.update(dashboardId, pipelineId)).thenReturn(null)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/build"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)
     }
 }

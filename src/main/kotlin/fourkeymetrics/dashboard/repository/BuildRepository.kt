@@ -1,17 +1,12 @@
 package fourkeymetrics.dashboard.repository
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.datasource.pipeline.configuration.model.Dashboard
-import fourkeymetrics.metric.model.Build
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
-import org.springframework.data.mongodb.core.find
-import org.springframework.data.mongodb.core.query.Criteria
-import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,8 +31,9 @@ class BuildRepository {
                 collectionName
             )
             if (found == null) {
-                mongoTemplate.save(it, collectionName) }
+                mongoTemplate.save(it, collectionName)
             }
+        }
     }
 
     fun clear() {
