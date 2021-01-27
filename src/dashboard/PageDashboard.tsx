@@ -1,6 +1,6 @@
 import React from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form, Checkbox } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
@@ -12,7 +12,7 @@ const { RangePicker } = DatePicker;
 
 const options = [
 	{
-		label: "AA",
+		label: "AABBBBBBBBBB CCCCCC",
 		value: "a",
 		children: [
 			{
@@ -50,6 +50,60 @@ const options = [
 	{
 		label: "CC",
 		value: "c",
+		children: [
+			{
+				label: "C1",
+				value: "c1",
+			},
+			{
+				label: "C2",
+				value: "c2",
+			},
+			{
+				label: "C3",
+				value: "c3",
+			},
+		],
+	},
+	{
+		label: "AABBBBBBBBBB CCCCCC",
+		value: "d",
+		children: [
+			{
+				label: "A1",
+				value: "a1",
+			},
+			{
+				label: "A2",
+				value: "a2",
+			},
+			{
+				label: "A3",
+				value: "a3",
+			},
+		],
+	},
+	{
+		label: "BB",
+		value: "e",
+		children: [
+			{
+				label: "B1",
+				value: "b1",
+			},
+			{
+				label: "B2",
+				value: "b2",
+			},
+			{
+				label: "B3",
+				value: "b3",
+			},
+		],
+	},
+	{
+		label: "CC",
+		value: "f",
 		children: [
 			{
 				label: "C1",

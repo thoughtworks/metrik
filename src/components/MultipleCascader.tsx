@@ -40,6 +40,19 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 	};
 
 	useEffect(() => {
+		const nextVisibleMap = checkedValues.reduce((res, item) => {
+			return {
+				...res,
+				[item]: true,
+			};
+		}, {});
+		setVisibleMap(state => {
+			return {
+				...state,
+				...nextVisibleMap,
+			};
+		});
+
 		setCascaderValue(state => {
 			return {
 				...checkedValues?.reduce((res: any, val: any) => {
@@ -102,6 +115,7 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 		<Trigger
 			action={["click"]}
 			destroyPopupOnHide
+			popupClassName={"ant-select-dropdown ant-select-dropdown-placement-bottomLeft"}
 			popup={
 				<Checkbox.Group onChange={onChange} value={checkedValues}>
 					{options.map((option, key) => {
@@ -140,15 +154,30 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 			}
 			popupAlign={{
 				points: ["tl", "bl"],
-				offset: [0, 15],
+				offset: [0, 5],
 			}}
+			forceRender
 			popupVisible={popupVisible}
 			onPopupVisibleChange={setPopupVisible}>
-			<div>
-				<input readOnly />
-				{Object.values(cascaderValue).map((item, key) => {
-					return <Tag key={key} closable={true}>{`${item.value} ${item.childValue}`}</Tag>;
-				})}
+			<div className={"ant-select ant-select-multiple ant-select-show-arrow"}>
+				<div className={"ant-select-selector"}>
+					<div className={"ant-select-selection-overflow"}>
+						{Object.values(cascaderValue).map(item => (
+							<div className={"ant-select-selection-overflow-item"} key={item.value}>
+								<Tag
+									closable={Object.values(cascaderValue).length > 1}
+									onClose={() => {
+										setCheckedValues((state: any) => state.filter((v: any) => v !== item.value));
+									}}>{`${options.find(o => o.value === item.value)?.label} ${
+									(options.find(o => o.value === item.value)?.children ?? []).find(
+										c => c.value === item.childValue
+									)?.label
+								}`}</Tag>
+							</div>
+						))}
+					</div>
+					<input readOnly css={{ visibility: "hidden" }} />
+				</div>
 			</div>
 		</Trigger>
 	);
