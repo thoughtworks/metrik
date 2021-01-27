@@ -10,6 +10,63 @@ import { MultipleCascader } from "../components/MultipleCascader";
 const { Text, Title } = Typography;
 const { RangePicker } = DatePicker;
 
+const options = [
+	{
+		label: "AA",
+		value: "a",
+		children: [
+			{
+				label: "A1",
+				value: "a1",
+			},
+			{
+				label: "A2",
+				value: "a2",
+			},
+			{
+				label: "A3",
+				value: "a3",
+			},
+		],
+	},
+	{
+		label: "BB",
+		value: "b",
+		children: [
+			{
+				label: "B1",
+				value: "b1",
+			},
+			{
+				label: "B2",
+				value: "b2",
+			},
+			{
+				label: "B3",
+				value: "b3",
+			},
+		],
+	},
+	{
+		label: "CC",
+		value: "c",
+		children: [
+			{
+				label: "C1",
+				value: "c1",
+			},
+			{
+				label: "C2",
+				value: "c2",
+			},
+			{
+				label: "C3",
+				value: "c3",
+			},
+		],
+	},
+];
+
 const containerStyles = css({
 	padding: "29px 32px",
 });
@@ -95,7 +152,13 @@ export const PageDashboard = () => {
 						<Button>Apply</Button>
 					</Col>
 					<Col span={10}>
-						<MultipleCascader />
+						<MultipleCascader
+							options={options}
+							onValueChange={value => {
+								console.log(value);
+							}}
+							defaultValue={["a", "c"]}
+						/>
 					</Col>
 				</Row>
 			</Form>
