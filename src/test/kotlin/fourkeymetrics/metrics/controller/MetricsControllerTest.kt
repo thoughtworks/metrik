@@ -67,5 +67,6 @@ internal class MetricsControllerTest {
             .andExpect(jsonPath("$.leadTimeForChange.details[0].endTimestamp").value(endTime))
             .andExpect(jsonPath("$.leadTimeForChange.details[0].value").value(value))
             .andExpect(jsonPath("$.changeFailureRate").isNotEmpty)
+            .andExpect(jsonPath("$.meanTimeToRestore").isNotEmpty)
     }
 }
