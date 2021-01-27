@@ -7,6 +7,6 @@ data class MetricsInfo(val summary: Metrics, val details: List<Metrics>)
 data class FourKeyMetricsResponse(
 //    val deploymentFrequency: Metrics,
     val leadTimeForChange: MetricsInfo,
-//    val timeToRestoreService: Metrics,
+    val meanTimeToRestore: MetricsInfo,
     val changeFailureRate: MetricsInfo
 )

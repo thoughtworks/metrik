@@ -37,7 +37,8 @@ internal class MetricsControllerTest {
         val metrics = MetricsInfo(summary, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
             leadTimeForChange = metrics,
-            changeFailureRate = metrics
+            changeFailureRate = metrics,
+            meanTimeToRestore = metrics
         )
         `when`(
             metricsApplicationService.retrieve4KeyMetrics(

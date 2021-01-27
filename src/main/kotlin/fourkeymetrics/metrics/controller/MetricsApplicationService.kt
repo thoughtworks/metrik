@@ -8,6 +8,7 @@ import fourkeymetrics.metrics.calculator.MetricsCalculator
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,9 @@ class MetricsApplicationService {
 
     @Autowired
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
+
+    @Autowired
+    private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
     @Autowired
     private lateinit var buildRepository: BuildRepository
@@ -48,6 +52,15 @@ class MetricsApplicationService {
                 timeRangeByUnit,
                 unit,
                 leadTimeForChangeCalculator,
+            ),
+            generateMetrics(
+                allBuilds,
+                startTimestamp,
+                endTimestamp,
+                targetStage,
+                timeRangeByUnit,
+                unit,
+                meanTimeToRestoreCalculator,
             ),
             generateMetrics(
                 allBuilds,

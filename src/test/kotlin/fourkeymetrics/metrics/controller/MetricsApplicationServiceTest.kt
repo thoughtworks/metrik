@@ -5,6 +5,7 @@ import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
 import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
+import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
@@ -24,6 +25,9 @@ internal class MetricsApplicationServiceTest {
 
     @Mock
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
+    
+    @Mock
+    private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
     @Mock
     private lateinit var buildRepository: BuildRepository
@@ -48,14 +52,6 @@ internal class MetricsApplicationServiceTest {
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(expectedBuilds)
         `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
-            .thenReturn(0.5)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.LOW)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
-            .thenReturn(0.4)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
-            .thenReturn(0.6)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.HIGH)
 
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(2.0)
@@ -66,6 +62,22 @@ internal class MetricsApplicationServiceTest {
             .thenReturn(3.0)
         `when`(leadTimeForChangeCalculator.calculateLevel(2.0, unit)).thenReturn(LEVEL.HIGH)
 
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+            .thenReturn(2.25)
+        `when`(meanTimeToRestoreCalculator.calculateLevel(2.25, unit)).thenReturn(LEVEL.HIGH)
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+            .thenReturn(1.8)
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+            .thenReturn(5.7)
+
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+            .thenReturn(0.5)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.LOW)
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+            .thenReturn(0.4)
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+            .thenReturn(0.6)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.HIGH)
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
             pipelineId, targetStage, startTimestamp, endTimestamp, unit
         )
@@ -79,6 +91,19 @@ internal class MetricsApplicationServiceTest {
                 listOf(
                     Metrics(1.0, 1, 5),
                     Metrics(3.0, 6, 10)
+                )
+            )
+        )
+
+        assertEquals(
+            fourKeyMetricsResponse.meanTimeToRestore.summary,
+            Metrics(2.25, LEVEL.HIGH, 1, 10)
+        )
+        assertTrue(
+            fourKeyMetricsResponse.meanTimeToRestore.details.containsAll(
+                listOf(
+                    Metrics(1.8, 1, 5),
+                    Metrics(5.7, 6, 10)
                 )
             )
         )
