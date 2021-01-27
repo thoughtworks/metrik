@@ -1,7 +1,8 @@
-import { Checkbox, Row, Col, Radio, Select } from "antd";
+import { Checkbox, Row, Col, Radio, Tag } from "antd";
 import React, { useState, useEffect, FC } from "react";
 import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
+import Trigger from "rc-trigger";
 
 interface Option {
 	label: string;
@@ -95,40 +96,60 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 		});
 	};
 
+	const [popupVisible, setPopupVisible] = useState(false);
+
 	return (
-		<Checkbox.Group onChange={onChange} value={checkedValues}>
-			{options.map((option, key) => {
-				return (
-					<Row key={key}>
-						<Col>
-							<span
-								onClick={() => toggle(option.value)}
-								css={{ display: "inline-block", cursor: "pointer" }}>
-								{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
-							</span>
-							<Checkbox
-								value={option.value}
-								onChange={handleCheckBoxChange}
-								disabled={checkedValues.length === 1 && checkedValues.includes(option.value)}>
-								{option.label}
-							</Checkbox>
-							{visibleMap[option.value] && (
-								<Row css={{ marginLeft: 25 }}>
-									<Radio.Group
-										onChange={e => onRadioChange(e, option)}
-										value={cascaderValue[option.value]?.childValue}>
-										{(option.children ?? []).map((child, idx) => (
-											<Col key={idx}>
-												<Radio value={child.value}>{child.label}</Radio>
-											</Col>
-										))}
-									</Radio.Group>
-								</Row>
-							)}
-						</Col>
-					</Row>
-				);
-			})}
-		</Checkbox.Group>
+		<Trigger
+			action={["click"]}
+			destroyPopupOnHide
+			popup={
+				<Checkbox.Group onChange={onChange} value={checkedValues}>
+					{options.map((option, key) => {
+						return (
+							<Row key={key}>
+								<Col>
+									<span
+										onClick={() => toggle(option.value)}
+										css={{ display: "inline-block", cursor: "pointer" }}>
+										{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
+									</span>
+									<Checkbox
+										value={option.value}
+										onChange={handleCheckBoxChange}
+										disabled={checkedValues.length === 1 && checkedValues.includes(option.value)}>
+										{option.label}
+									</Checkbox>
+									{visibleMap[option.value] && (
+										<Row css={{ marginLeft: 25 }}>
+											<Radio.Group
+												onChange={e => onRadioChange(e, option)}
+												value={cascaderValue[option.value]?.childValue}>
+												{(option.children ?? []).map((child, idx) => (
+													<Col key={idx}>
+														<Radio value={child.value}>{child.label}</Radio>
+													</Col>
+												))}
+											</Radio.Group>
+										</Row>
+									)}
+								</Col>
+							</Row>
+						);
+					})}
+				</Checkbox.Group>
+			}
+			popupAlign={{
+				points: ["tl", "bl"],
+				offset: [0, 15],
+			}}
+			popupVisible={popupVisible}
+			onPopupVisibleChange={setPopupVisible}>
+			<div>
+				<input readOnly />
+				{Object.values(cascaderValue).map((item, key) => {
+					return <Tag key={key} closable={true}>{`${item.value} ${item.childValue}`}</Tag>;
+				})}
+			</div>
+		</Trigger>
 	);
 };
