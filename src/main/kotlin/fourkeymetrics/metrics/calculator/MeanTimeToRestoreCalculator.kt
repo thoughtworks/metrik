@@ -21,8 +21,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
                                 endTimestamp: Long, targetStage: String): Double {
-        val selectedStages = findSelectedStages(allBuilds,
-            startTimestamp, endTimestamp, targetStage).sortedBy { it.getStageDoneTime() }
+        val selectedStages = findSelectedStages(allBuilds, startTimestamp, endTimestamp, targetStage)
 
         return calculateMTTR(selectedStages)
     }
@@ -39,17 +38,14 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     private fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
                                    targetStage: String): List<Stage> {
-        val targetStages = allBuilds.flatMap { build -> build.stages }.filter { stage -> stage.name == targetStage }
-        val lastSuccessfulDeploymentBuildBeforeGivenTime = allBuilds.findLast {
-            it.containsGivenDeploymentBeforeGivenTimestamp(
-                targetStage,
-                BuildStatus.SUCCESS,
-                startTimestamp
-            )
-        } ?: return targetStages.filter { it.getStageDoneTime() <= endTimestamp }
+        val targetStages = allBuilds.flatMap { build -> build.stages }
+            .filter { stage -> stage.name == targetStage }.sortedBy { it.getStageDoneTime() }
 
-        val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBuildBeforeGivenTime
-            .stages.find { it.name == targetStage }!!.getStageDoneTime()
+        val lastSuccessfulDeploymentBeforeGivenTime = targetStages.findLast {
+            it.status == BuildStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
+        }?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }
+
+        val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBeforeGivenTime.getStageDoneTime()
 
         return targetStages.filter {
             it.getStageDoneTime() in
