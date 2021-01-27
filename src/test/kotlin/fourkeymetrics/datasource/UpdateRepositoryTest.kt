@@ -1,5 +1,7 @@
 package fourkeymetrics.datasource
 
+import fourkeymetrics.dashboard.repository.UpdateRecord
+import fourkeymetrics.dashboard.repository.UpdateRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

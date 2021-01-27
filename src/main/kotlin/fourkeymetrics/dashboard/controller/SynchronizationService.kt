@@ -1,11 +1,11 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.service.PipelineService
-import fourkeymetrics.datasource.UpdateRepository
+import fourkeymetrics.dashboard.repository.UpdateRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class SynchronizationService {
     companion object {
         private const val TWO_WEEKS_TIMESTAMP = 14 * 24 * 60 * 60 * 1000L

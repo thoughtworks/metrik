@@ -3,8 +3,8 @@ package fourkeymetrics.datasource.pipeline.builddata.controller
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.controller.SynchronizationService
 import fourkeymetrics.dashboard.service.jenkins.JenkinsService
-import fourkeymetrics.datasource.UpdateRecord
-import fourkeymetrics.datasource.UpdateRepository
+import fourkeymetrics.dashboard.repository.UpdateRecord
+import fourkeymetrics.dashboard.repository.UpdateRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
