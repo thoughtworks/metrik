@@ -17,6 +17,10 @@ class SynchronizationController {
 
     @PostMapping("/api/dashboard/{dashboardId}/synchronization")
     fun updateBuilds(@PathVariable dashboardId: String): ResponseEntity<SynchronizationRecordResponse> {
+        if (!synchronizationApplicationService.isDashboardExist(dashboardId)) {
+            return ResponseEntity.badRequest().build()
+        }
+
         val updatedTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
         return if (updatedTimestamp == null) {
@@ -28,6 +32,9 @@ class SynchronizationController {
 
     @GetMapping("/api/dashboard/{dashboardId}/synchronization")
     fun getLastSynchronization(@PathVariable dashboardId: String): ResponseEntity<SynchronizationRecordResponse> {
+        if (!synchronizationApplicationService.isDashboardExist(dashboardId)) {
+            return ResponseEntity.badRequest().build()
+        }
         val lastSyncTimestamp = synchronizationApplicationService.getLastSyncTimestamp(dashboardId)
 
         return ResponseEntity.ok(SynchronizationRecordResponse(lastSyncTimestamp))

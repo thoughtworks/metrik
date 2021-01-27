@@ -61,4 +61,9 @@ class SynchronizationApplicationService {
         return dashboardRepository.getPipelineConfiguration(dashboardId)
     }
 
+    fun isDashboardExist(dashboardId: String): Boolean {
+        dashboardRepository.getDashBoardDetailById(dashboardId) ?: return false
+        return true
+    }
+
 }

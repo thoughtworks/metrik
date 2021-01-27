@@ -72,4 +72,16 @@ internal class DashboardRepositoryTest {
 
         assertThat(configuration).isNull()
     }
+
+    @Test
+    internal fun `should get dashboard by ID`() {
+        val dashboardId = "fake-dashboard"
+        val collectionName = "dashboard"
+
+        mongoTemplate.save(Dashboard(id = dashboardId), collectionName)
+
+        val dashboard = dashboardRepository.getDashBoardDetailById(dashboardId)
+
+        assertThat(dashboard).isNotNull
+    }
 }

@@ -5,6 +5,7 @@ import fourkeymetrics.dashboard.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
+import org.springframework.data.mongodb.core.findById
 import org.springframework.data.mongodb.core.findOne
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -35,6 +36,11 @@ class DashboardRepository {
         val query = Query()
         query.addCriteria(Criteria.where("name").`is`(name))
         return mongoTemplate.find<Dashboard>(query)
+
+    }
+
+    fun getDashBoardDetailById(id: String): Dashboard? {
+        return mongoTemplate.findById(id, collectionName)
 
     }
 
