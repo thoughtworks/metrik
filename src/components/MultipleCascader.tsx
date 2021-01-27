@@ -117,7 +117,10 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 			destroyPopupOnHide
 			popupClassName={"ant-select-dropdown ant-select-dropdown-placement-bottomLeft"}
 			popup={
-				<Checkbox.Group onChange={onChange} value={checkedValues}>
+				<Checkbox.Group
+					onChange={onChange}
+					value={checkedValues}
+					css={{ padding: "13px 20px", maxHeight: 500, overflow: "scroll" }}>
 					{options.map((option, key) => {
 						return (
 							<Row key={key}>
@@ -156,7 +159,6 @@ export const MultipleCascader: FC<MultipleCascaderProps> = ({
 				points: ["tl", "bl"],
 				offset: [0, 5],
 			}}
-			forceRender
 			popupVisible={popupVisible}
 			onPopupVisibleChange={setPopupVisible}>
 			<div className={"ant-select ant-select-multiple ant-select-show-arrow"}>
