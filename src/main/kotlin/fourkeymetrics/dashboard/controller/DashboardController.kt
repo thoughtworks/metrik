@@ -2,6 +2,7 @@ package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
+import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.GetMapping
 
 @RestController
 class DashboardController {
@@ -39,5 +41,10 @@ class DashboardController {
         @PathVariable("pipelineId") pipelineId: String
     ): Pipeline {
         return dashboardApplicationService.update(config, dashboardId, pipelineId)
+    }
+
+    @GetMapping("/api/dashboards/{dashboardId}/pipeline/stage")
+    fun getPipelineStages(@PathVariable("dashboardId") dashboardId: String): List<PipelineStagesResponse> {
+        return dashboardApplicationService.getPipelineStages(dashboardId)
     }
 }

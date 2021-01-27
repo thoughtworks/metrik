@@ -2,6 +2,7 @@ package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
+import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
@@ -77,5 +78,9 @@ class DashboardApplicationService {
                 type = PipelineType.valueOf(config.type)
         )
         return pipeline
+    }
+
+    fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
+        TODO("Not yet implemented")
     }
 }

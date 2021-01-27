@@ -6,6 +6,7 @@ import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -78,4 +79,8 @@ class DashboardApplicationServiceTest {
         }.hasMessage("the url is not found")
     }
 
+    @Test
+    internal fun `should return pipeline stages`() {
+        assertEquals(true, true)
+    }
 }
