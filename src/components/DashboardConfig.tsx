@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { Button, Table } from "antd";
 import { PipelineConfiguration } from "../clients/apis";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
+import { formatLastUpdateTime } from "../utils/timeFormats";
 
 const { Column } = Table;
 
@@ -38,6 +39,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfiguratio
 				width={"25%"}
 				title={"Last update time"}
 				dataIndex={"lastUpdateTime"}
+				render={value => formatLastUpdateTime(value)}
 			/>
 			<Column<PipelineConfiguration>
 				width={"25%"}
