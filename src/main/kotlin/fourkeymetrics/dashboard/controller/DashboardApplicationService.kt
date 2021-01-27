@@ -1,13 +1,13 @@
 package fourkeymetrics.dashboard.controller
 
+import fourkeymetrics.dashboard.controller.vo.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.dashboard.controller.vo.DashboardRequest
-import fourkeymetrics.dashboard.controller.vo.PipelineRequest
-import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.exception.ApplicationException
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 class DashboardApplicationService {
 
     @Autowired
-    private lateinit var jenkinsPipelineService: JenkinsPipelinService
+    private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
