@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service
 class DashboardApplicationService {
 
     @Autowired
-    private lateinit var jenkinsPipelinePipelinService: JenkinsPipelinService
+    private lateinit var jenkinsPipelineService: JenkinsPipelinService
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
     fun verifyPipeline(url: String, username: String, credential: String, type: String) {
         if (type == PipelineType.JENKINS.name) {
-            jenkinsPipelinePipelinService.verifyPipelineConfiguration(url, username, credential)
+            jenkinsPipelineService.verifyPipelineConfiguration(url, username, credential)
         } else {
             throw  ApplicationException(HttpStatus.BAD_REQUEST, "Pipeline type not support")
         }
