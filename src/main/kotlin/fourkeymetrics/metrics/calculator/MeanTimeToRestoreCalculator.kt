@@ -2,25 +2,35 @@ package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.BuildStatus
+import fourkeymetrics.common.model.Stage
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
+import java.math.RoundingMode
 
 @Component
 class MeanTimeToRestoreCalculator : MetricsCalculator {
 
+    companion object {
+        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
+        private const val NO_VALUE: Double = Double.NaN
+    }
+
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
                                 endTimestamp: Long, targetStage: String): Double {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
-        TODO("Not yet implemented")
+        val selectedStages = findSelectedStages(buildOrderByTimestampAscending,
+            startTimestamp, endTimestamp, targetStage)
+
+        return calculateMTTR(selectedStages)
     }
 
     override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
         TODO("Not yet implemented")
     }
 
-    fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
-                           targetStage: String): List<Stage> {
+    private fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
+                                   targetStage: String): List<Stage> {
         val targetStages = allBuilds.flatMap { build -> build.stages }.filter { stage -> stage.name == targetStage }
         val lastSuccessfulDeploymentBuildBeforeGivenTime = allBuilds.findLast {
             it.containsGivenDeploymentBeforeGivenTimestamp(
@@ -39,23 +49,28 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         }
     }
 
-    fun generateRestoredBuildPairs(selectedStages: List<Stage>): List<Pair<Stage, Stage>> {
-        val restoredStagePairs: MutableList<Pair<Stage, Stage>> = emptyList<Pair<Stage, Stage>>().toMutableList()
-        var index = 0
-        while (index < selectedStages.size) {
-            if (selectedStages[index].status == BuildStatus.FAILED) {
-                var successfulStageIndex = index + 1
-                while (successfulStageIndex < selectedStages.size) {
-                    if (selectedStages[successfulStageIndex].status == BuildStatus.SUCCESS) {
-                        restoredStagePairs.add(Pair(selectedStages[index], selectedStages[successfulStageIndex]))
-                        index = successfulStageIndex
-                        break
-                    }
-                    successfulStageIndex++
-                }
+    private fun calculateMTTR(selectedStages: List<Stage>): Double {
+        var firstFailedStage: Stage? = null
+        var totalTime = 0.0
+        var restoredTimes = 0
+        for (stage in selectedStages) {
+            if (stage.status == BuildStatus.FAILED && firstFailedStage == null) {
+                firstFailedStage = stage
+                continue
             }
-            index++
+            if (stage.status == BuildStatus.SUCCESS && firstFailedStage != null) {
+                totalTime += calculateRestoredTimeInHours(firstFailedStage.getStageDoneTime(),
+                    stage.getStageDoneTime())
+                restoredTimes++
+                firstFailedStage = null
+            }
         }
-        return restoredStagePairs
+        if (restoredTimes > 0) {
+            return (totalTime.div(restoredTimes)).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
+        }
+        return NO_VALUE
     }
+
+    private fun calculateRestoredTimeInHours(failedTime: Long, restoredTime: Long) =
+        restoredTime.minus(failedTime).div(MILLISECOND_TO_HOURS)
 }

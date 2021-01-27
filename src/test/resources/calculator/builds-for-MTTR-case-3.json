@@ -3,7 +3,7 @@
     "pipelineId": "1",
     "number": 1,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "SUCCESS",
     "timestamp": 1609171000000,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
@@ -15,7 +15,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "FAILED",
+        "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1609171200000,
         "durationMillis": 1000,
@@ -28,7 +28,7 @@
     "pipelineId": "1",
     "number": 2,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "SUCCESS",
     "timestamp": 1609257400000,
     "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [
@@ -40,7 +40,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "FAILED",
+        "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1609257600000,
         "durationMillis": 1000,
@@ -53,7 +53,7 @@
     "pipelineId": "1",
     "number": 3,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "SUCCESS",
     "timestamp": 1609343000000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [
@@ -65,7 +65,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "FAILED",
+        "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1609344000000,
         "durationMillis": 1000,
@@ -115,7 +115,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "FAILED",
+        "status": "SUCCESS",
         "name": "deploy to prod",
         "startTimeMillis": 1609516800000,
         "durationMillis": 8000,
