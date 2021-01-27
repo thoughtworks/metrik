@@ -25,9 +25,9 @@ import java.util.Base64
 import kotlin.streams.toList
 
 @Service
-class JenkinsService(@Autowired private var restTemplate: RestTemplate,
-                     @Autowired private var dashboardRepository: DashboardRepository,
-                     @Autowired private var buildRepository: BuildRepository
+class JenkinsPipelinService(@Autowired private var restTemplate: RestTemplate,
+                            @Autowired private var dashboardRepository: DashboardRepository,
+                            @Autowired private var buildRepository: BuildRepository
 ) : PipelineService() {
     override fun syncBuilds(dashboardId: String, pipelineId: String): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!

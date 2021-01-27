@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.DashboardApplicationService
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.dashboard.service.jenkins.JenkinsService
+import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelinService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,7 +22,7 @@ class DashboardApplicationServiceTest {
     private lateinit var dashboardApplicationService: DashboardApplicationService
 
     @MockBean
-    private lateinit var jenkinsFacade: JenkinsService
+    private lateinit var jenkinsPipelinFacade: JenkinsPipelinService
 
     @MockBean
     private lateinit var dashboardRepository: DashboardRepository
@@ -33,7 +33,7 @@ class DashboardApplicationServiceTest {
         val username = "name"
         val credential = "credential"
         val type = "JENKINS"
-        Mockito.doNothing().`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
+        Mockito.doNothing().`when`(jenkinsPipelinFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatCode {
             dashboardApplicationService.verifyPipeline(
                 url,
@@ -50,7 +50,7 @@ class DashboardApplicationServiceTest {
         val username = "name"
         val credential = "credential"
         val type = "Bamboo"
-        Mockito.doNothing().`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
+        Mockito.doNothing().`when`(jenkinsPipelinFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatThrownBy {
             dashboardApplicationService.verifyPipeline(
                 url,
@@ -67,7 +67,7 @@ class DashboardApplicationServiceTest {
         val username = "name"
         val credential = "credential"
         val type = "JENKINS"
-        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"the url is not found")).`when`(jenkinsFacade).verifyPipelineConfiguration(url, username, credential)
+        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND,"the url is not found")).`when`(jenkinsPipelinFacade).verifyPipelineConfiguration(url, username, credential)
         Assertions.assertThatThrownBy {
             dashboardApplicationService.verifyPipeline(
                 url,

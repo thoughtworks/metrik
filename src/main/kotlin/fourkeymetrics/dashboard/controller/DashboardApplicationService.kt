@@ -7,7 +7,7 @@ import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.dashboard.service.jenkins.JenkinsService
+import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelinService
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service
 class DashboardApplicationService {
 
     @Autowired
-    private lateinit var jenkinsFacade: JenkinsService
+    private lateinit var jenkinsPipelinePipelinService: JenkinsPipelinService
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
     fun verifyPipeline(url: String, username: String, credential: String, type: String) {
         if (type == PipelineType.JENKINS.name) {
-            jenkinsFacade.verifyPipelineConfiguration(url, username, credential)
+            jenkinsPipelinePipelinService.verifyPipelineConfiguration(url, username, credential)
         } else {
             throw  ApplicationException(HttpStatus.BAD_REQUEST, "Pipeline type not support")
         }
