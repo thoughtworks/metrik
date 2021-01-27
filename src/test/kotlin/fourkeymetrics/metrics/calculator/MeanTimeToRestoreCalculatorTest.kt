@@ -3,6 +3,7 @@ package fourkeymetrics.metrics.calculator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.metrics.model.LEVEL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -143,5 +144,40 @@ internal class MeanTimeToRestoreCalculatorTest {
         val averageMTTR = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
         assertThat(averageMTTR).isEqualTo(32.14)
+    }
+
+    @Test
+    internal fun `should return elite while MTTR less than 1 hour`() {
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5)
+
+        assertThat(calculateLevel).isEqualTo(LEVEL.ELITE)
+    }
+
+    @Test
+    internal fun `should return high while MTTR less than 24 hour and more than or equals 1 hour`() {
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(1.0)
+
+        assertThat(calculateLevel).isEqualTo(LEVEL.HIGH)
+    }
+
+    @Test
+    internal fun `should return medium while MTTR less than 168 hour and more than or equals 24 hour`() {
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(156.0)
+
+        assertThat(calculateLevel).isEqualTo(LEVEL.MEDIUM)
+    }
+
+    @Test
+    internal fun `should return low while MTTR more than or equals 168 hour`() {
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(233.0)
+
+        assertThat(calculateLevel).isEqualTo(LEVEL.LOW)
+    }
+
+    @Test
+    internal fun `should return null while MTTR NaN`() {
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(Double.NaN)
+
+        assertThat(calculateLevel).isEqualTo(LEVEL.INVALID)
     }
 }

@@ -14,6 +14,9 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     companion object {
         private const val MILLISECOND_TO_HOURS: Double = 3600000.0
         private const val NO_VALUE: Double = Double.NaN
+        private const val ONE_HOUR: Double = 1.00
+        private const val ONE_DAY: Double = 24.00
+        private const val ONE_WEEK: Double = 168.00
     }
 
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
@@ -26,7 +29,13 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
-        TODO("Not yet implemented")
+        return when {
+            value < ONE_HOUR -> LEVEL.ELITE
+            value < ONE_DAY -> LEVEL.HIGH
+            value < ONE_WEEK -> LEVEL.MEDIUM
+            value >= ONE_WEEK -> LEVEL.LOW
+            else -> LEVEL.INVALID
+        }
     }
 
     private fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
