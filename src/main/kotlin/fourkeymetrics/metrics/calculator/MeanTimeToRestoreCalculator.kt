@@ -21,9 +21,8 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
                                 endTimestamp: Long, targetStage: String): Double {
-        val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
-        val selectedStages = findSelectedStages(buildOrderByTimestampAscending,
-            startTimestamp, endTimestamp, targetStage)
+        val selectedStages = findSelectedStages(allBuilds,
+            startTimestamp, endTimestamp, targetStage).sortedBy { it.getStageDoneTime() }
 
         return calculateMTTR(selectedStages)
     }
