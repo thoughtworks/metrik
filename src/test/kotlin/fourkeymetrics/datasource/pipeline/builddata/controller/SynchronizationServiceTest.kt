@@ -4,9 +4,9 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.controller.SynchronizationService
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.dashboard.service.jenkins.JenkinsService
 import fourkeymetrics.dashboard.repository.UpdateRecord
 import fourkeymetrics.dashboard.repository.UpdateRepository
+import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,7 +30,7 @@ internal class SynchronizationServiceTest {
     private lateinit var dashboardRepository: DashboardRepository
 
     @MockBean
-    private lateinit var jenkins: JenkinsService
+    private lateinit var jenkins: JenkinsPipelineService
 
     private fun <T> any(type: Class<T>): T = Mockito.any(type)
 

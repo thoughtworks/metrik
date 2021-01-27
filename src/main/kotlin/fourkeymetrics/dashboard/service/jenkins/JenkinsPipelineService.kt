@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.streams.toList
 
 @Service
-class JenkinsPipelinService(
+class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var dashboardRepository: DashboardRepository,
     @Autowired private var buildRepository: BuildRepository

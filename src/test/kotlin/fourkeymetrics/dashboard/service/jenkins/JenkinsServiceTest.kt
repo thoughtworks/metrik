@@ -25,13 +25,13 @@ import org.springframework.web.client.RestTemplate
 
 @ExtendWith(SpringExtension::class)
 @Import(
-    JenkinsPipelinService::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
+    JenkinsPipelineService::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
     RestTemplate::class
 )
 @RestClientTest
 internal class JenkinsServiceTest {
     @Autowired
-    private lateinit var jenkinsPipelinFacade: JenkinsPipelinService
+    private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -57,7 +57,7 @@ internal class JenkinsServiceTest {
             )
         ).thenReturn(Pipeline())
 
-        assertThat(jenkinsPipelinFacade.hasPipeline(dashboardId, pipelineId)).isTrue
+        assertThat(jenkinsPipelineFacade.hasPipeline(dashboardId, pipelineId)).isTrue
     }
 
     @Test
@@ -67,7 +67,7 @@ internal class JenkinsServiceTest {
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(null)
 
-        assertThat(jenkinsPipelinFacade.hasPipeline(dashboardId, pipelineId)).isFalse
+        assertThat(jenkinsPipelineFacade.hasPipeline(dashboardId, pipelineId)).isFalse
     }
 
     @Test
@@ -106,7 +106,7 @@ internal class JenkinsServiceTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkinsPipelinFacade.syncBuilds(dashboardId, pipelineId, 0L)
+        val allBuilds = jenkinsPipelineFacade.syncBuilds(dashboardId, pipelineId, 0L)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).clear()
         verify(buildRepository, times(1)).save(allBuilds)
@@ -128,7 +128,7 @@ internal class JenkinsServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkinsPipelinFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
+        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
     }
 
     @Test
@@ -152,6 +152,6 @@ internal class JenkinsServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkinsPipelinFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }
 }
