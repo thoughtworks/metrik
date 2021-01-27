@@ -65,5 +65,4 @@ class SynchronizationApplicationService {
         dashboardRepository.getDashBoardDetailById(dashboardId) ?: return false
         return true
     }
-
 }
