@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.findOne
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.core.query.Update
+import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 
 @Component
@@ -23,6 +23,12 @@ class DashboardRepository {
         val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
         val dashboard: Dashboard? = mongoTemplate.findOne(query, collectionName)
         return dashboard?.pipelines?.find { it.id == pipelineId }
+    }
+
+    fun getPipelineConfiguration(dashboardId: String): List<Pipeline> {
+        val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
+        val dashboard: Dashboard? = mongoTemplate.findOne(query, collectionName)
+        return dashboard?.pipelines ?: emptyList()
     }
 
     fun getDashBoardDetailByName(name: String): List<Dashboard> {

@@ -22,7 +22,18 @@ class BuildRepository {
     }
 
     fun save(builds: List<Build>) {
-        builds.parallelStream().forEach { mongoTemplate.save(it, collectionName) }
+        builds.parallelStream().forEach {
+            val query = Query()
+            query.addCriteria(Criteria.where("pipelineId").`is`(it.pipelineId).and("number").`is`(it.number))
+            val found = mongoTemplate.findAndReplace(
+                query,
+                it,
+                collectionName
+            )
+            if (found == null) {
+                mongoTemplate.save(it, collectionName)
+            }
+        }
     }
 
     fun clear() {

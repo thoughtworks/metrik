@@ -89,15 +89,14 @@ internal class DeploymentFrequencyControllerTest {
     }
 
     @Test
-    internal fun `should return bad request given Stage name does not exist when get deployment count`() {
+    internal fun `should return bad request given Stage name is empty when get deployment count`() {
         val dashboardId = "dashboard ID"
         val pipelineId = "pipeline ID"
-        val targetStage = "invalid stage"
+        val targetStage = ""
         val startTimestamp = 1609459200000L
         val endTimestamp = 1611964800000L
 
         `when`(pipelineService.hasPipeline(dashboardId, pipelineId)).thenReturn(true)
-        `when`(pipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).thenReturn(false)
 
         mockMvc.perform(get("/api/deployment-frequency")
             .param("dashboardId", dashboardId)

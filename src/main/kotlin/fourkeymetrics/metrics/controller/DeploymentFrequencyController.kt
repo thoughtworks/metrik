@@ -2,6 +2,7 @@ package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.metrics.calculator.DeploymentFrequencyService
+import org.apache.logging.log4j.util.Strings
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -37,8 +38,7 @@ class DeploymentFrequencyController {
     private fun isInvalidParameters(dashboardId: String, pipelineId: String, endTimestamp: Long,
                                     startTimestamp: Long,
                                     targetStage: String): Boolean {
-        return startTimestamp > endTimestamp ||
-            !pipelineService.hasPipeline(dashboardId, pipelineId) ||
-            !pipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)
+        return startTimestamp > endTimestamp || !pipelineService.hasPipeline(dashboardId, pipelineId)
+                || targetStage == Strings.EMPTY
     }
 }

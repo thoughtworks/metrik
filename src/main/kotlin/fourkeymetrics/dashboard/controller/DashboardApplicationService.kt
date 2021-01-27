@@ -7,7 +7,7 @@ import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelinService
+import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
