@@ -25,9 +25,8 @@ class SynchronizationControllerTest {
     internal fun `should return update timestamp when update all build data success`() {
         val updatedTimestamp: Long = 12345
         val dashboardId = "fake-dashboard-id"
-        val pipelineId = "fake-pipeline-id"
 
-        `when`(synchronizationService.update(dashboardId, pipelineId)).thenReturn(updatedTimestamp)
+        `when`(synchronizationService.synchronize(dashboardId)).thenReturn(updatedTimestamp)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -37,9 +36,8 @@ class SynchronizationControllerTest {
     @Test
     internal fun `should return 500 when update all build data failed`() {
         val dashboardId = "fake-dashboard-id"
-        val pipelineId = "fake-pipeline-id"
 
-        `when`(synchronizationService.update(dashboardId, pipelineId)).thenReturn(null)
+        `when`(synchronizationService.synchronize(dashboardId)).thenReturn(null)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)

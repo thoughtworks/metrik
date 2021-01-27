@@ -16,8 +16,7 @@ class SynchronizationController {
 
     @PostMapping("/api/dashboard/{dashboardId}/synchronization")
     fun updateBuilds(@PathVariable dashboardId: String): ResponseEntity<UpdatedBuildsResponse> {
-        val pipelineId = "fake-pipeline-id"
-        val updatedTimestamp = synchronizationService.update(dashboardId, pipelineId)
+        val updatedTimestamp = synchronizationService.synchronize(dashboardId)
 
         return if (updatedTimestamp == null) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()

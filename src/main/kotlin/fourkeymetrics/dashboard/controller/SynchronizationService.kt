@@ -1,7 +1,9 @@
 package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.dashboard.service.PipelineService
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.UpdateRepository
+import fourkeymetrics.dashboard.service.PipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -17,25 +19,35 @@ class SynchronizationService {
     @Autowired
     private lateinit var pipelineService: PipelineService
 
+    @Autowired
+    private lateinit var dashboardRepository: DashboardRepository
 
-    fun update(dashboardId: String, pipelineId: String): Long? {
-        val lastUpdate = updateRepository.getLastUpdate(dashboardId)
+
+    fun synchronize(dashboardId: String): Long? {
+        val lastSyncRecord = updateRepository.getLastUpdate(dashboardId)
         val currentTimeMillis = System.currentTimeMillis()
+        val pipelines = getPipelines(dashboardId)
 
-        try {
-            if (lastUpdate == null) {
-                pipelineService.syncBuilds(dashboardId, pipelineId, 0)
-            } else {
-                pipelineService.syncBuilds(
-                    dashboardId,
-                    pipelineId,
-                    lastUpdate.updateTimestamp - TWO_WEEKS_TIMESTAMP
-                )
+        var synchronizeFailed = false
+        pipelines.forEach {
+            try {
+                if (lastSyncRecord == null) {
+                    pipelineService.syncBuilds(dashboardId, it.id, 0)
+                } else {
+                    pipelineService.syncBuilds(dashboardId, it.id, lastSyncRecord.updateTimestamp - TWO_WEEKS_TIMESTAMP)
+                }
+            } catch (e: RuntimeException) {
+                synchronizeFailed = true
             }
-        } catch (e: RuntimeException) {
-            return null
         }
 
+        if (synchronizeFailed) {
+            return lastSyncRecord?.updateTimestamp
+        }
         return currentTimeMillis
+    }
+
+    private fun getPipelines(dashboardId: String): List<Pipeline> {
+        return dashboardRepository.getPipelineConfiguration(dashboardId)
     }
 }

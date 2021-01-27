@@ -2,6 +2,8 @@ package fourkeymetrics.datasource.pipeline.builddata.controller
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.controller.SynchronizationService
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsService
 import fourkeymetrics.dashboard.repository.UpdateRecord
 import fourkeymetrics.dashboard.repository.UpdateRepository
@@ -16,13 +18,16 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(SynchronizationService::class)
+@Import(SynchronizationService::class, DashboardRepository::class)
 internal class SynchronizationServiceTest {
     @Autowired
     private lateinit var synchronizationService: SynchronizationService
 
     @MockBean
     private lateinit var updateRepository: UpdateRepository
+
+    @MockBean
+    private lateinit var dashboardRepository: DashboardRepository
 
     @MockBean
     private lateinit var jenkins: JenkinsService
@@ -37,9 +42,10 @@ internal class SynchronizationServiceTest {
         val builds = listOf(Build())
 
         `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(null)
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, 0)).thenReturn(builds)
 
-        val updatedTimestamp = synchronizationService.update(dashboardId, pipelineId)
+        val updatedTimestamp = synchronizationService.synchronize(dashboardId)
 
         verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, 0)
 
@@ -59,9 +65,10 @@ internal class SynchronizationServiceTest {
         val startTimestamp = lastUpdateRecord.updateTimestamp - 14 * 24 * 60 * 60 * 1000L
 
         `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(lastUpdateRecord)
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenReturn(builds)
 
-        val updateTimestamp = synchronizationService.update(dashboardId, pipelineId)
+        val updateTimestamp = synchronizationService.synchronize(dashboardId)
 
         verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, startTimestamp)
 
@@ -80,12 +87,13 @@ internal class SynchronizationServiceTest {
         val startTimestamp = lastUpdateRecord.updateTimestamp - 14 * 24 * 60 * 60 * 1000L
 
         `when`(updateRepository.getLastUpdate(dashboardId)).thenReturn(lastUpdateRecord)
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenThrow(RuntimeException())
 
-        val updateTimestamp = synchronizationService.update(dashboardId, pipelineId)
+        val updateTimestamp = synchronizationService.synchronize(dashboardId)
 
         verify(updateRepository, never()).save(any(UpdateRecord::class.java))
 
-        assertThat(updateTimestamp).isNull()
+        assertThat(updateTimestamp).isEqualTo(lastUpdateRecord.updateTimestamp)
     }
 }
