@@ -8,7 +8,13 @@ module.exports = {
 
 	collectCoverage: true,
 	coverageDirectory: "coverage",
-	collectCoverageFrom: ["./src/**/*.ts", "!./src/__types__/*", "!./src/clients/*", "!**/*.d.ts"],
+	collectCoverageFrom: [
+		"./src/**/*.ts",
+		"!./src/__types__/*",
+		"!./src/clients/*",
+		"!**/*.d.ts",
+		"!./src/constants/*",
+	],
 	coverageReporters: ["html", "text", "cobertura"],
 	coverageThreshold: {
 		global: {
