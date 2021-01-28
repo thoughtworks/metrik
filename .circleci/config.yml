@@ -41,7 +41,7 @@ jobs:
 
       - run:
           name: Docker login with AWS CLI
-          command: aws ecr-public get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+          command: aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
