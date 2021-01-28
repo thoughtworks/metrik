@@ -17,13 +17,8 @@ class DeploymentFrequencyService {
         var validDeploymentCount = 0
         for (index in allBuilds.indices) {
             val currentBuild = allBuilds[index]
-            val prevBuild = if (index == 0) {
-                null
-            } else {
-                allBuilds[index - 1]
-            }
 
-            if (isInvalidBuild(prevBuild, currentBuild, startTimestamp, endTimestamp, targetStage)) {
+            if (isInvalidBuild(currentBuild, startTimestamp, endTimestamp, targetStage)) {
                 continue
             }
 
@@ -33,7 +28,7 @@ class DeploymentFrequencyService {
         return validDeploymentCount
     }
 
-    private fun isInvalidBuild(prevBuild: Build?, currentBuild: Build, startTimestamp: Long,
+    private fun isInvalidBuild(currentBuild: Build, startTimestamp: Long,
                                endTimestamp: Long, targetStage: String): Boolean {
         return !isTargetStageWithinTimeRange(currentBuild, startTimestamp, endTimestamp, targetStage) ||
                 !isTargetStageSuccess(currentBuild, targetStage)
