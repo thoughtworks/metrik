@@ -75,7 +75,7 @@ class ChangeFailureRateCalculatorTest {
                 endTimestamp,
                 targetStage
             )
-        ).isEqualTo(0.0)
+        ).isNaN
     }
 
     @Test
@@ -96,6 +96,11 @@ class ChangeFailureRateCalculatorTest {
     @Test
     internal fun `should return level elite given value lower than 0_15 when calculate level`() {
         assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14, MetricsUnit.Fortnightly))
+    }
+
+    @Test
+    internal fun `should return level invalid given invalid value  when calculate level`() {
+        assertEquals(LEVEL.INVALID, changeFailureRateCalculator.calculateLevel(Double.NaN, MetricsUnit.Fortnightly))
     }
 
 }

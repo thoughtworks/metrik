@@ -11,6 +11,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
 
     companion object {
         private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
+        private val INVALID_VALUE = Double.NaN
         private const val LEVEL_ELITE_UPPER_LIMIT = 0.15
         private const val LEVEL_HIGH_UPPER_LIMIT = 0.3
         private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45
@@ -38,7 +39,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
         return if (totalCount > 0) {
             statusCountMap.getOrDefault(BuildStatus.FAILED, 0).toDouble() / totalCount
         } else {
-            0.0
+            INVALID_VALUE
         }
     }
 
@@ -47,7 +48,8 @@ class ChangeFailureRateCalculator : MetricsCalculator {
             value < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE
             LEVEL_ELITE_UPPER_LIMIT <= value && value < LEVEL_HIGH_UPPER_LIMIT -> LEVEL.HIGH
             LEVEL_HIGH_UPPER_LIMIT <= value && value < LEVEL_MEDIUM_UPPER_LIMIT -> LEVEL.MEDIUM
-            else -> LEVEL.LOW
+            LEVEL_MEDIUM_UPPER_LIMIT <= value -> LEVEL.LOW
+            else -> LEVEL.INVALID
         }
     }
 }
