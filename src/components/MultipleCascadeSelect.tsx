@@ -1,4 +1,4 @@
-import { Checkbox, Row, Col, Radio, Tag } from "antd";
+import { Checkbox, Row, Col, Radio, Tag, Typography } from "antd";
 import React, { useState, useEffect, FC } from "react";
 import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
@@ -6,6 +6,8 @@ import Trigger from "rc-trigger";
 import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import Overflow from "rc-overflow";
+
+const { Text } = Typography;
 
 interface Option {
 	label: string;
@@ -112,43 +114,49 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 			destroyPopupOnHide
 			popupClassName={"ant-select-dropdown ant-select-dropdown-placement-bottomLeft"}
 			popup={
-				<Checkbox.Group
-					onChange={(values: any[]) => setCheckedValues(values)}
-					value={checkedValues}
-					css={popupContainerStyles}>
-					{options.map((option, key) => {
-						return (
-							<Row key={key}>
-								<Col>
-									<span
-										onClick={() => toggle(option.value)}
-										css={{ display: "inline-block", cursor: "pointer" }}>
-										{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
-									</span>
-									<Checkbox
-										value={option.value}
-										onChange={handleCheckBoxChange}
-										disabled={checkedValues.length === 1 && checkedValues.includes(option.value)}>
-										{option.label}
-									</Checkbox>
-									{visibleMap[option.value] && (
-										<Row css={{ marginLeft: 25 }}>
-											<Radio.Group
-												onChange={e => onRadioChange(e, option)}
-												value={cascadeValue[option.value]?.childValue}>
-												{(option.children ?? []).map((child, idx) => (
-													<Col key={idx}>
-														<Radio value={child.value}>{child.label}</Radio>
-													</Col>
-												))}
-											</Radio.Group>
-										</Row>
-									)}
-								</Col>
-							</Row>
-						);
-					})}
-				</Checkbox.Group>
+				<div css={popupContainerStyles}>
+					<Text type={"secondary"}>Pipelines</Text>
+					<div css={{ marginTop: 20, padding: "0 15px" }}>
+						<Checkbox.Group
+							onChange={(values: any[]) => setCheckedValues(values)}
+							value={checkedValues}>
+							{options.map((option, key) => {
+								return (
+									<Row key={key} css={{ marginBottom: 8 }}>
+										<Col>
+											<span
+												onClick={() => toggle(option.value)}
+												css={{ display: "inline-block", cursor: "pointer" }}>
+												{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
+											</span>
+											<Checkbox
+												value={option.value}
+												onChange={handleCheckBoxChange}
+												disabled={
+													checkedValues.length === 1 && checkedValues.includes(option.value)
+												}>
+												{option.label}
+											</Checkbox>
+											{visibleMap[option.value] && (
+												<Row css={{ marginLeft: 50, marginTop: 6 }}>
+													<Radio.Group
+														onChange={e => onRadioChange(e, option)}
+														value={cascadeValue[option.value]?.childValue}>
+														{(option.children ?? []).map((child, idx) => (
+															<Col key={idx} css={{ marginTop: 4 }}>
+																<Radio value={child.value}>{child.label}</Radio>
+															</Col>
+														))}
+													</Radio.Group>
+												</Row>
+											)}
+										</Col>
+									</Row>
+								);
+							})}
+						</Checkbox.Group>
+					</div>
+				</div>
 			}
 			popupAlign={{
 				points: ["tl", "bl"],
@@ -161,7 +169,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					<Overflow
 						prefixCls={"ant-select-selection-overflow"}
 						data={tags}
-						maxCount={2}
+						maxCount={"responsive"}
 						renderRest={(items: any[]) => {
 							return <div className={"ant-select-selection-item"}>+{items.length}...</div>;
 						}}
