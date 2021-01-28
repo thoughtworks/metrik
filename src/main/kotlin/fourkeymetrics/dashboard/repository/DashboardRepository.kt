@@ -57,9 +57,9 @@ class DashboardRepository {
         query.addCriteria(
             Criteria.where("_id").`is`(dashboardId)
         ).addCriteria(
-            Criteria.where("pipelineConfigurations").elemMatch(Criteria.where("_id").`is`(pipelineId))
+            Criteria.where("pipelines").elemMatch(Criteria.where("_id").`is`(pipelineId))
         )
-        val setPipeline = Update().set("pipelineConfigurations.$", pipeline)
+        val setPipeline = Update().set("pipelines.$", pipeline)
         mongoTemplate.updateFirst(query, setPipeline, "dashboard")
         return pipeline
     }
