@@ -24,7 +24,10 @@ class BuildRepository {
     fun save(builds: List<Build>) {
         builds.parallelStream().forEach {
             val query = Query()
-            query.addCriteria(Criteria.where("pipelineId").`is`(it.pipelineId).and("number").`is`(it.number))
+            query.addCriteria(Criteria
+                .where("pipelineId").`is`(it.pipelineId)
+                .and("number").`is`(it.number)
+                .and("timestamp").`is`(it.timestamp))
             val found = mongoTemplate.findAndReplace(
                 query,
                 it,

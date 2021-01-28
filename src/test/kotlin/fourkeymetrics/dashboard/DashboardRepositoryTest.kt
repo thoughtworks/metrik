@@ -34,7 +34,8 @@ internal class DashboardRepositoryTest {
         val collectionName = "dashboard"
 
         val dashboardToSave: List<Dashboard> = objectMapper.readValue(
-            this.javaClass.getResource("/repository/dashboards-1.json").readText())
+            this.javaClass.getResource("/repository/dashboards-1.json").readText()
+        )
 
         dashboardToSave.forEach { mongoTemplate.save(it, collectionName) }
 
@@ -64,7 +65,8 @@ internal class DashboardRepositoryTest {
         val collectionName = "dashboard"
 
         val dashboardToSave: List<Dashboard> = objectMapper.readValue(
-            this.javaClass.getResource("/repository/dashboards-2.json").readText())
+            this.javaClass.getResource("/repository/dashboards-2.json").readText()
+        )
 
         dashboardToSave.forEach { mongoTemplate.save(it, collectionName) }
 
@@ -83,5 +85,32 @@ internal class DashboardRepositoryTest {
         val dashboard = dashboardRepository.getDashBoardDetailById(dashboardId)
 
         assertThat(dashboard).isNotNull
+    }
+
+    @Test
+    internal fun `should get last sync record`() {
+        val dashboardId = "fake-dashboard"
+        val collectionName = "dashboard"
+        val syncTimestamp = 1000000000000
+
+        mongoTemplate.save(Dashboard(id = dashboardId, synchronizationTimestamp = syncTimestamp), collectionName)
+
+        val actualSyncTimestamp = dashboardRepository.getLastSyncRecord(dashboardId)
+
+        assertThat(actualSyncTimestamp).isEqualTo(syncTimestamp)
+    }
+
+    @Test
+    internal fun `should update sync timestamp`() {
+        val dashboardId = "fake-dashboard"
+        val collectionName = "dashboard"
+        val previousTimestamp = 1000000000000
+        val newTimestamp = 2000000000000
+
+        mongoTemplate.save(Dashboard(id = dashboardId, synchronizationTimestamp = previousTimestamp), collectionName)
+
+        val actualSyncTimestamp = dashboardRepository.updateSynchronizationTime(dashboardId, newTimestamp)
+
+        assertThat(actualSyncTimestamp).isEqualTo(newTimestamp)
     }
 }

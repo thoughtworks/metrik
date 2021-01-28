@@ -108,7 +108,6 @@ internal class JenkinsServiceTest {
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
         val allBuilds = jenkinsPipelineFacade.syncBuilds(dashboardId, pipelineId, 0L)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).clear()
         verify(buildRepository, times(1)).save(allBuilds)
     }
 

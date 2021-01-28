@@ -49,7 +49,6 @@ class JenkinsPipelineService(
             )
         }.toList()
 
-        buildRepository.clear()
         buildRepository.save(builds)
 
         return builds

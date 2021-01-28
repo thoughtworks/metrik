@@ -63,4 +63,17 @@ class DashboardRepository {
         mongoTemplate.updateFirst(query, setPipeline, "dashboard")
         return pipeline
     }
+
+    fun getLastSyncRecord(dashboardId: String): Long? {
+        val dashboardInDB: Dashboard? = mongoTemplate.findById(dashboardId, collectionName)
+
+        return dashboardInDB?.synchronizationTimestamp
+    }
+
+    fun updateSynchronizationTime(dashboardId: String, synchronizationTimestamp: Long): Long? {
+        val query = Query(Criteria.where("_id").`is`(dashboardId))
+        val update = Update().set("synchronizationTimestamp", synchronizationTimestamp)
+        mongoTemplate.updateFirst(query, update, collectionName)
+        return mongoTemplate.findOne(query, Dashboard::class.java, collectionName)?.synchronizationTimestamp
+    }
 }

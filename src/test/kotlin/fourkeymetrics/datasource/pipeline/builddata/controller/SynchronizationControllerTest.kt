@@ -2,12 +2,15 @@ package fourkeymetrics.datasource.pipeline.builddata.controller
 
 import fourkeymetrics.dashboard.controller.SynchronizationApplicationService
 import fourkeymetrics.dashboard.controller.SynchronizationController
+import fourkeymetrics.exception.ApplicationException
+import org.apache.logging.log4j.util.Strings
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -27,7 +30,6 @@ class SynchronizationControllerTest {
         val dashboardId = "fake-dashboard-id"
 
         `when`(synchronizationApplicationService.synchronize(dashboardId)).thenReturn(updatedTimestamp)
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(true)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -39,7 +41,6 @@ class SynchronizationControllerTest {
         val dashboardId = "fake-dashboard-id"
 
         `when`(synchronizationApplicationService.synchronize(dashboardId)).thenReturn(null)
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(true)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)
@@ -51,7 +52,6 @@ class SynchronizationControllerTest {
         val dashboardId = "fake-dashboard-id"
 
         `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenReturn(updatedTimestamp)
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(true)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization/"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -63,7 +63,6 @@ class SynchronizationControllerTest {
         val dashboardId = "fake-dashboard-id"
 
         `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenReturn(null)
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(true)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -71,22 +70,22 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return 400 given dashboard id not exist when synchronization`() {
+    internal fun `should return 404 given dashboard id not exist when synchronization`() {
         val dashboardId = "fake-dashboard-id"
 
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(false)
+        `when`(synchronizationApplicationService.synchronize(dashboardId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
-    internal fun `should return 400 given dashboard id not exist when get synchronization record`() {
+    internal fun `should return 404 given dashboard id not exist when get synchronization record`() {
         val dashboardId = "fake-dashboard-id"
 
-        `when`(synchronizationApplicationService.isDashboardExist(dashboardId)).thenReturn(false)
+        `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 }

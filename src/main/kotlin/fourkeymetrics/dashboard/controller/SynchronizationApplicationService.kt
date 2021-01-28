@@ -2,10 +2,10 @@ package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.dashboard.repository.UpdateRecord
-import fourkeymetrics.dashboard.repository.UpdateRepository
 import fourkeymetrics.dashboard.service.PipelineService
+import fourkeymetrics.exception.ApplicationException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,9 +15,6 @@ class SynchronizationApplicationService {
     }
 
     @Autowired
-    private lateinit var updateRepository: UpdateRepository
-
-    @Autowired
     private lateinit var pipelineService: PipelineService
 
     @Autowired
@@ -25,17 +22,21 @@ class SynchronizationApplicationService {
 
 
     fun synchronize(dashboardId: String): Long? {
-        val lastSyncRecord = updateRepository.getLastUpdate(dashboardId)
+        if (!isDashboardExist(dashboardId)) {
+            throw ApplicationException(HttpStatus.NOT_FOUND, "Dashboard ID not exist")
+        }
+
+        val lastSyncTimestamp = dashboardRepository.getLastSyncRecord(dashboardId)
         val currentTimeMillis = System.currentTimeMillis()
         val pipelines = getPipelines(dashboardId)
 
         var synchronizeFailed = false
-        pipelines.forEach {
+        pipelines.parallelStream().forEach {
             try {
-                if (lastSyncRecord == null) {
+                if (lastSyncTimestamp == null) {
                     pipelineService.syncBuilds(dashboardId, it.id, 0)
                 } else {
-                    pipelineService.syncBuilds(dashboardId, it.id, lastSyncRecord.updateTimestamp - TWO_WEEKS_TIMESTAMP)
+                    pipelineService.syncBuilds(dashboardId, it.id, lastSyncTimestamp - TWO_WEEKS_TIMESTAMP)
                 }
             } catch (e: RuntimeException) {
                 synchronizeFailed = true
@@ -43,25 +44,25 @@ class SynchronizationApplicationService {
         }
 
         if (synchronizeFailed) {
-            return lastSyncRecord?.updateTimestamp
+            return lastSyncTimestamp
         }
 
-        updateRepository.save(
-            UpdateRecord(dashboardId, currentTimeMillis)
-        )
-        return currentTimeMillis
+        return dashboardRepository.updateSynchronizationTime(dashboardId, currentTimeMillis)
     }
 
     fun getLastSyncTimestamp(dashboardId: String): Long? {
-        val lastSyncRecord = updateRepository.getLastUpdate(dashboardId) ?: return null
-        return lastSyncRecord.updateTimestamp
+        if (!isDashboardExist(dashboardId)) {
+            throw ApplicationException(HttpStatus.NOT_FOUND, "Dashboard ID not exist")
+        }
+
+        return dashboardRepository.getLastSyncRecord(dashboardId)
     }
 
     private fun getPipelines(dashboardId: String): List<Pipeline> {
         return dashboardRepository.getPipelineConfiguration(dashboardId)
     }
 
-    fun isDashboardExist(dashboardId: String): Boolean {
+    private fun isDashboardExist(dashboardId: String): Boolean {
         dashboardRepository.getDashBoardDetailById(dashboardId) ?: return false
         return true
     }
