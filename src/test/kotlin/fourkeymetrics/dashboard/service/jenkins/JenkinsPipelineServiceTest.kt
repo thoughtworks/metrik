@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate
     RestTemplate::class
 )
 @RestClientTest
-internal class JenkinsServiceTest {
+internal class JenkinsPipelineServiceTest {
     @Autowired
     private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
 
