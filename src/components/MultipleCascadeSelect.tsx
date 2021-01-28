@@ -5,6 +5,7 @@ import { RadioChangeEvent } from "antd/es/radio";
 import Trigger from "rc-trigger";
 import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
+import Overflow from "rc-overflow";
 
 interface Option {
 	label: string;
@@ -155,10 +156,16 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 			}}
 			popupVisible={popupVisible}
 			onPopupVisibleChange={setPopupVisible}>
-			<div className={"ant-select ant-select-multiple "}>
+			<div className={"ant-select ant-select-multiple"}>
 				<div className={"ant-select-selector"}>
-					<div className={"ant-select-selection-overflow"}>
-						{tags.map(tag => {
+					<Overflow
+						prefixCls={"ant-select-selection-overflow"}
+						data={tags}
+						maxCount={2}
+						renderRest={(items: any[]) => {
+							return <div className={"ant-select-selection-item"}>+{items.length}...</div>;
+						}}
+						renderItem={tag => {
 							const option = findOptionByValue(options, tag.value) || ({} as Option);
 							const tagLabel = [
 								option?.label,
@@ -166,7 +173,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 							].join(",");
 
 							return (
-								<div className={"ant-select-selection-overflow-item"} key={tag.value}>
+								<div className={"ant-select-selection-overflow-item"}>
 									<Tag
 										className={"ant-select-selection-item"}
 										css={{ alignItems: "center" }}
@@ -178,8 +185,8 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 									</Tag>
 								</div>
 							);
-						})}
-					</div>
+						}}
+					/>
 				</div>
 			</div>
 		</Trigger>
