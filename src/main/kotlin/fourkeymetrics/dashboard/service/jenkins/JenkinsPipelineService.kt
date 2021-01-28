@@ -26,15 +26,19 @@ class JenkinsPipelineService(
     @Autowired private var dashboardRepository: DashboardRepository,
     @Autowired private var buildRepository: BuildRepository
 ) : PipelineService() {
-    override fun syncBuilds(dashboardId: String, pipelineId: String, queryStartTimestamp: Long): List<Build> {
+    override fun syncBuilds(dashboardId: String, pipelineId: String): List<Build> {
         val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
+
         val username = pipelineConfiguration.username
         val credential = pipelineConfiguration.credential
         val baseUrl = pipelineConfiguration.url
 
-        val buildSummaries = getBuildSummariesFromJenkins(username, credential, baseUrl)
+        val buildsNeedToSync = getBuildSummariesFromJenkins(username, credential, baseUrl)
+            .parallelStream()
+            .filter { buildRepository.findByBuildNumber(pipelineId, it.number)?.result == null }
+            .toList()
 
-        val builds = buildSummaries.parallelStream().map { buildSummary ->
+        val builds = buildsNeedToSync.parallelStream().map { buildSummary ->
             val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
 
             Build(

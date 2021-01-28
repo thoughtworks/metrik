@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class Dashboard(
     @Id
     val id: String = Strings.EMPTY,
-    val synchronizationTimestamp: Long = 0,
+    val synchronizationTimestamp: Long? = null,
     var name: String = Strings.EMPTY,
     var pipelines: List<Pipeline> = emptyList()
 )

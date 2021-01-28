@@ -17,6 +17,7 @@ import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -109,9 +110,46 @@ internal class JenkinsPipelineServiceTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkinsPipelineService.syncBuilds(dashboardId, pipelineId, 0L)
+        val allBuilds = jenkinsPipelineService.syncBuilds(dashboardId, pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
+    }
+
+
+    @Test
+    internal fun `should return builds with previous status is building null or not exits in DB from Jenkins given pipeline ID`() {
+        val dashboardId = "dashboard ID"
+        val pipelineId = "fake pipeline"
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
+                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+        val getBuild1DetailUrl = "$baseUrl/1/wfapi/describe"
+        val getBuild2DetailUrl = "$baseUrl/2/wfapi/describe"
+        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
+
+        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(
+            Pipeline(
+                username = username,
+                credential = credential,
+                url = baseUrl
+            )
+        )
+
+        `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
+            Build(pipelineId = pipelineId, number = 1, result = null)
+        )
+
+        mockServer.expect(requestTo(getBuildSummariesUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-builds-2.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        mockServer.expect(requestTo(getBuild1DetailUrl))
+        mockServer.expect(requestTo(getBuild2DetailUrl))
     }
 
     @Test
@@ -130,7 +168,14 @@ internal class JenkinsPipelineServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
+        assertThat(
+            jenkinsPipelineService.hasStageInTimeRange(
+                pipelineId,
+                targetStage,
+                startTimestamp,
+                endTimestamp
+            )
+        ).isTrue
     }
 
     @Test
@@ -154,6 +199,14 @@ internal class JenkinsPipelineServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
+        assertThat(
+            jenkinsPipelineService.hasStageInTimeRange(
+                pipelineId,
+                targetStage,
+                startTimestamp,
+                endTimestamp
+            )
+        ).isFalse
         assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
         assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }

@@ -30,20 +30,16 @@ class SynchronizationApplicationService {
         val currentTimeMillis = System.currentTimeMillis()
         val pipelines = getPipelines(dashboardId)
 
-        var synchronizeFailed = false
+        var synchronizeSuccess = true
         pipelines.parallelStream().forEach {
             try {
-                if (lastSyncTimestamp == null) {
-                    pipelineService.syncBuilds(dashboardId, it.id, 0)
-                } else {
-                    pipelineService.syncBuilds(dashboardId, it.id, lastSyncTimestamp - TWO_WEEKS_TIMESTAMP)
-                }
+                pipelineService.syncBuilds(dashboardId, it.id)
             } catch (e: RuntimeException) {
-                synchronizeFailed = true
+                synchronizeSuccess = false
             }
         }
 
-        if (synchronizeFailed) {
+        if (!synchronizeSuccess) {
             return lastSyncTimestamp
         }
 

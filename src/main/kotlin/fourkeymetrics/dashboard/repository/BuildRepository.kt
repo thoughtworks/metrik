@@ -24,10 +24,11 @@ class BuildRepository {
     fun save(builds: List<Build>) {
         builds.parallelStream().forEach {
             val query = Query()
-            query.addCriteria(Criteria
-                .where("pipelineId").`is`(it.pipelineId)
-                .and("number").`is`(it.number)
-                .and("timestamp").`is`(it.timestamp))
+            query.addCriteria(
+                Criteria
+                    .where("pipelineId").`is`(it.pipelineId)
+                    .and("number").`is`(it.number)
+            )
             val found = mongoTemplate.findAndReplace(
                 query,
                 it,
@@ -39,7 +40,13 @@ class BuildRepository {
         }
     }
 
-    fun clear() {
-        mongoTemplate.dropCollection(collectionName)
+    fun findByBuildNumber(pipelineId: String, number: Int): Build? {
+        val query = Query.query(Criteria.where("pipelineId").isEqualTo(pipelineId).and("number").`is`(number))
+        return mongoTemplate.findOne(query, Build::class.java, collectionName)
+    }
+
+    fun clear(pipelineId: String) {
+        val query = Query.query(Criteria.where("pipelineId").isEqualTo(pipelineId))
+        mongoTemplate.remove(query, collectionName)
     }
 }

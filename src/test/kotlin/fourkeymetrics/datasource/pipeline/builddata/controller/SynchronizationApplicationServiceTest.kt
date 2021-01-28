@@ -41,11 +41,11 @@ internal class SynchronizationApplicationServiceTest {
 
         `when`(dashboardRepository.getLastSyncRecord(dashboardId)).thenReturn(null)
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
-        `when`(jenkins.syncBuilds(dashboardId, pipelineId, 0)).thenReturn(builds)
+        `when`(jenkins.syncBuilds(dashboardId, pipelineId)).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
-        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, 0)
+        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId)
         verify(dashboardRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull
@@ -58,16 +58,14 @@ internal class SynchronizationApplicationServiceTest {
         val builds = listOf(Build())
         val lastSyncTimestamp = 1610668800000
 
-        val startTimestamp = lastSyncTimestamp - 14 * 24 * 60 * 60 * 1000L
-
         `when`(dashboardRepository.getLastSyncRecord(dashboardId)).thenReturn(lastSyncTimestamp)
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(dashboardRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenReturn(builds)
+        `when`(jenkins.syncBuilds(dashboardId, pipelineId)).thenReturn(builds)
 
         val updateTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
-        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId, startTimestamp)
+        verify(jenkins, times(1)).syncBuilds(dashboardId, pipelineId)
         verify(dashboardRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updateTimestamp).isGreaterThan(lastSyncTimestamp)
@@ -79,12 +77,10 @@ internal class SynchronizationApplicationServiceTest {
         val pipelineId = "fake-pipeline-id"
         val lastSyncTimestamp = 1610668800000
 
-        val startTimestamp = lastSyncTimestamp - 14 * 24 * 60 * 60 * 1000L
-
         `when`(dashboardRepository.getLastSyncRecord(dashboardId)).thenReturn(lastSyncTimestamp)
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(dashboardRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(jenkins.syncBuilds(dashboardId, pipelineId, startTimestamp)).thenThrow(RuntimeException())
+        `when`(jenkins.syncBuilds(dashboardId, pipelineId)).thenThrow(RuntimeException())
 
         val updateTimestamp = synchronizationApplicationService.synchronize(dashboardId)
 
