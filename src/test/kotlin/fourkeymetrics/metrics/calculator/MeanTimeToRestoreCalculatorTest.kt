@@ -6,23 +6,23 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.metrics.model.LEVEL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@Import(MeanTimeToRestoreCalculator::class, ObjectMapper::class)
 internal class MeanTimeToRestoreCalculatorTest {
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-// TODO("change")
-    @Autowired
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
     companion object {
         private const val MILLISECOND_TO_HOURS: Double = 3600000.0
+    }
+
+    @BeforeEach
+    internal fun setUp() {
+        meanTimeToRestoreCalculator = MeanTimeToRestoreCalculator()
     }
 
     /**
@@ -37,7 +37,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return MTTR given all builds`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-1.json").readText()
         )
 
@@ -62,7 +62,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should contain first stage given builds all failed before begin time`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-2.json").readText()
         )
 
@@ -87,7 +87,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return NaN while all builds are success`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-3.json").readText()
         )
 
@@ -112,7 +112,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return NaN while all builds are failed`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-4.json").readText()
         )
 
@@ -137,7 +137,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return correct MTTR given last stage status is failed `() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-5.json").readText()
         )
 
