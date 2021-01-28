@@ -64,9 +64,9 @@ export const FieldsStep2: FC<{
 			</Col>
 			<Col span={5}>
 				<Form.Item
-					label="Token"
-					name="token"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_TOKEN }]}>
+					label="Credential"
+					name="credential"
+					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
 					<Input />
 				</Form.Item>
 			</Col>
@@ -77,7 +77,7 @@ export const FieldsStep2: FC<{
 						disabled={
 							!formValues.pipelineTool ||
 							!formValues.pipelineDomain ||
-							!formValues.token ||
+							!formValues.credential ||
 							!formValues.username
 						}>
 						Verify
@@ -101,7 +101,7 @@ export const FieldsStep2: FC<{
 						!formValues.pipelineName ||
 						!formValues.pipelineTool ||
 						!formValues.pipelineDomain ||
-						!formValues.token
+						!formValues.credential
 					}>
 					Create
 				</Button>

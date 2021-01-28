@@ -9,13 +9,15 @@ import { pipelineVerify, postPipelineConfig } from "../clients/apis";
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
 
+type PipelineToolType = "JENKINS";
+
 interface ConfigFormValues {
 	dashboardName: string;
 	pipelineName: string;
-	pipelineTool: string;
+	pipelineTool: PipelineToolType;
 	pipelineDomain: string;
 	username: string;
-	token: string;
+	credential: string;
 }
 
 export const PageConfig = () => {
@@ -30,7 +32,7 @@ export const PageConfig = () => {
 				name: values.pipelineName,
 				url: values.pipelineDomain,
 				username: values.username,
-				token: values.token,
+				credential: values.credential,
 				type: values.pipelineTool,
 			},
 		});
@@ -52,10 +54,10 @@ export const PageConfig = () => {
 	};
 
 	const verifyPipeline = () => {
-		const { token, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
+		const { credential, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
 		return pipelineVerify({
 			url: pipelineDomain,
-			token,
+			credential,
 			username,
 			type: pipelineTool,
 		});
@@ -90,7 +92,7 @@ export const PageConfig = () => {
 								layout="vertical"
 								onFinish={onFinish}
 								form={form}
-								initialValues={{ pipelineTool: "jenkins" }}>
+								initialValues={{ pipelineTool: "JENKINS" }}>
 								{formValues => (
 									<>
 										<FieldsStep1

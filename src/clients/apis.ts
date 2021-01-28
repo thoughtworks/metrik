@@ -2,8 +2,8 @@ import { createRequest } from "./createRequest";
 
 export const pipelineVerify = createRequest<PipelineVerifyRequest>(requestParams => ({
 	url: "/api/pipeline/verify",
-	method: "GET",
-	params: requestParams,
+	method: "POST",
+	data: requestParams,
 }));
 
 export const postPipelineConfig = createRequest<PipelineConfigRequest>(pipelineConfig => ({
@@ -15,7 +15,7 @@ export const postPipelineConfig = createRequest<PipelineConfigRequest>(pipelineC
 interface PipelineVerifyRequest {
 	url: string;
 	username: string;
-	token: string;
+	credential: string;
 	type: "JENKINS";
 }
 
@@ -28,7 +28,7 @@ interface PipelineConfigurationVo {
 	name: string;
 	url: string;
 	username: string;
-	token: string;
+	credential: string;
 	type: string;
 }
 

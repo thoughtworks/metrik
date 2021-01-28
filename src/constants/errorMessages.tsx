@@ -4,5 +4,5 @@ export const ERROR_MESSAGES = {
 	EMPTY_PIPELINE_TOOL: "Please input pipeline tool",
 	EMPTY_DOMAIN_NAME: "Please input pipeline domain",
 	EMPTY_USERNAME: "Please input username",
-	EMPTY_TOKEN: "Please input token",
+	EMPTY_CREDENTIAL: "Please input credential",
 };
