@@ -150,6 +150,57 @@ internal class MeanTimeToRestoreCalculatorTest {
         assertThat(averageMTTR).isEqualTo(115700000.00)
     }
 
+
+    /**
+     * test file: builds-for-MTTR-case-6.json
+     * build 1 : deploy to prod, SUCCESS, end at 2020-12-29
+     * build 2 : deploy to prod, FAILED, end at 2020-12-30 *
+     * build 3 : deploy to prod, ABORTED, end at 2020-12-31 *
+     * build 4 : deploy to prod, SUCCESS, end at 2021-01-01 *
+     * build 5 : deploy to prod, FAILED, end at 2021-01-02 *
+     * build 6 : deploy to prod, SUCCESS, end at 2021-01-03 *
+     * build 7 : deploy to prod, SUCCESS, end at 2021-01-05
+     */
+    @Test
+    internal fun `should return MTTR given all builds with one Aborted`() {
+        val allBuilds: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/calculator/builds-for-MTTR-case-6.json").readText()
+        )
+
+        val startTimestamp = 1609459200000L // 2021.01.01
+        val endTimestamp = 1609689600000L // 2021.01.04
+        val targetStage = "deploy to prod"
+
+        val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+
+        assertThat(mttr).isEqualTo(144000005.00)
+    }
+
+    /**
+     * test file: builds-for-MTTR-case-7.json
+     * build 1 : deploy to prod, SUCCESS, end at 2020-12-29
+     * build 2 : deploy to prod, SUCCESS, end at 2020-12-30 *
+     * build 3 : deploy to prod, ABORTED, end at 2020-12-31 *
+     * build 4 : deploy to prod, SUCCESS, end at 2021-01-01 *
+     * build 5 : deploy to prod, ABORTED, end at 2021-01-02 *
+     * build 6 : deploy to prod, SUCCESS, end at 2021-01-03 *
+     * build 7 : deploy to prod, SUCCESS, end at 2021-01-05
+     */
+    @Test
+    internal fun `should return MTTR given all builds with some Aborted and others success`() {
+        val allBuilds: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/calculator/builds-for-MTTR-case-7.json").readText()
+        )
+
+        val startTimestamp = 1609459200000L // 2021.01.01
+        val endTimestamp = 1609689600000L // 2021.01.04
+        val targetStage = "deploy to prod"
+
+        val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+
+        assertEquals(mttr, Double.NaN)
+    }
+
     @Test
     internal fun `should return elite while MTTR less than 1 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5 * MILLISECOND_TO_HOURS)
