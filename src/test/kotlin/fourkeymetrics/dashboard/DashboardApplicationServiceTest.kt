@@ -2,14 +2,20 @@ package fourkeymetrics.dashboard
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.DashboardApplicationService
+import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
+import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.exception.DashboardNotFoundException
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
@@ -80,7 +86,29 @@ class DashboardApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return pipeline stages`() {
-        assertEquals(true, true)
+    internal fun `should return pipeline stages when dashboard id is exist`() {
+        val dashboardId = "1"
+        `when`(dashboardRepository.getDashboardById(dashboardId)).thenReturn(Dashboard("1"))
+
+        val expectedPipelineStages = listOf(
+            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
+            PipelineStagesResponse("5km", listOf("5km-DEV", "5km-QA", "5km-UAT"))
+        )
+        `when`(jenkinsPipelineFacade.getPipelineStages(dashboardId)).thenReturn(expectedPipelineStages)
+
+        val actualPipelineStages = dashboardApplicationService.getPipelineStages(dashboardId)
+
+        assertEquals(expectedPipelineStages, actualPipelineStages)
+    }
+
+    @Test
+    internal fun `should throw dashboard not found exception when dashboard id is not exist`() {
+        val dashboardId = "dashboard id is not exist"
+        `when`(dashboardRepository.getDashboardById(dashboardId)).thenReturn(null)
+
+        val exception = assertThrows<DashboardNotFoundException> {
+            dashboardApplicationService.getPipelineStages(dashboardId)
+        }
+        assertTrue(exception.message!!.contains("Dashboard Not Found"))
     }
 }

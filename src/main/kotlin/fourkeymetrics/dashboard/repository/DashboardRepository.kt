@@ -83,7 +83,7 @@ class DashboardRepository {
         return dashboard?.pipelines?: emptyList()
     }
 
-    private fun getDashboardById(dashboardId: String): Dashboard? {
+    fun getDashboardById(dashboardId: String): Dashboard? {
         val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
 
         return mongoTemplate.findOne(query, collectionName)

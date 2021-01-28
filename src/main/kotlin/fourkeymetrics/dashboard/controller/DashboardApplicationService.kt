@@ -7,12 +7,13 @@ import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.exception.DashboardNotFoundException
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 
 @Service
 class DashboardApplicationService {
@@ -81,6 +82,9 @@ class DashboardApplicationService {
     }
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        TODO("Not yet implemented")
+        dashboardRepository.getDashboardById(dashboardId)
+            ?: throw DashboardNotFoundException("Dashboard Not Found")
+
+        return jenkinsPipelineService.getPipelineStages(dashboardId)
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
     private var logger = KotlinLogging.logger(this.javaClass.name)
 
-    @ExceptionHandler(ApplicationException::class)
+    @ExceptionHandler(ApplicationException::class, DashboardNotFoundException::class)
     fun handleAppException(ex: ApplicationException): ResponseEntity<ErrorResponse> {
         logger.error(ex) { "Application exception happened with error message: ${ex.message}" }
         val httpStatus = ex.httpStatus
