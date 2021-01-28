@@ -17,9 +17,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 internal class MeanTimeToRestoreCalculatorTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
-
+// TODO("change")
     @Autowired
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
+
+    companion object {
+        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
+    }
 
     /**
      * test file: builds-for-MTTR-case-1.json
@@ -43,7 +47,7 @@ internal class MeanTimeToRestoreCalculatorTest {
 
         val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertThat(mttr).isEqualTo(40.00)
+        assertThat(mttr).isEqualTo(144000005.00)
     }
 
     /**
@@ -68,7 +72,7 @@ internal class MeanTimeToRestoreCalculatorTest {
 
         val averageMTTR = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertThat(averageMTTR).isEqualTo(52.00)
+        assertThat(averageMTTR).isEqualTo(187201525.00)
     }
 
     /**
@@ -143,33 +147,33 @@ internal class MeanTimeToRestoreCalculatorTest {
 
         val averageMTTR = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertThat(averageMTTR).isEqualTo(32.14)
+        assertThat(averageMTTR).isEqualTo(115700000.00)
     }
 
     @Test
     internal fun `should return elite while MTTR less than 1 hour`() {
-        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5)
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5 * MILLISECOND_TO_HOURS)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.ELITE)
     }
 
     @Test
     internal fun `should return high while MTTR less than 24 hour and more than or equals 1 hour`() {
-        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(1.0)
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.999 * MILLISECOND_TO_HOURS)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.HIGH)
     }
 
     @Test
     internal fun `should return medium while MTTR less than 168 hour and more than or equals 24 hour`() {
-        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(156.0)
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(156.0 * MILLISECOND_TO_HOURS)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.MEDIUM)
     }
 
     @Test
     internal fun `should return low while MTTR more than or equals 168 hour`() {
-        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(233.0)
+        val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(233.0 * MILLISECOND_TO_HOURS)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.LOW)
     }

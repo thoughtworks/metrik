@@ -27,12 +27,17 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
+        if (value.isNaN()){
+            return LEVEL.INVALID
+        }
+
+        val hours = value.div(MILLISECOND_TO_HOURS).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
+
         return when {
-            value < ONE_HOUR -> LEVEL.ELITE
-            value < ONE_DAY -> LEVEL.HIGH
-            value < ONE_WEEK -> LEVEL.MEDIUM
-            value >= ONE_WEEK -> LEVEL.LOW
-            else -> LEVEL.INVALID
+            hours < ONE_HOUR -> LEVEL.ELITE
+            hours < ONE_DAY -> LEVEL.HIGH
+            hours < ONE_WEEK -> LEVEL.MEDIUM
+            else -> LEVEL.LOW
         }
     }
 
@@ -63,18 +68,14 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
                 continue
             }
             if (stage.status == StageStatus.SUCCESS && firstFailedStage != null) {
-                totalTime += calculateRestoredTimeInHours(firstFailedStage.getStageDoneTime(),
-                    stage.getStageDoneTime())
+                totalTime += stage.getStageDoneTime().minus(firstFailedStage.getStageDoneTime())
                 restoredTimes++
                 firstFailedStage = null
             }
         }
         if (restoredTimes > 0) {
-            return (totalTime.div(restoredTimes)).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
+            return totalTime.div(restoredTimes)
         }
         return NO_VALUE
     }
-
-    private fun calculateRestoredTimeInHours(failedTime: Long, restoredTime: Long) =
-        restoredTime.minus(failedTime).div(MILLISECOND_TO_HOURS)
 }
