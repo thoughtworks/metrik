@@ -21,7 +21,7 @@ class DashboardRepository {
     private val collectionName = "dashboard"
 
     fun getPipelineConfiguration(dashboardId: String, pipelineId: String): Pipeline? {
-        val dashboard: Dashboard? = getDashboardById(dashboardId)
+        val dashboard: Dashboard? = getDashBoardDetailById(dashboardId)
 
         return dashboard?.pipelines?.find { it.id == pipelineId }
     }
@@ -78,14 +78,8 @@ class DashboardRepository {
     }
 
     fun getPipelinesByDashboardId(dashboardId: String): List<Pipeline> {
-        val dashboard: Dashboard? = getDashboardById(dashboardId)
+        val dashboard: Dashboard? = getDashBoardDetailById(dashboardId)
 
         return dashboard?.pipelines?: emptyList()
-    }
-
-    fun getDashboardById(dashboardId: String): Dashboard? {
-        val query = Query.query(Criteria.where("id").isEqualTo(dashboardId))
-
-        return mongoTemplate.findOne(query, collectionName)
     }
 }

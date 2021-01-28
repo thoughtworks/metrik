@@ -82,7 +82,7 @@ class DashboardApplicationService {
     }
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        dashboardRepository.getDashboardById(dashboardId)
+        dashboardRepository.getDashBoardDetailById(dashboardId)
             ?: throw DashboardNotFoundException("Dashboard Not Found")
 
         return jenkinsPipelineService.getPipelineStages(dashboardId)

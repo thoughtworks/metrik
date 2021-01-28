@@ -88,7 +88,7 @@ class DashboardApplicationServiceTest {
     @Test
     internal fun `should return pipeline stages when dashboard id is exist`() {
         val dashboardId = "1"
-        `when`(dashboardRepository.getDashboardById(dashboardId)).thenReturn(Dashboard("1"))
+        `when`(dashboardRepository.getDashBoardDetailById(dashboardId)).thenReturn(Dashboard("1"))
 
         val expectedPipelineStages = listOf(
             PipelineStagesResponse("4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
@@ -104,7 +104,7 @@ class DashboardApplicationServiceTest {
     @Test
     internal fun `should throw dashboard not found exception when dashboard id is not exist`() {
         val dashboardId = "dashboard id is not exist"
-        `when`(dashboardRepository.getDashboardById(dashboardId)).thenReturn(null)
+        `when`(dashboardRepository.getDashBoardDetailById(dashboardId)).thenReturn(null)
 
         val exception = assertThrows<DashboardNotFoundException> {
             dashboardApplicationService.getPipelineStages(dashboardId)
