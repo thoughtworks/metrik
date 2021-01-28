@@ -6,6 +6,7 @@ import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -112,5 +113,36 @@ internal class DashboardRepositoryTest {
         val actualSyncTimestamp = dashboardRepository.updateSynchronizationTime(dashboardId, newTimestamp)
 
         assertThat(actualSyncTimestamp).isEqualTo(newTimestamp)
+    }
+
+    @Test
+    internal fun `should return pipelines when pipelines are already exist in DB`() {
+        val dashboardId = "1"
+        val collectionName = "dashboard"
+
+        val dashboardToSave: List<Dashboard> = objectMapper.readValue(
+            this.javaClass.getResource("/repository/dashboards-with-pipelines.json").readText())
+        dashboardToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        val pipelines = dashboardRepository.getPipelinesByDashboardId(dashboardId)
+
+        Assertions.assertEquals(3, pipelines.size)
+        Assertions.assertEquals("4km", pipelines[0].name)
+        Assertions.assertEquals("5km", pipelines[1].name)
+        Assertions.assertEquals("6km", pipelines[2].name)
+    }
+
+    @Test
+    internal fun `should return empty list when pipelines are not already exist in DB`() {
+        val dashboardId = "1"
+        val collectionName = "dashboard"
+
+        val dashboardToSave: List<Dashboard> = objectMapper.readValue(
+            this.javaClass.getResource("/repository/dashboards-without-pipelines.json").readText())
+        dashboardToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        val pipelines = dashboardRepository.getPipelinesByDashboardId(dashboardId)
+
+        Assertions.assertEquals(0, pipelines.size)
     }
 }
