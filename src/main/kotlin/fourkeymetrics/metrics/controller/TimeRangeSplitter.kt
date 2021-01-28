@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Component
@@ -39,22 +38,16 @@ class TimeRangeSplitter {
     ): List<Pair<Long, Long>> {
         val startTime = getLocalDateTimeFromTimestampMillis(startTimestamp)
         val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
-        val months = ChronoUnit.MONTHS.between(startTime, endTime)
-        return if (months >= 1) {
-            val timeRanges = mutableListOf<Pair<Long, Long>>()
-            var tempStartTime = startTime
-            LongRange(0, months - 1)
-                .map { YearMonth.from(startTime).plusMonths(it) }
-                .map { it.atEndOfMonth().atTime(LocalTime.MAX) }
-                .forEach {
-                    timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), it.toDefaultZoneEpochMill()))
-                    tempStartTime = it.plusNanos(1) // next period start time
-                }
-            timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), endTimestamp))
-            timeRanges.toList()
-        } else {
-            listOf(Pair(startTimestamp, endTimestamp))
+        val timeRanges = mutableListOf<Pair<Long, Long>>()
+        var tempStartTime = startTime
+        var tempEndTime = startTime.endTimeOfSameMonth()
+        while (tempEndTime.isBefore(endTime)) {
+            timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), tempEndTime.toDefaultZoneEpochMill()))
+            tempStartTime = tempEndTime.plusNanos(1)
+            tempEndTime = tempStartTime.endTimeOfSameMonth()
         }
+        timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), endTime.toDefaultZoneEpochMill()))
+        return timeRanges.toList()
     }
 
     private fun splitTimeRangeFortnightly(
@@ -86,5 +79,9 @@ fun LocalDateTime.toDefaultZoneEpochMill(): Long {
 
 fun LocalDateTime.atStartOfDay(): LocalDateTime {
     return this.toLocalDate().atStartOfDay()
+}
+
+fun LocalDateTime.endTimeOfSameMonth(): LocalDateTime {
+    return YearMonth.from(this).atEndOfMonth().atTime(LocalTime.MAX)
 }
 

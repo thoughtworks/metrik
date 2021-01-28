@@ -40,6 +40,38 @@ internal class TimeRangeSplitterKtTest {
     }
 
     @Test
+    fun `should get range list of 3 pair given from Jan_12 to April_2 when split time range monthly`() {
+
+        val startTime = LocalDate.parse("2020-01-12").atStartOfDay()
+        val startTimestamp = startTime.toDefaultZoneEpochMill()
+        val endTime = LocalDate.parse("2020-04-02").atStartOfDay()
+        val endTimestamp = endTime.toDefaultZoneEpochMill()
+
+        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, MetricsUnit.Monthly)
+
+        assertEquals(
+            listOf(
+                Pair(
+                    startTimestamp,
+                    LocalDate.parse("2020-01-31").atTime(LocalTime.MAX).toDefaultZoneEpochMill()
+                ),
+                Pair(
+                    LocalDate.parse("2020-02-01").atStartOfDay().toDefaultZoneEpochMill(),
+                    LocalDate.parse("2020-02-29").atTime(LocalTime.MAX).toDefaultZoneEpochMill()
+                ),
+                Pair(
+                    LocalDate.parse("2020-03-01").atStartOfDay().toDefaultZoneEpochMill(),
+                    LocalDate.parse("2020-03-31").atTime(LocalTime.MAX).toDefaultZoneEpochMill()
+                ),
+                Pair(
+                    LocalDate.parse("2020-04-01").atStartOfDay().toDefaultZoneEpochMill(),
+                    endTimestamp
+                )
+            ), timeRangeList
+        )
+    }
+
+    @Test
     fun `should get range list of 1 pair given from Sep_1 to Sep_3 when split time range monthly`() {
 
         val startTime = LocalDate.parse("2020-09-01").atStartOfDay()
