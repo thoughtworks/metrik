@@ -76,4 +76,8 @@ class DashboardRepository {
         mongoTemplate.updateFirst(query, update, collectionName)
         return mongoTemplate.findOne(query, Dashboard::class.java, collectionName)?.synchronizationTimestamp
     }
+
+    fun getPipelinesByDashboardId(dashboardId: String): List<Pipeline> {
+        TODO("Not yet implemented")
+    }
 }

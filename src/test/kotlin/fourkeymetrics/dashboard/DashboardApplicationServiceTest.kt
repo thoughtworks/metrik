@@ -3,8 +3,8 @@ package fourkeymetrics.dashboard
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.DashboardApplicationService
 import fourkeymetrics.dashboard.repository.DashboardRepository
-import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.exception.ApplicationException
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

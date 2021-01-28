@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
+import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.*
@@ -152,5 +155,54 @@ internal class JenkinsServiceTest {
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
         assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+    }
+
+    @Test
+    internal fun `should return all pipeline stages when there are one pipeline in one dashboard`() {
+        val dashboardId = "1"
+        val pipelines: List<Pipeline> = listOf(
+            Pipeline("1", "4km", "username", "fake-credential", "test.com", PipelineType.JENKINS),
+        )
+        `when`(dashboardRepository.getPipelinesByDashboardId(dashboardId)).thenReturn(pipelines)
+
+        val buildsPipeline: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/repository/builds-for-pipeline-id-1.json").readText()
+        )
+        `when`(buildRepository.getAllBuilds("1")).thenReturn(buildsPipeline)
+
+        val actualPipelineStages = jenkinsPipelineFacade.getPipelineStages(dashboardId)
+
+        val expectedPipelineStages = listOf(
+            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT"))
+        )
+        assertEquals(expectedPipelineStages, actualPipelineStages)
+    }
+
+    @Test
+    internal fun `should return all pipeline stages ordered by ASCII when there are two pipelines in one dashboard`() {
+        val dashboardId = "1"
+        val pipelines: List<Pipeline> = listOf(
+            Pipeline("2", "5km", "username", "fake-credential", "test.com", PipelineType.JENKINS),
+            Pipeline("1", "4km", "username", "fake-credential", "test.com", PipelineType.JENKINS)
+        )
+        `when`(dashboardRepository.getPipelinesByDashboardId(dashboardId)).thenReturn(pipelines)
+
+        val buildsPipeline1: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/repository/builds-for-pipeline-id-1.json").readText()
+        )
+        `when`(buildRepository.getAllBuilds("1")).thenReturn(buildsPipeline1)
+        val buildsForPipeline2: List<Build> = ObjectMapper().readValue(
+            this.javaClass.getResource("/repository/builds-for-pipeline-id-2.json").readText()
+        )
+        `when`(buildRepository.getAllBuilds("2")).thenReturn(buildsForPipeline2)
+
+        val actualPipelineStages = jenkinsPipelineFacade.getPipelineStages(dashboardId)
+
+        val expectedPipelineStages = listOf(
+            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT")),
+            PipelineStagesResponse("5km", listOf("5km-BUILD", "5km-DEV", "5km-PROD", "5km-UAT"))
+        )
+        assertEquals(expectedPipelineStages, actualPipelineStages)
     }
 }
