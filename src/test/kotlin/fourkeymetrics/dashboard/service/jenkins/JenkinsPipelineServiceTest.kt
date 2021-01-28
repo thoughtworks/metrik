@@ -34,7 +34,7 @@ import org.springframework.web.client.RestTemplate
 @RestClientTest
 internal class JenkinsPipelineServiceTest {
     @Autowired
-    private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
+    private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -60,7 +60,7 @@ internal class JenkinsPipelineServiceTest {
             )
         ).thenReturn(Pipeline())
 
-        assertThat(jenkinsPipelineFacade.hasPipeline(dashboardId, pipelineId)).isTrue
+        assertThat(jenkinsPipelineService.hasPipeline(dashboardId, pipelineId)).isTrue
     }
 
     @Test
@@ -70,7 +70,7 @@ internal class JenkinsPipelineServiceTest {
 
         `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(null)
 
-        assertThat(jenkinsPipelineFacade.hasPipeline(dashboardId, pipelineId)).isFalse
+        assertThat(jenkinsPipelineService.hasPipeline(dashboardId, pipelineId)).isFalse
     }
 
     @Test
@@ -109,7 +109,7 @@ internal class JenkinsPipelineServiceTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkinsPipelineFacade.syncBuilds(dashboardId, pipelineId, 0L)
+        val allBuilds = jenkinsPipelineService.syncBuilds(dashboardId, pipelineId, 0L)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
     }
@@ -130,7 +130,7 @@ internal class JenkinsPipelineServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
+        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isTrue
     }
 
     @Test
@@ -154,8 +154,8 @@ internal class JenkinsPipelineServiceTest {
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
 
-        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
-        assertThat(jenkinsPipelineFacade.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
+        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }
 
     @Test
@@ -171,7 +171,7 @@ internal class JenkinsPipelineServiceTest {
         )
         `when`(buildRepository.getAllBuilds("1")).thenReturn(buildsPipeline)
 
-        val actualPipelineStages = jenkinsPipelineFacade.getPipelineStages(dashboardId)
+        val actualPipelineStages = jenkinsPipelineService.getPipelineStages(dashboardId)
 
         val expectedPipelineStages = listOf(
             PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT"))
@@ -197,7 +197,7 @@ internal class JenkinsPipelineServiceTest {
         )
         `when`(buildRepository.getAllBuilds("2")).thenReturn(buildsForPipeline2)
 
-        val actualPipelineStages = jenkinsPipelineFacade.getPipelineStages(dashboardId)
+        val actualPipelineStages = jenkinsPipelineService.getPipelineStages(dashboardId)
 
         val expectedPipelineStages = listOf(
             PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT")),
