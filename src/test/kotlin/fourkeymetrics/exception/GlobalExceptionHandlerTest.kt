@@ -23,4 +23,15 @@ internal class GlobalExceptionHandlerTest {
         Assertions.assertEquals(400, errorResponse?.status)
         Assertions.assertEquals("invalid request", errorResponse?.message)
     }
+
+    @Test
+    internal fun `should handle unexpected exception`() {
+        val responseEntity = globalExceptionHandler.handleThrowable(OutOfMemoryError("error message"))
+
+        val errorResponse = responseEntity.body
+
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.statusCode)
+        Assertions.assertEquals(500, errorResponse?.status)
+        Assertions.assertEquals("error message", errorResponse?.message)
+    }
 }
