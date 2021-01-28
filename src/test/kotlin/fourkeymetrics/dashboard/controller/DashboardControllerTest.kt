@@ -1,7 +1,5 @@
-package fourkeymetrics.dashboard
+package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.dashboard.controller.DashboardApplicationService
-import fourkeymetrics.dashboard.controller.DashboardController
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.exception.ApplicationException
 import org.junit.jupiter.api.Test

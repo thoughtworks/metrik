@@ -1,10 +1,9 @@
-package fourkeymetrics.dashboard
+package fourkeymetrics.dashboard.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.PipelineType
-import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

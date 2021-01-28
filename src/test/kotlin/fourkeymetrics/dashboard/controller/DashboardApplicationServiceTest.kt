@@ -1,7 +1,6 @@
-package fourkeymetrics.dashboard
+package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import fourkeymetrics.dashboard.controller.DashboardApplicationService
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.repository.DashboardRepository
