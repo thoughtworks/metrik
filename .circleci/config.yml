@@ -79,6 +79,7 @@ jobs:
               docker rmi -f ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
 
               echo \"Deploying with the latest image...\"
+              aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
               docker run --name \$CONTAINER_NAME -d -p 80:80 --net=4km-docker_default --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
 
               echo \"Cleaning up...\"
