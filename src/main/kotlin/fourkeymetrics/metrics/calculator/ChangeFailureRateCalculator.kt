@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.BuildStatus
+import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class ChangeFailureRateCalculator : MetricsCalculator {
 
     companion object {
-        private val TARGET_STAGE_STATUS_LIST = listOf(BuildStatus.FAILED, BuildStatus.SUCCESS)
+        private val TARGET_STAGE_STATUS_LIST = listOf(StageStatus.FAILED, StageStatus.SUCCESS)
         private val INVALID_VALUE = Double.NaN
         private const val LEVEL_ELITE_UPPER_LIMIT = 0.15
         private const val LEVEL_HIGH_UPPER_LIMIT = 0.3
@@ -37,7 +37,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
 
         val totalCount = statusCountMap.values.sum()
         return if (totalCount > 0) {
-            statusCountMap.getOrDefault(BuildStatus.FAILED, 0).toDouble() / totalCount
+            statusCountMap.getOrDefault(StageStatus.FAILED, 0).toDouble() / totalCount
         } else {
             INVALID_VALUE
         }

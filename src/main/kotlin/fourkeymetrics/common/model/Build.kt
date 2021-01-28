@@ -2,17 +2,25 @@ package fourkeymetrics.common.model
 
 import org.apache.logging.log4j.util.Strings
 
-enum class BuildStatus {
+enum class StageStatus {
     SUCCESS,
     FAILED,
     ABORTED,
-    FAILURE,
     IN_PROGRESS
+}
+
+enum class BuildResult {
+    SUCCESS,
+    FAILURE,
+    ABORTED,
+    NOT_BUILT,
+    UNSTABLE,
+    CYCLE
 }
 
 class Stage(
         var name: String = Strings.EMPTY,
-        var status: BuildStatus = BuildStatus.FAILED,
+        var status: StageStatus = StageStatus.FAILED,
         var startTimeMillis: Long = 0,
         var durationMillis: Long = 0,
         var pauseDurationMillis: Long = 0
@@ -31,14 +39,14 @@ data class Commit(
 
 class Build(
         var pipelineId: String = Strings.EMPTY, var number: Int = 0,
-        var result: BuildStatus? = BuildStatus.FAILED, var duration: Long = 0,
+        var result: BuildResult? = BuildResult.FAILURE, var duration: Long = 0,
         var timestamp: Long = 0, var url: String = Strings.EMPTY,
         var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList()
 ) {
 
     fun containsGivenDeploymentInGivenTimeRange(
             deployStageName: String,
-            stageStatus: BuildStatus,
+            stageStatus: StageStatus,
             startTimestamp: Long,
             endTimestamp: Long
     ): Boolean {
@@ -52,7 +60,7 @@ class Build(
 
     fun containsGivenDeploymentBeforeGivenTimestamp(
             deployStageName: String,
-            stageStatus: BuildStatus,
+            stageStatus: StageStatus,
             timestamp: Long
     ): Boolean {
         return this.stages.any {
@@ -62,7 +70,7 @@ class Build(
         }
     }
 
-    fun findGivenStage(deployStageName: String, stageStatus: BuildStatus): Stage? {
+    fun findGivenStage(deployStageName: String, stageStatus: StageStatus): Stage? {
         return this.stages.find {
             it.name == deployStageName && it.status == stageStatus
         }

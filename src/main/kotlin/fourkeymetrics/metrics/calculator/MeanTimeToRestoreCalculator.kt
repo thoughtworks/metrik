@@ -1,8 +1,8 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.BuildStatus
 import fourkeymetrics.common.model.Stage
+import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
@@ -42,7 +42,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
             .filter { stage -> stage.name == targetStage }.sortedBy { it.getStageDoneTime() }
 
         val lastSuccessfulDeploymentBeforeGivenTime = targetStages.findLast {
-            it.status == BuildStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
+            it.status == StageStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
         }?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }
 
         val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBeforeGivenTime.getStageDoneTime()
@@ -58,11 +58,11 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         var totalTime = 0.0
         var restoredTimes = 0
         for (stage in selectedStages) {
-            if (stage.status == BuildStatus.FAILED && firstFailedStage == null) {
+            if (stage.status == StageStatus.FAILED && firstFailedStage == null) {
                 firstFailedStage = stage
                 continue
             }
-            if (stage.status == BuildStatus.SUCCESS && firstFailedStage != null) {
+            if (stage.status == StageStatus.SUCCESS && firstFailedStage != null) {
                 totalTime += calculateRestoredTimeInHours(firstFailedStage.getStageDoneTime(),
                     stage.getStageDoneTime())
                 restoredTimes++

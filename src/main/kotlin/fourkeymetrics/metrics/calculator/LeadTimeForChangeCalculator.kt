@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.BuildStatus
+import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
@@ -22,14 +22,14 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
                 targetStage,
-                BuildStatus.SUCCESS, startTimestamp,
+                StageStatus.SUCCESS, startTimestamp,
                 endTimestamp
             )
         } ?: return NO_VALUE
         val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentBeforeGivenTimestamp(
                 targetStage,
-                BuildStatus.SUCCESS, startTimestamp
+                StageStatus.SUCCESS, startTimestamp
             )
         }
         val buildsInScope = filterBuildsBetweenGivenRange(
@@ -73,7 +73,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         var fromIndex = 0
 
         while (buildIndex in buildsInScope.indices) {
-            val deployStage = buildsInScope[buildIndex].findGivenStage(targetStage, BuildStatus.SUCCESS)
+            val deployStage = buildsInScope[buildIndex].findGivenStage(targetStage, StageStatus.SUCCESS)
             if (deployStage != null) {
                 val buildsInOneDeployment: List<Build> = buildsInScope.subList(fromIndex, buildIndex + 1)
                 buildsGroupedByEachDeployment[DeploymentTimestamp(deployStage.getStageDoneTime())] =

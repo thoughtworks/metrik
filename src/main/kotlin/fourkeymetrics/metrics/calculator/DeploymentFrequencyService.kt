@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.BuildStatus
+import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.dashboard.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -40,7 +40,7 @@ class DeploymentFrequencyService {
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
-            build.stages.find { stage -> stage.name == targetStage }?.status == BuildStatus.SUCCESS
+            build.stages.find { stage -> stage.name == targetStage }?.status == StageStatus.SUCCESS
 
     private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long,
                                              endTimestamp: Long, targetStage: String): Boolean {
