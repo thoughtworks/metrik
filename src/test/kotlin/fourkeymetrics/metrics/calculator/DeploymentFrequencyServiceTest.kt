@@ -7,23 +7,18 @@ import fourkeymetrics.dashboard.repository.BuildRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(SpringExtension::class)
-@Import(DeploymentFrequencyService::class, ObjectMapper::class)
+@ExtendWith(MockitoExtension::class)
 internal class DeploymentFrequencyServiceTest {
-    @Autowired
-    private lateinit var deploymentFrequencyService: DeploymentFrequencyService
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @MockBean
+    @Mock
     private lateinit var buildRepository: BuildRepository
+
+    @InjectMocks
+    private lateinit var deploymentFrequencyService: DeploymentFrequencyService
 
     /**
      * test file: builds-for-jenkins-1.json
@@ -38,7 +33,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTimestamp = 1610236800000L  // 2021-01-10
         val endTimestamp = 1611100800000L   // 2021-01-30
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
+        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
@@ -58,7 +53,7 @@ internal class DeploymentFrequencyServiceTest {
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
 
-        val mockBuildList: List<Build> = objectMapper.readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
+        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
