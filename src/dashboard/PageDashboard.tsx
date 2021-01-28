@@ -5,7 +5,7 @@ import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../constants/date-format";
-import { MultipleCascader } from "../components/MultipleCascader";
+import { MultipleCascadeSelect } from "../components/MultipleCascadeSelect";
 
 const { Text, Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -190,7 +190,7 @@ export const PageDashboard = () => {
 			</div>
 			<Form layout={"vertical"} css={{ marginTop: 16 }}>
 				<Row gutter={8} wrap={false}>
-					<Col span={8}>
+					<Col span={4}>
 						<Form.Item label="Duration" name="duration">
 							<RangePicker
 								format={dateFormatYYYYMMDD}
@@ -202,17 +202,21 @@ export const PageDashboard = () => {
 							/>
 						</Form.Item>
 					</Col>
-					<Col span={4} style={{ textAlign: "right" }}>
-						<Button>Apply</Button>
+					<Col span={6}>
+						<Form.Item label="Pipelines" name="pipelines">
+							<MultipleCascadeSelect
+								options={options}
+								onValueChange={value => {
+									console.log(value);
+								}}
+								defaultValue={["a", "c"]}
+							/>
+						</Form.Item>
 					</Col>
-					<Col span={10}>
-						<MultipleCascader
-							options={options}
-							onValueChange={value => {
-								console.log(value);
-							}}
-							defaultValue={["a", "c"]}
-						/>
+					<Col span={1} style={{ textAlign: "right" }}>
+						<Form.Item label=" ">
+							<Button>Apply</Button>
+						</Form.Item>
 					</Col>
 				</Row>
 			</Form>
