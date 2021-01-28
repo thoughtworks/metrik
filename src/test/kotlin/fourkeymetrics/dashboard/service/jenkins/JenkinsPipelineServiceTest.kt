@@ -159,32 +159,11 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should return all pipeline stages when there are one pipeline in one dashboard`() {
-        val dashboardId = "1"
-        val pipelines: List<Pipeline> = listOf(
-            Pipeline("1", "4km", "username", "fake-credential", "test.com", PipelineType.JENKINS),
-        )
-        `when`(dashboardRepository.getPipelinesByDashboardId(dashboardId)).thenReturn(pipelines)
-
-        val buildsPipeline: List<Build> = ObjectMapper().readValue(
-            this.javaClass.getResource("/repository/builds-for-pipeline-id-1.json").readText()
-        )
-        `when`(buildRepository.getAllBuilds("1")).thenReturn(buildsPipeline)
-
-        val actualPipelineStages = jenkinsPipelineService.getPipelineStages(dashboardId)
-
-        val expectedPipelineStages = listOf(
-            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT"))
-        )
-        assertEquals(expectedPipelineStages, actualPipelineStages)
-    }
-
-    @Test
     internal fun `should return all pipeline stages ordered by ASCII when there are two pipelines in one dashboard`() {
         val dashboardId = "1"
         val pipelines: List<Pipeline> = listOf(
-            Pipeline("2", "5km", "username", "fake-credential", "test.com", PipelineType.JENKINS),
-            Pipeline("1", "4km", "username", "fake-credential", "test.com", PipelineType.JENKINS)
+            Pipeline("2", "5km"),
+            Pipeline("1", "4km")
         )
         `when`(dashboardRepository.getPipelinesByDashboardId(dashboardId)).thenReturn(pipelines)
 
