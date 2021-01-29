@@ -40,16 +40,16 @@ abstract class PipelineService {
     abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        val pipelines: List<Pipeline> = dashboardRepository.getPipelinesByDashboardId(dashboardId).sortedBy { it.name }
+        val pipelines: List<Pipeline> = dashboardRepository.getPipelinesByDashboardId(dashboardId)
 
         val pipelineStages = mutableListOf<PipelineStagesResponse>()
-        for (pipeline in pipelines) {
+        pipelines.parallelStream().forEach { pipeline ->
             val builds: List<Build> = buildRepository.getAllBuilds(pipeline.id)
             val stages = builds.flatMap { it.stages }.map { it.name }.distinct().sorted().toList()
 
             pipelineStages.add(PipelineStagesResponse(pipeline.name, stages))
         }
 
-        return pipelineStages
+        return pipelineStages.sortedBy { it.pipelineName }
     }
 }
