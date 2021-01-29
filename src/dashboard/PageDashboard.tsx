@@ -1,6 +1,6 @@
 import React from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form, Radio } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
@@ -188,39 +188,46 @@ export const PageDashboard = () => {
 					</span>
 				</div>
 			</div>
-			<Form
-				layout={"vertical"}
-				css={{ marginTop: 16 }}
-				initialValues={{
-					duration: [
-						moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
-						moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
-					],
-				}}
-				onFinish={values => {
-					console.log("submit", values);
-				}}>
-				<Row gutter={8} wrap={false}>
-					<Col span={4}>
-						<Form.Item label="Duration" name="duration">
-							<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
-						</Form.Item>
-					</Col>
-					<Col span={6}>
-						<Form.Item label="Pipelines" name="pipelines">
-							<MultipleCascadeSelect
-								options={options}
-								defaultValues={[{ value: "a", childValue: "a1" }]}
-							/>
-						</Form.Item>
-					</Col>
-					<Col span={1} style={{ textAlign: "right" }}>
-						<Form.Item label=" ">
-							<Button htmlType="submit">Apply</Button>
-						</Form.Item>
-					</Col>
-				</Row>
-			</Form>
+			<div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+				<Form
+					layout={"vertical"}
+					css={{ marginTop: 16, width: "50%" }}
+					initialValues={{
+						duration: [
+							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
+							moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+						],
+					}}
+					onFinish={values => {
+						console.log("submit", values);
+					}}>
+					<Row wrap={false} gutter={12}>
+						<Col>
+							<Form.Item label="Duration" name="duration">
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
+							</Form.Item>
+						</Col>
+						<Col span={10}>
+							<Form.Item label="Pipelines" name="pipelines">
+								<MultipleCascadeSelect
+									options={options}
+									defaultValues={[{ value: "a", childValue: "a1" }]}
+								/>
+							</Form.Item>
+						</Col>
+						<Col style={{ textAlign: "right" }}>
+							<Form.Item label=" ">
+								<Button htmlType="submit">Apply</Button>
+							</Form.Item>
+						</Col>
+					</Row>
+				</Form>
+
+				<Radio.Group defaultValue="fortnightly">
+					<Radio.Button value="fortnightly">Fortnightly</Radio.Button>
+					<Radio.Button value="monthly">Monthly</Radio.Button>
+				</Radio.Group>
+			</div>
 		</div>
 	);
 };
