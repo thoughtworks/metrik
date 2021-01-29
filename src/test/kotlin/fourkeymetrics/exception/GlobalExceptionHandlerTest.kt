@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MissingServletRequestParameterException
+import java.lang.IllegalArgumentException
 
 internal class GlobalExceptionHandlerTest {
     lateinit var globalExceptionHandler: GlobalExceptionHandler
@@ -47,5 +48,18 @@ internal class GlobalExceptionHandlerTest {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.statusCode)
         Assertions.assertEquals(400, errorResponse?.status)
         Assertions.assertEquals("Required String parameter 'pipelineId' is not present", errorResponse?.message)
+    }
+
+    @Test
+    internal fun `should handle parameter illegal exception`() {
+        val responseEntity = globalExceptionHandler.handleParamIllegalException(
+            IllegalArgumentException("Illegal Argument")
+        )
+
+        val errorResponse = responseEntity.body
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.statusCode)
+        Assertions.assertEquals(400, errorResponse?.status)
+        Assertions.assertEquals("Illegal Argument", errorResponse?.message)
     }
 }

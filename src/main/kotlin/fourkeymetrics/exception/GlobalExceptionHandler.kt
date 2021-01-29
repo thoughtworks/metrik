@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.lang.IllegalArgumentException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -29,6 +30,14 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleParamMissingException(ex: MissingServletRequestParameterException): ResponseEntity<ErrorResponse>{
+        logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
+        val httpStatus = HttpStatus.BAD_REQUEST
+        val errorResponse = ErrorResponse(httpStatus.value(), ex.message)
+        return ResponseEntity(errorResponse, httpStatus)
+    }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleParamIllegalException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse>{
         logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
         val httpStatus = HttpStatus.BAD_REQUEST
         val errorResponse = ErrorResponse(httpStatus.value(), ex.message)
