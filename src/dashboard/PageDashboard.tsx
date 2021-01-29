@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form, Radio } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form, Radio, Input } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
@@ -173,16 +173,36 @@ export const PageDashboard = () => {
 		}, 3000);
 	};
 
+	const [editable, setEditable] = useState(false);
+	const [value, setValue] = useState("4KM");
+
 	return (
 		<div css={containerStyles}>
 			<div css={headerStyles}>
 				<div>
-					<Title level={2} style={{ marginBottom: 0 }}>
-						4KM
-					</Title>
+					{editable ? (
+						<Input
+							type={"text"}
+							defaultValue={value}
+							onBlur={evt => {
+								console.log(evt.target.value, "value on blur");
+								setValue(evt.target.value);
+								setEditable(false);
+							}}
+						/>
+					) : (
+						<span
+							onDoubleClick={() => {
+								setEditable(true);
+							}}>
+							<Title level={2} style={{ marginBottom: 0 }}>
+								{value}
+							</Title>
+						</span>
+					)}
 					<Text type={"secondary"}>The latest available data end at : 3 Jun, 2020</Text>
 					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={startSync}>
-						Sync Data
+						{syncing ? "Synchronizing...." : "Sync Data"}
 					</Button>
 				</div>
 				<div>
