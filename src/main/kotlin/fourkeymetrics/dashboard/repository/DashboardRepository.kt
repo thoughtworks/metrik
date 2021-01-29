@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 
+@SuppressWarnings("TooManyFunctions")
 @Component
 class DashboardRepository {
     companion object {
