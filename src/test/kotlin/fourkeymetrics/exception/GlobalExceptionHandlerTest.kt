@@ -3,9 +3,10 @@ package fourkeymetrics.exception
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MissingServletRequestParameterException
-import java.lang.IllegalArgumentException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 internal class GlobalExceptionHandlerTest {
     lateinit var globalExceptionHandler: GlobalExceptionHandler
@@ -53,13 +54,13 @@ internal class GlobalExceptionHandlerTest {
     @Test
     internal fun `should handle parameter illegal exception`() {
         val responseEntity = globalExceptionHandler.handleParamIllegalException(
-            IllegalArgumentException("Illegal Argument")
+            Mockito.mock(MethodArgumentTypeMismatchException::class.java)
         )
 
         val errorResponse = responseEntity.body
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.statusCode)
         Assertions.assertEquals(400, errorResponse?.status)
-        Assertions.assertEquals("Illegal Argument", errorResponse?.message)
+        Assertions.assertEquals("argument type mismatch", errorResponse?.message)
     }
 }
