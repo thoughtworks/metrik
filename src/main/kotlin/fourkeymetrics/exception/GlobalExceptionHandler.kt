@@ -7,12 +7,11 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    private var logger =LoggerFactory.getLogger(this.javaClass.name)
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    @ExceptionHandler(ApplicationException::class, DashboardNotFoundException::class)
+    @ExceptionHandler(ApplicationException::class)
     fun handleAppException(ex: ApplicationException): ResponseEntity<ErrorResponse> {
         logger.error("Application exception happened with error message: ${ex.message}", ex)
         val httpStatus = ex.httpStatus

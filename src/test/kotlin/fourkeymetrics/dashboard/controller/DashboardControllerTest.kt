@@ -1,6 +1,8 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
+import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
+import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.exception.ApplicationException
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -29,8 +31,9 @@ class DashboardControllerTest {
         val url = "http://jenkins.io/"
         val username = "user"
         val credential = "credential"
-        val type = "JENKINS"
-        Mockito.doNothing().`when`(dashboardApplicationService).verifyPipeline(url, username, credential, type)
+        val type = PipelineType.JENKINS
+        Mockito.doNothing().`when`(dashboardApplicationService)
+            .verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,10 +55,11 @@ class DashboardControllerTest {
         val url = "http://jenkins.io/notfound"
         val username = "user"
         val credential = "credential"
-        val type = "JENKINS"
+        val type = PipelineType.JENKINS
 
         Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND, ""))
-            .`when`(dashboardApplicationService).verifyPipeline(url, username, credential, type)
+            .`when`(dashboardApplicationService)
+            .verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")
@@ -82,7 +86,7 @@ class DashboardControllerTest {
         )
         `when`(dashboardApplicationService.getPipelineStages(dashboardId)).thenReturn(expectedPipelineStages)
 
-        mockMvc.perform(get("/api/dashboards/${dashboardId}/pipeline/stage"))
+        mockMvc.perform(get("/api/dashboard/${dashboardId}/stage"))
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].pipelineName").value("4km"))
             .andExpect(jsonPath("$[0].stages.length()").value(3))
