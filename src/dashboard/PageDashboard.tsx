@@ -188,34 +188,35 @@ export const PageDashboard = () => {
 					</span>
 				</div>
 			</div>
-			<Form layout={"vertical"} css={{ marginTop: 16 }}>
+			<Form
+				layout={"vertical"}
+				css={{ marginTop: 16 }}
+				initialValues={{
+					duration: [
+						moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
+						moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+					],
+				}}
+				onFinish={values => {
+					console.log("submit", values);
+				}}>
 				<Row gutter={8} wrap={false}>
 					<Col span={4}>
 						<Form.Item label="Duration" name="duration">
-							<RangePicker
-								format={dateFormatYYYYMMDD}
-								clearIcon={false}
-								defaultValue={[
-									moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
-									moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
-								]}
-							/>
+							<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
 						</Form.Item>
 					</Col>
 					<Col span={6}>
 						<Form.Item label="Pipelines" name="pipelines">
 							<MultipleCascadeSelect
 								options={options}
-								onValueChange={value => {
-									console.log(value);
-								}}
-								defaultValue={["a", "c"]}
+								defaultValues={[{ value: "a", childValue: "a1" }]}
 							/>
 						</Form.Item>
 					</Col>
 					<Col span={1} style={{ textAlign: "right" }}>
 						<Form.Item label=" ">
-							<Button>Apply</Button>
+							<Button htmlType="submit">Apply</Button>
 						</Form.Item>
 					</Col>
 				</Row>

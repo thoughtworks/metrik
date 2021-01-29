@@ -16,13 +16,18 @@ interface Option {
 }
 
 interface MultipleCascadeSelectProps {
-	onValueChange?: (value: CascadeValue) => void;
-	defaultValue?: string[];
+	onChange?: (value: CascadeValueItem[]) => void;
+	defaultValues?: CascadeValueItem[];
 	options: Option[];
 }
 
 interface CascadeValue {
-	[key: string]: { value: string; childValue: string | undefined };
+	[key: string]: CascadeValueItem;
+}
+
+interface CascadeValueItem {
+	value: string;
+	childValue: string | undefined;
 }
 
 const popupContainerStyles = css({ padding: "13px 20px", maxHeight: 500, overflow: "scroll" });
@@ -31,16 +36,16 @@ const findOptionByValue = (options: Option[], value?: string): Option | undefine
 	options.find(o => o.value === value);
 
 export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
-	onValueChange,
-	defaultValue = [],
+	onChange,
+	defaultValues = [],
 	options = [],
 }) => {
 	const [popupVisible, setPopupVisible] = useState(false);
-	const [checkedValues, setCheckedValues] = useState<string[]>(defaultValue);
-	const defaultVisibleMap = defaultValue.reduce(
+	const [checkedValues, setCheckedValues] = useState<string[]>(defaultValues.map(o => o.value));
+	const defaultVisibleMap = defaultValues.reduce(
 		(res, v) => ({
 			...res,
-			[v]: true,
+			[v.value]: true,
 		}),
 		{}
 	);
@@ -103,7 +108,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	};
 
 	useEffect(() => {
-		onValueChange && onValueChange(cascadeValue);
+		onChange && onChange(Object.values(cascadeValue));
 	}, [cascadeValue]);
 
 	const tags = Object.values(cascadeValue);
