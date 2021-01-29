@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import { Typography, Button, DatePicker, Row, Col, Form, Radio } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
@@ -163,6 +163,16 @@ const headerStyles = css({
 const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
 
 export const PageDashboard = () => {
+	const [syncing, setSyncing] = useState(false);
+
+	const startSync = () => {
+		setSyncing(true);
+		setTimeout(() => {
+			setSyncing(false);
+			// window.location.reload();
+		}, 3000);
+	};
+
 	return (
 		<div css={containerStyles}>
 			<div css={headerStyles}>
@@ -171,7 +181,7 @@ export const PageDashboard = () => {
 						4KM
 					</Title>
 					<Text type={"secondary"}>The latest available data end at : 3 Jun, 2020</Text>
-					<Button type="link" icon={<SyncOutlined />}>
+					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={startSync}>
 						Sync Data
 					</Button>
 				</div>
@@ -217,7 +227,9 @@ export const PageDashboard = () => {
 						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item label=" ">
-								<Button htmlType="submit">Apply</Button>
+								<Button htmlType="submit" disabled={syncing}>
+									Apply
+								</Button>
 							</Form.Item>
 						</Col>
 					</Row>
