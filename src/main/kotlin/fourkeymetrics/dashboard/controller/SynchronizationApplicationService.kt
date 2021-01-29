@@ -32,8 +32,8 @@ class SynchronizationApplicationService {
             try {
                 pipelineService.syncBuilds(dashboardId, it.id)
             } catch (e: RuntimeException) {
-                logger.error("Synchronization failed for pipeline [${it.id}], error message: [${e.message}]")
-                throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronization failed")
+                logger.error("Synchronize failed for pipeline [${it.id}], error message: [${e.message}]")
+                throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronize failed")
             }
         }
 
