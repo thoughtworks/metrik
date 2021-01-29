@@ -18,6 +18,7 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 				<Input
 					type={"text"}
 					defaultValue={value}
+					autoFocus
 					onBlur={evt => {
 						const nextValue = evt.target.value || defaultValue;
 
