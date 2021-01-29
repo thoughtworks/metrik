@@ -6,7 +6,9 @@ import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.exception.ApplicationException
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -82,11 +84,7 @@ internal class SynchronizationApplicationServiceTest {
         `when`(dashboardRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
         `when`(jenkins.syncBuilds(dashboardId, pipelineId)).thenThrow(RuntimeException())
 
-        val updateTimestamp = synchronizationApplicationService.synchronize(dashboardId)
-
-        verify(dashboardRepository, never()).updateSynchronizationTime(anyString(), anyLong())
-
-        assertThat(updateTimestamp).isEqualTo(lastSyncTimestamp)
+        assertThrows(ApplicationException::class.java) { synchronizationApplicationService.synchronize(dashboardId) }
     }
 
     @Test

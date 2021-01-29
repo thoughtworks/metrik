@@ -4,15 +4,14 @@ import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.exception.ApplicationException
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
 class SynchronizationApplicationService {
-    companion object {
-        private const val TWO_WEEKS_TIMESTAMP = 14 * 24 * 60 * 60 * 1000L
-    }
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     @Autowired
     private lateinit var pipelineService: PipelineService
@@ -26,21 +25,16 @@ class SynchronizationApplicationService {
             throw ApplicationException(HttpStatus.NOT_FOUND, "Dashboard ID not exist")
         }
 
-        val lastSyncTimestamp = dashboardRepository.getLastSyncRecord(dashboardId)
         val currentTimeMillis = System.currentTimeMillis()
         val pipelines = getPipelines(dashboardId)
 
-        var synchronizeSuccess = true
         pipelines.parallelStream().forEach {
             try {
                 pipelineService.syncBuilds(dashboardId, it.id)
             } catch (e: RuntimeException) {
-                synchronizeSuccess = false
+                logger.error("Synchronization failed for pipeline [${it.id}], error message: [${e.message}]")
+                throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronization failed")
             }
-        }
-
-        if (!synchronizeSuccess) {
-            return lastSyncTimestamp
         }
 
         return dashboardRepository.updateSynchronizationTime(dashboardId, currentTimeMillis)
