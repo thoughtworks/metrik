@@ -12,6 +12,7 @@ import java.math.RoundingMode
 class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     companion object {
+        private val TARGET_STAGE_STATUS_LIST = listOf(StageStatus.FAILED, StageStatus.SUCCESS)
         private const val MILLISECOND_TO_HOURS: Double = 3600000.0
         private const val NO_VALUE: Double = Double.NaN
         private const val ONE_HOUR: Double = 1.00
@@ -27,7 +28,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
-        if (value.isNaN()){
+        if (value.isNaN()) {
             return LEVEL.INVALID
         }
 
@@ -43,19 +44,22 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     private fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
                                    targetStage: String): List<Stage> {
-        val targetStages = allBuilds.flatMap { build -> build.stages }
-            .filter { stage -> stage.name == targetStage }.sortedBy { it.getStageDoneTime() }
+        val targetStages = allBuilds.asSequence()
+            .flatMap { it.stages }
+            .filter { it.name == targetStage }
+            .filter { it.status in TARGET_STAGE_STATUS_LIST }
+            .sortedBy { it.getStageDoneTime() }
 
         val lastSuccessfulDeploymentBeforeGivenTime = targetStages.findLast {
             it.status == StageStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
-        }?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }
+        }?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }.toList()
 
         val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBeforeGivenTime.getStageDoneTime()
 
         return targetStages.filter {
             it.getStageDoneTime() in
                 (lastSuccessfulDeploymentTimestamp.plus(1)).rangeTo(endTimestamp)
-        }
+        }.toList()
     }
 
     private fun calculateMTTR(selectedStages: List<Stage>): Double {
