@@ -6,8 +6,13 @@
         </Property>
     </Properties>
 
-    <Loggers>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+    </Appenders>
 
+    <Loggers>
         <Root level="info">
             <AppenderRef ref="ConsoleAppender"/>
         </Root>
