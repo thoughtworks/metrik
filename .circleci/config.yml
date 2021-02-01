@@ -8,6 +8,8 @@ jobs:
   test_build_push:
     docker:
       - image: circleci/node:14.15.4
+        environment:
+          TZ: "Asia/Shanghai"
     resource_class: medium
 
     steps:
