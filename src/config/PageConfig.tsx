@@ -50,9 +50,13 @@ export const PageConfig = () => {
 	};
 
 	const handleVerify = () => {
-		verifyPipeline().then(() => {
-			setVerifyStatus(VerifyStatus.SUCCESS);
-		});
+		verifyPipeline()
+			.then(() => {
+				setVerifyStatus(VerifyStatus.SUCCESS);
+			})
+			.catch(() => {
+				setVerifyStatus(VerifyStatus.Fail);
+			});
 	};
 
 	const verifyPipeline = () => {
