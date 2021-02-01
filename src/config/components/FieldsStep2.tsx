@@ -85,8 +85,12 @@ export const FieldsStep2: FC<{
 				</Form.Item>
 			</Col>
 		</Row>
-		{verifyStatus === VerifyStatus.SUCCESS && <Alert message="success" type="success" />}
-		{verifyStatus === VerifyStatus.Fail && <Alert message="error" type="error" />}
+		{verifyStatus === VerifyStatus.SUCCESS && (
+			<Alert message="Pipeline verify success" type="success" showIcon />
+		)}
+		{verifyStatus === VerifyStatus.Fail && (
+			<Alert message="Pipeline verify failed" type="error" showIcon />
+		)}
 
 		<Divider />
 		<Row>
