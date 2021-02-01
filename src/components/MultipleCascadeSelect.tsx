@@ -66,18 +66,16 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 		}));
 
 		setCascadeValue(state => ({
-			...checkedValues.reduce(
-				(res: CascadeValue, val: string) => ({
+			...checkedValues.reduce((res: CascadeValue, val: string) => {
+				const childOptions = options.find(o => o.value === val)?.children ?? [];
+				return {
 					...res,
 					[val]: {
 						value: val,
-						childValue:
-							state[val]?.childValue ||
-							(options.find(o => o.value === val)?.children ?? [])[0].value,
+						childValue: state[val]?.childValue || childOptions[childOptions.length - 1].value,
 					},
-				}),
-				{}
-			),
+				};
+			}, {}),
 		}));
 	}, [checkedValues]);
 
