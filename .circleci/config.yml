@@ -8,6 +8,8 @@ jobs:
   test_build_push:
     docker:
       - image: circleci/openjdk:11.0.8-jdk
+        environment:
+          TZ: "Asia/Shanghai"
     resource_class: medium
 
     steps:
