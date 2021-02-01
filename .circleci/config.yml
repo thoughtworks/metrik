@@ -83,7 +83,7 @@ jobs:
           name: Login and deploy artifacts to DEV
           command: |
             ssh ${SSH_USER}@${SSH_HOST_DEV} -p${SSH_PORT_DEV} "
-              CONTAINER_NAME=4km-service-dev
+              CONTAINER_NAME=4km-service
               CURRENT_CONTAINER_ID=\$(docker ps -aqf name=\$CONTAINER_NAME)
 
               if [ ! -z \$CURRENT_CONTAINER_ID ]; then
