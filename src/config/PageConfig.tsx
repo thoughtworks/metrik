@@ -49,16 +49,6 @@ export const PageConfig = () => {
 		setCurrentStep(currentStep - 1);
 	};
 
-	const handleVerify = () => {
-		verifyPipeline()
-			.then(() => {
-				setVerifyStatus(VerifyStatus.SUCCESS);
-			})
-			.catch(() => {
-				setVerifyStatus(VerifyStatus.Fail);
-			});
-	};
-
 	const verifyPipeline = () => {
 		const { credential, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
 		return verifyPipelineUsingPost({
@@ -68,7 +58,14 @@ export const PageConfig = () => {
 				username,
 				type: pipelineTool,
 			},
-		});
+		})
+			.then(() => {
+				setVerifyStatus(VerifyStatus.SUCCESS);
+			})
+			.catch(error => {
+				setVerifyStatus(VerifyStatus.Fail);
+				throw new Error(error);
+			});
 	};
 
 	return (
@@ -113,7 +110,7 @@ export const PageConfig = () => {
 											formValues={formValues}
 											visible={currentStep === ConfigStep.CONFIG_PIPELINE}
 											verifyStatus={verifyStatus}
-											onVerify={handleVerify}
+											onVerify={verifyPipeline}
 										/>
 									</>
 								)}
