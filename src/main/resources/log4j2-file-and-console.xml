@@ -14,14 +14,14 @@
 
         <!-- Rolling File Appender -->
         <RollingFile name="FileAppender"
-                     fileName="logs/4km-service.log"
-                     filePattern="logs/4km-service-%d{yyyy-MM-dd}-%i.log">
+                     fileName="logs/4km-service-logs/4km-service.log"
+                     filePattern="logs/4km-service-logs/4km-service-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
-                <TimeBasedTriggeringPolicy interval="1"/>
-<!--                <SizeBasedTriggeringPolicy size="10MB"/>-->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="50MB"/>
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
