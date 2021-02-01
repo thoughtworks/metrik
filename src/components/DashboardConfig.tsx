@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
-import { PipelineConfiguration } from "../clients/apis";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { formatLastUpdateTime } from "../utils/timeFormats";
+import { PipelineConfiguration } from "../config/components/ConfigSuccess";
 
 const { Column } = Table;
 

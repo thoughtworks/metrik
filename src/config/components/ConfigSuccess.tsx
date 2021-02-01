@@ -2,22 +2,31 @@ import { Button } from "antd";
 import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
-import { PipelineConfiguration } from "../../clients/apis";
 import { Link } from "react-router-dom";
+
+export interface PipelineConfiguration {
+	id: string;
+	name: string;
+	lastUpdateTime: number;
+	username?: string;
+	credential?: string;
+	type: string;
+	url: string;
+}
 
 const dataSource: PipelineConfiguration[] = [
 	{
 		id: "1",
 		name: "4km-DEV",
 		lastUpdateTime: 1611629036125,
-		type: "Jenkins",
+		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
 	},
 	{
 		id: "2",
 		name: "4km-UAT",
 		lastUpdateTime: 1611629036125,
-		type: "Bamboo",
+		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
 	},
 
@@ -25,7 +34,7 @@ const dataSource: PipelineConfiguration[] = [
 		id: "3",
 		name: "4km-PROD",
 		lastUpdateTime: 1611629036125,
-		type: "Git",
+		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
 	},
 ];

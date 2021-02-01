@@ -4,7 +4,7 @@ import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { pipelineVerify, postPipelineConfig } from "../clients/apis";
+import { verifyPipelineUsingPost, createDashboardUsingPost } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -26,14 +26,16 @@ export const PageConfig = () => {
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
 	const onFinish = async (values: ConfigFormValues) => {
 		await verifyPipeline();
-		await postPipelineConfig({
-			dashboardName: values.dashboardName,
-			pipeline: {
-				name: values.pipelineName,
-				url: values.pipelineDomain,
-				username: values.username,
-				credential: values.credential,
-				type: values.pipelineTool,
+		await createDashboardUsingPost({
+			requestBody: {
+				dashboardName: values.dashboardName,
+				pipelineRequest: {
+					name: values.pipelineName,
+					url: values.pipelineDomain,
+					username: values.username,
+					credential: values.credential,
+					type: values.pipelineTool,
+				},
 			},
 		});
 		toNextStep();
@@ -55,11 +57,13 @@ export const PageConfig = () => {
 
 	const verifyPipeline = () => {
 		const { credential, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
-		return pipelineVerify({
-			url: pipelineDomain,
-			credential,
-			username,
-			type: pipelineTool,
+		return verifyPipelineUsingPost({
+			requestBody: {
+				url: pipelineDomain,
+				credential,
+				username,
+				type: pipelineTool,
+			},
 		});
 	};
 
