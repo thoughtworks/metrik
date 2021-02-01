@@ -21,18 +21,24 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
-                                endTimestamp: Long, targetStage: String): Double {
+                                endTimestamp: Long, targetStage: String): Number {
         val selectedStages = findSelectedStages(allBuilds, startTimestamp, endTimestamp, targetStage)
 
         return calculateMTTR(selectedStages)
     }
 
-    override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
-        if (value.isNaN()) {
+    override fun calculateLevel(value: Number, unit: MetricsUnit?): LEVEL {
+        val meanTimeToRestore = value.toDouble()
+
+        if (meanTimeToRestore.isNaN()) {
             return LEVEL.INVALID
         }
 
-        val hours = value.div(MILLISECOND_TO_HOURS).toBigDecimal().setScale(2, RoundingMode.HALF_UP).toDouble()
+        val hours = meanTimeToRestore
+            .div(MILLISECOND_TO_HOURS)
+            .toBigDecimal()
+            .setScale(2, RoundingMode.HALF_UP)
+            .toDouble()
 
         return when {
             hours < ONE_HOUR -> LEVEL.ELITE

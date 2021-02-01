@@ -75,7 +75,7 @@ class ChangeFailureRateCalculatorTest {
                 endTimestamp,
                 targetStage
             )
-        ).isNaN
+        ).isEqualTo(Double.NaN)
     }
 
     @Test

@@ -9,12 +9,12 @@ enum class LEVEL {
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Metrics(
-    val value: Double,
+    val value: Number,
     val level: LEVEL?,
     val startTimestamp: Long,
     val endTimestamp: Long
 ) {
-    constructor(value: Double, startTimestamp: Long, endTimestamp: Long) : this(
+    constructor(value: Number, startTimestamp: Long, endTimestamp: Long) : this(
         value,
         null,
         startTimestamp,

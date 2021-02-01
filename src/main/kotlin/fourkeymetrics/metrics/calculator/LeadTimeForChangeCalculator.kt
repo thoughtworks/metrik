@@ -16,8 +16,8 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-            allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
-    ): Double {
+        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
+    ): Number {
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
@@ -41,8 +41,8 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         return calculateMLT(buildsInScope, targetStage)
     }
 
-    override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
-        val days: Double = value / MILLI_SECONDS_FOR_ONE_DAY
+    override fun calculateLevel(value: Number, unit: MetricsUnit?): LEVEL {
+        val days: Double = value.toDouble() / MILLI_SECONDS_FOR_ONE_DAY
 
         return when {
             days >= 30 -> {

@@ -18,11 +18,11 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-            allBuilds: List<Build>,
-            startTimestamp: Long,
-            endTimestamp: Long,
-            targetStage: String
-    ): Double {
+        allBuilds: List<Build>,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String
+    ): Number {
         val statusCountMap = allBuilds.asSequence()
             .flatMap {
                 it.stages.asSequence()
@@ -43,12 +43,13 @@ class ChangeFailureRateCalculator : MetricsCalculator {
         }
     }
 
-    override fun calculateLevel(value: Double, unit: MetricsUnit?): LEVEL {
+    override fun calculateLevel(value: Number, unit: MetricsUnit?): LEVEL {
+        val changeFailureRate = value.toDouble()
         return when {
-            value < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE
-            LEVEL_ELITE_UPPER_LIMIT <= value && value < LEVEL_HIGH_UPPER_LIMIT -> LEVEL.HIGH
-            LEVEL_HIGH_UPPER_LIMIT <= value && value < LEVEL_MEDIUM_UPPER_LIMIT -> LEVEL.MEDIUM
-            LEVEL_MEDIUM_UPPER_LIMIT <= value -> LEVEL.LOW
+            changeFailureRate < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE
+            LEVEL_ELITE_UPPER_LIMIT <= changeFailureRate && changeFailureRate < LEVEL_HIGH_UPPER_LIMIT -> LEVEL.HIGH
+            LEVEL_HIGH_UPPER_LIMIT <= changeFailureRate && changeFailureRate < LEVEL_MEDIUM_UPPER_LIMIT -> LEVEL.MEDIUM
+            LEVEL_MEDIUM_UPPER_LIMIT <= changeFailureRate -> LEVEL.LOW
             else -> LEVEL.INVALID
         }
     }
