@@ -1,5 +1,6 @@
 package fourkeymetrics.dashboard.controller
 
+import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
@@ -25,10 +26,15 @@ class DashboardApplicationService {
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
-    fun createDashboard(dashboardName: String): Dashboard {
+    fun createDashboard(dashboardRequest: DashboardRequest): Dashboard {
+        val dashboardName = dashboardRequest.dashboardName
         val dashboards = dashboardRepository.getDashBoardDetailByName(dashboardName)
         return if (dashboards.isEmpty()) {
-            dashboardRepository.save(Dashboard(name = dashboardName, id = ObjectId().toString()))
+            val pipelines = with(dashboardRequest.pipelineRequest) {
+                listOf(Pipeline(ObjectId().toString(), name, username, credential, url, type))
+            }
+            val dashboard = Dashboard(name = dashboardName, id = ObjectId().toString(), pipelines = pipelines)
+            dashboardRepository.save(dashboard)
         } else throw ApplicationException(HttpStatus.FORBIDDEN, "Dashboard [name=$dashboardName] already existing")
     }
 
@@ -36,6 +42,10 @@ class DashboardApplicationService {
         val dashboard = getDashboard(dashboardId)
         dashboard.name = dashboardName
         return dashboardRepository.save(dashboard)
+    }
+
+    fun getDashboards(): List<Dashboard> {
+        return dashboardRepository.getDashboards()
     }
 
     fun deleteDashboard(dashboardId: String) {

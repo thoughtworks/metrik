@@ -1,5 +1,6 @@
 package fourkeymetrics.dashboard.controller
 
+import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
@@ -24,14 +25,20 @@ class DashboardController {
     private lateinit var dashboardApplicationService: DashboardApplicationService
 
     @PostMapping("/dashboard")
-    fun createDashboard(@RequestBody dashboardName: String): Dashboard {
-        return dashboardApplicationService.createDashboard(dashboardName)
+    fun createDashboard(@RequestBody dashboardRequest: DashboardRequest): Dashboard {
+        return dashboardApplicationService.createDashboard(dashboardRequest)
     }
 
     @PutMapping("/dashboard/{dashboardId}")
     @ResponseStatus(HttpStatus.OK)
     fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody dashboardName: String): Dashboard {
         return dashboardApplicationService.updateDashboardName(dashboardId, dashboardName)
+    }
+
+    @GetMapping("/dashboard")
+    @ResponseStatus(HttpStatus.OK)
+    fun getDashboards(): List<Dashboard> {
+        return dashboardApplicationService.getDashboards()
     }
 
     @DeleteMapping("/dashboard/{dashboardId}")
