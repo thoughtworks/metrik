@@ -14,6 +14,7 @@ module.exports = {
 		"!./src/clients/*",
 		"!**/*.d.ts",
 		"!./src/constants/*",
+		"!./src/hooks/*",
 	],
 	coverageReporters: ["html", "text", "cobertura"],
 	coverageThreshold: {

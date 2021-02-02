@@ -1,126 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import { Typography, Button, DatePicker, Row, Col, Form, Radio } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../constants/date-format";
-import { MultipleCascadeSelect } from "../components/MultipleCascadeSelect";
+import { MultipleCascadeSelect, Option } from "../components/MultipleCascadeSelect";
 import { EditableText } from "../components/EditableText";
+import { useQuery } from "../hooks/useQuery";
+import {
+	updateDashboardNameUsingPut,
+	getLastSynchronizationUsingGet,
+	updateBuildsUsingPost,
+	getPipelineStagesUsingGet,
+	PipelineStagesResponse,
+} from "../clients/apis";
+import { formatLastUpdateTime } from "../utils/timeFormats";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
-
-const options = [
-	{
-		label: "AABBBBBBBBBB CCCCCC",
-		value: "a",
-		children: [
-			{
-				label: "A1",
-				value: "a1",
-			},
-			{
-				label: "A2",
-				value: "a2",
-			},
-			{
-				label: "A3",
-				value: "a3",
-			},
-		],
-	},
-	{
-		label: "BB",
-		value: "b",
-		children: [
-			{
-				label: "B1",
-				value: "b1",
-			},
-			{
-				label: "B2",
-				value: "b2",
-			},
-			{
-				label: "B3",
-				value: "b3",
-			},
-		],
-	},
-	{
-		label: "CC",
-		value: "c",
-		children: [
-			{
-				label: "C1",
-				value: "c1",
-			},
-			{
-				label: "C2",
-				value: "c2",
-			},
-			{
-				label: "C3",
-				value: "c3",
-			},
-		],
-	},
-	{
-		label: "8888",
-		value: "d",
-		children: [
-			{
-				label: "A1",
-				value: "a1",
-			},
-			{
-				label: "A2",
-				value: "a2",
-			},
-			{
-				label: "A3",
-				value: "a3",
-			},
-		],
-	},
-	{
-		label: "009890",
-		value: "e",
-		children: [
-			{
-				label: "B1",
-				value: "b1",
-			},
-			{
-				label: "B2",
-				value: "b2",
-			},
-			{
-				label: "B3",
-				value: "b3",
-			},
-		],
-	},
-	{
-		label: "CC11111",
-		value: "f",
-		children: [
-			{
-				label: "C1",
-				value: "c1",
-			},
-			{
-				label: "C2",
-				value: "c2",
-			},
-			{
-				label: "C3",
-				value: "c3",
-			},
-		],
-	},
-];
 
 const containerStyles = css({
 	padding: "29px 32px",
@@ -165,27 +63,56 @@ const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
 
 export const PageDashboard = () => {
 	const [syncing, setSyncing] = useState(false);
+	const query = useQuery();
+	const dashboardId = query.get("dashboardId") || "";
+	const [lastModifyDateTime, setLastModifyDateTime] = useState("");
+	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
 
-	const startSync = () => {
+	const syncBuilds = () => {
 		setSyncing(true);
-		setTimeout(() => {
-			setSyncing(false);
-			// window.location.reload();
-		}, 3000);
+		updateBuildsUsingPost({
+			dashboardId,
+		})
+			.then(() => {
+				window.location.reload();
+			})
+			.finally(() => {
+				setSyncing(false);
+			});
 	};
+
+	const updateDashboardName = (name: string) =>
+		updateDashboardNameUsingPut({
+			dashboardId,
+			requestBody: name,
+		});
+
+	useEffect(() => {
+		getLastSynchronizationUsingGet({ dashboardId }).then((resp: any) => {
+			setLastModifyDateTime(formatLastUpdateTime(resp.data.synchronizationTimestamp));
+			return resp;
+		});
+		getPipelineStagesUsingGet({ dashboardId }).then((resp: any) => {
+			setPipelineStages(
+				resp.data.map((v: PipelineStagesResponse) => ({
+					label: v.pipelineName,
+					value: v.pipelineName, // TODO: set pipelineId later
+					children: v.stages.map((stageName: string) => ({
+						label: stageName,
+						value: stageName,
+					})),
+				}))
+			);
+		});
+	}, []);
 
 	return (
 		<div css={containerStyles}>
 			<div css={headerStyles}>
 				<div>
-					<EditableText
-						defaultValue={"4KM"}
-						onEditDone={value => {
-							console.log(value, "value");
-						}}
-					/>
-					<Text type={"secondary"}>The latest available data end at : 3 Jun, 2020</Text>
-					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={startSync}>
+					<EditableText defaultValue={"4KM"} onEditDone={updateDashboardName} />
+					<Text type={"secondary"}>The latest available data end at : {lastModifyDateTime}</Text>
+					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing...." : "Sync Data"}
 					</Button>
 				</div>
@@ -224,8 +151,17 @@ export const PageDashboard = () => {
 						<Col span={10}>
 							<Form.Item label="Pipelines" name="pipelines">
 								<MultipleCascadeSelect
-									options={options}
-									defaultValues={[{ value: "a", childValue: "a1" }]}
+									options={pipelineStages}
+									defaultValues={
+										pipelineStages.length > 0
+											? [
+													{
+														value: pipelineStages[0]?.value,
+														childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
+													},
+											  ]
+											: []
+									}
 								/>
 							</Form.Item>
 						</Col>

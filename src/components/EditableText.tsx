@@ -16,6 +16,7 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 		<div css={{ height: 45 }}>
 			{editable ? (
 				<Input
+					css={{ cursor: "pointer" }}
 					type={"text"}
 					defaultValue={value}
 					autoFocus
@@ -32,7 +33,8 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 				<span
 					onDoubleClick={() => {
 						setEditable(true);
-					}}>
+					}}
+					css={{ cursor: "pointer" }}>
 					<Title level={2} style={{ marginBottom: 0 }}>
 						{value}
 					</Title>

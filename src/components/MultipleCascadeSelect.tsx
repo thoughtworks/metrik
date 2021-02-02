@@ -9,7 +9,7 @@ import Overflow from "rc-overflow";
 
 const { Text } = Typography;
 
-interface Option {
+export interface Option {
 	label: string;
 	value: string;
 	children?: Option[];
@@ -30,7 +30,12 @@ interface CascadeValueItem {
 	childValue: string | undefined;
 }
 
-const popupContainerStyles = css({ padding: "13px 20px", maxHeight: 500, overflow: "scroll" });
+const popupContainerStyles = css({
+	padding: "13px 20px",
+	minWidth: 350,
+	maxHeight: 500,
+	overflow: "scroll",
+});
 
 const findOptionByValue = (options: Option[], value?: string): Option | undefined =>
 	options.find(o => o.value === value);
@@ -72,7 +77,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					...res,
 					[val]: {
 						value: val,
-						childValue: state[val]?.childValue || childOptions[childOptions.length - 1].value,
+						childValue: state[val]?.childValue || childOptions[childOptions.length - 1]?.value,
 					},
 				};
 			}, {}),
