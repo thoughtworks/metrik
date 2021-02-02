@@ -21,6 +21,11 @@ class BuildRepository {
         return mongoTemplate.find(query, collectionName)
     }
 
+    fun getAllBuilds(pipelineIds: Collection<String>): List<Build> {
+        val query = Query.query(Criteria.where("pipelineId").`in`(pipelineIds))
+        return mongoTemplate.find(query, collectionName)
+    }
+
     fun save(builds: List<Build>) {
         builds.parallelStream().forEach {
             val query = Query()

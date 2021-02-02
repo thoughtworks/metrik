@@ -117,4 +117,16 @@ class BuildRepositoryTest {
         assertThat(builds.first().pipelineId).isEqualTo(pipelineId2)
         assertThat(builds).hasSize(1)
     }
+
+    @Test
+    internal fun `should get all builds for multiple pipeline`() {
+        val pipelineIds = listOf("1", "2")
+        val collectionName = "build"
+
+        val buildsToSave: List<Build> = listOf(Build(pipelineId = "1"), Build(pipelineId = "2"))
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertThat(buildRepository.getAllBuilds(pipelineIds)).hasSize(2)
+    }
 }

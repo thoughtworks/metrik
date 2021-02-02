@@ -24,8 +24,9 @@ internal class MetricsControllerTest {
 
     @Test
     internal fun `should return metrics response when call api`() {
-        val pipelineId = "test pipeline Id"
-        val targetStage = "Deploy to UAT"
+        val pipelineA = "pipelineA:stageA"
+        val pipelineB = "pipelineB:stageB"
+        val pipelines = "$pipelineA,$pipelineB"
         val startTime = 1609459200000L
         val endTime = 1611964800000L
         val metricUnit = MetricsUnit.Fortnightly
@@ -43,18 +44,16 @@ internal class MetricsControllerTest {
         )
         `when`(
             metricsApplicationService.retrieve4KeyMetrics(
-                pipelineId,
-                targetStage,
+                listOf(pipelineA, pipelineB),
                 startTime,
                 endTime,
-                metricUnit
+                metricUnit,
             )
         ).thenReturn(expectedResponse)
 
         mockMvc.perform(
             get("/api/pipeline/metrics")
-                .param("pipelineId", pipelineId)
-                .param("targetStage", targetStage)
+                .param("pipelineStages", pipelines)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString())
                 .param("unit", metricUnit.toString())
