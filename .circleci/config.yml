@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: alpine:3.7
-      resource_class: small
+    resource_class: small
     steps:
       - run:
           name: The First Step
