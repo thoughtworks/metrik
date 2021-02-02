@@ -4,7 +4,6 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
-import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
 import java.math.RoundingMode
 
@@ -27,7 +26,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         return calculateMTTR(selectedStages)
     }
 
-    override fun calculateLevel(value: Number, unit: MetricsUnit?): LEVEL {
+    override fun calculateLevel(value: Number, days: Int?): LEVEL {
         val meanTimeToRestore = value.toDouble()
 
         if (meanTimeToRestore.isNaN()) {

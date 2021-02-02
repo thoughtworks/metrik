@@ -314,7 +314,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is low when MLT value is greater than 30 days`() {
         val mltValue: Double = 31 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.LOW, level)
     }
@@ -323,7 +323,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is low when MLT value is equals to 30 days`() {
         val mltValue: Double = 30 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.LOW, level)
     }
@@ -332,7 +332,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is medium when MLT value is less than 30 days and greater than 7 days`() {
         val mltValue: Double = 20 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.MEDIUM, level)
     }
@@ -341,7 +341,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is medium when MLT value is equals to 7 days`() {
         val mltValue: Double = 7 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.MEDIUM, level)
     }
@@ -350,7 +350,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is high when MLT value is less than 7 days and greater than 1 day`() {
         val mltValue: Double = 5 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.HIGH, level)
     }
@@ -359,7 +359,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is high when MLT value is equals to 1 day`() {
         val mltValue: Double = 1 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.HIGH, level)
     }
@@ -368,7 +368,7 @@ internal class LeadTimeForChangeCalculatorTest {
     internal fun `should return level is elite when MLT value is less than 1 day`() {
         val mltValue: Double = 0.5 * milliSecondsForOneDay
 
-        val level = leadTimeForChangeCalculator.calculateLevel(mltValue, MetricsUnit.Fortnightly)
+        val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
 
         assertEquals(LEVEL.ELITE, level)
     }

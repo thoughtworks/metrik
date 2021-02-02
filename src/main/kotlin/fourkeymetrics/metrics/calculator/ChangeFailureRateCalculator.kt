@@ -3,7 +3,6 @@ package fourkeymetrics.metrics.calculator
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
-import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.stereotype.Component
 
 @Component
@@ -43,7 +42,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
         }
     }
 
-    override fun calculateLevel(value: Number, unit: MetricsUnit?): LEVEL {
+    override fun calculateLevel(value: Number, days: Int?): LEVEL {
         val changeFailureRate = value.toDouble()
         return when {
             changeFailureRate < LEVEL_ELITE_UPPER_LIMIT -> LEVEL.ELITE

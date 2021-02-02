@@ -36,6 +36,7 @@ internal class MetricsControllerTest {
         val summary = Metrics(value, level, startTime, endTime)
         val metrics = MetricsInfo(summary, listOf(metric, metric))
         val expectedResponse = FourKeyMetricsResponse(
+           deploymentFrequency = metrics,
             leadTimeForChange = metrics,
             changeFailureRate = metrics,
             meanTimeToRestore = metrics

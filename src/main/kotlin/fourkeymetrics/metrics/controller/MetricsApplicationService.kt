@@ -8,14 +8,29 @@ import fourkeymetrics.metrics.calculator.MetricsCalculator
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.metrics.calculator.DeploymentFrequencyCalculator
 import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class MetricsApplicationService {
+
+
+    companion object {
+        private const val FORTNIGHT_DURATION: Int = 14
+        private const val MONTH_DURATION: Int = 30
+    }
+
+
+    @Autowired
+    private lateinit var deploymentFrequencyCalculator: DeploymentFrequencyCalculator
 
     @Autowired
     private lateinit var changeFailureRateCalculator: ChangeFailureRateCalculator
@@ -44,6 +59,15 @@ class MetricsApplicationService {
         val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
 
         return FourKeyMetricsResponse(
+            generateDeployFrequencyMetrics(
+                allBuilds,
+                startTimestamp,
+                endTimestamp,
+                targetStage,
+                timeRangeByUnit,
+                unit,
+                deploymentFrequencyCalculator,
+            ),
             generateMetrics(
                 allBuilds,
                 startTimestamp,
@@ -81,18 +105,18 @@ class MetricsApplicationService {
     }
 
     private fun generateMetrics(
-            allBuilds: List<Build>,
-            startTimeMillis: Long,
-            endTimeMillis: Long,
-            targetStage: String,
-            timeRangeByUnit: List<Pair<Long, Long>>,
-            unit: MetricsUnit,
-            calculator: MetricsCalculator
+        allBuilds: List<Build>,
+        startTimeMillis: Long,
+        endTimeMillis: Long,
+        targetStage: String,
+        timeRangeByUnit: List<Pair<Long, Long>>,
+        unit: MetricsUnit,
+        calculator: MetricsCalculator
     ): MetricsInfo {
         val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
         val summary = Metrics(
             valueForWholeRange,
-            calculator.calculateLevel(valueForWholeRange, unit),
+            calculator.calculateLevel(valueForWholeRange),
             startTimeMillis,
             endTimeMillis
         )
@@ -103,5 +127,44 @@ class MetricsApplicationService {
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)
+    }
+
+    private fun generateDeployFrequencyMetrics(
+        allBuilds: List<Build>,
+        startTimeMillis: Long,
+        endTimeMillis: Long,
+        targetStage: String,
+        timeRangeByUnit: List<Pair<Long, Long>>,
+        unit: MetricsUnit,
+        calculator: DeploymentFrequencyCalculator
+    ): MetricsInfo {
+        val days = getDuration(startTimeMillis, endTimeMillis)
+        val deploymentCount = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis,
+            targetStage)
+        val factor = if (unit == MetricsUnit.Fortnightly) FORTNIGHT_DURATION else MONTH_DURATION
+
+        val deploymentCountPerUnit = deploymentCount.toDouble().div(days).times(factor)
+
+        val summary = Metrics(
+            deploymentCountPerUnit,
+            calculator.calculateLevel(deploymentCount, days),
+            startTimeMillis,
+            endTimeMillis
+        )
+        val details = timeRangeByUnit
+            .map {
+                val valueForUnitRange =
+                    calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
+                Metrics(valueForUnitRange, it.first, it.second)
+            }
+        return MetricsInfo(summary, details)
+    }
+
+    private fun getDuration(startTimestamp: Long, endTimestamp: Long): Int {
+        val getTimeZone = TimeZone.getDefault().toZoneId()
+        val startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTimestamp), getTimeZone)
+        val endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(endTimestamp), getTimeZone)
+
+        return Duration.between(startDateTime, endDateTime).toDays().toInt()+1
     }
 }
