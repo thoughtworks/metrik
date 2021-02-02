@@ -9,14 +9,14 @@
     "stages": [
       {
         "status": "SUCCESS",
-        "name": "4km-DEV",
+        "name": "build",
         "startTimeMillis": 1609459300000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
-        "name": "4km-UAT",
+        "name": "Deploy to prod",
         "startTimeMillis": 1609459400000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0
@@ -41,14 +41,46 @@
     "stages": [
       {
         "status": "SUCCESS",
-        "name": "4km-DEV",
+        "name": "build",
         "startTimeMillis": 1609459300000,
         "durationMillis": 1000,
         "pauseDurationMillis": 0
       },
       {
         "status": "SUCCESS",
-        "name": "4km-PROD",
+        "name": "deploy to uat",
+        "startTimeMillis": 1609459400000,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 1609459200000,
+        "date": "2021-01-01 00:00:00 +0800"
+      }
+    ]
+  },
+  {
+    "pipelineId": "1",
+    "number": 3,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609459200000,
+    "url": "http://localhost:8001/job/4km-backend/1/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609459300000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
         "startTimeMillis": 1609459400000,
         "durationMillis": 2000,
         "pauseDurationMillis": 0

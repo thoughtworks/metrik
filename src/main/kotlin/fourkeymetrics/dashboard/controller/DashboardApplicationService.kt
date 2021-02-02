@@ -16,6 +16,7 @@ import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import kotlin.streams.toList
 
 @SuppressWarnings("TooManyFunctions")
 @Service
@@ -91,7 +92,9 @@ class DashboardApplicationService {
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
         val dashboard = getDashboard(dashboardId)
 
-        return jenkinsPipelineService.getPipelineStages(dashboard.id)
+        return dashboardRepository.getPipelinesByDashboardId(dashboard.id).parallelStream().map {
+            PipelineStagesResponse(it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
+        }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
     }
 
     private fun verifyPipeline(url: String, username: String, credential: String, type: PipelineType) {
