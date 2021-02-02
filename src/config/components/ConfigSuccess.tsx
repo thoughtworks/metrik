@@ -3,39 +3,33 @@ import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
+import { Pipeline } from "../../clients/apis";
 
-export interface PipelineConfiguration {
-	id: string;
-	name: string;
-	lastUpdateTime: number;
-	username?: string;
-	credential?: string;
-	type: string;
-	url: string;
-}
-
-const dataSource: PipelineConfiguration[] = [
+const dataSource: Pipeline[] = [
 	{
 		id: "1",
 		name: "4km-DEV",
-		lastUpdateTime: 1611629036125,
 		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
+		username: "",
+		credential: "",
 	},
 	{
 		id: "2",
 		name: "4km-UAT",
-		lastUpdateTime: 1611629036125,
 		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
+		username: "",
+		credential: "",
 	},
 
 	{
 		id: "3",
 		name: "4km-PROD",
-		lastUpdateTime: 1611629036125,
 		type: "JENKINS",
 		url: "http://18.138.19.85:8001/job/4km-desk-check/",
+		username: "",
+		credential: "",
 	},
 ];
 
@@ -69,7 +63,7 @@ const ConfigSuccess: FC = () => {
 					</Button>
 				</Link>
 			</div>
-			<DashboardConfig pipelineConfigurations={dataSource} />
+			<DashboardConfig pipelines={dataSource} />
 		</div>
 	);
 };

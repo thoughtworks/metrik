@@ -1,18 +1,17 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
-import { formatLastUpdateTime } from "../utils/timeFormats";
-import { PipelineConfiguration } from "../config/components/ConfigSuccess";
+import { Pipeline } from "../clients/apis";
 
 const { Column } = Table;
 
 interface DashboardConfigurationProps {
-	pipelineConfigurations: PipelineConfiguration[];
+	pipelines: Pipeline[];
 }
 
-const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfigurations }) => {
+const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelines }) => {
 	return (
-		<Table<PipelineConfiguration>
+		<Table<Pipeline>
 			css={{
 				minHeight: 350,
 				".ant-table-cell": { borderBottom: "none" },
@@ -22,7 +21,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfiguratio
 			}}
 			pagination={false}
 			rowKey={"id"}
-			dataSource={pipelineConfigurations}
+			dataSource={pipelines}
 			expandable={{
 				columnWidth: "5%",
 				expandedRowRender: ToolConfig,
@@ -33,30 +32,19 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelineConfiguratio
 						<RightOutlined onClick={e => onExpand(record, e)} />
 					),
 			}}>
-			<Column<PipelineConfiguration> width={"20%"} title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<PipelineConfiguration> width={"25%"} title={"Tool"} dataIndex={"type"} />
-			<Column<PipelineConfiguration>
-				width={"25%"}
-				title={"Last update time"}
-				dataIndex={"lastUpdateTime"}
-				render={value => formatLastUpdateTime(value)}
-			/>
-			<Column<PipelineConfiguration>
-				width={"25%"}
+			<Column<Pipeline> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<Pipeline> width={"35%"} title={"Tool"} dataIndex={"type"} />
+			<Column<Pipeline>
+				width={"35%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-						Actions <Button type={"link"}>+Add Project</Button>
+						Actions <Button type={"link"}>+Add Pipeline</Button>
 					</div>
 				)}
 				render={() => (
-					<div>
-						<Button type={"link"} css={{ padding: "4px 4px 4px 0" }}>
-							Duplicate
-						</Button>
-						<Button type={"link"} css={{ padding: 4 }}>
-							Config
-						</Button>
-					</div>
+					<Button type={"link"} css={{ padding: 4 }}>
+						Config
+					</Button>
 				)}
 			/>
 		</Table>
@@ -70,8 +58,8 @@ interface ToolConfig {
 	url: string;
 }
 
-const ToolConfig = (config: PipelineConfiguration) => {
-	const convertConfig = (config: PipelineConfiguration): ToolConfig[] => {
+const ToolConfig = (config: Pipeline) => {
+	const convertConfig = (config: Pipeline): ToolConfig[] => {
 		return [{ id: config.id, type: "Pipelines", tool: config.type, url: config.url }];
 	};
 	const data = convertConfig(config);
@@ -90,8 +78,8 @@ const ToolConfig = (config: PipelineConfiguration) => {
 			pagination={false}
 			rowKey={"id"}
 			dataSource={data}>
-			<Column<ToolConfig> width={"20%"} title={"Type"} dataIndex={"type"} />
-			<Column<ToolConfig> width={"27%"} title={"Tool"} dataIndex={"tool"} />
+			<Column<ToolConfig> width={"26%"} title={"Type"} dataIndex={"type"} />
+			<Column<ToolConfig> width={"26%"} title={"Tool"} dataIndex={"tool"} />
 			<Column<ToolConfig> title={"URL"} dataIndex={"url"} />
 		</Table>
 	);

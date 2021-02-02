@@ -23,7 +23,7 @@ interface ConfigFormValues {
 export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
+	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CONFIG_SUCCESS);
 	const onFinish = async (values: ConfigFormValues) => {
 		await verifyPipeline();
 		await createDashboardUsingPost({
