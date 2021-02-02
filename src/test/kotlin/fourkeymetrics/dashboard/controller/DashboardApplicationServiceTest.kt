@@ -86,9 +86,9 @@ class DashboardApplicationServiceTest {
         val actualPipelineStages = dashboardApplicationService.getPipelineStages(dashboardId)
 
         val expectedPipelineStages = listOf(
-            PipelineStagesResponse("am", stages),
-            PipelineStagesResponse("Km", stages),
-            PipelineStagesResponse("km", stages)
+            PipelineStagesResponse("3", "am", stages),
+            PipelineStagesResponse("2","Km", stages),
+            PipelineStagesResponse("1","km", stages)
         )
         assertEquals(expectedPipelineStages, actualPipelineStages)
     }

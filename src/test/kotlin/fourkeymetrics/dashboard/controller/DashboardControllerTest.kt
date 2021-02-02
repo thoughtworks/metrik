@@ -81,13 +81,14 @@ class DashboardControllerTest {
     internal fun `should return pipeline stages when call pipeline stage api`() {
         val dashboardId = "1"
         val expectedPipelineStages = listOf(
-            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
-            PipelineStagesResponse("5km", listOf("5km-DEV", "5km-QA", "5km-UAT"))
+            PipelineStagesResponse("1", "4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
+            PipelineStagesResponse("2", "5km", listOf("5km-DEV", "5km-QA", "5km-UAT"))
         )
         `when`(dashboardApplicationService.getPipelineStages(dashboardId)).thenReturn(expectedPipelineStages)
 
         mockMvc.perform(get("/api/dashboard/${dashboardId}/stage"))
             .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].pipelineId").value("1"))
             .andExpect(jsonPath("$[0].pipelineName").value("4km"))
             .andExpect(jsonPath("$[0].stages.length()").value(3))
             .andExpect(jsonPath("$[0].stages[0]").value("4km-DEV"))

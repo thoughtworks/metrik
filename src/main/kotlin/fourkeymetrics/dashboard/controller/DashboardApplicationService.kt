@@ -93,7 +93,7 @@ class DashboardApplicationService {
         val dashboard = getDashboard(dashboardId)
 
         return dashboardRepository.getPipelinesByDashboardId(dashboard.id).parallelStream().map {
-            PipelineStagesResponse(it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
+            PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id),)
         }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
     }
 
