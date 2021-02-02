@@ -7,7 +7,7 @@ export const createRequest = <TReq, TResp = any>(
 	_: string,
 	getConfig: (request: TReq) => AxiosRequestConfig
 ) => {
-	const createFn = (request: TReq) => axiosInstance.request(getConfig(request));
+	const createFn = (request: TReq) => axiosInstance.request<TResp, TResp>(getConfig(request));
 
 	Object.assign(createFn, { TResp: {} as TResp });
 
@@ -15,7 +15,7 @@ export const createRequest = <TReq, TResp = any>(
 };
 
 axiosInstance.interceptors.response.use(
-	response => response,
+	response => response.data,
 	error => {
 		notification.error({
 			message: error.message,

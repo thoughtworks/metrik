@@ -4,7 +4,7 @@ import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { verifyPipelineUsingPost, createDashboardUsingPost } from "../clients/apis";
+import { createDashboardUsingPost, Dashboard, verifyPipelineUsingPost } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -23,10 +23,11 @@ interface ConfigFormValues {
 export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CONFIG_SUCCESS);
+	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
+	const [dashboard, setDashboard] = useState<Dashboard>();
 	const onFinish = async (values: ConfigFormValues) => {
 		await verifyPipeline();
-		await createDashboardUsingPost({
+		const response = await createDashboardUsingPost({
 			requestBody: {
 				dashboardName: values.dashboardName,
 				pipelineRequest: {
@@ -38,6 +39,7 @@ export const PageConfig = () => {
 				},
 			},
 		});
+		setDashboard(response);
 		toNextStep();
 	};
 
@@ -117,7 +119,8 @@ export const PageConfig = () => {
 							</Form>
 						</div>
 					) : (
-						<ConfigSuccess />
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						<ConfigSuccess dashboard={dashboard!} />
 					)}
 				</div>
 			</Layout.Content>

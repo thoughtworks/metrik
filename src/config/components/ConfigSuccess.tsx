@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
-import { Pipeline } from "../../clients/apis";
+import { Dashboard, Pipeline } from "../../clients/apis";
 
 const dataSource: Pipeline[] = [
 	{
@@ -33,7 +33,7 @@ const dataSource: Pipeline[] = [
 	},
 ];
 
-const ConfigSuccess: FC = () => {
+const ConfigSuccess: FC<{ dashboard: Dashboard }> = ({ dashboard }) => {
 	return (
 		<div>
 			<div css={{ display: "flex", alignItems: "center", marginBottom: 32 }}>
@@ -63,7 +63,7 @@ const ConfigSuccess: FC = () => {
 					</Button>
 				</Link>
 			</div>
-			<DashboardConfig pipelines={dataSource} />
+			<DashboardConfig pipelines={dashboard.pipelines} />
 		</div>
 	);
 };
