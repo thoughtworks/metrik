@@ -64,10 +64,10 @@ export const FieldsStep2: FC<{
 			</Col>
 			<Col span={5}>
 				<Form.Item
-					label="Credential"
+					label="Token"
 					name="credential"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
-					<Input />
+					<Input type={"password"} />
 				</Form.Item>
 			</Col>
 			<Col span={1}>
