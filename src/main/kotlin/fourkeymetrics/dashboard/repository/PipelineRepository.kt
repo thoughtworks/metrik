@@ -41,4 +41,9 @@ class PipelineRepository {
         val query = Query().addCriteria(Criteria.where("dashboardId").isEqualTo(dashboardId))
         mongoTemplate.remove(query, Pipeline::class.java)
     }
+
+    fun findByDashboardId(dashboardId: String): List<Pipeline> {
+        val query = Query().addCriteria(Criteria.where("dashboardId").isEqualTo(dashboardId))
+        return mongoTemplate.find(query, Pipeline::class.java)
+    }
 }

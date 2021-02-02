@@ -55,6 +55,6 @@ class DashboardController {
 
     @GetMapping("/dashboard/{dashboardId}/pipelines-stages")
     fun getPipelineStages(@PathVariable("dashboardId") dashboardId: String): List<PipelineStagesResponse> {
-        return dashboardApplicationService.getPipelinesStages(dashboardId)
+        return dashboardApplicationService.getPipelineStages(dashboardId)
     }
 }

@@ -1,8 +1,6 @@
 package fourkeymetrics.dashboard.service
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
-import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,17 +37,8 @@ abstract class PipelineService {
 
     abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 
-    fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        val pipelines: List<Pipeline> = dashboardRepository.getPipelinesByDashboardId(dashboardId)
-
-        val pipelineStages = mutableListOf<PipelineStagesResponse>()
-        pipelines.parallelStream().forEach { pipeline ->
-            val builds: List<Build> = buildRepository.getAllBuilds(pipeline.id)
-            val stages = builds.flatMap { it.stages }.map { it.name }.distinct().sorted().toList()
-
-            pipelineStages.add(PipelineStagesResponse(pipeline.name, stages))
-        }
-
-        return pipelineStages.sortedBy { it.pipelineName }
+    fun getStagesSortedByName(pipelineId: String): List<String> {
+        return buildRepository.getAllBuilds(pipelineId).flatMap { it.stages }.asSequence().map { it.name }.distinct()
+            .toList().sorted().sortedBy { it.toUpperCase() }.toList()
     }
 }

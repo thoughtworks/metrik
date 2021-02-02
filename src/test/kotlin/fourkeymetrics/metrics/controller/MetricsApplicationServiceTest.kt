@@ -4,6 +4,7 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
+import fourkeymetrics.metrics.calculator.DeploymentFrequencyCalculator
 import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
 import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
 import fourkeymetrics.metrics.model.LEVEL
@@ -30,6 +31,9 @@ internal class MetricsApplicationServiceTest {
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
     @Mock
+    private lateinit var deploymentFrequencyCalculator: DeploymentFrequencyCalculator
+
+    @Mock
     private lateinit var buildRepository: BuildRepository
 
     @Mock
@@ -48,23 +52,32 @@ internal class MetricsApplicationServiceTest {
         val endTimestamp: Long = 10
         val expectedBuilds = emptyList<Build>()
         val unit = MetricsUnit.Fortnightly
+        val unit2 = MetricsUnit.Monthly
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(expectedBuilds)
         `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
 
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+            .thenReturn(7)
+        `when`(deploymentFrequencyCalculator.calculateLevel(7, 1)).thenReturn(LEVEL.ELITE)
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+            .thenReturn(3)
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+            .thenReturn(4)
+
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(2.0)
-        `when`(leadTimeForChangeCalculator.calculateLevel(2.0, unit)).thenReturn(LEVEL.LOW)
+        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(1.0)
         `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
             .thenReturn(3.0)
-        `when`(leadTimeForChangeCalculator.calculateLevel(2.0, unit)).thenReturn(LEVEL.HIGH)
+        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.HIGH)
 
         `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(2.25)
-        `when`(meanTimeToRestoreCalculator.calculateLevel(2.25, unit)).thenReturn(LEVEL.HIGH)
+        `when`(meanTimeToRestoreCalculator.calculateLevel(2.25)).thenReturn(LEVEL.HIGH)
         `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(1.8)
         `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
@@ -72,14 +85,38 @@ internal class MetricsApplicationServiceTest {
 
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
             .thenReturn(0.5)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.LOW)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
             .thenReturn(0.4)
         `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
             .thenReturn(0.6)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5, unit)).thenReturn(LEVEL.HIGH)
+        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
+
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
             pipelineId, targetStage, startTimestamp, endTimestamp, unit
+        )
+
+        val fourKeyMetricsResponse2 = metricsApplicationService.retrieve4KeyMetrics(
+            pipelineId, targetStage, startTimestamp, endTimestamp, unit2
+        )
+
+        assertEquals(
+            fourKeyMetricsResponse.deploymentFrequency.summary,
+            Metrics(98.0, LEVEL.ELITE, 1, 10)
+        )
+
+        assertEquals(
+            fourKeyMetricsResponse2.deploymentFrequency.summary,
+            Metrics(210.0, LEVEL.ELITE, 1, 10)
+        )
+
+        assertTrue(
+            fourKeyMetricsResponse.deploymentFrequency.details.containsAll(
+                listOf(
+                    Metrics(3, 1, 5),
+                    Metrics(4, 6, 10)
+                )
+            )
         )
 
         assertEquals(

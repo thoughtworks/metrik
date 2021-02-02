@@ -14,8 +14,8 @@ import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.streams.toList
 
-@SuppressWarnings("TooManyFunctions")
 @Service
 class DashboardApplicationService {
     @Autowired
@@ -64,13 +64,13 @@ class DashboardApplicationService {
         pipelineRepository.deleteByDashboardId(dashboardId)
         dashboardRepository.deleteById(dashboardId)
     }
+    fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
+        val dashboard = getDashboard(dashboardId)
 
-    fun getPipelinesStages(dashboardId: String): List<PipelineStagesResponse> {
-        val dashboard = dashboardRepository.findById(dashboardId)
-
-        return jenkinsPipelineService.getPipelineStages(dashboard.id)
+        return pipelineRepository.findByDashboardId(dashboard.id).parallelStream().map {
+            PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id),)
+        }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
     }
-
 
     fun getDashboard(dashboardId: String): DashboardVo {
         val dashboard = dashboardRepository.findById(dashboardId)

@@ -75,32 +75,31 @@ class ChangeFailureRateCalculatorTest {
                 endTimestamp,
                 targetStage
             )
-        ).isNaN
+        ).isEqualTo(Double.NaN)
     }
 
     @Test
     internal fun `should return level low given value is 0_45 when calculate level`() {
-        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45, MetricsUnit.Fortnightly))
+        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45))
     }
 
     @Test
     internal fun `should return level medium given value is 0_3 when calculate level`() {
-        assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3, MetricsUnit.Fortnightly))
+        assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3))
     }
 
     @Test
     internal fun `should return level high given value is 0_3 when calculate level`() {
-        assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15, MetricsUnit.Fortnightly))
+        assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15))
     }
 
     @Test
     internal fun `should return level elite given value lower than 0_15 when calculate level`() {
-        assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14, MetricsUnit.Fortnightly))
+        assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14))
     }
 
     @Test
     internal fun `should return level invalid given invalid value  when calculate level`() {
-        assertEquals(LEVEL.INVALID, changeFailureRateCalculator.calculateLevel(Double.NaN, MetricsUnit.Fortnightly))
+        assertEquals(LEVEL.INVALID, changeFailureRateCalculator.calculateLevel(Double.NaN))
     }
-
 }
