@@ -14,7 +14,7 @@ const devConfig = {
 		open: true,
 		historyApiFallback: true,
 		proxy: {
-			"/api": "http://localhost:9000",
+			"/api": "http://18.162.205.128:9000",
 		},
 	},
 };
