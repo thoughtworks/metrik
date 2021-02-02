@@ -4,6 +4,7 @@
         <Property name="LOG_PATTERN">
             %d{yyyy-MM-dd HH:mm:ss.SSS} traceId:%X{traceId} ${hostName} --- [%t] %c{1.}:%m%n%ex
         </Property>
+        <Property name="baseDir">logs/4km-service-logs</Property>
     </Properties>
 
     <Appenders>
@@ -13,16 +14,21 @@
 
         <!-- Rolling File Appender -->
         <RollingFile name="FileAppender"
-                     fileName="logs/4km-service-logs/4km-service.log"
-                     filePattern="logs/4km-service-logs/4km-service-%d{yyyy-MM-dd}-%i.log">
+                     fileName="${baseDir}/4km-service.log"
+                     filePattern="${baseDir}/4km-service-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="50MB"/>
+                <SizeBasedTriggeringPolicy size="50M"/>
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="2">
+                <Delete basePath="${baseDir}" maxDepth="1">
+                    <IfFileName glob="4km-service-*" />
+                    <IfLastModified age="10d" />
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
     </Appenders>
 
