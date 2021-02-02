@@ -3,4 +3,4 @@ package fourkeymetrics.dashboard.exception
 import fourkeymetrics.exception.ApplicationException
 import org.springframework.http.HttpStatus
 
-class PipelineNotFoundException : ApplicationException(HttpStatus.NOT_FOUND, "Pipeline not exist")
+class DashboardNameDuplicateException : ApplicationException(HttpStatus.BAD_REQUEST, "Dashboard name duplicate")

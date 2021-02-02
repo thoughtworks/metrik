@@ -1,7 +1,7 @@
 package fourkeymetrics.datasource.pipeline.builddata.controller
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.dashboard.controller.SynchronizationApplicationService
+import fourkeymetrics.dashboard.controller.applicationservice.SynchronizationApplicationService
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
@@ -12,7 +12,11 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyLong
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import

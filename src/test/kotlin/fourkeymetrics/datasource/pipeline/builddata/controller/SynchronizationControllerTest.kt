@@ -1,7 +1,7 @@
 package fourkeymetrics.datasource.pipeline.builddata.controller
 
-import fourkeymetrics.dashboard.controller.SynchronizationApplicationService
 import fourkeymetrics.dashboard.controller.SynchronizationController
+import fourkeymetrics.dashboard.controller.applicationservice.SynchronizationApplicationService
 import fourkeymetrics.exception.ApplicationException
 import org.apache.logging.log4j.util.Strings
 import org.junit.jupiter.api.Test

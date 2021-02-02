@@ -1,4 +1,4 @@
-package fourkeymetrics.dashboard.controller
+package fourkeymetrics.dashboard.controller.applicationservice
 
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.DashboardRepository
