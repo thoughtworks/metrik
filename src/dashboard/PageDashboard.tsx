@@ -65,6 +65,7 @@ export const PageDashboard = () => {
 	const [syncing, setSyncing] = useState(false);
 	const query = useQuery();
 	const dashboardId = query.get("dashboardId") || "";
+	const dashboardName = query.get("dashboardName") || "";
 	const [lastModifyDateTime, setLastModifyDateTime] = useState("");
 	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
 
@@ -110,7 +111,7 @@ export const PageDashboard = () => {
 		<div css={containerStyles}>
 			<div css={headerStyles}>
 				<div>
-					<EditableText defaultValue={"4KM"} onEditDone={updateDashboardName} />
+					<EditableText defaultValue={dashboardName} onEditDone={updateDashboardName} />
 					<Text type={"secondary"}>The latest available data end at : {lastModifyDateTime}</Text>
 					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing...." : "Sync Data"}
