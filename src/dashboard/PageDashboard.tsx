@@ -89,13 +89,13 @@ export const PageDashboard = () => {
 		});
 
 	useEffect(() => {
-		getLastSynchronizationUsingGet({ dashboardId }).then((resp: any) => {
-			setLastModifyDateTime(formatLastUpdateTime(resp.data.synchronizationTimestamp));
+		getLastSynchronizationUsingGet({ dashboardId }).then(resp => {
+			setLastModifyDateTime(formatLastUpdateTime(resp?.synchronizationTimestamp));
 			return resp;
 		});
-		getPipelineStagesUsingGet({ dashboardId }).then((resp: any) => {
+		getPipelineStagesUsingGet({ dashboardId }).then(resp => {
 			setPipelineStages(
-				resp.data.map((v: PipelineStagesResponse) => ({
+				resp.map((v: PipelineStagesResponse) => ({
 					label: v.pipelineName,
 					value: v.pipelineName, // TODO: set pipelineId later
 					children: v.stages.map((stageName: string) => ({
@@ -151,19 +151,17 @@ export const PageDashboard = () => {
 						</Col>
 						<Col span={10}>
 							<Form.Item label="Pipelines" name="pipelines">
-								<MultipleCascadeSelect
-									options={pipelineStages}
-									defaultValues={
-										pipelineStages.length > 0
-											? [
-													{
-														value: pipelineStages[0]?.value,
-														childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
-													},
-											  ]
-											: []
-									}
-								/>
+								{pipelineStages.length > 0 && (
+									<MultipleCascadeSelect
+										options={pipelineStages}
+										defaultValues={[
+											{
+												value: pipelineStages[0]?.value,
+												childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
+											},
+										]}
+									/>
+								)}
 							</Form.Item>
 						</Col>
 						<Col style={{ textAlign: "right" }}>
