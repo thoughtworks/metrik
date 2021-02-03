@@ -15,9 +15,18 @@ jobs:
     steps:
       - checkout
 
+      - restore_cache:
+          keys:
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
       - run:
           name: Install dependencies
           command: npm ci
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
       - run:
           name: Run tests
