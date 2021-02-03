@@ -1,18 +1,174 @@
 version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15.2
+  aws-cli: circleci/aws-cli@1.3.2
+
 jobs:
-  build:
+  backend-service-test-build:
     docker:
-      - image: alpine:3.7
-    resource_class: small
+      - image: circleci/openjdk:11.0.8-jdk
+        environment:
+          TZ: "Asia/Shanghai"
+      resource_class: medium
+
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "b2:7a:cb:5e:38:45:da:d6:71:22:5e:80:88:10:f0:82"
       - run:
-          name: The First Step
+          name: Add Github to trusted hosts
           command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      - run:
+          name: Checkout code
+          command: |
+            if [ -e /home/circleci/project/.git ]
+            then
+              cd /home/circleci/project
+              git remote set-url origin "${GITHUB_4KM_SERVICE_REPO}" || true
+            else
+              mkdir -p /home/circleci/project
+              cd /home/circleci/project
+              git clone "${GITHUB_4KM_SERVICE_REPO}" .
+
+      - restore_cache:
+          keys:
+            - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - restore_cache:
+          keys:
+            - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Run tests and build artifact
+          command: ./gradlew build
+
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ .Branch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Assemble JAR
+          command: |
+            # Skip this for other nodes
+            if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
+              ./gradlew assemble
+            fi
+
+      - persist_to_workspace:
+          root: /tmp/workspace/4km-service/
+          paths:
+            - run.sh
+            - build/libs/sea-4-key-metrics-service-*.jar
+
+  frontend-dashboard-test-build:
+    docker:
+      - image: circleci/node:14.15.4
+        environment:
+          TZ: "Asia/Shanghai"
+    resource_class: medium
+
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "bd:e4:27:92:07:b8:9e:1a:2c:0c:2e:19:9c:2a:7d:2e"
+      - run:
+          name: Add Github to trusted hosts
+          command: |
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      - run:
+          name: Checkout code
+          command: |
+            if [ -e /home/circleci/project/.git ]
+            then
+              cd /home/circleci/project
+              git remote set-url origin "${GITHUB_4KM_DASHBOARD_REPO}" || true
+            else
+              mkdir -p /home/circleci/project
+              cd /home/circleci/project
+              git clone "${GITHUB_4KM_DASHBOARD_REPO}" .
+
+      - restore_cache:
+          keys:
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Install dependencies
+          command: npm ci
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Run tests
+          command: npm run test
+
+      - run:
+          name: Build artifacts
+          command: npm run build:prod
+
+      - run:
+          name: Modify Nginx config
+          command: sed -i '${NGINX_MODIFY_REGEX}' nginx.conf
+
+
+      - persist_to_workspace:
+          root: /tmp/workspace/4km-dashboard/
+          paths:
+            - dist
+            - nginx.conf
+
+  create-push-image:
+    docker:
+      - image: cimg/base:2021.01
+    resource_class: small
+
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+
+      - checkout
+
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+
+      - run:
+          name: Build and tag Docker image
+          command: |
+            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')
+            docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:${TAG} -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
+
+      - aws-cli/install
+
+      - aws-cli/setup
+
+      - run:
+          name: Docker login with AWS CLI
+          command: aws ecr-public get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+
+      - aws-ecr/push-image:
+          repo: ${AWS_ECR_REPO}
+          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')
 
 workflows:
   version: 2
-  example_workflow:
+  test_build_push_and_deploy:
     jobs:
-      - build
+      - frontend-dashboard-test-build
+      - backend-service-test-build
+      - create-push-image:
+          requires:
+            - frontend-dashboard-test-build
+            - backend-service-test-build
