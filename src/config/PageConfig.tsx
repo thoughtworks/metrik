@@ -5,42 +5,31 @@ import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import {
-	verifyPipelineUsingPost,
 	createDashboardAndPipelineUsingPost,
 	DashboardDetailVo,
+	PipelineVoRes,
+	verifyPipelineUsingPost,
 } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
 
-type PipelineToolType = "JENKINS";
-
-interface ConfigFormValues {
+export interface ConfigFormValues extends PipelineVoRes {
 	dashboardName: string;
-	pipelineName: string;
-	pipelineTool: PipelineToolType;
-	pipelineDomain: string;
-	username: string;
-	credential: string;
 }
 
 export const PageConfig = () => {
-	const [form] = Form.useForm();
+	const [form] = Form.useForm<ConfigFormValues>();
+
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
-	const onFinish = async (values: ConfigFormValues) => {
+	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
 		const response = await createDashboardAndPipelineUsingPost({
 			requestBody: {
-				dashboardName: values.dashboardName,
-				pipeline: {
-					name: values.pipelineName,
-					url: values.pipelineDomain,
-					username: values.username,
-					credential: values.credential,
-					type: values.pipelineTool,
-				},
+				dashboardName,
+				pipeline,
 			},
 		});
 		setDashboard(response);
@@ -56,14 +45,10 @@ export const PageConfig = () => {
 	};
 
 	const verifyPipeline = () => {
-		const { credential, username, pipelineTool, pipelineDomain } = form.getFieldsValue();
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { dashboardName, ...pipelineValues } = form.getFieldsValue();
 		return verifyPipelineUsingPost({
-			requestBody: {
-				url: pipelineDomain,
-				credential,
-				username,
-				type: pipelineTool,
-			},
+			requestBody: pipelineValues,
 		})
 			.then(() => {
 				setVerifyStatus(VerifyStatus.SUCCESS);
@@ -103,8 +88,8 @@ export const PageConfig = () => {
 								layout="vertical"
 								onFinish={onFinish}
 								form={form}
-								initialValues={{ pipelineTool: "JENKINS" }}>
-								{formValues => (
+								initialValues={{ type: "JENKINS" }}>
+								{(formValues: ConfigFormValues) => (
 									<>
 										<FieldsStep1
 											onNext={toNextStep}

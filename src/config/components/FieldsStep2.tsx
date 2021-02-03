@@ -1,8 +1,9 @@
-import React, { useState, FC } from "react";
-import { Form, Input, Button, Alert, Divider, Row, Col, Typography, Select } from "antd";
+import React, { FC } from "react";
+import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
 import { ERROR_MESSAGES } from "../../constants/errorMessages";
 import { VerifyStatus } from "../../__types__/base";
+import { ConfigFormValues } from "../PageConfig";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -15,7 +16,7 @@ const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marg
 
 /* eslint-disable react/prop-types */
 export const FieldsStep2: FC<{
-	formValues: { [key: string]: any };
+	formValues: ConfigFormValues;
 	onBack: () => void;
 	visible?: boolean;
 	verifyStatus: VerifyStatus;
@@ -28,7 +29,7 @@ export const FieldsStep2: FC<{
 			<Col span={8}>
 				<Form.Item
 					label="Pipeline Name"
-					name="pipelineName"
+					name="name"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME }]}>
 					<Input />
 				</Form.Item>
@@ -39,7 +40,7 @@ export const FieldsStep2: FC<{
 			<Col span={4}>
 				<Form.Item
 					label="Pipeline Tool"
-					name="pipelineTool"
+					name="type"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL }]}>
 					<Select>
 						<Option value="JENKINS">Jenkins</Option>
@@ -49,7 +50,7 @@ export const FieldsStep2: FC<{
 			<Col span={8}>
 				<Form.Item
 					label="Pipeline Domain"
-					name="pipelineDomain"
+					name="url"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
 					<Input />
 				</Form.Item>
@@ -75,10 +76,7 @@ export const FieldsStep2: FC<{
 					<Button
 						onClick={onVerify}
 						disabled={
-							!formValues.pipelineTool ||
-							!formValues.pipelineDomain ||
-							!formValues.credential ||
-							!formValues.username
+							!formValues.type || !formValues.url || !formValues.credential || !formValues.username
 						}>
 						Verify
 					</Button>
@@ -102,10 +100,7 @@ export const FieldsStep2: FC<{
 					type="primary"
 					htmlType="submit"
 					disabled={
-						!formValues.pipelineName ||
-						!formValues.pipelineTool ||
-						!formValues.pipelineDomain ||
-						!formValues.credential
+						!formValues.name || !formValues.type || !formValues.url || !formValues.credential
 					}>
 					Create
 				</Button>

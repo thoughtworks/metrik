@@ -1,7 +1,8 @@
 import React, { FC } from "react";
-import { Form, Input, Button, Divider, Row, Col, Typography } from "antd";
+import { Button, Col, Divider, Form, Input, Row, Typography } from "antd";
 import { css } from "@emotion/react";
 import { ERROR_MESSAGES } from "../../constants/errorMessages";
+import { ConfigFormValues } from "../PageConfig";
 
 const { Text } = Typography;
 
@@ -11,7 +12,7 @@ const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marg
 export const FieldsStep1: FC<{
 	onNext: () => void;
 	visible?: boolean;
-	formValues: { [key: string]: any };
+	formValues: ConfigFormValues;
 }> = ({ onNext, visible = true, formValues }) => {
 	return (
 		<div css={{ display: visible ? "block" : "none" }}>
