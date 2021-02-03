@@ -57,7 +57,7 @@ const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
 						following projects
 					</span>
 				</div>
-				<Link to={`/?dashboardId=${dashboard.id}&dashboardName=${dashboard.name}`}>
+				<Link to={`/?dashboardId=${dashboard.id}}`}>
 					<Button type={"primary"} size={"large"}>
 						Go to Dashboard
 					</Button>

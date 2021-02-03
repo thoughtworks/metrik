@@ -15,6 +15,7 @@ import {
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
 	getFourKeyMetricsUsingGet,
+	getDashboardsUsingGet,
 } from "../clients/apis";
 import {
 	formatLastUpdateTime,
@@ -77,9 +78,9 @@ export const PageDashboard = () => {
 	const [syncing, setSyncing] = useState(false);
 	const query = useQuery();
 	const dashboardId = query.get("dashboardId") || "";
-	const dashboardName = query.get("dashboardName") || "";
 	const [lastModifyDateTime, setLastModifyDateTime] = useState("");
 	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
+	const [dashboardName, setDashboardName] = useState("");
 
 	const syncBuilds = () => {
 		setSyncing(true);
@@ -98,6 +99,8 @@ export const PageDashboard = () => {
 		updateDashboardNameUsingPut({
 			dashboardId,
 			requestBody: name,
+		}).then(() => {
+			getDashboard();
 		});
 
 	const getPipelineStages = () => {
@@ -115,6 +118,12 @@ export const PageDashboard = () => {
 		});
 	};
 
+	const getDashboard = () => {
+		getDashboardsUsingGet(undefined).then(resp => {
+			setDashboardName(resp.find(v => v.id === dashboardId)?.name || "");
+		});
+	};
+
 	useEffect(() => {
 		getLastSynchronizationUsingGet({ dashboardId }).then(resp => {
 			setLastModifyDateTime(formatLastUpdateTime(resp?.synchronizationTimestamp));
@@ -122,6 +131,7 @@ export const PageDashboard = () => {
 				syncBuilds();
 			}
 		});
+		getDashboard();
 		getPipelineStages();
 	}, []);
 
@@ -140,7 +150,9 @@ export const PageDashboard = () => {
 		<div css={containerStyles}>
 			<div css={headerStyles}>
 				<div>
-					<EditableText defaultValue={dashboardName} onEditDone={updateDashboardName} />
+					{dashboardName && (
+						<EditableText defaultValue={dashboardName} onEditDone={updateDashboardName} />
+					)}
 					<Text type={"secondary"}>The latest available data end at : {lastModifyDateTime}</Text>
 					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing...." : "Sync Data"}
