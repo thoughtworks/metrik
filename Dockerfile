@@ -41,7 +41,7 @@ COPY artifacts/run.sh /app/4km-service.sh
 COPY artifacts/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
 
 # FRONTEND and Nginx
-COPY artifacts/dist /var/www/html
+COPY artifacts/dist /usr/share/nginx/html
 COPY artifacts/nginx.conf /etc/nginx/
 
 RUN chmod +x /app/*.sh
