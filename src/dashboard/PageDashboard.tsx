@@ -24,7 +24,7 @@ import {
 	momentObjToEndTimeStamp,
 } from "../utils/timeFormats";
 import { isEmpty } from "lodash";
-import { LineChart } from "../components/LineChart";
+import { MetricsCard } from "./MetricsCard";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -219,7 +219,12 @@ export const PageDashboard = () => {
 				</Form>
 			</div>
 
-			<LineChart
+			<MetricsCard
+				title="Mean Lead Time for Change (Days)"
+				summary={{
+					level: "LOW",
+					average: 0.21,
+				}}
 				data={[
 					{
 						name: "Page A",
