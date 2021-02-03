@@ -29,10 +29,7 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     override fun calculateLevel(value: Number, days: Int?): LEVEL {
         val deploymentCount = value.toDouble()
 
-        if (days == null || days == 0) {
-            return LEVEL.INVALID
-        }
-        val deploymentFrequency = deploymentCount/days
+        val deploymentFrequency = deploymentCount/days!!
 
         return when {
             deploymentFrequency <= 1.0 / ONE_MONTH -> LEVEL.LOW

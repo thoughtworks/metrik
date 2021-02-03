@@ -45,7 +45,6 @@ internal class MetricsApplicationServiceTest {
 
     @Test
     fun `should return correct metric response`() {
-
         val pipelineId = "pipelineId"
         val targetStage = "deploy to prod"
         val startTimestamp: Long = 1
