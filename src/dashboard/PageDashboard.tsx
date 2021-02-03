@@ -180,7 +180,7 @@ export const PageDashboard = () => {
 						<Col span={10}>
 							<Form.Item label="Pipelines" name="pipelines">
 								<MultipleCascadeSelect
-									options={pipelineStages}
+									options={isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages}
 									defaultValues={
 										!isEmpty(pipelineStages[0]?.children)
 											? [
