@@ -9,14 +9,15 @@ import { MultipleCascadeSelect, Option } from "../components/MultipleCascadeSele
 import { EditableText } from "../components/EditableText";
 import { useQuery } from "../hooks/useQuery";
 import {
-	updateDashboardNameUsingPut,
 	getLastSynchronizationUsingGet,
-	updateBuildsUsingPost,
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
+	updateBuildsUsingPost,
+	updateDashboardNameUsingPut,
 	getFourKeyMetricsUsingGet,
 	getDashboardUsingGet,
 } from "../clients/apis";
+import PipelineSetting from "./components/PipelineSetting";
 import {
 	formatLastUpdateTime,
 	momentObjToStartTimeStamp,
@@ -35,16 +36,6 @@ const dividerStyles = css({
 	display: "inline-block",
 	borderRight: `1px solid ${SECONDARY_COLOR}`,
 	padding: "4px 24px 4px 0",
-});
-
-const settingStyles = css({
-	fontSize: 16,
-	padding: "5px 0",
-	cursor: "pointer",
-});
-
-const settingTextStyles = css({
-	marginLeft: 10,
 });
 
 const fullScreenStyles = css({
@@ -165,10 +156,7 @@ export const PageDashboard = () => {
 				</div>
 				<div>
 					<span css={dividerStyles}>
-						<span css={settingStyles}>
-							<SettingOutlined />
-							<Text css={settingTextStyles}>Pipeline Setting</Text>
-						</span>
+						<PipelineSetting />
 					</span>
 					<span css={fullScreenStyles}>
 						<FullscreenOutlined css={fullScreenIconStyles} />
