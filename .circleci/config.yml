@@ -136,13 +136,11 @@ jobs:
     resource_class: small
 
     steps:
-
-
       - checkout
 
       - run:
           name: Create attached workspace folder
-          command: /tmp/workspace
+          command: mkdir -p /tmp/workspace
 
       - attach_workspace:
           at: /tmp/workspace
