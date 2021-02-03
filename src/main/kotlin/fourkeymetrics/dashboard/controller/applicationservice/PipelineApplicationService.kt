@@ -50,11 +50,11 @@ class PipelineApplicationService {
         return PipelineResponse.buildFrom(pipelineRepository.save(pipeline))
     }
 
-    fun updatePipeline(dashboardId: String, pipelineId: String, pipelineResponse: PipelineRequest): PipelineResponse {
+    fun updatePipeline(dashboardId: String, pipelineId: String, pipelineRequest: PipelineRequest): PipelineResponse {
         findAndValidatePipeline(dashboardId, pipelineId)
 
         val pipeline =
-            with(pipelineResponse) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
+            with(pipelineRequest) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
 
         return PipelineResponse.buildFrom(pipelineRepository.save(pipeline))
     }

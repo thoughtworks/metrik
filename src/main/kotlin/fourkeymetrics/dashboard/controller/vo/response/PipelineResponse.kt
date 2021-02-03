@@ -4,7 +4,7 @@ import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import org.apache.logging.log4j.util.Strings
 
-class PipelineResponse(
+data class PipelineResponse(
     val id: String = Strings.EMPTY,
     val name: String = Strings.EMPTY,
     val username: String = Strings.EMPTY,
