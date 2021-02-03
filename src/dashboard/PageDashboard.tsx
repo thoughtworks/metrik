@@ -88,6 +88,7 @@ export const PageDashboard = () => {
 			dashboardId,
 		})
 			.then(() => {
+				getLastSyncTime();
 				getPipelineStages();
 			})
 			.finally(() => {
@@ -124,13 +125,17 @@ export const PageDashboard = () => {
 		});
 	};
 
-	useEffect(() => {
+	const getLastSyncTime = () => {
 		getLastSynchronizationUsingGet({ dashboardId }).then(resp => {
 			setLastModifyDateTime(formatLastUpdateTime(resp?.synchronizationTimestamp));
 			if (!resp?.synchronizationTimestamp) {
 				syncBuilds();
 			}
 		});
+	};
+
+	useEffect(() => {
+		getLastSyncTime();
 		getDashboard();
 		getPipelineStages();
 	}, []);
