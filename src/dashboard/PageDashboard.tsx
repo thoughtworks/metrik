@@ -14,8 +14,13 @@ import {
 	updateBuildsUsingPost,
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
+	getFourKeyMetricsUsingGet,
 } from "../clients/apis";
-import { formatLastUpdateTime } from "../utils/timeFormats";
+import {
+	formatLastUpdateTime,
+	momentObjToStartTimeStamp,
+	momentObjToEndTimeStamp,
+} from "../utils/timeFormats";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -61,6 +66,12 @@ const headerStyles = css({
 
 const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
 
+interface FormValues {
+	duration: [moment.Moment, moment.Moment];
+	pipelines: Array<{ value: string; childValue: string }>;
+	unit: "Fortnightly" | "Monthly";
+}
+
 export const PageDashboard = () => {
 	const [syncing, setSyncing] = useState(false);
 	const query = useQuery();
@@ -93,7 +104,7 @@ export const PageDashboard = () => {
 			setPipelineStages(
 				resp.map((v: PipelineStagesResponse) => ({
 					label: v.pipelineName,
-					value: v.pipelineName, // TODO: set pipelineId later
+					value: v.pipelineId,
 					children: v.stages.map((stageName: string) => ({
 						label: stageName,
 						value: stageName,
@@ -112,6 +123,17 @@ export const PageDashboard = () => {
 		});
 		getPipelineStages();
 	}, []);
+
+	const onFinish = (values: FormValues) => {
+		// TODO: will pass multiple stages and pipelines after backend api ready
+		getFourKeyMetricsUsingGet({
+			endTime: momentObjToEndTimeStamp(values.duration[0]),
+			startTime: momentObjToStartTimeStamp(values.duration[1]),
+			pipelineId: values.pipelines[0].value,
+			targetStage: values.pipelines[0].childValue,
+			unit: values.unit,
+		});
+	};
 
 	return (
 		<div css={containerStyles}>
@@ -145,10 +167,9 @@ export const PageDashboard = () => {
 							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
 							moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
 						],
+						unit: "Fortnightly",
 					}}
-					onFinish={values => {
-						console.log("submit", values);
-					}}>
+					onFinish={onFinish}>
 					<Row wrap={false} gutter={12}>
 						<Col>
 							<Form.Item label="Duration" name="duration">
@@ -174,9 +195,9 @@ export const PageDashboard = () => {
 						</Col>
 						<Col span={4}>
 							<Form.Item label="Unit" name="unit">
-								<Select defaultValue="fortnightly">
-									<Select.Option value="fortnightly">Fortnightly</Select.Option>
-									<Select.Option value="monthly">Monthly</Select.Option>
+								<Select>
+									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
+									<Select.Option value="Monthly">Monthly</Select.Option>
 								</Select>
 							</Form.Item>
 						</Col>
