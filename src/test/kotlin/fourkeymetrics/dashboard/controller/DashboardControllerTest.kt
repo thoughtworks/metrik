@@ -1,10 +1,26 @@
 package fourkeymetrics.dashboard.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
+import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
+import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
+import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
+import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [DashboardController::class])
 class DashboardControllerTest {
@@ -14,73 +30,107 @@ class DashboardControllerTest {
     @MockBean
     private lateinit var dashboardApplicationService: DashboardApplicationService
 
-//    @Test
-//    internal fun `should return Ok when jenkins domain is valid `() {
-//        val url = "http://jenkins.io/"
-//        val username = "user"
-//        val credential = "credential"
-//        val type = PipelineType.JENKINS
-//        Mockito.doNothing().`when`(dashboardApplicationService)
-//            .verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.post("/api/pipeline/verify")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(
-//                    """
-//                        {
-//                            "url":"$url",
-//                            "credential":"$credential",
-//                            "username":"$username",
-//                            "type":"$type"
-//                       }
-//                    """.trimIndent()
-//                )
-//        ).andExpect(status().isOk)
-//    }
+    private val dashboardId = "dashboardId"
+    private val pipelineId = "pipelineId"
+    private val dashboardName = "dashboardName"
+    private val pipelineName = "pipelineName"
+    private lateinit var dashboardDetailsResponse: DashboardDetailResponse
 
-//    @Test
-//    internal fun `should return 404 when jenkins domain is not valid `() {
-//        val url = "http://jenkins.io/notfound"
-//        val username = "user"
-//        val credential = "credential"
-//        val type = PipelineType.JENKINS
-//
-//        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND, ""))
-//            .`when`(dashboardApplicationService)
-//            .verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
-//
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.post("/api/pipeline/verify")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(
-//                    """
-//                        {
-//                            "url":"$url",
-//                            "credential":"$credential",
-//                            "username":"$username",
-//                            "type":"$type"
-//                       }
-//                    """.trimIndent()
-//                )
-//        ).andExpect(status().is4xxClientError)
-//    }
+    @BeforeEach
+    internal fun setUp() {
+        dashboardDetailsResponse = DashboardDetailResponse(
+            dashboardId,
+            dashboardName,
+            pipelines = listOf(PipelineResponse(pipelineId, pipelineName))
+        )
+    }
 
-//    @Test
-//    internal fun `should return pipeline stages when call pipeline stage api`() {
-//        val dashboardId = "1"
-//        val expectedPipelineStages = listOf(
-//            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
-//            PipelineStagesResponse("5km", listOf("5km-DEV", "5km-QA", "5km-UAT"))
-//        )
-//        `when`(dashboardApplicationService.getPipelinesStages(dashboardId)).thenReturn(expectedPipelineStages)
-//
-//        mockMvc.perform(get("/api/dashboard/${dashboardId}/stage"))
-//            .andExpect(jsonPath("$.length()").value(2))
-//            .andExpect(jsonPath("$[0].pipelineName").value("4km"))
-//            .andExpect(jsonPath("$[0].stages.length()").value(3))
-//            .andExpect(jsonPath("$[0].stages[0]").value("4km-DEV"))
-//            .andExpect(jsonPath("$[0].stages[1]").value("4km-QA"))
-//            .andExpect(jsonPath("$[0].stages[2]").value("4km-UAT"))
-//            .andExpect(jsonPath("$[1].pipelineName").value("5km"))
-//    }
+    @Test
+    internal fun `should get dashboards successfully `() {
+
+        `when`(dashboardApplicationService.getDashboards()).thenReturn(
+            listOf(
+                DashboardResponse(
+                    dashboardId,
+                    dashboardName
+                )
+            )
+        )
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/dashboard")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$[0].id").value(dashboardId))
+            .andExpect(jsonPath("$[0].name").value(dashboardName))
+    }
+
+    @Test
+    internal fun `should get dashboard details successfully `() {
+
+        `when`(dashboardApplicationService.getDashboardDetails(dashboardId)).thenReturn(dashboardDetailsResponse)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/dashboard/${dashboardId}")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(dashboardId))
+            .andExpect(jsonPath("$.name").value(dashboardName))
+            .andExpect(jsonPath("$.pipelines[0].id").value(pipelineId))
+            .andExpect(jsonPath("$.pipelines[0].name").value(pipelineName))
+    }
+
+    @Test
+    internal fun `should create dashboard and pipeline `() {
+        val dashboardRequest = DashboardRequest(dashboardName, PipelineRequest())
+        `when`(dashboardApplicationService.createDashboard(dashboardRequest)).thenReturn(dashboardDetailsResponse)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/dashboard")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(dashboardRequest))
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(dashboardId))
+            .andExpect(jsonPath("$.name").value(dashboardName))
+            .andExpect(jsonPath("$.pipelines[0].id").value(pipelineId))
+            .andExpect(jsonPath("$.pipelines[0].name").value(pipelineName))
+    }
+
+    @Test
+    internal fun `should update dashboard name `() {
+        val dashboardNewName = "dashboardNewName"
+        `when`(dashboardApplicationService.updateDashboardName(dashboardId, dashboardNewName)).thenReturn(
+            DashboardResponse(dashboardId, dashboardNewName)
+        )
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/dashboard/${dashboardId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(dashboardNewName)
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(dashboardId))
+            .andExpect(jsonPath("$.name").value(dashboardNewName))
+    }
+
+    @Test
+    internal fun `should delete dashboard `() {
+        Mockito.doNothing().`when`(dashboardApplicationService).deleteDashboard(dashboardId)
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/dashboard/$dashboardId")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
+    }
+
+    @Test
+    internal fun `should get dashbaord pipeline stages `() {
+        val pipelineStagesResponse = PipelineStagesResponse(pipelineId, pipelineName, listOf("some stage"))
+        `when`(dashboardApplicationService.getPipelineStages(dashboardId)).thenReturn(listOf(pipelineStagesResponse))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/pipelines-stages")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$[0].pipelineId").value(pipelineId))
+            .andExpect(jsonPath("$[0].pipelineName").value(pipelineName))
+    }
+
 }

@@ -5,7 +5,7 @@ import fourkeymetrics.dashboard.model.Pipeline
 import org.apache.logging.log4j.util.Strings
 
 
-class DashboardDetailResponse(
+data class DashboardDetailResponse(
     val id: String = Strings.EMPTY,
     var name: String = Strings.EMPTY,
     val synchronizationTimestamp: Long? = null,

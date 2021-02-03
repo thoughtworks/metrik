@@ -37,8 +37,8 @@ class DashboardController {
     }
 
     @PostMapping("/dashboard")
-    fun createDashboardAndPipeline(@RequestBody dashboardRequest: DashboardRequest): DashboardDetailResponse {
-        return dashboardApplicationService.createDashboardAndPipeline(dashboardRequest)
+    fun createDashboard(@RequestBody dashboardRequest: DashboardRequest): DashboardDetailResponse {
+        return dashboardApplicationService.createDashboard(dashboardRequest)
     }
 
     @PutMapping("/dashboard/{dashboardId}")

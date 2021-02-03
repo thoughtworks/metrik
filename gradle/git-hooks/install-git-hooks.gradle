@@ -1,5 +1,5 @@
 task installGitHooks(type: Copy) {
-    from 'config/git-hooks/pre-push'
+    from 'gradle/git-hooks/pre-push'
     into '.git/hooks'
 }
 

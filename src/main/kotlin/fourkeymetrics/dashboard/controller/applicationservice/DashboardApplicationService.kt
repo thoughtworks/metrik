@@ -1,7 +1,7 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
@@ -29,7 +29,7 @@ class DashboardApplicationService {
 
 
     @Transactional
-    fun createDashboardAndPipeline(dashboardRequest: DashboardRequest): DashboardDetailResponse {
+    fun createDashboard(dashboardRequest: DashboardRequest): DashboardDetailResponse {
         val dashboardName = dashboardRequest.dashboardName
         if (dashboardRepository.dashboardWithGivenNameExist(dashboardName)) {
             throw DashboardNameDuplicateException()
@@ -64,6 +64,7 @@ class DashboardApplicationService {
         pipelineRepository.deleteByDashboardId(dashboardId)
         dashboardRepository.deleteById(dashboardId)
     }
+
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
         val dashboard = getDashboardDetails(dashboardId)
 
