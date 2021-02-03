@@ -1,11 +1,11 @@
 import { createRequest } from "./createRequest";
 
-export const createDashboardUsingPost = createRequest<
+export const createDashboardAndPipelineUsingPost = createRequest<
 	{
 		requestBody: DashboardRequest;
 	},
-	Dashboard
->("createDashboardUsingPost", ({ requestBody }) => ({
+	DashboardDetailVo
+>("createDashboardAndPipelineUsingPost", ({ requestBody }) => ({
 	url: `/api/dashboard`,
 	method: "POST",
 	data: requestBody,
@@ -15,9 +15,9 @@ export const createDashboardUsingPost = createRequest<
 export const createPipelineUsingPost = createRequest<
 	{
 		dashboardId: string;
-		requestBody: PipelineRequest;
+		requestBody: PipelineVoReq;
 	},
-	Dashboard
+	PipelineVoRes
 >("createPipelineUsingPost", ({ dashboardId, requestBody }) => ({
 	url: `/api/dashboard/${dashboardId}/pipeline`,
 	method: "POST",
@@ -40,7 +40,17 @@ export const deletePipelineUsingDelete = createRequest<{
 	method: "DELETE",
 }));
 
-export const getDashboardsUsingGet = createRequest<undefined, Dashboard[]>(
+export const getDashboardUsingGet = createRequest<
+	{
+		dashboardId: string;
+	},
+	DashboardVo
+>("getDashboardUsingGet", ({ dashboardId }) => ({
+	url: `/api/dashboard/${dashboardId}`,
+	method: "GET",
+}));
+
+export const getDashboardsUsingGet = createRequest<undefined, DashboardVo[]>(
 	"getDashboardsUsingGet",
 	() => ({
 		url: `/api/dashboard`,
@@ -109,7 +119,7 @@ export const getPipelineStagesUsingGet = createRequest<
 	},
 	PipelineStagesResponse[]
 >("getPipelineStagesUsingGet", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}/stage`,
+	url: `/api/dashboard/${dashboardId}/pipelines-stages`,
 	method: "GET",
 }));
 
@@ -118,7 +128,7 @@ export const getPipelineUsingGet = createRequest<
 		dashboardId: string;
 		pipelineId: string;
 	},
-	Pipeline
+	PipelineVoRes
 >("getPipelineUsingGet", ({ dashboardId, pipelineId }) => ({
 	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}`,
 	method: "GET",
@@ -134,6 +144,11 @@ export const pullBuildsUsingPost = createRequest<
 	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}/builds`,
 	method: "POST",
 	headers: { "Content-Type": "application/json" },
+}));
+
+export const testUsingGet = createRequest<undefined, string>("testUsingGet", () => ({
+	url: `//test`,
+	method: "GET",
 }));
 
 export const updateBuildsUsingPost = createRequest<
@@ -152,7 +167,7 @@ export const updateDashboardNameUsingPut = createRequest<
 		dashboardId: string;
 		requestBody: string;
 	},
-	Dashboard
+	DashboardVo
 >("updateDashboardNameUsingPut", ({ dashboardId, requestBody }) => ({
 	url: `/api/dashboard/${dashboardId}`,
 	method: "PUT",
@@ -164,9 +179,9 @@ export const updatePipelineUsingPut = createRequest<
 	{
 		dashboardId: string;
 		pipelineId: string;
-		requestBody: PipelineRequest;
+		requestBody: PipelineVoReq;
 	},
-	Pipeline
+	PipelineVoRes
 >("updatePipelineUsingPut", ({ dashboardId, pipelineId, requestBody }) => ({
 	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}`,
 	method: "PUT",
@@ -210,16 +225,22 @@ export interface Commit {
 	timestamp: number;
 }
 
-export interface Dashboard {
+export interface DashboardDetailVo {
 	id: string;
 	name: string;
-	pipelines: Pipeline[];
+	pipelines: PipelineVoRes[];
 	synchronizationTimestamp?: number;
 }
 
 export interface DashboardRequest {
 	dashboardName: string;
-	pipelineRequest: PipelineRequest;
+	pipeline: PipelineVoReq;
+}
+
+export interface DashboardVo {
+	id: string;
+	name: string;
+	synchronizationTimestamp?: number;
 }
 
 export interface DeploymentFrequencyResponse {
@@ -228,6 +249,7 @@ export interface DeploymentFrequencyResponse {
 
 export interface FourKeyMetricsResponse {
 	changeFailureRate: MetricsInfo;
+	deploymentFrequency: MetricsInfo;
 	leadTimeForChange: MetricsInfo;
 	meanTimeToRestore: MetricsInfo;
 }
@@ -257,36 +279,14 @@ export enum MetricsLevel {
 	"MEDIUM" = "MEDIUM",
 }
 
-export interface Pipeline {
-	credential: string;
-	id: string;
-	name: string;
-	type: keyof typeof PipelineType;
-	url: string;
-	username: string;
-}
-
-export interface PipelineRequest {
-	credential: string;
-	name: string;
-	type: keyof typeof PipelineRequestType;
-	url: string;
-	username: string;
-}
-
-export enum PipelineRequestType {
-	"BAMBOO" = "BAMBOO",
-	"JENKINS" = "JENKINS",
+export interface Number {
+	[key: string]: any;
 }
 
 export interface PipelineStagesResponse {
+	pipelineId: string;
 	pipelineName: string;
 	stages: string[];
-}
-
-export enum PipelineType {
-	"BAMBOO" = "BAMBOO",
-	"JENKINS" = "JENKINS",
 }
 
 export interface PipelineVerificationRequest {
@@ -297,6 +297,34 @@ export interface PipelineVerificationRequest {
 }
 
 export enum PipelineVerificationRequestType {
+	"BAMBOO" = "BAMBOO",
+	"JENKINS" = "JENKINS",
+}
+
+export interface PipelineVoReq {
+	credential?: string;
+	id?: string;
+	name?: string;
+	type?: keyof typeof PipelineVoReqType;
+	url?: string;
+	username?: string;
+}
+
+export enum PipelineVoReqType {
+	"BAMBOO" = "BAMBOO",
+	"JENKINS" = "JENKINS",
+}
+
+export interface PipelineVoRes {
+	credential: string;
+	id: string;
+	name: string;
+	type: keyof typeof PipelineVoResType;
+	url: string;
+	username: string;
+}
+
+export enum PipelineVoResType {
 	"BAMBOO" = "BAMBOO",
 	"JENKINS" = "JENKINS",
 }

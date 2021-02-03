@@ -3,9 +3,9 @@ import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
-import { Dashboard, Pipeline } from "../../clients/apis";
+import { DashboardDetailVo, PipelineVoRes } from "../../clients/apis";
 
-const dataSource: Pipeline[] = [
+const dataSource: PipelineVoRes[] = [
 	{
 		id: "1",
 		name: "4km-DEV",
@@ -33,7 +33,7 @@ const dataSource: Pipeline[] = [
 	},
 ];
 
-const ConfigSuccess: FC<{ dashboard: Dashboard }> = ({ dashboard }) => {
+const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
 	return (
 		<div>
 			<div css={{ display: "flex", alignItems: "center", marginBottom: 32 }}>

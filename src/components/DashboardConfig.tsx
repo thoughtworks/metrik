@@ -1,17 +1,17 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
-import { Pipeline } from "../clients/apis";
+import { PipelineVoRes } from "../clients/apis";
 
 const { Column } = Table;
 
 interface DashboardConfigurationProps {
-	pipelines: Pipeline[];
+	pipelines: PipelineVoRes[];
 }
 
 const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelines }) => {
 	return (
-		<Table<Pipeline>
+		<Table<PipelineVoRes>
 			css={{
 				minHeight: 350,
 				".ant-table-cell": { borderBottom: "none" },
@@ -32,9 +32,9 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelines }) => {
 						<RightOutlined onClick={e => onExpand(record, e)} />
 					),
 			}}>
-			<Column<Pipeline> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<Pipeline> width={"35%"} title={"Tool"} dataIndex={"type"} />
-			<Column<Pipeline>
+			<Column<PipelineVoRes> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<PipelineVoRes> width={"35%"} title={"Tool"} dataIndex={"type"} />
+			<Column<PipelineVoRes>
 				width={"35%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -58,8 +58,8 @@ interface ToolConfig {
 	url: string;
 }
 
-const ToolConfig = (config: Pipeline) => {
-	const convertConfig = (config: Pipeline): ToolConfig[] => {
+const ToolConfig = (config: PipelineVoRes) => {
+	const convertConfig = (config: PipelineVoRes): ToolConfig[] => {
 		return [{ id: config.id, type: "Pipelines", tool: config.type, url: config.url }];
 	};
 	const data = convertConfig(config);

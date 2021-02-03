@@ -4,7 +4,11 @@ import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { createDashboardUsingPost, Dashboard, verifyPipelineUsingPost } from "../clients/apis";
+import {
+	verifyPipelineUsingPost,
+	createDashboardAndPipelineUsingPost,
+	DashboardDetailVo,
+} from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -24,13 +28,13 @@ export const PageConfig = () => {
 	const [form] = Form.useForm();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
-	const [dashboard, setDashboard] = useState<Dashboard>();
+	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
 	const onFinish = async (values: ConfigFormValues) => {
 		await verifyPipeline();
-		const response = await createDashboardUsingPost({
+		const response = await createDashboardAndPipelineUsingPost({
 			requestBody: {
 				dashboardName: values.dashboardName,
-				pipelineRequest: {
+				pipeline: {
 					name: values.pipelineName,
 					url: values.pipelineDomain,
 					username: values.username,
