@@ -1,11 +1,10 @@
 package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fourkeymetrics.dashboard.buildPipelineRequest
+import fourkeymetrics.dashboard.buildPipelineResponse
+import fourkeymetrics.dashboard.buildPipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicationService
-import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
-import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
-import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
-import fourkeymetrics.dashboard.model.PipelineType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -27,7 +26,6 @@ internal class PipelineControllerTest {
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
     private val dashboardId = "dashboardId"
-    private val pipelineId = "pipelineId"
 
     @Test
     internal fun `should return OK when verify pipeline successfully`() {
@@ -65,6 +63,7 @@ internal class PipelineControllerTest {
     internal fun `should return PipelineResponse when update pipeline successfully`() {
         val pipelineRequest = buildPipelineRequest()
         val pipelineResponse = buildPipelineResponse()
+        val pipelineId = pipelineResponse.id
         `when`(pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipelineRequest)).thenReturn(
             pipelineResponse
         )
@@ -86,6 +85,7 @@ internal class PipelineControllerTest {
     @Test
     internal fun `should return PipelineResponse when get pipeline successfully`() {
         val pipelineResponse = buildPipelineResponse()
+        val pipelineId = pipelineResponse.id
         `when`(pipelineApplicationService.getPipeline(dashboardId, pipelineId)).thenReturn(pipelineResponse)
 
         mockMvc.perform(
@@ -103,6 +103,7 @@ internal class PipelineControllerTest {
 
     @Test
     internal fun `should return OK when delete pipeline successfully`() {
+        val pipelineId = "pipelineId"
         Mockito.doNothing().`when`(pipelineApplicationService).deletePipeline(dashboardId, pipelineId)
 
         mockMvc.perform(
@@ -111,24 +112,5 @@ internal class PipelineControllerTest {
         ).andExpect(status().isOk)
     }
 
-    private fun buildPipelineResponse(): PipelineResponse {
-        val pipelineResponse = PipelineResponse(
-            id = pipelineId,
-            name = "name",
-            username = "username",
-            credential = "credential",
-            url = "url"
-        )
-        return pipelineResponse.copy()
-    }
 
-    private fun buildPipelineRequest() =
-        PipelineRequest(name = "pipeline", username = "username", credential = "credential", url = "url").copy()
-
-    private fun buildPipelineVerificationRequest() = PipelineVerificationRequest(
-        "url",
-        "username",
-        "credential",
-        PipelineType.JENKINS
-    ).copy()
 }
