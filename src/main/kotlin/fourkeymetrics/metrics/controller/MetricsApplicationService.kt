@@ -51,12 +51,7 @@ class MetricsApplicationService {
         unit: MetricsUnit
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
-        val pipelineStagesMap =
-            pipelineWithStages.stream().map { it.split(":") }.peek {
-                if (it.size < 2) {
-                    throw BadRequestException("Pipeline and stages are not matching")
-                }
-            }.collect(Collectors.toMap({ it[0] }, { it[1] }))
+        val pipelineStagesMap = parsePipelineStagesMap(pipelineWithStages)
         val allBuilds = buildRepository.getAllBuilds(pipelineStagesMap.keys)
         val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
 
@@ -96,6 +91,13 @@ class MetricsApplicationService {
             )
         )
     }
+
+    private fun parsePipelineStagesMap(pipelineWithStages: List<String>) =
+        pipelineWithStages.stream().map { it.split(":") }.peek {
+            if (it.size < 2) {
+                throw BadRequestException("Pipeline and stages are not matching")
+            }
+        }.collect(Collectors.toMap({ it[0] }, { it[1] }))
 
     private fun validateTime(startTimestamp: Long, endTimestamp: Long) {
         if (startTimestamp >= endTimestamp) {
