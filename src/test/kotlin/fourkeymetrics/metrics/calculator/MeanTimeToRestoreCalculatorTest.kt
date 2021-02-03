@@ -145,7 +145,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val averageMTTR =
             meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertThat(averageMTTR).isNaN
+        assertThat(averageMTTR.toDouble()).isNaN
     }
 
 

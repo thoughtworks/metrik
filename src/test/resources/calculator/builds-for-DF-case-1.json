@@ -94,5 +94,101 @@
         "date": "2021-01-30 00:00:00 +0800"
       }
     ]
+  },
+  {
+    "pipelineId": "2",
+    "number": 1,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609459200000,
+    "url": "http://localhost:8001/job/4km-backend/1/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609459200000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609459200000,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 1609459200000,
+        "date": "2021-01-01 00:00:00 +0800"
+      }
+    ]
+  },
+  {
+    "pipelineId": "2",
+    "number": 2,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1610668800000,
+    "url": "http://localhost:8001/job/4km-backend/2/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1610668800000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1610668800000,
+        "durationMillis": 2000,
+        "pauseDurationMillis": 0
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a115678",
+        "msg": "this is a message",
+        "timestamp": 1610668800000,
+        "date": "2021-01-15 00:00:00 +0800"
+      }
+    ]
+  },
+  {
+    "pipelineId": "2",
+    "number": 3,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1611964800000,
+    "url": "http://localhost:8001/job/4km-backend/3/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1611964800000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1611964800000,
+        "durationMillis": 36400000,
+        "pauseDurationMillis": 56400000
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a117899",
+        "msg": "this is a message",
+        "timestamp": 1611964800000,
+        "date": "2021-01-30 00:00:00 +0800"
+      }
+    ]
   }
 ]

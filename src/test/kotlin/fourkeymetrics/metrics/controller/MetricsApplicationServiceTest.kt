@@ -26,7 +26,7 @@ internal class MetricsApplicationServiceTest {
 
     @Mock
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
-    
+
     @Mock
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
@@ -46,7 +46,8 @@ internal class MetricsApplicationServiceTest {
     @Test
     fun `should return correct metric response`() {
         val pipelineId = "pipelineId"
-        val targetStage = "deploy to prod"
+//        val targetStage = "deploy to prod"
+        val targetStage = mutableMapOf<String, String>()
         val startTimestamp: Long = 1
         val endTimestamp: Long = 10
         val expectedBuilds = emptyList<Build>()
@@ -92,11 +93,11 @@ internal class MetricsApplicationServiceTest {
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
 
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
-            pipelineId, targetStage, startTimestamp, endTimestamp, unit
+            emptyList(), startTimestamp, endTimestamp, unit
         )
 
         val fourKeyMetricsResponse2 = metricsApplicationService.retrieve4KeyMetrics(
-            pipelineId, targetStage, startTimestamp, endTimestamp, unit2
+            emptyList(), startTimestamp, endTimestamp, unit2
         )
 
         assertEquals(
@@ -164,8 +165,7 @@ internal class MetricsApplicationServiceTest {
         assertThrows(BadRequestException::class.java
         ) {
             metricsApplicationService.retrieve4KeyMetrics(
-                "pipelineId",
-                "deploy to prod",
+                listOf("pipelineId:deploy to prod"),
                 1,
                 1,
                 MetricsUnit.Fortnightly

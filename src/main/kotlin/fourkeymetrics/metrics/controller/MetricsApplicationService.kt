@@ -3,11 +3,7 @@ package fourkeymetrics.metrics.controller
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
-import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
-import fourkeymetrics.metrics.calculator.DeploymentFrequencyCalculator
-import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
-import fourkeymetrics.metrics.calculator.MetricsCalculator
+import fourkeymetrics.metrics.calculator.*
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
 import fourkeymetrics.metrics.model.Metrics
@@ -69,7 +65,7 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                targetStage,
+                pipelineStagesMap,
                 timeRangeByUnit,
                 unit,
                 deploymentFrequencyCalculator,
@@ -80,7 +76,6 @@ class MetricsApplicationService {
                 endTimestamp,
                 pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 leadTimeForChangeCalculator,
             ),
             generateMetrics(
@@ -89,7 +84,6 @@ class MetricsApplicationService {
                 endTimestamp,
                 pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 meanTimeToRestoreCalculator,
             ),
             generateMetrics(
@@ -98,7 +92,6 @@ class MetricsApplicationService {
                 endTimestamp,
                 pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 changeFailureRateCalculator,
             )
         )
@@ -116,7 +109,6 @@ class MetricsApplicationService {
         endTimeMillis: Long,
         pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
-        unit: MetricsUnit,
         calculator: MetricsCalculator
     ): MetricsInfo {
         val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, pipelineStagesMap)
@@ -139,7 +131,7 @@ class MetricsApplicationService {
         allBuilds: List<Build>,
         startTimeMillis: Long,
         endTimeMillis: Long,
-        targetStage: String,
+        pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
         unit: MetricsUnit,
         calculator: DeploymentFrequencyCalculator
@@ -147,7 +139,7 @@ class MetricsApplicationService {
         val days = getDuration(startTimeMillis, endTimeMillis)
         val deploymentCount = calculator.calculateValue(
             allBuilds, startTimeMillis, endTimeMillis,
-            targetStage
+            pipelineStagesMap
         )
         val factor = if (unit == MetricsUnit.Fortnightly) FORTNIGHT_DURATION else MONTH_DURATION
 
@@ -162,7 +154,7 @@ class MetricsApplicationService {
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
+                    calculator.calculateValue(allBuilds, it.first, it.second, pipelineStagesMap)
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)
