@@ -59,6 +59,10 @@ const headerStyles = css({
 });
 
 const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
+const metricsContainerStyles = css({
+	padding: "37px 35px",
+	background: "#F0F2F5",
+});
 
 interface FormValues {
 	duration: [moment.Moment, moment.Moment];
@@ -144,120 +148,254 @@ export const PageDashboard = () => {
 	};
 
 	return (
-		<div css={containerStyles}>
-			<div css={headerStyles}>
-				<div>
-					{dashboardName && (
-						<EditableText defaultValue={dashboardName} onEditDone={updateDashboardName} />
-					)}
-					<Text type={"secondary"}>The latest available data end at : {lastModifyDateTime}</Text>
-					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
-						{syncing ? "Synchronizing...." : "Sync Data"}
-					</Button>
+		<>
+			<div css={containerStyles}>
+				<div css={headerStyles}>
+					<div>
+						{dashboardName && (
+							<EditableText defaultValue={dashboardName} onEditDone={updateDashboardName} />
+						)}
+						<Text type={"secondary"}>The latest available data end at : {lastModifyDateTime}</Text>
+						<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
+							{syncing ? "Synchronizing...." : "Sync Data"}
+						</Button>
+					</div>
+					<div>
+						<span css={dividerStyles}>
+							<PipelineSetting />
+						</span>
+						<span css={fullScreenStyles}>
+							<FullscreenOutlined css={fullScreenIconStyles} />
+							<Text css={fullScreenTextStyles}>Full Screen</Text>
+						</span>
+					</div>
 				</div>
-				<div>
-					<span css={dividerStyles}>
-						<PipelineSetting />
-					</span>
-					<span css={fullScreenStyles}>
-						<FullscreenOutlined css={fullScreenIconStyles} />
-						<Text css={fullScreenTextStyles}>Full Screen</Text>
-					</span>
+				<div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+					<Form
+						layout={"vertical"}
+						css={{ marginTop: 16, width: "50%" }}
+						initialValues={{
+							duration: [
+								moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
+								moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+							],
+							unit: "Fortnightly",
+						}}
+						onFinish={onFinish}>
+						<Row wrap={false} gutter={12}>
+							<Col>
+								<Form.Item label="Duration" name="duration">
+									<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
+								</Form.Item>
+							</Col>
+							<Col span={10}>
+								<Form.Item label="Pipelines" name="pipelines">
+									<MultipleCascadeSelect
+										options={isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages}
+										defaultValues={
+											!isEmpty(pipelineStages[0]?.children)
+												? [
+														{
+															value: pipelineStages[0]?.value,
+															childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
+														},
+													]
+												: []
+										}
+									/>
+								</Form.Item>
+							</Col>
+							<Col span={4}>
+								<Form.Item label="Unit" name="unit">
+									<Select>
+										<Select.Option value="Fortnightly">Fortnightly</Select.Option>
+										<Select.Option value="Monthly">Monthly</Select.Option>
+									</Select>
+								</Form.Item>
+							</Col>
+							<Col style={{ textAlign: "right" }}>
+								<Form.Item label=" ">
+									<Button htmlType="submit" disabled={syncing}>
+										Apply
+									</Button>
+								</Form.Item>
+							</Col>
+						</Row>
+					</Form>
 				</div>
-			</div>
-			<div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-				<Form
-					layout={"vertical"}
-					css={{ marginTop: 16, width: "50%" }}
-					initialValues={{
-						duration: [
-							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
-							moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
-						],
-						unit: "Fortnightly",
-					}}
-					onFinish={onFinish}>
-					<Row wrap={false} gutter={12}>
-						<Col>
-							<Form.Item label="Duration" name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
-							</Form.Item>
-						</Col>
-						<Col span={10}>
-							<Form.Item label="Pipelines" name="pipelines">
-								<MultipleCascadeSelect
-									options={isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages}
-									defaultValues={
-										!isEmpty(pipelineStages[0]?.children)
-											? [
-													{
-														value: pipelineStages[0]?.value,
-														childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
-													},
-											  ]
-											: []
-									}
-								/>
-							</Form.Item>
-						</Col>
-						<Col span={4}>
-							<Form.Item label="Unit" name="unit">
-								<Select>
-									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
-									<Select.Option value="Monthly">Monthly</Select.Option>
-								</Select>
-							</Form.Item>
-						</Col>
-						<Col style={{ textAlign: "right" }}>
-							<Form.Item label=" ">
-								<Button htmlType="submit" disabled={syncing}>
-									Apply
-								</Button>
-							</Form.Item>
-						</Col>
-					</Row>
-				</Form>
 			</div>
 
-			<MetricsCard
-				title="Mean Lead Time for Change (Days)"
-				summary={{
-					level: "LOW",
-					average: 0.21,
-				}}
-				data={[
-					{
-						name: "Page A",
-						uv: 30,
-					},
-					{
-						name: "Page B",
-						uv: 30,
-					},
-					{
-						name: "Page C",
-						uv: 40,
-					},
-					{
-						name: "Page D",
-						uv: 30,
-					},
-					{
-						name: "Page E",
-						uv: 20,
-					},
-					{
-						name: "Page F",
-						uv: 30,
-					},
-					{
-						name: "Page G",
-						uv: 10,
-					},
-				]}
-				yaxisFormatter={(value: string) => value + "%"}
-				unit="Unit"
-			/>
-		</div>
+			<div css={metricsContainerStyles}>
+				<Row gutter={28}>
+					<Col xs={24} sm={24} md={24} lg={12}>
+						<MetricsCard
+							title="Deployment Frequency (Times)"
+							summary={{
+								level: "LOW",
+								average: 0.21,
+							}}
+							data={[
+								{
+									name: "Page A",
+									uv: 30,
+								},
+								{
+									name: "Page B",
+									uv: 30,
+								},
+								{
+									name: "Page C",
+									uv: 40,
+								},
+								{
+									name: "Page D",
+									uv: 30,
+								},
+								{
+									name: "Page E",
+									uv: 20,
+								},
+								{
+									name: "Page F",
+									uv: 30,
+								},
+								{
+									name: "Page G",
+									uv: 10,
+								},
+							]}
+							yaxisFormatter={(value: string) => value}
+							unit="Times"
+						/>
+					</Col>
+
+					<Col xs={24} sm={24} md={24} lg={12}>
+						<MetricsCard
+							title="Mean Lead Time for Change (Days)"
+							summary={{
+								level: "ELITE",
+								average: 0.21,
+							}}
+							data={[
+								{
+									name: "Page A",
+									uv: 30,
+								},
+								{
+									name: "Page B",
+									uv: 30,
+								},
+								{
+									name: "Page C",
+									uv: 40,
+								},
+								{
+									name: "Page D",
+									uv: 30,
+								},
+								{
+									name: "Page E",
+									uv: 20,
+								},
+								{
+									name: "Page F",
+									uv: 30,
+								},
+								{
+									name: "Page G",
+									uv: 10,
+								},
+							]}
+							yaxisFormatter={(value: string) => value}
+							unit="Days"
+						/>
+					</Col>
+
+					<Col xs={24} sm={24} md={24} lg={12}>
+						<MetricsCard
+							title="Mean Time to Restore Service (Hours)"
+							summary={{
+								level: "HIGH",
+								average: 0.21,
+							}}
+							data={[
+								{
+									name: "Page A",
+									uv: 30,
+								},
+								{
+									name: "Page B",
+									uv: 30,
+								},
+								{
+									name: "Page C",
+									uv: 40,
+								},
+								{
+									name: "Page D",
+									uv: 30,
+								},
+								{
+									name: "Page E",
+									uv: 20,
+								},
+								{
+									name: "Page F",
+									uv: 30,
+								},
+								{
+									name: "Page G",
+									uv: 10,
+								},
+							]}
+							yaxisFormatter={(value: string) => value}
+							unit="Hours"
+						/>
+					</Col>
+
+					<Col xs={24} sm={24} md={24} lg={12}>
+						<MetricsCard
+							title="Change Failure Rate"
+							summary={{
+								level: "MEDIUM",
+								average: 0.21,
+							}}
+							data={[
+								{
+									name: "Page A",
+									uv: 30,
+								},
+								{
+									name: "Page B",
+									uv: 30,
+								},
+								{
+									name: "Page C",
+									uv: 40,
+								},
+								{
+									name: "Page D",
+									uv: 30,
+								},
+								{
+									name: "Page E",
+									uv: 20,
+								},
+								{
+									name: "Page F",
+									uv: 30,
+								},
+								{
+									name: "Page G",
+									uv: 10,
+								},
+							]}
+							yaxisFormatter={(value: string) => value + "%"}
+							unit="Percentage"
+						/>
+					</Col>
+				</Row>
+			</div>
+		</>
 	);
 };

@@ -6,7 +6,7 @@ enum MetricsLevelColor {
 	LOW = "#A61D24",
 	ELITE = "#49AA19",
 	HIGH = "#1890FF",
-	MEDIUM = "#D89614",
+	MEDIUM = "#FAAD14",
 	INVALID = "#BFBFBF",
 }
 
@@ -16,6 +16,7 @@ const containerStyles = css({
 	backgroundColor: "#FFFFFF",
 	border: "1px solid #F0F0F0",
 	padding: "32px 24px",
+	marginBottom: "24px",
 });
 const titleStyles = css({
 	marginBottom: "17px",
