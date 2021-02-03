@@ -31,10 +31,10 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 32847923847L
         val endTimestamp = 328479237899L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
-            leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, emptyMap())
 
         assertEquals(Double.NaN, leadTimeForChangeValue)
     }
@@ -50,7 +50,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 0L
         val endTimestamp = 20L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -70,7 +70,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 8L
         val endTimestamp = 20L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -90,7 +90,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 1L
         val endTimestamp = 8L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -112,7 +112,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 10L
         val endTimestamp = 14L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -133,7 +133,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 11L
         val endTimestamp = 13L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -152,7 +152,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 8L
         val endTimestamp = 8L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -174,7 +174,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 16L
         val endTimestamp = 18L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -199,7 +199,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 13L
         val endTimestamp = 26L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -225,7 +225,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 13L
         val endTimestamp = 26L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -250,7 +250,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 13L
         val endTimestamp = 26L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -273,7 +273,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 13L
         val endTimestamp = 17L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
@@ -301,7 +301,7 @@ internal class LeadTimeForChangeCalculatorTest {
         )
         val startTimestamp = 13L
         val endTimestamp = 49L
-        val targetStage = "deploy to prod"
+        val targetStage = emptyMap<String, String>()
 
         val leadTimeForChangeValue =
             leadTimeForChangeCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
