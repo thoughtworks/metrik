@@ -38,7 +38,7 @@ RUN mv -f /usr/local/bin/docker-entrypoint.sh /app/mongo.sh
 ENV APP_ENV local
 
 COPY /tmp/workspace/run.sh /app/4km-service.sh
-COPY /tmp/workspace/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
+COPY /tmp/workspace/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
 
 # FRONTEND and Nginx
 COPY /tmp/workspace/dist /var/www/html
