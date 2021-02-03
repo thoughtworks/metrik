@@ -24,6 +24,7 @@ import {
 	momentObjToEndTimeStamp,
 } from "../utils/timeFormats";
 import { isEmpty } from "lodash";
+import { LineChart } from "../components/LineChart";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -217,6 +218,41 @@ export const PageDashboard = () => {
 					</Row>
 				</Form>
 			</div>
+
+			<LineChart
+				data={[
+					{
+						name: "Page A",
+						uv: 30,
+					},
+					{
+						name: "Page B",
+						uv: 30,
+					},
+					{
+						name: "Page C",
+						uv: 40,
+					},
+					{
+						name: "Page D",
+						uv: 30,
+					},
+					{
+						name: "Page E",
+						uv: 20,
+					},
+					{
+						name: "Page F",
+						uv: 30,
+					},
+					{
+						name: "Page G",
+						uv: 10,
+					},
+				]}
+				yaxisFormatter={(value: string) => value + "%"}
+				unit="Unit"
+			/>
 		</div>
 	);
 };
