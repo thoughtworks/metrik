@@ -65,7 +65,7 @@ jobs:
             fi
 
       - persist_to_workspace:
-          root: /tmp/workspace/4km-service/
+          root: ./
           paths:
             - run.sh
             - build/libs/sea-4-key-metrics-service-*.jar
@@ -124,9 +124,8 @@ jobs:
           name: Modify Nginx config
           command: sed -i "${NGINX_MODIFY_REGEX}" nginx.conf
 
-
       - persist_to_workspace:
-          root: /tmp/workspace/4km-dashboard/
+          root: ./
           paths:
             - dist
             - nginx.conf
@@ -137,10 +136,16 @@ jobs:
     resource_class: small
 
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+
 
       - checkout
+
+      - run:
+          name: Create attached workspace folder
+          command: /tmp/workspace
+
+      - attach_workspace:
+          at: /tmp/workspace
 
       - setup_remote_docker:
           version: 19.03.13
