@@ -96,7 +96,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					...res,
 					[val]: {
 						value: val,
-						childValue: childOptions[childOptions.length - 1]?.value || state[val]?.childValue,
+						childValue: state[val]?.childValue || childOptions[childOptions.length - 1]?.value,
 					},
 				};
 			}, {}),
