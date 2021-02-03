@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form, Radio } from "antd";
+import { Typography, Button, DatePicker, Row, Col, Form, Select } from "antd";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
@@ -75,7 +75,7 @@ export const PageDashboard = () => {
 			dashboardId,
 		})
 			.then(() => {
-				window.location.reload();
+				getPipelineStages();
 			})
 			.finally(() => {
 				setSyncing(false);
@@ -88,13 +88,7 @@ export const PageDashboard = () => {
 			requestBody: name,
 		});
 
-	useEffect(() => {
-		getLastSynchronizationUsingGet({ dashboardId }).then(resp => {
-			setLastModifyDateTime(formatLastUpdateTime(resp?.synchronizationTimestamp));
-			if (!resp?.synchronizationTimestamp) {
-				syncBuilds();
-			}
-		});
+	const getPipelineStages = () => {
 		getPipelineStagesUsingGet({ dashboardId }).then(resp => {
 			setPipelineStages(
 				resp.map((v: PipelineStagesResponse) => ({
@@ -107,6 +101,16 @@ export const PageDashboard = () => {
 				}))
 			);
 		});
+	};
+
+	useEffect(() => {
+		getLastSynchronizationUsingGet({ dashboardId }).then(resp => {
+			setLastModifyDateTime(formatLastUpdateTime(resp?.synchronizationTimestamp));
+			if (!resp?.synchronizationTimestamp) {
+				syncBuilds();
+			}
+		});
+		getPipelineStages();
 	}, []);
 
 	return (
@@ -168,6 +172,14 @@ export const PageDashboard = () => {
 								/>
 							</Form.Item>
 						</Col>
+						<Col span={4}>
+							<Form.Item label="Unit" name="unit">
+								<Select defaultValue="fortnightly">
+									<Select.Option value="fortnightly">Fortnightly</Select.Option>
+									<Select.Option value="monthly">Monthly</Select.Option>
+								</Select>
+							</Form.Item>
+						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item label=" ">
 								<Button htmlType="submit" disabled={syncing}>
@@ -177,11 +189,6 @@ export const PageDashboard = () => {
 						</Col>
 					</Row>
 				</Form>
-
-				<Radio.Group defaultValue="fortnightly">
-					<Radio.Button value="fortnightly">Fortnightly</Radio.Button>
-					<Radio.Button value="monthly">Monthly</Radio.Button>
-				</Radio.Group>
 			</div>
 		</div>
 	);

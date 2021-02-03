@@ -1,11 +1,12 @@
 import { Checkbox, Row, Col, Radio, Tag, Typography } from "antd";
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, FC, useRef } from "react";
 import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
 import Trigger from "rc-trigger";
 import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import Overflow from "rc-overflow";
+import { isEqual } from "lodash";
 
 const { Text } = Typography;
 
@@ -40,6 +41,16 @@ const popupContainerStyles = css({
 const findOptionByValue = (options: Option[], value?: string): Option | undefined =>
 	options.find(o => o.value === value);
 
+function usePrevious(value: any) {
+	const ref = useRef();
+
+	useEffect(() => {
+		ref.current = value;
+	}, [value]);
+
+	return ref.current;
+}
+
 export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	onChange,
 	defaultValues = [],
@@ -57,6 +68,14 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 
 	const [visibleMap, setVisibleMap] = useState<{ [key: string]: boolean }>(defaultVisibleMap);
 	const [cascadeValue, setCascadeValue] = useState<CascadeValue>({});
+
+	const prevDefaultValues = usePrevious(defaultValues);
+
+	useEffect(() => {
+		if (prevDefaultValues && !isEqual(defaultValues, prevDefaultValues)) {
+			setCheckedValues(defaultValues.map(o => o.value));
+		}
+	}, [defaultValues]);
 
 	useEffect(() => {
 		setVisibleMap(state => ({
@@ -77,7 +96,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					...res,
 					[val]: {
 						value: val,
-						childValue: state[val]?.childValue || childOptions[childOptions.length - 1]?.value,
+						childValue: childOptions[childOptions.length - 1]?.value || state[val]?.childValue,
 					},
 				};
 			}, {}),
