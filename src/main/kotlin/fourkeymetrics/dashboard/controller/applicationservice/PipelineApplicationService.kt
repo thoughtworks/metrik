@@ -33,6 +33,7 @@ class PipelineApplicationService {
         }
     }
 
+    // todo[Rong & Binfang]: need to verify whether the pipleline name already exist
     fun createPipeline(dashboardId: String, pipelineResponse: PipelineRequest): PipelineResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
 
@@ -64,6 +65,7 @@ class PipelineApplicationService {
     }
 
 
+    // todo[Rong & Binfang]: need to delete builds
     fun deletePipeline(dashboardId: String, pipelineId: String) {
         findAndValidatePipeline(dashboardId, pipelineId)
         pipelineRepository.deleteById(pipelineId)
