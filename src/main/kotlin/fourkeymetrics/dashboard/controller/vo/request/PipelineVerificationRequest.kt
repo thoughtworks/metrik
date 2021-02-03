@@ -1,4 +1,4 @@
-package fourkeymetrics.dashboard.controller.vo
+package fourkeymetrics.dashboard.controller.vo.request
 
 import fourkeymetrics.dashboard.model.PipelineType
 

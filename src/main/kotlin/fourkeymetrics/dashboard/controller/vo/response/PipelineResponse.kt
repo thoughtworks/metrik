@@ -1,10 +1,10 @@
-package fourkeymetrics.dashboard.controller.vo
+package fourkeymetrics.dashboard.controller.vo.response
 
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import org.apache.logging.log4j.util.Strings
 
-class PipelineVo(
+class PipelineResponse(
     val id: String = Strings.EMPTY,
     val name: String = Strings.EMPTY,
     val username: String = Strings.EMPTY,
@@ -13,8 +13,8 @@ class PipelineVo(
     var type: PipelineType = PipelineType.JENKINS
 ) {
     companion object {
-        fun buildFrom(pipeline: Pipeline): PipelineVo {
-            return PipelineVo(
+        fun buildFrom(pipeline: Pipeline): PipelineResponse {
+            return PipelineResponse(
                 pipeline.id,
                 pipeline.name,
                 pipeline.username,

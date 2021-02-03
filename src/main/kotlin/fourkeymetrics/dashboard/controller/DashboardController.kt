@@ -1,10 +1,10 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
-import fourkeymetrics.dashboard.controller.vo.DashboardDetailVo
-import fourkeymetrics.dashboard.controller.vo.DashboardRequest
-import fourkeymetrics.dashboard.controller.vo.DashboardVo
-import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
+import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
+import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -26,24 +26,24 @@ class DashboardController {
 
     @GetMapping("/dashboard")
     @ResponseStatus(HttpStatus.OK)
-    fun getDashboards(): List<DashboardVo> {
+    fun getDashboards(): List<DashboardResponse> {
         return dashboardApplicationService.getDashboards()
     }
 
     @GetMapping("/dashboard/{dashboardId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getDashboard(@PathVariable dashboardId: String): DashboardVo {
-        return dashboardApplicationService.getDashboard(dashboardId)
+    fun getDashboardDetails(@PathVariable dashboardId: String): DashboardDetailResponse {
+        return dashboardApplicationService.getDashboardDetails(dashboardId)
     }
 
     @PostMapping("/dashboard")
-    fun createDashboardAndPipeline(@RequestBody dashboardRequest: DashboardRequest): DashboardDetailVo {
+    fun createDashboardAndPipeline(@RequestBody dashboardRequest: DashboardRequest): DashboardDetailResponse {
         return dashboardApplicationService.createDashboardAndPipeline(dashboardRequest)
     }
 
     @PutMapping("/dashboard/{dashboardId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody dashboardName: String): DashboardVo {
+    fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody dashboardName: String): DashboardResponse {
         return dashboardApplicationService.updateDashboardName(dashboardId, dashboardName)
     }
 

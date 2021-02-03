@@ -1,7 +1,8 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
-import fourkeymetrics.dashboard.controller.vo.PipelineVo
+import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
+import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
+import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
@@ -32,34 +33,34 @@ class PipelineApplicationService {
         }
     }
 
-    fun createPipeline(dashboardId: String, pipelineVo: PipelineVo): PipelineVo {
+    fun createPipeline(dashboardId: String, pipelineResponse: PipelineRequest): PipelineResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
 
         val pipeline = Pipeline(
             ObjectId().toString(),
             dashboard.id,
-            pipelineVo.name,
-            pipelineVo.username,
-            pipelineVo.credential,
-            pipelineVo.url,
-            pipelineVo.type
+            pipelineResponse.name,
+            pipelineResponse.username,
+            pipelineResponse.credential,
+            pipelineResponse.url,
+            pipelineResponse.type
         )
 
-        return PipelineVo.buildFrom(pipelineRepository.save(pipeline))
+        return PipelineResponse.buildFrom(pipelineRepository.save(pipeline))
     }
 
-    fun updatePipeline(dashboardId: String, pipelineId: String, pipelineVo: PipelineVo): PipelineVo {
+    fun updatePipeline(dashboardId: String, pipelineId: String, pipelineResponse: PipelineRequest): PipelineResponse {
         findAndValidatePipeline(dashboardId, pipelineId)
 
         val pipeline =
-            with(pipelineVo) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
+            with(pipelineResponse) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
 
-        return PipelineVo.buildFrom(pipelineRepository.save(pipeline))
+        return PipelineResponse.buildFrom(pipelineRepository.save(pipeline))
     }
 
-    fun getPipeline(dashboardId: String, pipelineId: String): PipelineVo {
+    fun getPipeline(dashboardId: String, pipelineId: String): PipelineResponse {
         val pipeline = findAndValidatePipeline(dashboardId, pipelineId)
-        return PipelineVo.buildFrom(pipeline)
+        return PipelineResponse.buildFrom(pipeline)
     }
 
 

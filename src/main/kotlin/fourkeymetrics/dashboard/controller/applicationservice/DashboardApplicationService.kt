@@ -1,9 +1,9 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.controller.vo.DashboardDetailVo
-import fourkeymetrics.dashboard.controller.vo.DashboardRequest
-import fourkeymetrics.dashboard.controller.vo.DashboardVo
-import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
+import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
+import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
@@ -29,7 +29,7 @@ class DashboardApplicationService {
 
 
     @Transactional
-    fun createDashboardAndPipeline(dashboardRequest: DashboardRequest): DashboardDetailVo {
+    fun createDashboardAndPipeline(dashboardRequest: DashboardRequest): DashboardDetailResponse {
         val dashboardName = dashboardRequest.dashboardName
         if (dashboardRepository.dashboardWithGivenNameExist(dashboardName)) {
             throw DashboardNameDuplicateException()
@@ -45,18 +45,18 @@ class DashboardApplicationService {
             listOf(Pipeline(ObjectId().toString(), dashboard.id, name, username, credential, url, type))
 
         }
-        return DashboardDetailVo.buildFrom(dashboard, pipelineRepository.saveAll(pipelines))
+        return DashboardDetailResponse.buildFrom(dashboard, pipelineRepository.saveAll(pipelines))
     }
 
-    fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardVo {
+    fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
         dashboard.name = dashboardName
-        return DashboardVo.buildFrom(dashboardRepository.save(dashboard))
+        return DashboardResponse.buildFrom(dashboardRepository.save(dashboard))
     }
 
 
-    fun getDashboards(): List<DashboardVo> {
-        return dashboardRepository.findAll().map { DashboardVo.buildFrom(it) }
+    fun getDashboards(): List<DashboardResponse> {
+        return dashboardRepository.findAll().map { DashboardResponse.buildFrom(it) }
     }
 
     @Transactional
@@ -65,17 +65,18 @@ class DashboardApplicationService {
         dashboardRepository.deleteById(dashboardId)
     }
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        val dashboard = getDashboard(dashboardId)
+        val dashboard = getDashboardDetails(dashboardId)
 
         return pipelineRepository.findByDashboardId(dashboard.id).parallelStream().map {
             PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id),)
         }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
     }
 
-    fun getDashboard(dashboardId: String): DashboardVo {
+    fun getDashboardDetails(dashboardId: String): DashboardDetailResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
+        val pipelines =  pipelineRepository.findByDashboardId(dashboardId)
 
-        return DashboardVo.buildFrom(dashboard)
+        return DashboardDetailResponse.buildFrom(dashboard, pipelines)
     }
 
 }

@@ -1,8 +1,9 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicationService
-import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
-import fourkeymetrics.dashboard.controller.vo.PipelineVo
+import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
+import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
+import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -31,8 +32,8 @@ class PipelineController {
     @PostMapping("/dashboard/{dashboardId}/pipeline")
     fun createPipeline(
         @PathVariable("dashboardId") dashboardId: String,
-        @RequestBody pipeline: PipelineVo
-    ): PipelineVo {
+        @RequestBody pipeline: PipelineRequest
+    ): PipelineResponse {
         return pipelineApplicationService.createPipeline(dashboardId, pipeline)
     }
 
@@ -40,8 +41,8 @@ class PipelineController {
     fun updatePipeline(
         @PathVariable("dashboardId") dashboardId: String,
         @PathVariable("pipelineId") pipelineId: String,
-        @RequestBody pipeline: PipelineVo
-    ): PipelineVo {
+        @RequestBody pipeline: PipelineRequest
+    ): PipelineResponse {
         return pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipeline)
     }
 
@@ -49,7 +50,7 @@ class PipelineController {
     fun getPipeline(
         @PathVariable("dashboardId") dashboardId: String,
         @PathVariable("pipelineId") pipelineId: String
-    ): PipelineVo {
+    ): PipelineResponse {
         return pipelineApplicationService.getPipeline(dashboardId, pipelineId)
     }
 
