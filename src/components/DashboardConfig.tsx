@@ -7,9 +7,15 @@ const { Column } = Table;
 
 interface DashboardConfigurationProps {
 	pipelines: PipelineVoRes[];
+	showDelete?: boolean;
+	showAddPipeline?: boolean;
 }
 
-const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelines }) => {
+const DashboardConfig: FC<DashboardConfigurationProps> = ({
+	pipelines,
+	showDelete = false,
+	showAddPipeline = true,
+}) => {
 	return (
 		<Table<PipelineVoRes>
 			css={{
@@ -38,13 +44,20 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({ pipelines }) => {
 				width={"35%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-						Actions <Button type={"link"}>+Add Pipeline</Button>
+						Actions {showAddPipeline && <Button type={"link"}>+Add Pipeline</Button>}
 					</div>
 				)}
 				render={() => (
-					<Button type={"link"} css={{ padding: 4 }}>
-						Config
-					</Button>
+					<>
+						<Button type={"link"} css={{ padding: "8px 8px 8px 0" }}>
+							Config
+						</Button>
+						{showDelete && (
+							<Button type={"link"} danger={true} css={{ padding: 8 }}>
+								Delete
+							</Button>
+						)}
+					</>
 				)}
 			/>
 		</Table>

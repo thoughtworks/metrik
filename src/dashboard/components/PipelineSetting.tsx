@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { DownloadOutlined, PlusOutlined, SettingOutlined, UploadOutlined } from "@ant-design/icons";
 import { css } from "@emotion/react";
 import { Button, Modal, Typography } from "antd";
+import DashboardConfig from "../../components/DashboardConfig";
 
 const settingStyles = css({
 	fontSize: 16,
@@ -28,6 +29,9 @@ const PipelineSetting: FC = () => {
 				<Text css={settingTextStyles}>Pipeline Setting</Text>
 			</span>
 			<Modal
+				bodyStyle={{
+					padding: 0,
+				}}
 				width={896}
 				title={
 					<div
@@ -64,9 +68,20 @@ const PipelineSetting: FC = () => {
 				closable={false}
 				visible={visible}
 				onCancel={handleToggleVisible}>
-				<p>Some contents...</p>
-				<p>Some contents...</p>
-				<p>Some contents...</p>
+				<DashboardConfig
+					showDelete={true}
+					showAddPipeline={false}
+					pipelines={[
+						{
+							id: "601a448aafe56915934375e7",
+							name: "string",
+							username: "string",
+							credential: "string",
+							url: "string",
+							type: "BAMBOO",
+						},
+					]}
+				/>
 			</Modal>
 		</>
 	);
