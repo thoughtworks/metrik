@@ -200,6 +200,17 @@ internal class MeanTimeToRestoreCalculatorTest {
     }
 
     @Test
+    internal fun `should return NO_VALUE given no builds`() {
+        val startTimestamp = 1609459200000L // 2021.01.01
+        val endTimestamp = 1609689600000L // 2021.01.04
+        val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
+
+        val mttr = meanTimeToRestoreCalculator.calculateValue(emptyList(), startTimestamp, endTimestamp, targetStage)
+
+        assertEquals(mttr, Double.NaN)
+    }
+
+    @Test
     internal fun `should return elite while MTTR less than 1 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5 * MILLISECOND_TO_HOURS)
 

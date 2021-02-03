@@ -23,6 +23,7 @@ class MetricsApplicationService {
     companion object {
         private const val FORTNIGHT_DURATION: Int = 14
         private const val MONTH_DURATION: Int = 30
+        private const val DELIMITER = "::"
     }
 
 
@@ -93,7 +94,7 @@ class MetricsApplicationService {
     }
 
     private fun parsePipelineStagesMap(pipelineWithStages: List<String>) =
-        pipelineWithStages.stream().map { it.split(":") }.peek {
+        pipelineWithStages.stream().map { it.split(DELIMITER, limit = 2) }.peek {
             if (it.size < 2) {
                 throw BadRequestException("Pipeline and stages are not matching")
             }

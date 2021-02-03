@@ -26,12 +26,16 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         val (totalTimes, restoreTimes) = allBuilds
             .groupBy { it.pipelineId }
             .map {
-
                 val selectedStages =
                     findSelectedStages(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key])
                 calculateTotalTimesAndRestoredTimes(selectedStages)
             }
-            .reduce { result, current -> Pair(result.first + current.first, result.second + current.second) }
+            .stream().reduce(Pair(0.0, 0)) { result, current ->
+                Pair(
+                    result.first + current.first,
+                    result.second + current.second
+                )
+            }
 
         if (restoreTimes > 0) {
             return totalTimes / restoreTimes

@@ -24,7 +24,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     ): Number {
         val statusCountMap = allBuilds.groupBy { it.pipelineId }
             .map { getStatusCountMap(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key]) }
-            .reduce(this::mergeMap)
+            .stream().reduce(mutableMapOf(), this::mergeMap)
 
         val totalCount = statusCountMap.values.sum()
         return if (totalCount > 0) {

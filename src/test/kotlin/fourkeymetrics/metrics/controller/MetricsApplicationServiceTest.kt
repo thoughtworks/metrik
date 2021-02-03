@@ -47,7 +47,7 @@ internal class MetricsApplicationServiceTest {
     fun `should return correct metric response`() {
         val pipelineId = "pipelineId"
         val stage = "stage"
-        val pipelineStages = listOf("$pipelineId:$stage")
+        val pipelineStages = listOf("$pipelineId::$stage")
         val targetStage = mapOf(Pair(pipelineId, stage))
         val startTimestamp: Long = 1
         val endTimestamp: Long = 10
@@ -166,9 +166,22 @@ internal class MetricsApplicationServiceTest {
         assertThrows(BadRequestException::class.java
         ) {
             metricsApplicationService.retrieve4KeyMetrics(
-                listOf("pipelineId:deploy to prod"),
+                listOf("pipelineId::deploy to prod"),
                 1,
                 1,
+                MetricsUnit.Fortnightly
+            )
+        }
+    }
+
+    @Test
+    fun `should throw bad request given pipeline stage not match`() {
+        assertThrows(BadRequestException::class.java
+        ) {
+            metricsApplicationService.retrieve4KeyMetrics(
+                listOf("pipelineId"),
+                1,
+                2,
                 MetricsUnit.Fortnightly
             )
         }
