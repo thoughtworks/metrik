@@ -15,17 +15,27 @@ interface LineChartProps {
 	unit: string;
 }
 
+const domainMaximizeRatio = 1.1;
+
 export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit }) => (
 	<ResponsiveContainer width="100%" height={300}>
 		<RechartsLineChart data={data}>
 			<CartesianGrid stroke="#416180" strokeWidth={0.5} strokeOpacity={0.151934} vertical={false} />
-			<XAxis dataKey="name" stroke="#416180" strokeWidth={0.5} strokeOpacity={0.45} />
+			<XAxis
+				dataKey="name"
+				stroke="#416180"
+				strokeWidth={0.5}
+				strokeOpacity={0.45}
+				padding={{ left: 20, right: 20 }}
+			/>
 			<YAxis
 				tickFormatter={yaxisFormatter}
 				axisLine={false}
 				label={{ value: unit, angle: -90, position: "insideLeft" }}
+				tickLine={false}
+				domain={[0, (dataMax: number) => Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10]}
 			/>
-			<Tooltip />
+			<Tooltip formatter={yaxisFormatter} />
 			<Line
 				type="monotone"
 				dataKey="value"
@@ -34,7 +44,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit }) =>
 				fill="#000000"
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				label={{ position: "top" }}
+				label={{ position: "top", formatter: yaxisFormatter }}
 			/>
 		</RechartsLineChart>
 	</ResponsiveContainer>
