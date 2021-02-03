@@ -10,7 +10,7 @@ jobs:
       - image: circleci/openjdk:11.0.8-jdk
         environment:
           TZ: "Asia/Shanghai"
-      resource_class: medium
+    resource_class: medium
 
     steps:
       - add_ssh_keys:
