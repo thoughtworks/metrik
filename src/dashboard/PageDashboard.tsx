@@ -21,6 +21,7 @@ import {
 	momentObjToStartTimeStamp,
 	momentObjToEndTimeStamp,
 } from "../utils/timeFormats";
+import { isEmpty } from "lodash";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -181,7 +182,7 @@ export const PageDashboard = () => {
 								<MultipleCascadeSelect
 									options={pipelineStages}
 									defaultValues={
-										pipelineStages.length > 0
+										!isEmpty(pipelineStages[0]?.children)
 											? [
 													{
 														value: pipelineStages[0]?.value,
