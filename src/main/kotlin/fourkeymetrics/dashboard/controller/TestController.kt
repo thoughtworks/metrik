@@ -27,7 +27,7 @@ class TestController {
         @PathVariable dashboardId: String,
         @PathVariable pipelineId: String
     ): List<Build> {
-        return jenkinsPipelineService.syncBuilds(dashboardId, pipelineId)
+        return jenkinsPipelineService.syncBuilds(pipelineId)
     }
 
     @GetMapping("/test")

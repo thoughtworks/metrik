@@ -1,7 +1,7 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.model.Pipeline
-import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.DashboardRepository1
+import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.exception.ApplicationException
 import org.slf4j.LoggerFactory
@@ -17,20 +17,21 @@ class SynchronizationApplicationService {
     private lateinit var pipelineService: PipelineService
 
     @Autowired
-    private lateinit var dashboardRepository: DashboardRepository
+    private lateinit var dashboardRepository: DashboardRepository1
+
+    @Autowired
+    private lateinit var pipelineRepository: PipelineRepository
 
 
     fun synchronize(dashboardId: String): Long? {
-        if (!isDashboardExist(dashboardId)) {
-            throw ApplicationException(HttpStatus.NOT_FOUND, "Dashboard ID not exist")
-        }
+        val dashboard = dashboardRepository.findById(dashboardId)
 
         val currentTimeMillis = System.currentTimeMillis()
-        val pipelines = getPipelines(dashboardId)
+        val pipelines = pipelineRepository.findByDashboardId(dashboard.id)
 
         pipelines.parallelStream().forEach {
             try {
-                pipelineService.syncBuilds(dashboardId, it.id)
+                pipelineService.syncBuilds(it.id)
             } catch (e: RuntimeException) {
                 logger.error("Synchronize failed for pipeline [${it.id}], error message: [${e.message}]")
                 throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronize failed")
@@ -41,19 +42,7 @@ class SynchronizationApplicationService {
     }
 
     fun getLastSyncTimestamp(dashboardId: String): Long? {
-        if (!isDashboardExist(dashboardId)) {
-            throw ApplicationException(HttpStatus.NOT_FOUND, "Dashboard ID not exist")
-        }
-
-        return dashboardRepository.getLastSyncRecord(dashboardId)
-    }
-
-    private fun getPipelines(dashboardId: String): List<Pipeline> {
-        return dashboardRepository.getPipelineConfiguration(dashboardId)
-    }
-
-    private fun isDashboardExist(dashboardId: String): Boolean {
-        dashboardRepository.getDashBoardDetailById(dashboardId) ?: return false
-        return true
+        val dashboard = dashboardRepository.findById(dashboardId)
+        return dashboard.synchronizationTimestamp
     }
 }

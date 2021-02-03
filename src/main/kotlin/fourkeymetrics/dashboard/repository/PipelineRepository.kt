@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 
-@SuppressWarnings("TooManyFunctions")
 @Component
 class PipelineRepository {
 

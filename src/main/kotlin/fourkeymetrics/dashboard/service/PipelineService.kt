@@ -2,21 +2,13 @@ package fourkeymetrics.dashboard.service
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.repository.BuildRepository
-import fourkeymetrics.dashboard.repository.DashboardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 abstract class PipelineService {
     @Autowired
-    private lateinit var dashboardRepository: DashboardRepository
-
-    @Autowired
     private lateinit var buildRepository: BuildRepository
-
-    fun hasPipeline(dashboardId: String, pipelineId: String): Boolean {
-        return dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId) != null
-    }
 
     fun hasStageInTimeRange(
         pipelineId: String, targetStage: String, startTimestamp: Long,
@@ -33,7 +25,7 @@ abstract class PipelineService {
             .any { it.name == targetStage }
     }
 
-    abstract fun syncBuilds(dashboardId: String, pipelineId: String): List<Build>
+    abstract fun syncBuilds(pipelineId: String): List<Build>
 
     abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 

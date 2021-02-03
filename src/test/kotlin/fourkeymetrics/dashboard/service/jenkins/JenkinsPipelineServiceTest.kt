@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.repository.BuildRepository
-import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.PipelineRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
@@ -26,12 +24,8 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.request
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestTemplate
 
-
 @ExtendWith(SpringExtension::class)
-@Import(
-    JenkinsPipelineService::class, DashboardRepository::class, BuildRepository::class, ObjectMapper::class,
-    RestTemplate::class
-)
+@Import(JenkinsPipelineService::class, BuildRepository::class, ObjectMapper::class, RestTemplate::class)
 @RestClientTest
 internal class JenkinsPipelineServiceTest {
     @Autowired
@@ -44,39 +38,14 @@ internal class JenkinsPipelineServiceTest {
     private lateinit var restTemplate: RestTemplate
 
     @MockBean
-    private lateinit var dashboardRepository: DashboardRepository
+    private lateinit var pipelineRepository: PipelineRepository
 
     @MockBean
     private lateinit var buildRepository: BuildRepository
 
-    @Test
-    internal fun `should return true given pipeline exits in database`() {
-        val dashboardId = "dashboard ID"
-        val pipelineId = "fake pipeline"
-
-        `when`(
-            dashboardRepository.getPipelineConfiguration(
-                dashboardId,
-                pipelineId
-            )
-        ).thenReturn(Pipeline())
-
-        assertThat(jenkinsPipelineService.hasPipeline(dashboardId, pipelineId)).isTrue
-    }
-
-    @Test
-    internal fun `should return false given pipeline not exits in database`() {
-        val dashboardId = "dashboard ID"
-        val pipelineId = "fake pipeline"
-
-        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(null)
-
-        assertThat(jenkinsPipelineService.hasPipeline(dashboardId, pipelineId)).isFalse
-    }
 
     @Test
     internal fun `should return all builds from Jenkins given pipeline ID`() {
-        val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
@@ -86,7 +55,7 @@ internal class JenkinsPipelineServiceTest {
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
-        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(
+        `when`(pipelineRepository.findById(pipelineId)).thenReturn(
             Pipeline(
                 username = username,
                 credential = credential,
@@ -110,7 +79,7 @@ internal class JenkinsPipelineServiceTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
-        val allBuilds = jenkinsPipelineService.syncBuilds(dashboardId, pipelineId)
+        val allBuilds = jenkinsPipelineService.syncBuilds(pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
     }
@@ -118,7 +87,6 @@ internal class JenkinsPipelineServiceTest {
 
     @Test
     internal fun `should return builds with previous status is building null or not exits in DB from Jenkins given pipeline ID`() {
-        val dashboardId = "dashboard ID"
         val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
@@ -129,7 +97,7 @@ internal class JenkinsPipelineServiceTest {
         val getBuild2DetailUrl = "$baseUrl/2/wfapi/describe"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
-        `when`(dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)).thenReturn(
+        `when`(pipelineRepository.findById(pipelineId)).thenReturn(
             Pipeline(
                 username = username,
                 credential = credential,
@@ -210,31 +178,4 @@ internal class JenkinsPipelineServiceTest {
         assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
         assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
     }
-
-//    @Test
-//    internal fun `should return all pipeline stages ordered by ASCII when there are two pipelines in one dashboard`() {
-//        val dashboardId = "1"
-//        val pipelines: List<Pipeline> = listOf(
-//            Pipeline("2", "5km"),
-//            Pipeline("1", "4km")
-//        )
-//        `when`(dashboardRepository.getPipelinesByDashboardId(dashboardId)).thenReturn(pipelines)
-//
-//        val buildsPipeline1: List<Build> = ObjectMapper().readValue(
-//            this.javaClass.getResource("/repository/builds-for-pipeline-id-1.json").readText()
-//        )
-//        `when`(buildRepository.getAllBuilds("1")).thenReturn(buildsPipeline1)
-//        val buildsForPipeline2: List<Build> = ObjectMapper().readValue(
-//            this.javaClass.getResource("/repository/builds-for-pipeline-id-2.json").readText()
-//        )
-//        `when`(buildRepository.getAllBuilds("2")).thenReturn(buildsForPipeline2)
-//
-//        val actualPipelineStages = jenkinsPipelineService.getPipelineStages(dashboardId)
-//
-//        val expectedPipelineStages = listOf(
-//            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-PROD", "4km-UAT")),
-//            PipelineStagesResponse("5km", listOf("5km-BUILD", "5km-DEV", "5km-PROD", "5km-UAT"))
-//        )
-//        assertEquals(expectedPipelineStages, actualPipelineStages)
-//    }
 }

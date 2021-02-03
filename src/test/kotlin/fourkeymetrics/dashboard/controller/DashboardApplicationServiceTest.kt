@@ -2,16 +2,9 @@ package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
-import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
-import fourkeymetrics.dashboard.exception.DashboardNotFoundException
-import fourkeymetrics.dashboard.model.Dashboard
-import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.DashboardRepository1
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
@@ -27,7 +20,7 @@ class DashboardApplicationServiceTest {
     private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
 
     @MockBean
-    private lateinit var dashboardRepository: DashboardRepository
+    private lateinit var dashboardRepository: DashboardRepository1
 
 //    @Test
 //    internal fun `should not throw exception when type is jenkins`() {

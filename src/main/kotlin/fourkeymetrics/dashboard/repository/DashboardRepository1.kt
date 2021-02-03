@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 
-@SuppressWarnings("TooManyFunctions")
 @Component
 class DashboardRepository1 {
 
@@ -38,6 +38,13 @@ class DashboardRepository1 {
     fun deleteById(dashboardId: String) {
         val query = Query().addCriteria(Criteria.where("id").isEqualTo(dashboardId))
         mongoTemplate.remove(query, Dashboard::class.java)
+    }
+
+    fun updateSynchronizationTime(dashboardId: String, synchronizationTimestamp: Long): Long? {
+        val query = Query(Criteria.where("_id").`is`(dashboardId))
+        val update = Update().set("synchronizationTimestamp", synchronizationTimestamp)
+        mongoTemplate.updateFirst(query, update, Dashboard1::class.java)
+        return mongoTemplate.findOne(query, Dashboard::class.java)?.synchronizationTimestamp
     }
 
 }

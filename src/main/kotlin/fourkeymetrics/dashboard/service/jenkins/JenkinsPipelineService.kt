@@ -4,14 +4,18 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.dashboard.repository.BuildRepository
-import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.dashboard.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.dashboard.service.jenkins.dto.BuildSummaryCollectionDTO
 import fourkeymetrics.dashboard.service.jenkins.dto.BuildSummaryDTO
 import fourkeymetrics.exception.ApplicationException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -23,15 +27,15 @@ import kotlin.streams.toList
 @Service
 class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
-    @Autowired private var dashboardRepository: DashboardRepository,
+    @Autowired private var pipelineRepository: PipelineRepository,
     @Autowired private var buildRepository: BuildRepository
 ) : PipelineService() {
-    override fun syncBuilds(dashboardId: String, pipelineId: String): List<Build> {
-        val pipelineConfiguration = dashboardRepository.getPipelineConfiguration(dashboardId, pipelineId)!!
+    override fun syncBuilds(pipelineId: String): List<Build> {
+        val pipeline = pipelineRepository.findById(pipelineId)
 
-        val username = pipelineConfiguration.username
-        val credential = pipelineConfiguration.credential
-        val baseUrl = pipelineConfiguration.url
+        val username = pipeline.username
+        val credential = pipeline.credential
+        val baseUrl = pipeline.url
 
         val buildsNeedToSync = getBuildSummariesFromJenkins(username, credential, baseUrl)
             .parallelStream()
