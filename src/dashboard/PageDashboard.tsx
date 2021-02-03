@@ -232,36 +232,36 @@ export const PageDashboard = () => {
 							title="Deployment Frequency (Times)"
 							summary={{
 								level: "LOW",
-								average: 0.21,
+								average: "0.21",
 							}}
 							data={[
 								{
 									name: "Page A",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page B",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page C",
-									uv: 40,
+									value: 40,
 								},
 								{
 									name: "Page D",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page E",
-									uv: 20,
+									value: 20,
 								},
 								{
 									name: "Page F",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page G",
-									uv: 10,
+									value: 10,
 								},
 							]}
 							yaxisFormatter={(value: string) => value}
@@ -274,36 +274,36 @@ export const PageDashboard = () => {
 							title="Mean Lead Time for Change (Days)"
 							summary={{
 								level: "ELITE",
-								average: 0.21,
+								average: "0.21",
 							}}
 							data={[
 								{
 									name: "Page A",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page B",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page C",
-									uv: 40,
+									value: 40,
 								},
 								{
 									name: "Page D",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page E",
-									uv: 20,
+									value: 20,
 								},
 								{
 									name: "Page F",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page G",
-									uv: 10,
+									value: 10,
 								},
 							]}
 							yaxisFormatter={(value: string) => value}
@@ -316,36 +316,36 @@ export const PageDashboard = () => {
 							title="Mean Time to Restore Service (Hours)"
 							summary={{
 								level: "HIGH",
-								average: 0.21,
+								average: "0.21",
 							}}
 							data={[
 								{
 									name: "Page A",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page B",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page C",
-									uv: 40,
+									value: 40,
 								},
 								{
 									name: "Page D",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page E",
-									uv: 20,
+									value: 20,
 								},
 								{
 									name: "Page F",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page G",
-									uv: 10,
+									value: 10,
 								},
 							]}
 							yaxisFormatter={(value: string) => value}
@@ -357,37 +357,36 @@ export const PageDashboard = () => {
 						<MetricsCard
 							title="Change Failure Rate"
 							summary={{
-								level: "MEDIUM",
-								average: 0.21,
+								level: "NA",
+								average: "--",
 							}}
 							data={[
 								{
 									name: "Page A",
-									uv: 30,
+									value: 10,
 								},
 								{
 									name: "Page B",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page C",
-									uv: 40,
 								},
 								{
 									name: "Page D",
-									uv: 30,
+									value: 30,
 								},
 								{
 									name: "Page E",
-									uv: 20,
+									value: 20,
 								},
 								{
 									name: "Page F",
-									uv: 30,
+									value: 0,
 								},
 								{
 									name: "Page G",
-									uv: 10,
+									value: 10,
 								},
 							]}
 							yaxisFormatter={(value: string) => value + "%"}

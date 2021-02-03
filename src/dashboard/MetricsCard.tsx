@@ -7,7 +7,7 @@ enum MetricsLevelColor {
 	ELITE = "#49AA19",
 	HIGH = "#1890FF",
 	MEDIUM = "#FAAD14",
-	INVALID = "#BFBFBF",
+	NA = "#BFBFBF",
 }
 
 type MetricsLevelKey = keyof typeof MetricsLevelColor;
@@ -55,7 +55,7 @@ const metricsUnitStyles = css({
 
 interface Summary {
 	level: string;
-	average: number;
+	average: string;
 }
 
 interface MetricsCardProps {
