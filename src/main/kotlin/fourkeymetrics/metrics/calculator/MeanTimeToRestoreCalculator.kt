@@ -19,11 +19,28 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         private const val ONE_WEEK: Double = 168.00
     }
 
-    override fun calculateValue(allBuilds: List<Build>, startTimestamp: Long,
-                                endTimestamp: Long, targetStage: String): Number {
-        val selectedStages = findSelectedStages(allBuilds, startTimestamp, endTimestamp, targetStage)
+    override fun calculateValue(
+        allBuilds: List<Build>, startTimestamp: Long,
+        endTimestamp: Long, pipelineStagesMap: Map<String, String>
+    ): Number {
+        val (totalTimes, restoreTimes) = allBuilds
+            .groupBy { it.pipelineId }
+            .map {
+                val selectedStages =
+                    findSelectedStages(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key])
+                calculateTotalTimesAndRestoredTimes(selectedStages)
+            }
+            .stream().reduce(Pair(0.0, 0)) { result, current ->
+                Pair(
+                    result.first + current.first,
+                    result.second + current.second
+                )
+            }
 
-        return calculateMTTR(selectedStages)
+        if (restoreTimes > 0) {
+            return totalTimes / restoreTimes
+        }
+        return NO_VALUE
     }
 
     override fun calculateLevel(value: Number, days: Int?): LEVEL {
@@ -47,8 +64,11 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         }
     }
 
-    private fun findSelectedStages(allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
-                                   targetStage: String): List<Stage> {
+    private fun findSelectedStages(
+        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long,
+        targetStage: String?
+    ): List<Stage> {
+        if (targetStage == null) return emptyList()
         val targetStages = allBuilds.asSequence()
             .flatMap { it.stages }
             .filter { it.name == targetStage }
@@ -57,17 +77,17 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
         val lastSuccessfulDeploymentBeforeGivenTime = targetStages.findLast {
             it.status == StageStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
-        }?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }.toList()
+        } ?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }.toList()
 
         val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBeforeGivenTime.getStageDoneTime()
 
         return targetStages.filter {
             it.getStageDoneTime() in
-                (lastSuccessfulDeploymentTimestamp.plus(1)).rangeTo(endTimestamp)
+                    (lastSuccessfulDeploymentTimestamp.plus(1)).rangeTo(endTimestamp)
         }.toList()
     }
 
-    private fun calculateMTTR(selectedStages: List<Stage>): Double {
+    private fun calculateTotalTimesAndRestoredTimes(selectedStages: List<Stage>): Pair<Double, Int> {
         var firstFailedStage: Stage? = null
         var totalTime = 0.0
         var restoredTimes = 0
@@ -82,9 +102,6 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
                 firstFailedStage = null
             }
         }
-        if (restoredTimes > 0) {
-            return totalTime.div(restoredTimes)
-        }
-        return NO_VALUE
+        return Pair(totalTime, restoredTimes)
     }
 }

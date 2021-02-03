@@ -1,15 +1,11 @@
 package fourkeymetrics.metrics.controller
 
+import fourkeymetrics.common.model.Build
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
-import fourkeymetrics.metrics.calculator.ChangeFailureRateCalculator
-import fourkeymetrics.metrics.calculator.LeadTimeForChangeCalculator
-import fourkeymetrics.metrics.calculator.MetricsCalculator
+import fourkeymetrics.metrics.calculator.*
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
-import fourkeymetrics.common.model.Build
-import fourkeymetrics.metrics.calculator.DeploymentFrequencyCalculator
-import fourkeymetrics.metrics.calculator.MeanTimeToRestoreCalculator
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +14,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
+import java.util.stream.Collectors
 
 @Service
 class MetricsApplicationService {
@@ -26,6 +23,7 @@ class MetricsApplicationService {
     companion object {
         private const val FORTNIGHT_DURATION: Int = 14
         private const val MONTH_DURATION: Int = 30
+        private const val DELIMITER = "::"
     }
 
 
@@ -48,14 +46,14 @@ class MetricsApplicationService {
     private lateinit var timeRangeSplitter: TimeRangeSplitter
 
     fun retrieve4KeyMetrics(
-        pipelineId: String,
-        targetStage: String,
+        pipelineWithStages: List<String>,
         startTimestamp: Long,
         endTimestamp: Long,
         unit: MetricsUnit
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
-        val allBuilds = buildRepository.getAllBuilds(pipelineId)
+        val pipelineStagesMap = parsePipelineStagesMap(pipelineWithStages)
+        val allBuilds = buildRepository.getAllBuilds(pipelineStagesMap.keys)
         val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
 
         return FourKeyMetricsResponse(
@@ -63,7 +61,7 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                targetStage,
+                pipelineStagesMap,
                 timeRangeByUnit,
                 unit,
                 deploymentFrequencyCalculator,
@@ -72,31 +70,35 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                targetStage,
+                pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 leadTimeForChangeCalculator,
             ),
             generateMetrics(
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                targetStage,
+                pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 meanTimeToRestoreCalculator,
             ),
             generateMetrics(
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                targetStage,
+                pipelineStagesMap,
                 timeRangeByUnit,
-                unit,
                 changeFailureRateCalculator,
             )
         )
     }
+
+    private fun parsePipelineStagesMap(pipelineWithStages: List<String>) =
+        pipelineWithStages.stream().map { it.split(DELIMITER, limit = 2) }.peek {
+            if (it.size < 2) {
+                throw BadRequestException("Pipeline and stages are not matching")
+            }
+        }.collect(Collectors.toMap({ it[0] }, { it[1] }))
 
     private fun validateTime(startTimestamp: Long, endTimestamp: Long) {
         if (startTimestamp >= endTimestamp) {
@@ -108,12 +110,11 @@ class MetricsApplicationService {
         allBuilds: List<Build>,
         startTimeMillis: Long,
         endTimeMillis: Long,
-        targetStage: String,
+        pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
-        unit: MetricsUnit,
         calculator: MetricsCalculator
     ): MetricsInfo {
-        val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, targetStage)
+        val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, pipelineStagesMap)
         val summary = Metrics(
             valueForWholeRange,
             calculator.calculateLevel(valueForWholeRange),
@@ -123,7 +124,7 @@ class MetricsApplicationService {
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
+                    calculator.calculateValue(allBuilds, it.first, it.second, pipelineStagesMap)
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)
@@ -133,14 +134,16 @@ class MetricsApplicationService {
         allBuilds: List<Build>,
         startTimeMillis: Long,
         endTimeMillis: Long,
-        targetStage: String,
+        pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
         unit: MetricsUnit,
         calculator: DeploymentFrequencyCalculator
     ): MetricsInfo {
         val days = getDuration(startTimeMillis, endTimeMillis)
-        val deploymentCount = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis,
-            targetStage)
+        val deploymentCount = calculator.calculateValue(
+            allBuilds, startTimeMillis, endTimeMillis,
+            pipelineStagesMap
+        )
         val factor = if (unit == MetricsUnit.Fortnightly) FORTNIGHT_DURATION else MONTH_DURATION
 
         val deploymentCountPerUnit = deploymentCount.toDouble().div(days).times(factor)
@@ -154,7 +157,7 @@ class MetricsApplicationService {
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculateValue(allBuilds, it.first, it.second, targetStage)
+                    calculator.calculateValue(allBuilds, it.first, it.second, pipelineStagesMap)
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)
@@ -165,6 +168,6 @@ class MetricsApplicationService {
         val startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTimestamp), getTimeZone)
         val endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(endTimestamp), getTimeZone)
 
-        return Duration.between(startDateTime, endDateTime).toDays().toInt()+1
+        return Duration.between(startDateTime, endDateTime).toDays().toInt() + 1
     }
 }

@@ -9,14 +9,26 @@ import org.springframework.stereotype.Component
 class LeadTimeForChangeCalculator : MetricsCalculator {
 
     companion object {
-        private const val NO_VALUE: Double = Double.NaN
         private const val EARLIEST_TIMESTAMP: Long = 0
         private const val MILLI_SECONDS_FOR_ONE_DAY = 24 * 60 * 60 * 1000
     }
 
+
     override fun calculateValue(
-        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String
+        allBuilds: List<Build>,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        pipelineStagesMap: Map<String, String>
     ): Number {
+        return allBuilds.groupBy { it.pipelineId }.flatMap {
+            getLeadTimeForChangeList(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key])
+        }.average()
+    }
+
+    private fun getLeadTimeForChangeList(
+        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String?
+    ): List<Long> {
+        if (targetStage == null) return emptyList()
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }
         val lastSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentInGivenTimeRange(
@@ -24,7 +36,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
                 StageStatus.SUCCESS, startTimestamp,
                 endTimestamp
             )
-        } ?: return NO_VALUE
+        } ?: return emptyList()
         val firstSuccessfulDeploymentBuild = buildOrderByTimestampAscending.findLast {
             it.containsGivenDeploymentBeforeGivenTimestamp(
                 targetStage,
@@ -37,7 +49,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
             buildOrderByTimestampAscending
         )
 
-        return calculateMLT(buildsInScope, targetStage)
+        return calculateCommitLeadTimeList(buildsInScope, targetStage)
     }
 
     override fun calculateLevel(value: Number, days: Int?): LEVEL {
@@ -62,10 +74,10 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         }
     }
 
-    private fun calculateMLT(
-            buildsInScope: List<Build>,
-            targetStage: String
-    ): Double {
+    private fun calculateCommitLeadTimeList(
+        buildsInScope: List<Build>,
+        targetStage: String
+    ): List<Long> {
         val buildsGroupedByEachDeployment: MutableMap<DeploymentTimestamp, List<Build>> = mutableMapOf()
 
         var buildIndex = 0
@@ -82,17 +94,15 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
             buildIndex++
         }
 
-        val commitLeadTimeList = buildsGroupedByEachDeployment.flatMap { element ->
+        return buildsGroupedByEachDeployment.flatMap { element ->
             element.value.flatMap { build -> build.changeSets }.map { commit -> element.key.value - commit.timestamp }
         }
-
-        return commitLeadTimeList.average()
     }
 
     private fun filterBuildsBetweenGivenRange(
-            lastSuccessfulDeploymentBuild: Build,
-            firstSuccessfulDeploymentBuild: Build?,
-            buildOrderByTimestampAscending: List<Build>
+        lastSuccessfulDeploymentBuild: Build,
+        firstSuccessfulDeploymentBuild: Build?,
+        buildOrderByTimestampAscending: List<Build>
     ): List<Build> {
         val buildRangeEndTimestamp = lastSuccessfulDeploymentBuild.timestamp
         val buildRangeStartTimestamp = firstSuccessfulDeploymentBuild?.timestamp ?: EARLIEST_TIMESTAMP

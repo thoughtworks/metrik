@@ -26,7 +26,7 @@ internal class MetricsApplicationServiceTest {
 
     @Mock
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
-    
+
     @Mock
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
 
@@ -46,14 +46,16 @@ internal class MetricsApplicationServiceTest {
     @Test
     fun `should return correct metric response`() {
         val pipelineId = "pipelineId"
-        val targetStage = "deploy to prod"
+        val stage = "stage"
+        val pipelineStages = listOf("$pipelineId::$stage")
+        val targetStage = mapOf(Pair(pipelineId, stage))
         val startTimestamp: Long = 1
         val endTimestamp: Long = 10
         val expectedBuilds = emptyList<Build>()
         val unit = MetricsUnit.Fortnightly
         val unit2 = MetricsUnit.Monthly
 
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(expectedBuilds)
+        `when`(buildRepository.getAllBuilds(targetStage.keys)).thenReturn(expectedBuilds)
         `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
             .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
 
@@ -92,11 +94,11 @@ internal class MetricsApplicationServiceTest {
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
 
         val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
-            pipelineId, targetStage, startTimestamp, endTimestamp, unit
+            pipelineStages, startTimestamp, endTimestamp, unit
         )
 
         val fourKeyMetricsResponse2 = metricsApplicationService.retrieve4KeyMetrics(
-            pipelineId, targetStage, startTimestamp, endTimestamp, unit2
+            pipelineStages, startTimestamp, endTimestamp, unit2
         )
 
         assertEquals(
@@ -164,10 +166,22 @@ internal class MetricsApplicationServiceTest {
         assertThrows(BadRequestException::class.java
         ) {
             metricsApplicationService.retrieve4KeyMetrics(
-                "pipelineId",
-                "deploy to prod",
+                listOf("pipelineId::deploy to prod"),
                 1,
                 1,
+                MetricsUnit.Fortnightly
+            )
+        }
+    }
+
+    @Test
+    fun `should throw bad request given pipeline stage not match`() {
+        assertThrows(BadRequestException::class.java
+        ) {
+            metricsApplicationService.retrieve4KeyMetrics(
+                listOf("pipelineId"),
+                1,
+                2,
                 MetricsUnit.Fortnightly
             )
         }

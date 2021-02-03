@@ -22,23 +22,28 @@ internal class DeploymentFrequencyCalculatorTest {
 
     /**
      * test file: builds-for-DF-case-1.json
+     * pipeline 1
+     * build 1 : deploy to prod, SUCCESS, start at 2021-01-01, end at 2021-01-01
+     * build 2 : deploy to prod, SUCCESS, start at 2021-01-15, end at 2021-01-15
+     * build 3 : deploy to prod, SUCCESS, start at 2021-01-30, end at 2021-02-01
+     * pipeline 2
      * build 1 : deploy to prod, SUCCESS, start at 2021-01-01, end at 2021-01-01
      * build 2 : deploy to prod, SUCCESS, start at 2021-01-15, end at 2021-01-15
      * build 3 : deploy to prod, SUCCESS, start at 2021-01-30, end at 2021-02-01
      */
     @Test
-    internal fun `should return MTTR given all builds with some Aborted and others success`() {
+    internal fun `should return DF given all builds with some Aborted and others success`() {
         val allBuilds: List<Build> = ObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-DF-case-1.json").readText()
         )
 
         val startTimestamp = 1610236800000L  // 2021-01-10
         val endTimestamp = 1611100800000L   // 2021-01-20
-        val targetStage = "deploy to prod"
+        val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val deploymentCount = deploymentFrequencyCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
-        assertEquals(deploymentCount, 1)
+        assertEquals(deploymentCount, 2)
     }
 
     /**
@@ -49,7 +54,7 @@ internal class DeploymentFrequencyCalculatorTest {
      */
     @Test
     internal fun `should get deployment count with success target stage status when calculate deployment count`() {
-        val targetStage = "deploy to prod"
+        val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
 

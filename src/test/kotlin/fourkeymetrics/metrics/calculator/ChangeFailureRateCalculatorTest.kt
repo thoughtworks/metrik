@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.metrics.model.LEVEL
-import fourkeymetrics.metrics.model.MetricsUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -31,8 +30,8 @@ class ChangeFailureRateCalculatorTest {
      * build 5 : 1611974800000, SUCCESS (deploy to uat)
      */
     @Test
-    fun `should get change failure rate within time range given 3 valid build inside when calculate CFR`() {
-        val targetStage = "deploy to prod"
+    fun `should get change failure rate within time range given 3 valid build inside in 1 pipeline when calculate CFR`() {
+        val pipelineStageMap = mapOf(Pair("1", "deploy to prod"))
         // build 2 - build 5
         val startTimestamp = 1609459200000L
         val endTimestamp = 1611994800000L
@@ -45,9 +44,42 @@ class ChangeFailureRateCalculatorTest {
                 mockBuildList,
                 startTimestamp,
                 endTimestamp,
-                targetStage
+                pipelineStageMap
             )
         ).isEqualTo(1 / 3.0)
+    }
+
+    /**
+     * test file: builds-cfr-2.json
+     * build 1 : 1606780800000, SUCCESS (deploy to prod) pipeline1
+     * build 2 : 1609459200000, FAILED (deploy to prod) pipeline1
+     * build 3 : 1610668800000, SUCCESS (deploy to prod) pipeline1
+     * build 4 : 1611964800000, SUCCESS (deploy to prod) pipeline1
+     * build 5 : 1611974800000, SUCCESS (deploy to uat) pipeline1
+
+     * build 1 : 1606780800000, SUCCESS (deploy to uat) pipeline2
+     * build 2 : 1609459200000, SUCCESS (deploy to uat) pipeline2
+     * build 3 : 1610668800000, SUCCESS (deploy to uat) pipeline2
+     * build 4 : 1611974800000, SUCCESS (deploy to prod) pipeline2
+     */
+    @Test
+    fun `should get change failure rate within time range given 3 valid build inside in 2 pipeline when calculate CFR`() {
+        val pipelineStageMap = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to uat"))
+        // build 2 - build 5 pipeline1, build2 - build4 pipeline2
+        val startTimestamp = 1609459200000L
+        val endTimestamp = 1611994800000L
+
+        val mockBuildList: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr-2.json").readText())
+
+        assertThat(
+            changeFailureRateCalculator.calculateValue(
+                mockBuildList,
+                startTimestamp,
+                endTimestamp,
+                pipelineStageMap
+            )
+        ).isEqualTo(1 / 5.0)
     }
 
     /**
@@ -73,7 +105,38 @@ class ChangeFailureRateCalculatorTest {
                 mockBuildList,
                 startTimestamp,
                 endTimestamp,
-                targetStage
+                mapOf(Pair("1", targetStage))
+            )
+        ).isEqualTo(Double.NaN)
+    }
+
+    @Test
+    fun `should get INVALID_VALUE given no builds`() {
+        val targetStage = "deploy to prod"
+        val startTimestamp = 1611974800000L
+        val endTimestamp = 1611974800000L
+
+        assertThat(
+            changeFailureRateCalculator.calculateValue(
+                emptyList(),
+                startTimestamp,
+                endTimestamp,
+                mapOf(Pair("1", targetStage))
+            )
+        ).isEqualTo(Double.NaN)
+    }
+
+    @Test
+    fun `should get INVALID_VALUE given no pipeline stage map`() {
+        val startTimestamp = 1611974800000L
+        val endTimestamp = 1611974800000L
+
+        assertThat(
+            changeFailureRateCalculator.calculateValue(
+                listOf(Build(pipelineId = "1")),
+                startTimestamp,
+                endTimestamp,
+                mapOf()
             )
         ).isEqualTo(Double.NaN)
     }

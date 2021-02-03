@@ -22,7 +22,6 @@ class PipelineController {
     @Autowired
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
-
     @PostMapping("/pipeline/verify")
     @ResponseStatus(HttpStatus.OK)
     fun verifyPipeline(@RequestBody pipelineVerificationRequest: PipelineVerificationRequest) {
@@ -30,6 +29,7 @@ class PipelineController {
     }
 
     @PostMapping("/dashboard/{dashboardId}/pipeline")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createPipeline(
         @PathVariable("dashboardId") dashboardId: String,
         @RequestBody pipeline: PipelineRequest
@@ -41,9 +41,9 @@ class PipelineController {
     fun updatePipeline(
         @PathVariable("dashboardId") dashboardId: String,
         @PathVariable("pipelineId") pipelineId: String,
-        @RequestBody pipeline: PipelineRequest
+        @RequestBody pipelineRequest: PipelineRequest
     ): PipelineResponse {
-        return pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipeline)
+        return pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipelineRequest)
     }
 
     @GetMapping("/dashboard/{dashboardId}/pipeline/{pipelineId}")

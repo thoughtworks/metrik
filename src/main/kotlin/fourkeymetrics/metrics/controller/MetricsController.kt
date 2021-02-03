@@ -15,18 +15,16 @@ class MetricsController {
 
     @GetMapping("/api/pipeline/metrics")
     fun getFourKeyMetrics(
-        @RequestParam pipelineId: String,
-        @RequestParam targetStage: String,
+        @RequestParam pipelineStages: List<String>,
         @RequestParam startTime: Long,
         @RequestParam endTime: Long,
         @RequestParam unit: MetricsUnit
     ): FourKeyMetricsResponse {
         return metricsApplicationService.retrieve4KeyMetrics(
-            pipelineId,
-            targetStage,
+            pipelineStages,
             startTime,
             endTime,
-            unit
+            unit,
         )
     }
 }

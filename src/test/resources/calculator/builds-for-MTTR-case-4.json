@@ -100,7 +100,7 @@
     "changeSets": []
   },
   {
-    "pipelineId": "1",
+    "pipelineId": "2",
     "number": 5,
     "duration": 60420,
     "result": "FAILURE",
@@ -125,7 +125,7 @@
     "changeSets": []
   },
   {
-    "pipelineId": "1",
+    "pipelineId": "2",
     "number": 6,
     "duration": 60420,
     "result": "FAILURE",
@@ -150,7 +150,7 @@
     "changeSets": []
   },
   {
-    "pipelineId": "1",
+    "pipelineId": "2",
     "number": 7,
     "duration": 60420,
     "result": "FAILURE",
