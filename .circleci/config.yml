@@ -32,6 +32,7 @@ jobs:
               mkdir -p /home/circleci/project
               cd /home/circleci/project
               git clone "${GITHUB_4KM_SERVICE_REPO}" .
+            fi
 
       - restore_cache:
           keys:
@@ -96,6 +97,7 @@ jobs:
               mkdir -p /home/circleci/project
               cd /home/circleci/project
               git clone "${GITHUB_4KM_DASHBOARD_REPO}" .
+            fi
 
       - restore_cache:
           keys:
