@@ -140,10 +140,10 @@ jobs:
 
       - run:
           name: Create attached workspace folder
-          command: mkdir -p /tmp/workspace
+          command: mkdir ./artifacts
 
       - attach_workspace:
-          at: /tmp/workspace
+          at: ./artifacts
 
       - setup_remote_docker:
           version: 19.03.13

@@ -37,12 +37,12 @@ RUN mv -f /usr/local/bin/docker-entrypoint.sh /app/mongo.sh
 # Copy BACKEND artifact
 ENV APP_ENV local
 
-COPY /tmp/workspace/run.sh /app/4km-service.sh
-COPY /tmp/workspace/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
+COPY artifacts/run.sh /app/4km-service.sh
+COPY artifacts/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
 
 # FRONTEND and Nginx
-COPY /tmp/workspace/dist /var/www/html
-COPY /tmp/workspace/nginx.conf /etc/nginx/
+COPY artifacts/dist /var/www/html
+COPY artifacts/nginx.conf /etc/nginx/
 
 RUN chmod +x /app/*.sh
 
