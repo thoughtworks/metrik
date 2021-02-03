@@ -32,7 +32,7 @@ ENV DB_USER 4km
 ENV DB_PASSWORD 4000km
 
 COPY config/monogo-init.js /docker-entrypoint-initdb.d
-RUN mv -f /docker-entrypoint.sh /app/mongo.sh
+RUN mv -f /usr/local/bin/docker-entrypoint.sh /app/mongo.sh
 
 # Copy BACKEND artifact
 ENV APP_ENV local
