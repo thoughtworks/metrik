@@ -29,7 +29,7 @@ enum PipelineSettingStatus {
 
 const { Text } = Typography;
 const PipelineSetting: FC = () => {
-	const [visible, setVisible] = useState(true);
+	const [visible, setVisible] = useState(false);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 
 	function handleToggleVisible() {
