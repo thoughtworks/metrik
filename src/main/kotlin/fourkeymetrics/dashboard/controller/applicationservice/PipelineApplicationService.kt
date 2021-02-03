@@ -4,7 +4,7 @@ import fourkeymetrics.dashboard.controller.vo.PipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.vo.PipelineVo
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
-import fourkeymetrics.dashboard.repository.DashboardRepository1
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
@@ -23,7 +23,7 @@ class PipelineApplicationService {
     private lateinit var pipelineRepository: PipelineRepository
 
     @Autowired
-    private lateinit var dashboardRepository: DashboardRepository1
+    private lateinit var dashboardRepository: DashboardRepository
 
 
     fun verifyPipeline(pipelineVerificationRequest: PipelineVerificationRequest) {

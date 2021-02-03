@@ -1,6 +1,6 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.repository.DashboardRepository1
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.PipelineService
 import fourkeymetrics.exception.ApplicationException
@@ -17,7 +17,7 @@ class SynchronizationApplicationService {
     private lateinit var pipelineService: PipelineService
 
     @Autowired
-    private lateinit var dashboardRepository: DashboardRepository1
+    private lateinit var dashboardRepository: DashboardRepository
 
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository

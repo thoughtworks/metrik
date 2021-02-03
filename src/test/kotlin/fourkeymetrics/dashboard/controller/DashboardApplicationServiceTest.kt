@@ -2,7 +2,7 @@ package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
-import fourkeymetrics.dashboard.repository.DashboardRepository1
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +20,7 @@ class DashboardApplicationServiceTest {
     private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
 
     @MockBean
-    private lateinit var dashboardRepository: DashboardRepository1
+    private lateinit var dashboardRepository: DashboardRepository
 
 //    @Test
 //    internal fun `should not throw exception when type is jenkins`() {

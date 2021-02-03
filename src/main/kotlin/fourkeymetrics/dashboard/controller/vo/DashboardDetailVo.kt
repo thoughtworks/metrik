@@ -1,6 +1,6 @@
 package fourkeymetrics.dashboard.controller.vo
 
-import fourkeymetrics.dashboard.model.Dashboard1
+import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import org.apache.logging.log4j.util.Strings
 
@@ -12,7 +12,7 @@ class DashboardDetailVo(
     var pipelines: List<PipelineVo> = emptyList()
 ) {
     companion object {
-        fun buildFrom(dashboard: Dashboard1, pipelines: List<Pipeline>): DashboardDetailVo {
+        fun buildFrom(dashboard: Dashboard, pipelines: List<Pipeline>): DashboardDetailVo {
             val dashboardDetailVo = DashboardDetailVo(dashboard.id, dashboard.name)
             val pipelineVos = pipelines
                 .map { PipelineVo.buildFrom(it) }

@@ -5,9 +5,9 @@ import fourkeymetrics.dashboard.controller.vo.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.DashboardVo
 import fourkeymetrics.dashboard.controller.vo.PipelineStagesResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
-import fourkeymetrics.dashboard.model.Dashboard1
+import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
-import fourkeymetrics.dashboard.repository.DashboardRepository1
+import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import org.bson.types.ObjectId
@@ -22,7 +22,7 @@ class DashboardApplicationService {
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Autowired
-    private lateinit var dashboardRepository: DashboardRepository1
+    private lateinit var dashboardRepository: DashboardRepository
 
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository
@@ -36,7 +36,7 @@ class DashboardApplicationService {
         }
 
         val dashboard = dashboardRepository.save(
-            Dashboard1(
+            Dashboard(
                 name = dashboardName,
                 id = ObjectId().toString(),
             )
