@@ -15,7 +15,7 @@ import {
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
 	getFourKeyMetricsUsingGet,
-	getDashboardsUsingGet,
+	getDashboardUsingGet,
 } from "../clients/apis";
 import {
 	formatLastUpdateTime,
@@ -119,8 +119,8 @@ export const PageDashboard = () => {
 	};
 
 	const getDashboard = () => {
-		getDashboardsUsingGet(undefined).then(resp => {
-			setDashboardName(resp.find(v => v.id === dashboardId)?.name || "");
+		getDashboardUsingGet({ dashboardId }).then(resp => {
+			setDashboardName(resp.name);
 		});
 	};
 
