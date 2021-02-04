@@ -71,7 +71,7 @@ interface FormValues {
 }
 
 export interface MetricsDataItem {
-	level: string;
+	level: MetricsLevel;
 	startTimestamp: number;
 	endTimestamp: number;
 	value: number | string;
@@ -85,7 +85,7 @@ interface MetricsDataState {
 const initialMetricsState: MetricsDataState = {
 	summary: {
 		endTimestamp: 0,
-		level: "NA",
+		level: MetricsLevel.NA,
 		startTimestamp: 0,
 		value: "",
 	},
@@ -168,32 +168,32 @@ export const PageDashboard = () => {
 			details: [
 				{
 					endTimestamp: 1613260800000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					startTimestamp: 1612137600000,
 					value: 20,
 				},
 				{
 					endTimestamp: 1614384000000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					startTimestamp: 1613260800000,
 					value: 21,
 				},
 				{
 					endTimestamp: 1615507200000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					startTimestamp: 1614384000000,
 					value: 10,
 				},
 				{
 					endTimestamp: 1616630400000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					startTimestamp: 1615507200000,
 					value: 15,
 				},
 			],
 			summary: {
 				endTimestamp: 0,
-				level: "ELITE",
+				level: MetricsLevel.ELITE,
 				startTimestamp: 0,
 				value: 20.5,
 			},

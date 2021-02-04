@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { css } from "@emotion/react";
-import { LineChart } from "../../components/LineChart";
+import { CustomizeTickProps, LineChart } from "../../components/LineChart";
 import EliteIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite.png";
 import EliteIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite@2x.png";
 import EliteIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite@3x.png";
@@ -18,7 +18,7 @@ import NAIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_N
 import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@3x.png";
 import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
 import { MetricsDataItem } from "../PageDashboard";
-import moment from "moment/moment";
+import { formatTickTime } from "../../utils/timeFormats";
 
 export enum MetricsLevel {
 	ELITE,
@@ -105,10 +105,30 @@ const metricsUnitStyles = css({
 	lineHeight: "20px",
 });
 
+const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index = 0 }) => {
+	return (
+		<text
+			x={x}
+			y={y}
+			dy={16}
+			fill="#2C3542"
+			fillOpacity={0.75}
+			fontSize={12}
+			textAnchor={textAnchor}>
+			<tspan x={x} dy="1.5em">
+				{formatTickTime(data[index].startTimestamp)}
+			</tspan>
+			<tspan x={x} dy="1.25em">
+				- {formatTickTime(data[index].endTimestamp)}
+			</tspan>
+		</text>
+	);
+};
+
 interface MetricsCardProps {
 	title: string;
 	summary: MetricsDataItem;
-	data: any[];
+	data: MetricsDataItem[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
 }
@@ -120,13 +140,6 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	yaxisFormatter,
 	unit,
 }) => {
-	const formattedData = data.map(item => ({
-		name: `${moment(item.startTimestamp).format("MMM DD")} - ${moment(item.endTimestamp).format(
-			"MMM DD"
-		)}`,
-		value: item.value,
-	}));
-
 	return (
 		<div css={containerStyles}>
 			<div css={titleStyles}>{title}</div>
@@ -148,7 +161,12 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 					<div>{unit}</div>
 				</div>
 			</div>
-			<LineChart data={formattedData} yaxisFormatter={yaxisFormatter} unit={unit} />
+			<LineChart
+				data={data}
+				yaxisFormatter={yaxisFormatter}
+				unit={unit}
+				CustomizeTick={CustomizeTick}
+			/>
 		</div>
 	);
 };

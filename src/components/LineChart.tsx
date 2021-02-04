@@ -8,25 +8,42 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { MetricsDataItem } from "../dashboard/PageDashboard";
+
+export interface CustomizeTickProps {
+	x?: number;
+	y?: number;
+	textAnchor?: string;
+	index?: number;
+	data: MetricsDataItem[];
+}
 
 interface LineChartProps {
-	data: any[];
+	data: MetricsDataItem[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
+	CustomizeTick: FC<CustomizeTickProps>;
 }
 
 const domainMaximizeRatio = 1.1;
 
-export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit }) => (
+export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, CustomizeTick }) => (
 	<ResponsiveContainer width="100%" height={300}>
-		<RechartsLineChart data={data}>
+		<RechartsLineChart
+			data={data}
+			margin={{
+				top: 5,
+				right: 30,
+				left: 20,
+				bottom: 20,
+			}}>
 			<CartesianGrid stroke="#416180" strokeWidth={0.5} strokeOpacity={0.151934} vertical={false} />
 			<XAxis
-				dataKey="name"
 				stroke="#416180"
 				strokeWidth={0.5}
 				strokeOpacity={0.45}
 				padding={{ left: 20, right: 20 }}
+				tick={<CustomizeTick data={data} />}
 			/>
 			<YAxis
 				tickFormatter={yaxisFormatter}

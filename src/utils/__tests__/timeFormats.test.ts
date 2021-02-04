@@ -2,6 +2,7 @@ import {
 	formatLastUpdateTime,
 	momentObjToStartTimeStamp,
 	momentObjToEndTimeStamp,
+	formatTickTime,
 } from "../timeFormats";
 import moment from "moment";
 
@@ -12,6 +13,9 @@ describe("time formats test", () => {
 	});
 	it("should return empty string if given data not exists", () => {
 		expect(formatLastUpdateTime()).toEqual("");
+	});
+	it("should return correct formatted tick time", () => {
+		expect(formatTickTime(1611629036125)).toEqual("26 Jan");
 	});
 });
 
