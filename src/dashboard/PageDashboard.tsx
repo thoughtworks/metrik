@@ -77,6 +77,7 @@ export const PageDashboard = () => {
 	const [lastModifyDateTime, setLastModifyDateTime] = useState("");
 	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
 	const [dashboardName, setDashboardName] = useState("");
+	const [formValues, setFormValues] = useState<FormValues>({} as FormValues);
 
 	const syncBuilds = () => {
 		setSyncing(true);
@@ -136,14 +137,14 @@ export const PageDashboard = () => {
 		getPipelineStages();
 	}, []);
 
-	const onFinish = (values: FormValues) => {
+	const getFourKeyMetrics = () => {
 		// TODO: will pass multiple stages and pipelines after backend api ready
 		getFourKeyMetricsUsingGet({
-			endTime: momentObjToEndTimeStamp(values.duration[0]),
-			startTime: momentObjToStartTimeStamp(values.duration[1]),
-			pipelineId: values.pipelines[0].value,
-			targetStage: values.pipelines[0].childValue,
-			unit: values.unit,
+			endTime: momentObjToEndTimeStamp(formValues.duration[0]),
+			startTime: momentObjToStartTimeStamp(formValues.duration[1]),
+			pipelineId: formValues.pipelines[0].value,
+			targetStage: formValues.pipelines[0].childValue,
+			unit: formValues.unit,
 		});
 	};
 
@@ -181,7 +182,8 @@ export const PageDashboard = () => {
 							],
 							unit: "Fortnightly",
 						}}
-						onFinish={onFinish}>
+						onFinish={getFourKeyMetrics}
+						onValuesChange={(_, values) => setFormValues(values)}>
 						<Row wrap={false} gutter={12}>
 							<Col>
 								<Form.Item label="Duration" name="duration">
