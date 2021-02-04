@@ -70,6 +70,28 @@ interface FormValues {
 	unit: "Fortnightly" | "Monthly";
 }
 
+export interface MetricsDataItem {
+	level: string;
+	startTimestamp: number;
+	endTimestamp: number;
+	value: number | string;
+}
+
+interface MetricsDataState {
+	summary: MetricsDataItem;
+	details: MetricsDataItem[];
+}
+
+const initialMetricsState: MetricsDataState = {
+	summary: {
+		endTimestamp: 0,
+		level: "NA",
+		startTimestamp: 0,
+		value: "",
+	},
+	details: [],
+};
+
 export const PageDashboard = () => {
 	const [syncing, setSyncing] = useState(false);
 	const query = useQuery();
@@ -78,6 +100,14 @@ export const PageDashboard = () => {
 	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
 	const [dashboardName, setDashboardName] = useState("");
 	const [formValues, setFormValues] = useState<FormValues>({} as FormValues);
+	const [changeFailureRate, setChangeFailureRate] = useState<MetricsDataState>(
+		initialMetricsState
+	);
+	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsDataState>(
+		initialMetricsState
+	);
+	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsDataState>(initialMetricsState);
+	const [meanTimeToRestore, setMeanTimeToRestore] = useState<MetricsDataState>(initialMetricsState);
 
 	const syncBuilds = () => {
 		setSyncing(true);
@@ -135,6 +165,45 @@ export const PageDashboard = () => {
 		getLastSyncTime();
 		getDashboard();
 		getPipelineStages();
+		// TODO: change to use API retrieving data
+		const mockData: MetricsDataState = {
+			details: [
+				{
+					endTimestamp: 0,
+					level: "ELITE",
+					startTimestamp: 0,
+					value: 20,
+				},
+				{
+					endTimestamp: 0,
+					level: "ELITE",
+					startTimestamp: 0,
+					value: 21,
+				},
+				{
+					endTimestamp: 0,
+					level: "ELITE",
+					startTimestamp: 0,
+					value: 10,
+				},
+				{
+					endTimestamp: 0,
+					level: "ELITE",
+					startTimestamp: 0,
+					value: 15,
+				},
+			],
+			summary: {
+				endTimestamp: 0,
+				level: "ELITE",
+				startTimestamp: 0,
+				value: 20.5,
+			},
+		};
+		setChangeFailureRate(mockData);
+		setDeploymentFrequency(mockData);
+		setLeadTimeForChange(mockData);
+		setMeanTimeToRestore(mockData);
 	}, []);
 
 	const getFourKeyMetrics = () => {
@@ -232,40 +301,8 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Deployment Frequency (Times)"
-							summary={{
-								level: "LOW",
-								average: "0.21",
-							}}
-							data={[
-								{
-									name: "Page A",
-									value: 30,
-								},
-								{
-									name: "Page B",
-									value: 30,
-								},
-								{
-									name: "Page C",
-									value: 40,
-								},
-								{
-									name: "Page D",
-									value: 30,
-								},
-								{
-									name: "Page E",
-									value: 20,
-								},
-								{
-									name: "Page F",
-									value: 30,
-								},
-								{
-									name: "Page G",
-									value: 10,
-								},
-							]}
+							summary={deploymentFrequency.summary}
+							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Times"
 						/>
@@ -274,40 +311,8 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Mean Lead Time for Change (Days)"
-							summary={{
-								level: "ELITE",
-								average: "0.21",
-							}}
-							data={[
-								{
-									name: "Page A",
-									value: 30,
-								},
-								{
-									name: "Page B",
-									value: 30,
-								},
-								{
-									name: "Page C",
-									value: 40,
-								},
-								{
-									name: "Page D",
-									value: 30,
-								},
-								{
-									name: "Page E",
-									value: 20,
-								},
-								{
-									name: "Page F",
-									value: 30,
-								},
-								{
-									name: "Page G",
-									value: 10,
-								},
-							]}
+							summary={leadTimeForChange.summary}
+							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Days"
 						/>
@@ -316,40 +321,8 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Mean Time to Restore Service (Hours)"
-							summary={{
-								level: "MEDIUM",
-								average: "0.21",
-							}}
-							data={[
-								{
-									name: "Page A",
-									value: 30,
-								},
-								{
-									name: "Page B",
-									value: 30,
-								},
-								{
-									name: "Page C",
-									value: 40,
-								},
-								{
-									name: "Page D",
-									value: 30,
-								},
-								{
-									name: "Page E",
-									value: 20,
-								},
-								{
-									name: "Page F",
-									value: 30,
-								},
-								{
-									name: "Page G",
-									value: 10,
-								},
-							]}
+							summary={meanTimeToRestore.summary}
+							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Hours"
 						/>
@@ -358,39 +331,8 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Change Failure Rate"
-							summary={{
-								level: "NA",
-								average: "--",
-							}}
-							data={[
-								{
-									name: "Page A",
-									value: 10,
-								},
-								{
-									name: "Page B",
-									value: 30,
-								},
-								{
-									name: "Page C",
-								},
-								{
-									name: "Page D",
-									value: 30,
-								},
-								{
-									name: "Page E",
-									value: 20,
-								},
-								{
-									name: "Page F",
-									value: 0,
-								},
-								{
-									name: "Page G",
-									value: 10,
-								},
-							]}
+							summary={changeFailureRate.summary}
+							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}
 							unit="Percentage"
 						/>

@@ -17,6 +17,7 @@ import NAIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_N
 import NAIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@2x.png";
 import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@3x.png";
 import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
+import { MetricsDataItem } from "../PageDashboard";
 
 interface MetricsLevelConfig {
 	color: string;
@@ -95,14 +96,9 @@ const metricsUnitStyles = css({
 	lineHeight: "20px",
 });
 
-interface Summary {
-	level: string;
-	average: string;
-}
-
 interface MetricsCardProps {
 	title: string;
-	summary: Summary;
+	summary: MetricsDataItem;
 	data: any[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
@@ -127,7 +123,9 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 						${MetricsLevel[summary.level].indicator3X} 3x
 					`}
 				/>
-				<div css={metricsValueStyles(summary.level)}>{summary.average}</div>
+				<div css={metricsValueStyles(summary.level)}>
+					{yaxisFormatter(summary.value.toString())}
+				</div>
 				<div css={metricsUnitStyles}>
 					<div>AVG.</div>
 					<div>{unit}</div>
