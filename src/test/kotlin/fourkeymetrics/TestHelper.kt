@@ -1,9 +1,19 @@
 package fourkeymetrics
 
+import org.mockito.ArgumentMatcher
 import org.mockito.Mockito
 
-class TestHelper {
-    companion object {
-        fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
+object MockitoHelper {
+    fun <T> anyObject(): T {
+        Mockito.any<T>()
+        return uninitialized()
     }
+
+    fun <T> argThat(matcher: ArgumentMatcher<T>): T {
+        Mockito.argThat(matcher)
+        return uninitialized()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> uninitialized(): T = null as T
 }

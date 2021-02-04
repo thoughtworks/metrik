@@ -1,6 +1,6 @@
 package fourkeymetrics.dashboard.controller
 
-import fourkeymetrics.TestHelper.Companion.any
+import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
@@ -51,7 +51,7 @@ class DashboardApplicationServiceTest {
     @Test
     internal fun `test create dashboard successfully`() {
         `when`(dashboardRepository.existWithGivenName(dashboardName)).thenReturn(false)
-        `when`(dashboardRepository.save(any(Dashboard::class.java))).thenReturn(expectedDashboard)
+        `when`(dashboardRepository.save(anyObject())).thenReturn(expectedDashboard)
         `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
 
         val dashboardResponse =

@@ -1,5 +1,8 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
+import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.MockitoHelper.argThat
+import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.buildPipelineVerificationRequest
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
@@ -7,7 +10,9 @@ import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.exception.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -16,10 +21,10 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
+@ExtendWith(MockitoExtension::class)
 internal class PipelineApplicationServiceTest {
     @Mock
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
@@ -55,6 +60,57 @@ internal class PipelineApplicationServiceTest {
             pipelineVerificationRequest.username,
             pipelineVerificationRequest.credential
         )
+    }
+
+    @Test
+    internal fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
+        val dashboardId = "dashboardId"
+        val pipelineRequest = buildPipelineRequest()
+        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
+            true
+        )
+
+        val exception =
+            assertThrows<BadRequestException> {
+
+                pipelineApplicationService.createPipeline(
+                    dashboardId,
+                    pipelineRequest
+                )
+            }
+
+        verify(dashboardRepository).findById(dashboardId)
+        verify(pipelineRepository, times(0)).save(anyObject())
+        assertEquals("Pipeline name already exist", exception.message)
+        assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
+    }
+
+    @Test
+    internal fun `should return PipelineResponse when createPipeline() called given valid PipelineRequest`() {
+        val dashboardId = "dashboardId"
+        val pipelineRequest = buildPipelineRequest()
+        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
+            false
+        )
+
+        val result = pipelineApplicationService.createPipeline(dashboardId, pipelineRequest)
+
+        verify(dashboardRepository).findById(dashboardId)
+        verify(pipelineRepository).save(argThat {
+            assertEquals(dashboardId, it.dashboardId)
+            assertNotNull(it.id)
+            assertEquals(pipelineRequest.name, it.name)
+            assertEquals(pipelineRequest.username, it.username)
+            assertEquals(pipelineRequest.credential, it.credential)
+            assertEquals(pipelineRequest.url, it.url)
+            assertEquals(pipelineRequest.type, it.type)
+            true
+        })
+        assertEquals(pipelineRequest.name, result.name)
+        assertEquals(pipelineRequest.url, result.url)
+        assertEquals(pipelineRequest.username, result.username)
+        assertEquals(pipelineRequest.credential, result.credential)
+        assertEquals(pipelineRequest.type, result.type)
     }
 
     // @Test
