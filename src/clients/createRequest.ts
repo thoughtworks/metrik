@@ -8,10 +8,7 @@ export const createRequest = <TReq, TResp = any>(
 	getConfig: (request: TReq) => AxiosRequestConfig
 ) => {
 	const createFn = (request: TReq) => axiosInstance.request<TResp, TResp>(getConfig(request));
-
-	Object.assign(createFn, { TResp: {} as TResp });
-
-	return createFn;
+	return Object.assign(createFn, { TResp: {} as TResp, TReq: {} as TReq });
 };
 
 axiosInstance.interceptors.response.use(
