@@ -64,10 +64,6 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 		setVisible(!visible);
 	}
 
-	function handlePipelineSettingStatusSwitch(status: PipelineSettingStatus) {
-		setStatus(status);
-	}
-
 	function handleUpdatePipeline(pipeline: PipelineVoRes) {
 		setEditPipeline(pipeline);
 		setStatus(PipelineSettingStatus.UPDATE);
@@ -129,7 +125,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 								<Button
 									type={"primary"}
 									icon={<PlusOutlined />}
-									onClick={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.ADD)}>
+									onClick={() => setStatus(PipelineSettingStatus.ADD)}>
 									Add Pipeline
 								</Button>
 							</div>
@@ -145,7 +141,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 							<Button
 								icon={<LeftOutlined />}
 								css={{ marginRight: 16 }}
-								onClick={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.VIEW)}
+								onClick={() => setStatus(PipelineSettingStatus.VIEW)}
 							/>
 							<span css={{ flexGrow: 1 }}>Pipeline Setting</span>
 						</div>
@@ -153,7 +149,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 				}
 				footer={
 					status === PipelineSettingStatus.VIEW ? (
-						<Button size={"large"} css={{ margin: 8 }}>
+						<Button size={"large"} css={{ margin: 8 }} onClick={() => setVisible(false)}>
 							Close
 						</Button>
 					) : null
@@ -180,7 +176,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 								? createPipelineUsingPost
 								: updatePipelineUsingPut
 						}
-						onBack={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.VIEW)}
+						onBack={() => setStatus(PipelineSettingStatus.VIEW)}
 					/>
 				)}
 			</Modal>
