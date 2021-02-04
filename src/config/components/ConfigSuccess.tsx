@@ -3,35 +3,7 @@ import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
-import { DashboardDetailVo, PipelineVoRes } from "../../clients/apis";
-
-const dataSource: PipelineVoRes[] = [
-	{
-		id: "1",
-		name: "4km-DEV",
-		type: "JENKINS",
-		url: "http://18.138.19.85:8001/job/4km-desk-check/",
-		username: "",
-		credential: "",
-	},
-	{
-		id: "2",
-		name: "4km-UAT",
-		type: "JENKINS",
-		url: "http://18.138.19.85:8001/job/4km-desk-check/",
-		username: "",
-		credential: "",
-	},
-
-	{
-		id: "3",
-		name: "4km-PROD",
-		type: "JENKINS",
-		url: "http://18.138.19.85:8001/job/4km-desk-check/",
-		username: "",
-		credential: "",
-	},
-];
+import { DashboardDetailVo } from "../../clients/apis";
 
 const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
 	return (
@@ -63,7 +35,12 @@ const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
 					</Button>
 				</Link>
 			</div>
-			<DashboardConfig pipelines={dashboard.pipelines} />
+			<DashboardConfig
+				pipelines={dashboard.pipelines}
+				updatePipeline={() => {
+					console.log("placeholder");
+				}}
+			/>
 		</div>
 	);
 };

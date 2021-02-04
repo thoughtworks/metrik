@@ -10,7 +10,13 @@ import { css } from "@emotion/react";
 import { Button, Modal, Typography } from "antd";
 import DashboardConfig from "../../components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
-import { DashboardDetailVo, getDashboardDetailsUsingGet } from "../../clients/apis";
+import {
+	createPipelineUsingPost,
+	DashboardDetailVo,
+	getDashboardDetailsUsingGet,
+	PipelineVoRes,
+	updatePipelineUsingPut,
+} from "../../clients/apis";
 
 const settingStyles = css({
 	fontSize: 16,
@@ -33,6 +39,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const [visible, setVisible] = useState(true);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
+	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
 
 	useEffect(() => {
 		if (visible) {
@@ -51,6 +58,11 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 
 	function handlePipelineSettingStatusSwitch(status: PipelineSettingStatus) {
 		setStatus(status);
+	}
+
+	function handleUpdatePipeline(pipeline: PipelineVoRes) {
+		setEditPipeline(pipeline);
+		setStatus(PipelineSettingStatus.UPDATE);
 	}
 
 	return (
@@ -133,13 +145,19 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						showDelete={true}
 						showAddPipeline={false}
 						pipelines={dashboard?.pipelines ?? []}
+						updatePipeline={handleUpdatePipeline}
 					/>
 				) : (
 					<PipelineConfig
 						dashboardId={dashboardId}
 						updateDashboard={getDashboardDetails}
 						css={{ padding: 24 }}
-						// defaultData={}
+						defaultData={editPipeline}
+						onSubmit={
+							status === PipelineSettingStatus.ADD
+								? createPipelineUsingPost
+								: updatePipelineUsingPut
+						}
 						onBack={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.VIEW)}
 					/>
 				)}

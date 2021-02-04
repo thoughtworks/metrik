@@ -5,6 +5,7 @@ import { VerifyStatus } from "../../__types__/base";
 import {
 	createPipelineUsingPost,
 	PipelineVoRes,
+	updatePipelineUsingPut,
 	verifyPipelineUsingPost,
 } from "../../clients/apis";
 import { ConfigFormValues } from "../../config/PageConfig";
@@ -12,6 +13,7 @@ import { ConfigFormValues } from "../../config/PageConfig";
 interface PipelineConfigProps {
 	defaultData?: PipelineVoRes;
 	onBack: () => void;
+	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
 	className?: string;
 	dashboardId: string;
 	updateDashboard: () => void;
@@ -23,16 +25,13 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	className,
 	dashboardId,
 	updateDashboard,
+	onSubmit,
 }) => {
 	const [form] = Form.useForm<ConfigFormValues>();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-
 	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
-		await createPipelineUsingPost({
-			dashboardId: dashboardId,
-			requestBody: pipeline,
-		});
+		await onSubmit({ dashboardId, requestBody: pipeline, pipelineId: defaultData?.id as string });
 		updateDashboard();
 		onBack();
 	};
