@@ -23,7 +23,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         allBuilds: List<Build>, startTimestamp: Long,
         endTimestamp: Long, pipelineStagesMap: Map<String, String>
     ): Number {
-        val (totalTimes, restoreTimes) = allBuilds
+        val (totalTime, restoreTimes) = allBuilds
             .groupBy { it.pipelineId }
             .map {
                 val selectedStages =
@@ -38,7 +38,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
             }
 
         if (restoreTimes > 0) {
-            return totalTimes / restoreTimes
+            return totalTime / restoreTimes
         }
         return NO_VALUE
     }
