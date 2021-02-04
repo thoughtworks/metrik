@@ -1,11 +1,9 @@
 package fourkeymetrics.dashboard.repository
 
 import fourkeymetrics.dashboard.exception.PipelineNotFoundException
-import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
@@ -27,7 +25,7 @@ class PipelineRepository {
 
     fun pipelineExistWithNameAndDashboardId(name: String, dashboardId: String): Boolean {
         val query = Query().addCriteria(Criteria.where("name").`is`(name).and("dashboardId").`is`(dashboardId))
-        return mongoTemplate.find<Dashboard>(query).isNotEmpty()
+        return mongoTemplate.find(query, Pipeline::class.java).isNotEmpty()
     }
 
     fun deleteById(pipelineId: String) {

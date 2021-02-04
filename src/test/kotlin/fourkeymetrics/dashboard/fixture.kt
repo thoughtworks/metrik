@@ -16,7 +16,6 @@ fun buildPipelineResponse(): PipelineResponse = PipelineResponse(
     url = "url"
 ).copy()
 
-
 fun buildPipelineVerificationRequest() = PipelineVerificationRequest(
     "url",
     "username",
