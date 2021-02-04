@@ -12,16 +12,12 @@ data class PipelineResponse(
     val url: String = Strings.EMPTY,
     var type: PipelineType = PipelineType.JENKINS
 ) {
-    companion object {
-        fun buildFrom(pipeline: Pipeline): PipelineResponse {
-            return PipelineResponse(
-                pipeline.id,
-                pipeline.name,
-                pipeline.username,
-                pipeline.credential,
-                pipeline.url,
-                pipeline.type
-            )
-        }
-    }
+    constructor(pipeline: Pipeline) : this(
+        pipeline.id,
+        pipeline.name,
+        pipeline.username,
+        pipeline.credential,
+        pipeline.url,
+        pipeline.type
+    )
 }

@@ -45,7 +45,7 @@ class DashboardApplicationService {
             listOf(Pipeline(ObjectId().toString(), dashboard.id, name, username, credential, url, type))
 
         }
-        return DashboardDetailResponse.buildFrom(dashboard, pipelineRepository.saveAll(pipelines))
+        return DashboardDetailResponse(dashboard, pipelineRepository.saveAll(pipelines))
     }
 
     fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardResponse {
@@ -77,7 +77,7 @@ class DashboardApplicationService {
         val dashboard = dashboardRepository.findById(dashboardId)
         val pipelines =  pipelineRepository.findByDashboardId(dashboardId)
 
-        return DashboardDetailResponse.buildFrom(dashboard, pipelines)
+        return DashboardDetailResponse(dashboard, pipelines)
     }
 
 }
