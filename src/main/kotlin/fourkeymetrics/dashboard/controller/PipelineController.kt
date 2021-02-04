@@ -25,7 +25,7 @@ class PipelineController {
     @PostMapping("/pipeline/verify")
     @ResponseStatus(HttpStatus.OK)
     fun verifyPipeline(@RequestBody pipelineVerificationRequest: PipelineVerificationRequest) {
-        pipelineApplicationService.verifyPipeline(pipelineVerificationRequest)
+        pipelineApplicationService.verifyPipelineConfiguration(pipelineVerificationRequest)
     }
 
     @PostMapping("/dashboard/{dashboardId}/pipeline")

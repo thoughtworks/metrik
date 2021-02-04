@@ -30,7 +30,7 @@ internal class PipelineControllerTest {
     @Test
     internal fun `should return OK when verify pipeline successfully`() {
         val pipelineVerificationRequest = buildPipelineVerificationRequest()
-        Mockito.doNothing().`when`(pipelineApplicationService).verifyPipeline(pipelineVerificationRequest)
+        Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(pipelineVerificationRequest)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")

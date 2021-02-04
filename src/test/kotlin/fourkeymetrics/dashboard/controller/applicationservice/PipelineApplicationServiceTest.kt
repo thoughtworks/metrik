@@ -9,7 +9,6 @@ import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
-import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.exception.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -39,11 +38,14 @@ internal class PipelineApplicationServiceTest {
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
     @Test
-    internal fun `should throw ApplicationException when verifyPipeline() called given pipeline type is not JENKINS`() {
+    internal fun `should throw BadRequestException when verifyPipeline() called given pipeline type is not JENKINS`() {
         val pipelineVerificationRequest = buildPipelineVerificationRequest().copy(type = PipelineType.BAMBOO)
 
-        val exception =
-            assertThrows<ApplicationException> { pipelineApplicationService.verifyPipeline(pipelineVerificationRequest) }
+        val exception = assertThrows<BadRequestException> {
+            pipelineApplicationService.verifyPipelineConfiguration(
+                pipelineVerificationRequest
+            )
+        }
 
         assertEquals("Pipeline type not support", exception.message)
         assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
@@ -53,7 +55,7 @@ internal class PipelineApplicationServiceTest {
     internal fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
         val pipelineVerificationRequest = buildPipelineVerificationRequest().copy(type = PipelineType.JENKINS)
 
-        pipelineApplicationService.verifyPipeline(pipelineVerificationRequest)
+        pipelineApplicationService.verifyPipelineConfiguration(pipelineVerificationRequest)
 
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
             pipelineVerificationRequest.url,
@@ -70,14 +72,12 @@ internal class PipelineApplicationServiceTest {
             true
         )
 
-        val exception =
-            assertThrows<BadRequestException> {
-
-                pipelineApplicationService.createPipeline(
-                    dashboardId,
-                    pipelineRequest
-                )
-            }
+        val exception = assertThrows<BadRequestException> {
+            pipelineApplicationService.createPipeline(
+                dashboardId,
+                pipelineRequest
+            )
+        }
 
         verify(dashboardRepository).findById(dashboardId)
         verify(pipelineRepository, times(0)).save(anyObject())

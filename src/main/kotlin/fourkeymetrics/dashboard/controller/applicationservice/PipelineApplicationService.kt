@@ -3,16 +3,13 @@ package fourkeymetrics.dashboard.controller.applicationservice
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
-import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
-import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.exception.BadRequestException
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @SuppressWarnings("TooManyFunctions")
@@ -27,9 +24,15 @@ class PipelineApplicationService {
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
-    fun verifyPipeline(pipelineVerificationRequest: PipelineVerificationRequest) {
-        with(pipelineVerificationRequest) {
-            verifyPipeline(url, username, credential, type)
+    fun verifyPipelineConfiguration(pipelineVerificationRequest: PipelineVerificationRequest) {
+        if (PipelineType.JENKINS == pipelineVerificationRequest.type) {
+            jenkinsPipelineService.verifyPipelineConfiguration(
+                pipelineVerificationRequest.url,
+                pipelineVerificationRequest.username,
+                pipelineVerificationRequest.credential
+            )
+        } else {
+            throw BadRequestException("Pipeline type not support")
         }
     }
 
@@ -49,9 +52,7 @@ class PipelineApplicationService {
         verifyDashboardExist(dashboardId)
         verifyPipelineExist(pipelineId)
 
-        val pipeline =
-            with(pipelineRequest) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
-
+        val pipeline = pipelineRequest.toPipeline(dashboardId, pipelineId)
         return PipelineResponse(pipelineRepository.save(pipeline))
     }
 
@@ -66,14 +67,6 @@ class PipelineApplicationService {
         verifyDashboardExist(dashboardId)
         verifyPipelineExist(pipelineId)
         pipelineRepository.deleteById(pipelineId)
-    }
-
-    private fun verifyPipeline(url: String, username: String, credential: String, type: PipelineType) {
-        if (PipelineType.JENKINS == type) {
-            jenkinsPipelineService.verifyPipelineConfiguration(url, username, credential)
-        } else {
-            throw ApplicationException(HttpStatus.BAD_REQUEST, "Pipeline type not support")
-        }
     }
 
     private fun verifyDashboardExist(dashboardId: String) =
