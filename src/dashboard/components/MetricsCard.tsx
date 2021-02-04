@@ -18,6 +18,7 @@ import NAIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_N
 import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@3x.png";
 import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
 import { MetricsDataItem } from "../PageDashboard";
+import moment from "moment/moment";
 
 interface MetricsLevelConfig {
 	color: string;
@@ -111,6 +112,13 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	yaxisFormatter,
 	unit,
 }) => {
+	const formattedData = data.map(item => ({
+		name: `${moment(item.startTimestamp).format("MMM DD")} - ${moment(item.endTimestamp).format(
+			"MMM DD"
+		)}`,
+		value: item.value,
+	}));
+
 	return (
 		<div css={containerStyles}>
 			<div css={titleStyles}>{title}</div>
@@ -131,7 +139,7 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 					<div>{unit}</div>
 				</div>
 			</div>
-			<LineChart data={data} yaxisFormatter={yaxisFormatter} unit={unit} />
+			<LineChart data={formattedData} yaxisFormatter={yaxisFormatter} unit={unit} />
 		</div>
 	);
 };

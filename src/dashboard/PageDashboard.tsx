@@ -100,9 +100,7 @@ export const PageDashboard = () => {
 	const [pipelineStages, setPipelineStages] = useState<Option[]>([]);
 	const [dashboardName, setDashboardName] = useState("");
 	const [formValues, setFormValues] = useState<FormValues>({} as FormValues);
-	const [changeFailureRate, setChangeFailureRate] = useState<MetricsDataState>(
-		initialMetricsState
-	);
+	const [changeFailureRate, setChangeFailureRate] = useState<MetricsDataState>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsDataState>(
 		initialMetricsState
 	);
@@ -169,27 +167,27 @@ export const PageDashboard = () => {
 		const mockData: MetricsDataState = {
 			details: [
 				{
-					endTimestamp: 0,
+					endTimestamp: 1613260800000,
 					level: "ELITE",
-					startTimestamp: 0,
+					startTimestamp: 1612137600000,
 					value: 20,
 				},
 				{
-					endTimestamp: 0,
+					endTimestamp: 1614384000000,
 					level: "ELITE",
-					startTimestamp: 0,
+					startTimestamp: 1613260800000,
 					value: 21,
 				},
 				{
-					endTimestamp: 0,
+					endTimestamp: 1615507200000,
 					level: "ELITE",
-					startTimestamp: 0,
+					startTimestamp: 1614384000000,
 					value: 10,
 				},
 				{
-					endTimestamp: 0,
+					endTimestamp: 1616630400000,
 					level: "ELITE",
-					startTimestamp: 0,
+					startTimestamp: 1615507200000,
 					value: 15,
 				},
 			],
