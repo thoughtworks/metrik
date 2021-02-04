@@ -5,13 +5,14 @@ import org.apache.logging.log4j.util.Strings
 
 
 class DashboardResponse(
-    val id: String = Strings.EMPTY,
+    var id: String = Strings.EMPTY,
     var name: String = Strings.EMPTY,
-    val synchronizationTimestamp: Long? = null,
+    var synchronizationTimestamp: Long? = null,
 ) {
-    companion object {
-        fun buildFrom(dashboard: Dashboard): DashboardResponse {
-            return DashboardResponse(dashboard.id, dashboard.name, dashboard.synchronizationTimestamp)
-        }
+    constructor(dashboard: Dashboard) : this() {
+        this.id = dashboard.id
+        this.name = dashboard.name
+        this.synchronizationTimestamp = dashboard.synchronizationTimestamp
     }
+
 }

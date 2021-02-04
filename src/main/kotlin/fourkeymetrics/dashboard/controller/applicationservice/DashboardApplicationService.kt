@@ -51,12 +51,12 @@ class DashboardApplicationService {
     fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
         dashboard.name = dashboardName
-        return DashboardResponse.buildFrom(dashboardRepository.save(dashboard))
+        return DashboardResponse(dashboardRepository.save(dashboard))
     }
 
 
     fun getDashboards(): List<DashboardResponse> {
-        return dashboardRepository.findAll().map { DashboardResponse.buildFrom(it) }
+        return dashboardRepository.findAll().map { DashboardResponse(it) }
     }
 
     @Transactional
@@ -66,11 +66,17 @@ class DashboardApplicationService {
     }
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
-        val dashboard = getDashboardDetails(dashboardId)
+        verifyDashboardExist(dashboardId)
+        val pipelines =  pipelineRepository.findByDashboardId(dashboardId)
 
-        return pipelineRepository.findByDashboardId(dashboard.id).parallelStream().map {
+
+        return pipelines.parallelStream().map {
             PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id),)
         }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
+    }
+
+    private fun verifyDashboardExist(dashboardId: String) {
+        dashboardRepository.findById(dashboardId)
     }
 
     fun getDashboardDetails(dashboardId: String): DashboardDetailResponse {
