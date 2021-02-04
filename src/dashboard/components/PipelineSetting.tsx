@@ -43,6 +43,13 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
 
 	useEffect(() => {
+		if (!visible) {
+			setStatus(PipelineSettingStatus.VIEW);
+			setEditPipeline(undefined);
+		}
+	}, [visible]);
+
+	useEffect(() => {
 		if (visible) {
 			getDashboardDetails();
 		}
