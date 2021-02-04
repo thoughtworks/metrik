@@ -250,7 +250,9 @@ export const PageDashboard = () => {
 							unit: "Fortnightly",
 						}}
 						onFinish={getFourKeyMetrics}
-						onValuesChange={(_, values) => setFormValues(values)}>
+						// TODO: Fix infinite re-render
+						// onValuesChange={(_, values) => setFormValues(values)}
+					>
 						<Row wrap={false} gutter={12}>
 							<Col>
 								<Form.Item label="Duration" name="duration">
