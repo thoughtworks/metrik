@@ -22,6 +22,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 }) => {
 	return (
 		<Table<PipelineVoRes>
+			tableLayout={"fixed"}
 			css={{
 				minHeight: 350,
 				".ant-table-cell": { borderBottom: "none" },
