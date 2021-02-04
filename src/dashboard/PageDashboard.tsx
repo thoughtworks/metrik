@@ -24,7 +24,7 @@ import {
 	momentObjToEndTimeStamp,
 } from "../utils/timeFormats";
 import { isEmpty } from "lodash";
-import { MetricsCard } from "./MetricsCard";
+import { MetricsCard } from "./components/MetricsCard";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -199,7 +199,7 @@ export const PageDashboard = () => {
 															value: pipelineStages[0]?.value,
 															childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
 														},
-													]
+												  ]
 												: []
 										}
 									/>

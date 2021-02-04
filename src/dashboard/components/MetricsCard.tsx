@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { css } from "@emotion/react";
-import { LineChart } from "../components/LineChart";
+import { LineChart } from "../../components/LineChart";
 
 enum MetricsLevelColor {
 	LOW = "#A61D24",
