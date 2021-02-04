@@ -20,43 +20,51 @@ import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constan
 import { MetricsDataItem } from "../PageDashboard";
 import moment from "moment/moment";
 
-interface MetricsLevelConfig {
+export enum MetricsLevel {
+	ELITE,
+	HIGH,
+	MEDIUM,
+	LOW,
+	NA,
+}
+
+interface MetricsLevelConfigInterface {
 	color: string;
 	indicator1X: string;
 	indicator2X: string;
 	indicator3X: string;
 }
 
-interface MetricsLevelInterface {
-	[level: string]: MetricsLevelConfig;
-}
+type MetricsLevelInterface = {
+	[key in MetricsLevel]: MetricsLevelConfigInterface;
+};
 
-const MetricsLevel: MetricsLevelInterface = {
-	ELITE: {
+const MetricsLevelConfig: MetricsLevelInterface = {
+	[MetricsLevel.ELITE]: {
 		color: GREEN_DARK,
 		indicator1X: EliteIndicator1X,
 		indicator2X: EliteIndicator2X,
 		indicator3X: EliteIndicator3X,
 	},
-	HIGH: {
+	[MetricsLevel.HIGH]: {
 		color: BLUE_5,
 		indicator1X: HighIndicator1X,
 		indicator2X: HighIndicator2X,
 		indicator3X: HighIndicator3X,
 	},
-	MEDIUM: {
+	[MetricsLevel.MEDIUM]: {
 		color: ORANGE_DARK,
 		indicator1X: MediumIndicator1X,
 		indicator2X: MediumIndicator2X,
 		indicator3X: MediumIndicator3X,
 	},
-	LOW: {
+	[MetricsLevel.LOW]: {
 		color: RED_DARK,
 		indicator1X: LowIndicator1X,
 		indicator2X: LowIndicator2X,
 		indicator3X: LowIndicator3X,
 	},
-	NA: {
+	[MetricsLevel.NA]: {
 		color: GRAY_6,
 		indicator1X: NAIndicator1X,
 		indicator2X: NAIndicator2X,
@@ -85,9 +93,9 @@ const metricsIndicatorStyles = css({
 	height: "45px",
 	width: "45px",
 });
-const metricsValueStyles = (level: string) =>
+const metricsValueStyles = (level: MetricsLevel) =>
 	css({
-		color: MetricsLevel[level].color,
+		color: MetricsLevelConfig[level].color,
 		fontSize: "40px",
 		lineHeight: "47px",
 	});
@@ -124,11 +132,12 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 			<div css={titleStyles}>{title}</div>
 			<div css={subtitleStyles}>
 				<img
+					alt={title}
 					css={metricsIndicatorStyles}
 					srcSet={`
-						${MetricsLevel[summary.level].indicator1X} 1x, 
-						${MetricsLevel[summary.level].indicator2X} 2x,
-						${MetricsLevel[summary.level].indicator3X} 3x
+						${MetricsLevelConfig[summary.level].indicator1X} 1x, 
+						${MetricsLevelConfig[summary.level].indicator2X} 2x,
+						${MetricsLevelConfig[summary.level].indicator3X} 3x
 					`}
 				/>
 				<div css={metricsValueStyles(summary.level)}>

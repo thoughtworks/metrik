@@ -24,7 +24,7 @@ import {
 	momentObjToStartTimeStamp,
 } from "../utils/timeFormats";
 import { isEmpty } from "lodash";
-import { MetricsCard } from "./components/MetricsCard";
+import { MetricsCard, MetricsLevel } from "./components/MetricsCard";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
