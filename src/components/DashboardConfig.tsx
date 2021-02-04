@@ -9,12 +9,16 @@ interface DashboardConfigurationProps {
 	pipelines: PipelineVoRes[];
 	showDelete?: boolean;
 	showAddPipeline?: boolean;
+	updatePipeline: (pipeline: PipelineVoRes) => void;
+	deletePipeline?: (pipelineId: string) => void;
 }
 
 const DashboardConfig: FC<DashboardConfigurationProps> = ({
 	pipelines,
 	showDelete = false,
 	showAddPipeline = true,
+	updatePipeline,
+	deletePipeline,
 }) => {
 	return (
 		<Table<PipelineVoRes>
@@ -47,13 +51,20 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 						Actions {showAddPipeline && <Button type={"link"}>+Add Pipeline</Button>}
 					</div>
 				)}
-				render={() => (
+				render={(value, record) => (
 					<>
-						<Button type={"link"} css={{ padding: "8px 8px 8px 0" }}>
+						<Button
+							type={"link"}
+							css={{ padding: "8px 8px 8px 0" }}
+							onClick={() => updatePipeline(record)}>
 							Config
 						</Button>
 						{showDelete && (
-							<Button type={"link"} danger={true} css={{ padding: 8 }}>
+							<Button
+								type={"link"}
+								danger={true}
+								css={{ padding: 8 }}
+								onClick={() => deletePipeline?.(record.id)}>
 								Delete
 							</Button>
 						)}

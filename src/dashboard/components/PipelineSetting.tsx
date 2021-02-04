@@ -7,12 +7,13 @@ import {
 	UploadOutlined,
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
-import { Button, Modal, Typography } from "antd";
+import { Button, Modal, notification, Typography } from "antd";
 import DashboardConfig from "../../components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
 import {
 	createPipelineUsingPost,
 	DashboardDetailVo,
+	deletePipelineUsingDelete,
 	getDashboardDetailsUsingGet,
 	PipelineVoRes,
 	updatePipelineUsingPut,
@@ -63,6 +64,19 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	function handleUpdatePipeline(pipeline: PipelineVoRes) {
 		setEditPipeline(pipeline);
 		setStatus(PipelineSettingStatus.UPDATE);
+	}
+
+	function checkPipelineAllowedToDelete() {
+		return (dashboard?.pipelines.length ?? 0) > 1;
+	}
+
+	async function handleDeletePipeline(pipelineId: string) {
+		if (!checkPipelineAllowedToDelete()) {
+			notification.error({ message: "not allow to delete this pipeline" });
+			return;
+		}
+		await deletePipelineUsingDelete({ dashboardId, pipelineId });
+		await getDashboardDetails();
 	}
 
 	return (
@@ -146,6 +160,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						showAddPipeline={false}
 						pipelines={dashboard?.pipelines ?? []}
 						updatePipeline={handleUpdatePipeline}
+						deletePipeline={handleDeletePipeline}
 					/>
 				) : (
 					<PipelineConfig
