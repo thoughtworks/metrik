@@ -21,9 +21,10 @@ export const FieldsStep2: FC<{
 	visible?: boolean;
 	verifyStatus: VerifyStatus;
 	onVerify?: () => void;
-}> = ({ onBack, formValues, visible = true, verifyStatus, onVerify }) => (
+	showTitle?: boolean;
+}> = ({ onBack, formValues, visible = true, verifyStatus, onVerify, showTitle = true }) => (
 	<div css={{ display: visible ? "block" : "none" }}>
-		<Text css={groupTitleStyles}>Pipelines</Text>
+		{showTitle && <Text css={groupTitleStyles}>Pipelines</Text>}
 
 		<Row gutter={8} wrap={false}>
 			<Col span={8}>
