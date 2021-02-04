@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { SettingOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import { Typography, Button, DatePicker, Row, Col, Form, Select } from "antd";
-import { SECONDARY_COLOR, PRIMARY_COLOR } from "../constants/styles";
+import React, { useEffect, useState } from "react";
+import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../constants/styles";
 import { css } from "@emotion/react";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../constants/date-format";
@@ -9,19 +9,19 @@ import { MultipleCascadeSelect, Option } from "../components/MultipleCascadeSele
 import { EditableText } from "../components/EditableText";
 import { useQuery } from "../hooks/useQuery";
 import {
+	getDashboardUsingGet,
+	getFourKeyMetricsUsingGet,
 	getLastSynchronizationUsingGet,
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
 	updateBuildsUsingPost,
 	updateDashboardNameUsingPut,
-	getFourKeyMetricsUsingGet,
-	getDashboardUsingGet,
 } from "../clients/apis";
 import PipelineSetting from "./components/PipelineSetting";
 import {
 	formatLastUpdateTime,
-	momentObjToStartTimeStamp,
 	momentObjToEndTimeStamp,
+	momentObjToStartTimeStamp,
 } from "../utils/timeFormats";
 import { isEmpty } from "lodash";
 import { MetricsCard } from "./components/MetricsCard";
@@ -162,7 +162,7 @@ export const PageDashboard = () => {
 					</div>
 					<div>
 						<span css={dividerStyles}>
-							<PipelineSetting />
+							<PipelineSetting dashboardId={dashboardId} />
 						</span>
 						<span css={fullScreenStyles}>
 							<FullscreenOutlined css={fullScreenIconStyles} />

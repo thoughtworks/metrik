@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
 	DownloadOutlined,
 	LeftOutlined,
@@ -10,6 +10,7 @@ import { css } from "@emotion/react";
 import { Button, Modal, Typography } from "antd";
 import DashboardConfig from "../../components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
+import { DashboardDetailVo, getDashboardDetailsUsingGet } from "../../clients/apis";
 
 const settingStyles = css({
 	fontSize: 16,
@@ -28,16 +29,28 @@ enum PipelineSettingStatus {
 }
 
 const { Text } = Typography;
-const PipelineSetting: FC = () => {
-	const [visible, setVisible] = useState(false);
+const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
+	const [visible, setVisible] = useState(true);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
+	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
+
+	useEffect(() => {
+		if (visible) {
+			getDashboardDetails();
+		}
+	}, [visible]);
+
+	async function getDashboardDetails() {
+		const data = await getDashboardDetailsUsingGet(dashboardId);
+		setDashboard(data);
+	}
 
 	function handleToggleVisible() {
 		setVisible(!visible);
 	}
 
-	function handleSwitchToAddStatus() {
-		setStatus(PipelineSettingStatus.ADD);
+	function handlePipelineSettingStatusSwitch(status: PipelineSettingStatus) {
+		setStatus(status);
 	}
 
 	return (
@@ -47,6 +60,13 @@ const PipelineSetting: FC = () => {
 				<Text css={settingTextStyles}>Pipeline Setting</Text>
 			</span>
 			<Modal
+				centered={true}
+				css={{
+					".ant-modal-body": {
+						height: status === PipelineSettingStatus.VIEW ? 500 : 589,
+						overflowY: "auto",
+					},
+				}}
 				bodyStyle={{
 					padding: 0,
 				}}
@@ -73,7 +93,10 @@ const PipelineSetting: FC = () => {
 								<Button icon={<UploadOutlined />} disabled={true}>
 									Import
 								</Button>
-								<Button type={"primary"} icon={<PlusOutlined />} onClick={handleSwitchToAddStatus}>
+								<Button
+									type={"primary"}
+									icon={<PlusOutlined />}
+									onClick={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.ADD)}>
 									Add Pipeline
 								</Button>
 							</div>
@@ -86,14 +109,18 @@ const PipelineSetting: FC = () => {
 								display: "flex",
 								alignItems: "center",
 							}}>
-							<Button icon={<LeftOutlined />} css={{ marginRight: 16 }} />
+							<Button
+								icon={<LeftOutlined />}
+								css={{ marginRight: 16 }}
+								onClick={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.VIEW)}
+							/>
 							<span css={{ flexGrow: 1 }}>Pipeline Setting</span>
 						</div>
 					)
 				}
 				footer={
 					status === PipelineSettingStatus.VIEW ? (
-						<Button size={"large"} css={{ margin: 14 }}>
+						<Button size={"large"} css={{ margin: 8 }}>
 							Close
 						</Button>
 					) : null
@@ -105,19 +132,11 @@ const PipelineSetting: FC = () => {
 					<DashboardConfig
 						showDelete={true}
 						showAddPipeline={false}
-						pipelines={[
-							{
-								id: "601a448aafe56915934375e7",
-								name: "string",
-								username: "string",
-								credential: "string",
-								url: "string",
-								type: "BAMBOO",
-							},
-						]}
+						pipelines={dashboard?.pipelines ?? []}
 					/>
 				) : (
 					<PipelineConfig
+						css={{ padding: 24 }}
 						defaultData={{
 							id: "601a448aafe56915934375e7",
 							name: "string",

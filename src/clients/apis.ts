@@ -58,6 +58,14 @@ export const getDashboardsUsingGet = createRequest<undefined, DashboardVo[]>(
 	})
 );
 
+export const getDashboardDetailsUsingGet = createRequest<string, DashboardDetailVo>(
+	"getDashboardDetailsUsingGet",
+	(dashboardId: string) => ({
+		url: `/api/dashboard/${dashboardId}`,
+		method: "GET",
+	})
+);
+
 export const getDeploymentCountUsingGet = createRequest<
 	{
 		dashboardId: string;
