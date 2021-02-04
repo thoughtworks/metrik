@@ -37,7 +37,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 				left: 20,
 				bottom: 20,
 			}}>
-			<CartesianGrid stroke="#416180" strokeWidth={0.5} strokeOpacity={0.151934} vertical={false} />
+			<CartesianGrid stroke="#416180" strokeWidth={0.5} strokeOpacity={0.2} vertical={false} />
 			<XAxis
 				stroke="#416180"
 				strokeWidth={0.5}
