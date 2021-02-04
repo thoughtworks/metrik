@@ -1,12 +1,12 @@
 import { Checkbox, Row, Col, Radio, Tag, Typography } from "antd";
-import React, { useState, useEffect, FC, useRef } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
 import Trigger from "rc-trigger";
 import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import Overflow from "rc-overflow";
-import { isEqual } from "lodash";
+import { first, omit, compact, isEmpty } from "lodash";
 
 const { Text } = Typography;
 
@@ -41,15 +41,31 @@ const popupContainerStyles = css({
 const findOptionByValue = (options: Option[], value?: string): Option | undefined =>
 	options.find(o => o.value === value);
 
-function usePrevious(value: any) {
-	const ref = useRef();
+const valuesToCascadeValue = (values: CascadeValueItem[]) => {
+	return values.reduce((res, item) => {
+		return {
+			...res,
+			[item.value]: {
+				value: item.value,
+				childValue: item.childValue,
+			},
+		};
+	}, {});
+};
 
-	useEffect(() => {
-		ref.current = value;
-	}, [value]);
+const generateTagLabel = (options: Option[], tag: CascadeValueItem) => {
+	const option = findOptionByValue(options, tag.value) || ({} as Option);
+	return compact([
+		option?.label,
+		findOptionByValue(option?.children ?? [], tag.childValue)?.label,
+	]).join(",");
+};
 
-	return ref.current;
-}
+const findExistsTags = (options: Option[], tags: CascadeValueItem[]) =>
+	tags.filter(tag => {
+		const option = findOptionByValue(options, tag.value);
+		return option && findOptionByValue(option?.children || [], tag.childValue);
+	});
 
 export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	onChange,
@@ -57,25 +73,53 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	options = [],
 }) => {
 	const [popupVisible, setPopupVisible] = useState(false);
-	const [checkedValues, setCheckedValues] = useState<string[]>(defaultValues.map(o => o.value));
-	const defaultVisibleMap = defaultValues.reduce(
-		(res, v) => ({
-			...res,
-			[v.value]: true,
-		}),
-		{}
+
+	const [cascadeValue, setCascadeValue] = useState<CascadeValue>(
+		valuesToCascadeValue(defaultValues)
+	);
+	const tags = Object.values(cascadeValue);
+	const checkedValues = tags.map(v => v.value);
+
+	const [visibleMap, setVisibleMap] = useState<{ [key: string]: boolean }>(
+		checkedValues.reduce(
+			(res, item) => ({
+				...res,
+				[item]: true,
+			}),
+			{}
+		)
 	);
 
-	const [visibleMap, setVisibleMap] = useState<{ [key: string]: boolean }>(defaultVisibleMap);
-	const [cascadeValue, setCascadeValue] = useState<CascadeValue>({});
+	const onCollapseChange = (id: string) =>
+		setVisibleMap(state => ({
+			...state,
+			[id]: !state[id],
+		}));
 
-	const prevDefaultValues = usePrevious(defaultValues);
+	const onRadioChange = (e: RadioChangeEvent, option: Option) => {
+		setCascadeValue((state: CascadeValue) => ({
+			...state,
+			[option.value]: {
+				value: option.value,
+				childValue: e.target.value,
+			},
+		}));
+	};
 
-	useEffect(() => {
-		if (prevDefaultValues && !isEqual(defaultValues, prevDefaultValues)) {
-			setCheckedValues(defaultValues.map(o => o.value));
-		}
-	}, [defaultValues]);
+	const handleCheckBoxChange = (e: CheckboxChangeEvent, option: Option) => {
+		setCascadeValue(state => {
+			if (e.target.checked) {
+				return {
+					...state,
+					[option.value]: {
+						value: option.value,
+						childValue: first(option.children)?.value,
+					},
+				};
+			}
+			return omit(state, option.value);
+		});
+	};
 
 	useEffect(() => {
 		setVisibleMap(state => ({
@@ -88,52 +132,16 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 				{}
 			),
 		}));
-
-		setCascadeValue(state => ({
-			...checkedValues.reduce((res: CascadeValue, val: string) => {
-				const childOptions = options.find(o => o.value === val)?.children ?? [];
-				return {
-					...res,
-					[val]: {
-						value: val,
-						childValue: state[val]?.childValue || childOptions[childOptions.length - 1]?.value,
-					},
-				};
-			}, {}),
-		}));
-	}, [checkedValues]);
-
-	const onRadioChange = (e: RadioChangeEvent, option: Option) => {
-		if (!checkedValues.includes(option.value)) {
-			setCheckedValues(state => [...state, option.value]);
-		}
-
-		setCascadeValue((state: CascadeValue) => ({
-			...state,
-			[option.value]: {
-				value: option.value,
-				childValue: e.target.value,
-			},
-		}));
-	};
-
-	const toggle = (id: string) =>
-		setVisibleMap(state => ({
-			...state,
-			[id]: !state[id],
-		}));
-
-	const handleCheckBoxChange = (e: CheckboxChangeEvent) => {
-		setCheckedValues(state =>
-			e.target.checked ? [...state, e.target.value] : state.filter(v => v !== e.target.value)
-		);
-	};
-
-	useEffect(() => {
 		onChange && onChange(Object.values(cascadeValue));
 	}, [cascadeValue]);
 
-	const tags = Object.values(cascadeValue);
+	useEffect(() => {
+		const existsTags = findExistsTags(options, tags);
+
+		setCascadeValue(
+			!isEmpty(existsTags) ? valuesToCascadeValue(existsTags) : valuesToCascadeValue(defaultValues)
+		);
+	}, [options]);
 
 	return (
 		<Trigger
@@ -144,43 +152,37 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 				<div css={popupContainerStyles}>
 					<Text type={"secondary"}>Pipelines</Text>
 					<div css={{ marginTop: 20, padding: "0 15px" }}>
-						<Checkbox.Group
-							onChange={(values: any[]) => setCheckedValues(values)}
-							value={checkedValues}>
-							{options.map((option, key) => {
-								return (
-									<Row key={key} css={{ marginBottom: 8 }}>
-										<Col>
-											<span
-												onClick={() => toggle(option.value)}
-												css={{ display: "inline-block", cursor: "pointer" }}>
-												{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
-											</span>
-											<Checkbox
-												value={option.value}
-												onChange={handleCheckBoxChange}
-												disabled={
-													checkedValues.length === 1 && checkedValues.includes(option.value)
-												}>
-												{option.label}
-											</Checkbox>
-											{visibleMap[option.value] && (
-												<Row css={{ marginLeft: 50, marginTop: 6 }}>
-													<Radio.Group
-														onChange={e => onRadioChange(e, option)}
-														value={cascadeValue[option.value]?.childValue}>
-														{(option.children ?? []).map((child, idx) => (
-															<Col key={idx} css={{ marginTop: 4 }}>
-																<Radio value={child.value}>{child.label}</Radio>
-															</Col>
-														))}
-													</Radio.Group>
-												</Row>
-											)}
-										</Col>
-									</Row>
-								);
-							})}
+						<Checkbox.Group value={checkedValues}>
+							{options.map((option, key) => (
+								<Row key={key} css={{ marginBottom: 8 }}>
+									<Col>
+										<span
+											onClick={() => onCollapseChange(option.value)}
+											css={{ display: "inline-block", cursor: "pointer" }}>
+											{visibleMap[option.value] ? <CaretDownOutlined /> : <CaretRightOutlined />}
+										</span>
+										<Checkbox
+											value={option.value}
+											onChange={e => handleCheckBoxChange(e, option)}
+											disabled={tags.length === 1 && !!cascadeValue[option.value]}>
+											{option.label}
+										</Checkbox>
+										{visibleMap[option.value] && (
+											<Row css={{ marginLeft: 50, marginTop: 6 }}>
+												<Radio.Group
+													onChange={e => onRadioChange(e, option)}
+													value={cascadeValue[option.value]?.childValue}>
+													{(option.children ?? []).map((child, idx) => (
+														<Col key={idx} css={{ marginTop: 4 }}>
+															<Radio value={child.value}>{child.label}</Radio>
+														</Col>
+													))}
+												</Radio.Group>
+											</Row>
+										)}
+									</Col>
+								</Row>
+							))}
 						</Checkbox.Group>
 					</div>
 				</div>
@@ -197,30 +199,20 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 						prefixCls={"ant-select-selection-overflow"}
 						data={tags}
 						maxCount={"responsive"}
-						renderRest={(items: any[]) => {
-							return <div className={"ant-select-selection-item"}>+{items.length}...</div>;
-						}}
-						renderItem={tag => {
-							const option = findOptionByValue(options, tag.value) || ({} as Option);
-							const tagLabel = [
-								option?.label,
-								findOptionByValue(option?.children ?? [], tag.childValue)?.label,
-							].join(",");
-
-							return (
-								<div className={"ant-select-selection-overflow-item"}>
-									<Tag
-										className={"ant-select-selection-item"}
-										css={{ alignItems: "center" }}
-										closable={tags.length > 1}
-										onClose={() => {
-											setCheckedValues(state => state.filter(v => v !== tag.value));
-										}}>
-										{tagLabel}
-									</Tag>
-								</div>
-							);
-						}}
+						renderRest={(items: CascadeValueItem[]) => (
+							<div className={"ant-select-selection-item"}>+{items.length}...</div>
+						)}
+						renderItem={tag => (
+							<div className={"ant-select-selection-overflow-item"}>
+								<Tag
+									className={"ant-select-selection-item"}
+									css={{ alignItems: "center" }}
+									closable={tags.length > 1}
+									onClose={() => setCascadeValue(omit(cascadeValue, tag.value))}>
+									{generateTagLabel(options, tag)}
+								</Tag>
+							</div>
+						)}
 					/>
 				</div>
 			</div>
