@@ -37,7 +37,7 @@ enum PipelineSettingStatus {
 
 const { Text } = Typography;
 const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
-	const [visible, setVisible] = useState(true);
+	const [visible, setVisible] = useState(false);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
 	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
