@@ -136,16 +136,11 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 					/>
 				) : (
 					<PipelineConfig
+						dashboardId={dashboardId}
+						updateDashboard={getDashboardDetails}
 						css={{ padding: 24 }}
-						defaultData={{
-							id: "601a448aafe56915934375e7",
-							name: "string",
-							username: "string",
-							credential: "string",
-							url: "string",
-							type: "BAMBOO",
-						}}
-						onCancel={handleToggleVisible}
+						// defaultData={}
+						onBack={() => handlePipelineSettingStatusSwitch(PipelineSettingStatus.VIEW)}
 					/>
 				)}
 			</Modal>
