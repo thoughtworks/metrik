@@ -1,11 +1,36 @@
 import { Button } from "antd";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
-import { DashboardDetailVo } from "../../clients/apis";
+import {
+	DashboardDetailVo,
+	getDashboardDetailsUsingGet,
+	PipelineVoRes,
+	updatePipelineUsingPut,
+} from "../../clients/apis";
+import PipelineSettingModal from "../../components/PipelineSettingModal";
+import PipelineConfig from "../../dashboard/components/PipelineConfig";
 
-const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
+const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDashboard }) => {
+	const [dashboard, setDashboard] = useState<DashboardDetailVo>(defaultDashboard);
+	const [visible, setVisible] = useState(false);
+	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
+
+	async function getDashboardDetails() {
+		const data = await getDashboardDetailsUsingGet(dashboard.id);
+		setDashboard(data);
+	}
+
+	function handleToggleVisible() {
+		setVisible(!visible);
+	}
+
+	function handleUpdatePipeline(pipeline: PipelineVoRes) {
+		setVisible(true);
+		setEditPipeline(pipeline);
+	}
+
 	return (
 		<div>
 			<div css={{ display: "flex", alignItems: "center", marginBottom: 32 }}>
@@ -35,12 +60,20 @@ const ConfigSuccess: FC<{ dashboard: DashboardDetailVo }> = ({ dashboard }) => {
 					</Button>
 				</Link>
 			</div>
-			<DashboardConfig
-				pipelines={dashboard.pipelines}
-				updatePipeline={() => {
-					console.log("placeholder");
-				}}
-			/>
+			<DashboardConfig pipelines={dashboard.pipelines} updatePipeline={handleUpdatePipeline} />
+			<PipelineSettingModal
+				visible={visible}
+				handleToggleVisible={handleToggleVisible}
+				title={"Pipeline"}>
+				<PipelineConfig
+					dashboardId={dashboard.id}
+					updateDashboard={getDashboardDetails}
+					css={{ padding: 24 }}
+					defaultData={editPipeline}
+					onSubmit={updatePipelineUsingPut}
+					onBack={handleToggleVisible}
+				/>
+			</PipelineSettingModal>
 		</div>
 	);
 };

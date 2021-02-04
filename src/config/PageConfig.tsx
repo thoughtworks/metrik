@@ -22,7 +22,7 @@ export const PageConfig = () => {
 	const [form] = Form.useForm<ConfigFormValues>();
 
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
+	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CONFIG_SUCCESS);
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
 	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
@@ -109,7 +109,7 @@ export const PageConfig = () => {
 						</div>
 					) : (
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						<ConfigSuccess dashboard={dashboard!} />
+						<ConfigSuccess defaultDashboard={dashboard!} />
 					)}
 				</div>
 			</Layout.Content>
