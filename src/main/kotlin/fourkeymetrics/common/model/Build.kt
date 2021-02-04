@@ -40,7 +40,7 @@ data class Commit(
 
 class Build(
         var pipelineId: String = Strings.EMPTY, var number: Int = 0,
-        var result: BuildResult? = BuildResult.FAILURE, var duration: Long = 0,
+        var result: BuildResult? = null, var duration: Long = 0,
         var timestamp: Long = 0, var url: String = Strings.EMPTY,
         var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList()
 ) {

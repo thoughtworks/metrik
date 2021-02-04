@@ -117,7 +117,21 @@ internal class JenkinsPipelineServiceTest {
                 )
             )
         mockServer.expect(requestTo(getBuild1DetailUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-2.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
         mockServer.expect(requestTo(getBuild2DetailUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-2.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        jenkinsPipelineService.syncBuilds(pipelineId)
     }
 
     @Test
