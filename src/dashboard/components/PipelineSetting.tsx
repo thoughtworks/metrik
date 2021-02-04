@@ -42,12 +42,18 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
 	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
 
+	//clean up status
 	useEffect(() => {
 		if (!visible) {
 			setStatus(PipelineSettingStatus.VIEW);
-			setEditPipeline(undefined);
 		}
 	}, [visible]);
+
+	useEffect(() => {
+		if (status !== PipelineSettingStatus.UPDATE) {
+			setEditPipeline(undefined);
+		}
+	}, [status]);
 
 	useEffect(() => {
 		if (visible) {
@@ -65,8 +71,8 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	}
 
 	function handleUpdatePipeline(pipeline: PipelineVoRes) {
-		setEditPipeline(pipeline);
 		setStatus(PipelineSettingStatus.UPDATE);
+		setEditPipeline(pipeline);
 	}
 
 	function checkPipelineAllowedToDelete() {
