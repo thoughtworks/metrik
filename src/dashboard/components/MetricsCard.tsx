@@ -16,6 +16,7 @@ import MediumIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicat
 import NAIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_NA.png";
 import NAIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@2x.png";
 import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@3x.png";
+import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
 
 interface MetricsLevelConfig {
 	color: string;
@@ -30,31 +31,31 @@ interface MetricsLevelInterface {
 
 const MetricsLevel: MetricsLevelInterface = {
 	ELITE: {
-		color: "#49AA19",
+		color: GREEN_DARK,
 		indicator1X: EliteIndicator1X,
 		indicator2X: EliteIndicator2X,
 		indicator3X: EliteIndicator3X,
 	},
 	HIGH: {
-		color: "#1890FF",
+		color: BLUE_5,
 		indicator1X: HighIndicator1X,
 		indicator2X: HighIndicator2X,
 		indicator3X: HighIndicator3X,
 	},
 	MEDIUM: {
-		color: "#FAAD14",
+		color: ORANGE_DARK,
 		indicator1X: MediumIndicator1X,
 		indicator2X: MediumIndicator2X,
 		indicator3X: MediumIndicator3X,
 	},
 	LOW: {
-		color: "#A61D24",
+		color: RED_DARK,
 		indicator1X: LowIndicator1X,
 		indicator2X: LowIndicator2X,
 		indicator3X: LowIndicator3X,
 	},
 	NA: {
-		color: "#BFBFBF",
+		color: GRAY_6,
 		indicator1X: NAIndicator1X,
 		indicator2X: NAIndicator2X,
 		indicator3X: NAIndicator3X,

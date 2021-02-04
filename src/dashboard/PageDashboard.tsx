@@ -315,7 +315,7 @@ export const PageDashboard = () => {
 						<MetricsCard
 							title="Mean Time to Restore Service (Hours)"
 							summary={{
-								level: "HIGH",
+								level: "MEDIUM",
 								average: "0.21",
 							}}
 							data={[

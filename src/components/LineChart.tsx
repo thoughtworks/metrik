@@ -41,11 +41,16 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit }) =>
 				dataKey="value"
 				stroke="#8C8C8C"
 				strokeWidth={2}
-				fill="#000000"
+				fill="#8C8C8C"
 				isAnimationActive={false}
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				label={{ position: "top", formatter: yaxisFormatter }}
+				label={{
+					position: "top",
+					formatter: yaxisFormatter,
+					fontSize: 12,
+					style: { transform: "translateY(-5px)" },
+				}}
 			/>
 		</RechartsLineChart>
 	</ResponsiveContainer>
