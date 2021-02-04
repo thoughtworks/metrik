@@ -62,89 +62,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-
-    reports {
-        csv.isEnabled = false
-        xml.isEnabled = true
-        html.isEnabled = true
-    }
-
-    classDirectories.setFrom(
-        sourceSets.main.get().output.asFileTree.matching {
-            exclude("fourkeymetrics/Application**")
-        }
-    )
-}
-
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = "0.95".toBigDecimal()
-            }
-        }
-
-        rule {
-            element = "METHOD"
-            limit {
-                counter = "BRANCH"
-                value = "COVEREDRATIO"
-                minimum = "0.7".toBigDecimal()
-            }
-        }
-
-        rule {
-            element = "CLASS"
-            limit {
-                counter = "LINE"
-                value = "COVEREDRATIO"
-                minimum = "1.0".toBigDecimal()
-            }
-            /**
-             * filter class which not need to test
-             * excludes = listOf("fourkeymetrics.service.HelloService")
-             */
-        }
-
-        rule {
-            element = "METHOD"
-            limit {
-                counter = "LINE"
-                value = "COVEREDRATIO"
-                minimum = "1.0".toBigDecimal()
-            }
-            /**
-             * filter method which not need to test
-             * excludes = listOf("fourkeymetrics.service.HelloService.sayHello(java.lang.String)")
-             */
-        }
-    }
-
-    classDirectories.setFrom(
-        sourceSets.main.get().output.asFileTree.matching {
-            exclude(
-                "fourkeymetrics/Application**",
-                "**/SwaggerUIWebConfiguration**",
-                "**/applicationconfig**",
-                "**/dto**",
-                "**/vo**",
-                "**/model/**",
-                "**/dashboard/**",
-                "**/dashboard/controller/TestController**"
-            )
-        }
-    )
-}
-
-tasks.check {
-    dependsOn(":jacocoTestReport", ":jacocoTestCoverageVerification")
-}
 
 detekt {
     toolVersion = "1.15.0"
@@ -164,3 +81,4 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 }
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
+apply(from = "gradle/jacoco.gradle")
