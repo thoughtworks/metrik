@@ -4,6 +4,7 @@ import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
 import fourkeymetrics.dashboard.model.PipelineType
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
@@ -23,6 +24,9 @@ class PipelineApplicationService {
 
     @Autowired
     private lateinit var dashboardRepository: DashboardRepository
+
+    @Autowired
+    private lateinit var buildRepository: BuildRepository
 
     fun verifyPipelineConfiguration(pipelineVerificationRequest: PipelineVerificationRequest) {
         if (PipelineType.JENKINS == pipelineVerificationRequest.type) {
@@ -62,11 +66,11 @@ class PipelineApplicationService {
         return PipelineResponse(pipeline)
     }
 
-    // todo[Rong & Binfang]: need to delete builds
     fun deletePipeline(dashboardId: String, pipelineId: String) {
         verifyDashboardExist(dashboardId)
         verifyPipelineExist(pipelineId)
         pipelineRepository.deleteById(pipelineId)
+        buildRepository.clear(pipelineId)
     }
 
     private fun verifyDashboardExist(dashboardId: String) =

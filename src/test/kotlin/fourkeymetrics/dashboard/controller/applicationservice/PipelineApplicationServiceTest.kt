@@ -6,6 +6,7 @@ import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.buildPipelineVerificationRequest
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
@@ -33,6 +34,12 @@ internal class PipelineApplicationServiceTest {
 
     @Mock
     private lateinit var dashboardRepository: DashboardRepository
+
+    @Mock
+    private lateinit var buildRepository: BuildRepository
+
+    private val dashboardId = "dashboardId"
+    private val pipelineId = "pipelineId"
 
     @InjectMocks
     private lateinit var pipelineApplicationService: PipelineApplicationService
@@ -66,7 +73,6 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     internal fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
-        val dashboardId = "dashboardId"
         val pipelineRequest = buildPipelineRequest()
         `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
             true
@@ -87,7 +93,6 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     internal fun `should return PipelineResponse when createPipeline() called given valid PipelineRequest`() {
-        val dashboardId = "dashboardId"
         val pipelineRequest = buildPipelineRequest()
         `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
             false
@@ -116,8 +121,6 @@ internal class PipelineApplicationServiceTest {
     @Test
     internal fun `should return PipelineResponse when updatePipeline() called and successfully`() {
         val pipelineRequest = buildPipelineRequest()
-        val dashboardId = "dashboardId"
-        val pipelineId = "pipelineId"
         val newPipeline = Pipeline(
             id = pipelineId,
             dashboardId = dashboardId,
@@ -152,8 +155,6 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     internal fun `should return PipelineResponse when getPipeline() called`() {
-        val pipelineId = "pipelineId"
-        val dashboardId = "dashboardId"
         val pipeline = Pipeline(
             id = pipelineId,
             dashboardId = dashboardId,
@@ -174,5 +175,15 @@ internal class PipelineApplicationServiceTest {
         assertEquals(pipeline.credential, result.credential)
         assertEquals(pipeline.url, result.url)
         assertEquals(pipeline.type, result.type)
+    }
+
+    @Test
+    internal fun `should delete pipeline and its builds when deletePipeline() called`() {
+        pipelineApplicationService.deletePipeline(dashboardId, pipelineId)
+
+        verify(dashboardRepository).findById(dashboardId)
+        verify(pipelineRepository).findById(pipelineId)
+        verify(pipelineRepository).deleteById(pipelineId)
+        verify(buildRepository).clear(pipelineId)
     }
 }
