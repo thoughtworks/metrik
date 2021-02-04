@@ -17,7 +17,7 @@ class DashboardRepository {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
-    fun dashboardWithGivenNameExist(name: String): Boolean {
+    fun existWithGivenName(name: String): Boolean {
         val query = Query().addCriteria(Criteria.where("name").`is`(name))
         return !mongoTemplate.find<Dashboard>(query).isEmpty()
     }

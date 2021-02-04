@@ -1,89 +1,62 @@
 package fourkeymetrics.dashboard.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import fourkeymetrics.TestHelper.Companion.any
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
+import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
+import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
+import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyList
+import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(SpringExtension::class)
-@Import(DashboardApplicationService::class, ObjectMapper::class)
+@ExtendWith(MockitoExtension::class)
 class DashboardApplicationServiceTest {
-    @Autowired
+    @InjectMocks
     private lateinit var dashboardApplicationService: DashboardApplicationService
 
-    @MockBean
+    @Mock
     private lateinit var jenkinsPipelineFacade: JenkinsPipelineService
 
-    @MockBean
+    @Mock
     private lateinit var dashboardRepository: DashboardRepository
 
-//    @Test
-//    internal fun `should not throw exception when type is jenkins`() {
-//        val url = "http://jenkins.io"
-//        val username = "name"
-//        val credential = "credential"
-//        val type = PipelineType.JENKINS
-//        Mockito.doNothing().`when`(jenkinsPipelineFacade).verifyPipelineConfiguration(url, username, credential)
-//        Assertions.assertThatCode {
-//            dashboardApplicationService.verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
-//        }.doesNotThrowAnyException()
-//    }
+    @Mock
+    private lateinit var pipelineRepository: PipelineRepository
 
-//    @Test
-//    internal fun `should  throw exception when type is not jenkins`() {
-//        val url = "http://jenkins.io"
-//        val username = "name"
-//        val credential = "credential"
-//        val type = PipelineType.BAMBOO
-//        Mockito.doNothing().`when`(jenkinsPipelineFacade).verifyPipelineConfiguration(url, username, credential)
-//        Assertions.assertThatThrownBy {
-//            dashboardApplicationService.verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
-//        }.hasMessage("Pipeline type not support")
-//    }
+    private var dashboardId = "601a2d059deac2220dd0756b"
+    private var dashboardName = "first dashboard"
+    private var expectedDashboard = Dashboard(dashboardId, dashboardName)
+    private var pipelineId = "501a2d059deac2220dd0756f"
+    private var pipelineName = "pipeline name"
+    private var pipelineUrl = "htttp://localhost:8080/some-pipeline"
+    private var pipelineUserName = "4km"
+    private var pipelineCredential = "4km"
+    private var expectedPipeline =
+        Pipeline(
+            pipelineId, dashboardId, pipelineName, pipelineUserName,
+            pipelineCredential, pipelineUrl, PipelineType.JENKINS
+        )
 
-//    @Test
-//    internal fun `should  throw exception when verify pipeline is not found`() {
-//        val url = "http://jenkins.io/dd"
-//        val username = "name"
-//        val credential = "credential"
-//        val type = PipelineType.JENKINS
-//        Mockito.doThrow(ApplicationException(HttpStatus.NOT_FOUND, "the url is not found"))
-//            .`when`(jenkinsPipelineFacade).verifyPipelineConfiguration(url, username, credential)
-//        Assertions.assertThatThrownBy {
-//            dashboardApplicationService.verifyPipeline(PipelineVerificationRequest(url, username, credential, type))
-//        }.hasMessage("the url is not found")
-//    }
 
-//    @Test
-//    internal fun `should return pipeline stages when dashboard id is exist`() {
-//        val dashboardId = "1"
-//        `when`(dashboardRepository.getDashBoardDetailById(dashboardId)).thenReturn(Dashboard("1"))
-//
-//        val expectedPipelineStages = listOf(
-//            PipelineStagesResponse("4km", listOf("4km-DEV", "4km-QA", "4km-UAT")),
-//            PipelineStagesResponse("5km", listOf("5km-DEV", "5km-QA", "5km-UAT"))
-//        )
-//        `when`(jenkinsPipelineFacade.getPipelineStages(dashboardId)).thenReturn(expectedPipelineStages)
-//
-//        val actualPipelineStages = dashboardApplicationService.getPipelinesStages(dashboardId)
-//
-//        assertEquals(expectedPipelineStages, actualPipelineStages)
-//    }
+    @Test
+    internal fun `test create dashboard successfully`() {
+        `when`(dashboardRepository.existWithGivenName(dashboardName)).thenReturn(false)
+        `when`(dashboardRepository.save(any(Dashboard::class.java))).thenReturn(expectedDashboard)
+        `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
 
-//    @Test
-//    internal fun `should throw dashboard not found exception when dashboard id is not exist`() {
-//        val dashboardId = "fake-dashboard-id"
-//        `when`(dashboardRepository.getDashBoardDetailById(dashboardId)).thenReturn(null)
-//
-//        val exception = assertThrows<DashboardNotFoundException> {
-//            dashboardApplicationService.getPipelinesStages(dashboardId)
-//        }
-//
-//        assertEquals("Dashboard [id=fake-dashboard-id] is not existing", exception.message!!)
-//    }
+        val dashboardResponse =
+            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, PipelineRequest()))
+
+        assertEquals(dashboardResponse.id, dashboardId)
+    }
 }

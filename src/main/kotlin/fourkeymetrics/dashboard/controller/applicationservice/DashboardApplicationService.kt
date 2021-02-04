@@ -31,7 +31,7 @@ class DashboardApplicationService {
     @Transactional
     fun createDashboard(dashboardRequest: DashboardRequest): DashboardDetailResponse {
         val dashboardName = dashboardRequest.dashboardName
-        if (dashboardRepository.dashboardWithGivenNameExist(dashboardName)) {
+        if (dashboardRepository.existWithGivenName(dashboardName)) {
             throw DashboardNameDuplicateException()
         }
 
