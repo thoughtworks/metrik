@@ -42,6 +42,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit }) =>
 				stroke="#8C8C8C"
 				strokeWidth={2}
 				fill="#000000"
+				isAnimationActive={false}
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				label={{ position: "top", formatter: yaxisFormatter }}
