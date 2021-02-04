@@ -36,7 +36,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "PAUSED_PENDING_INPUT",
         "name": "Deploy to UAT",
         "startTimeMillis": 1610949378152,
         "durationMillis": 29,

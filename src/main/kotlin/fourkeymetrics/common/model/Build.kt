@@ -6,7 +6,8 @@ enum class StageStatus {
     SUCCESS,
     FAILED,
     ABORTED,
-    IN_PROGRESS
+    IN_PROGRESS,
+    PAUSED_PENDING_INPUT
 }
 
 enum class BuildResult {

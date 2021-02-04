@@ -6,6 +6,7 @@ import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metrics.calculator.*
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
+import fourkeymetrics.metrics.controller.vo.PipelineStageRequest
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,6 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
-import java.util.stream.Collectors
 
 @Service
 class MetricsApplicationService {
@@ -23,7 +23,6 @@ class MetricsApplicationService {
     companion object {
         private const val FORTNIGHT_DURATION: Int = 14
         private const val MONTH_DURATION: Int = 30
-        private const val DELIMITER = "::"
     }
 
 
@@ -46,14 +45,14 @@ class MetricsApplicationService {
     private lateinit var timeRangeSplitter: TimeRangeSplitter
 
     fun retrieve4KeyMetrics(
-        pipelineWithStages: List<String>,
+        pipelineWithStages: List<PipelineStageRequest>,
         startTimestamp: Long,
         endTimestamp: Long,
         unit: MetricsUnit
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
-        val pipelineStagesMap = parsePipelineStagesMap(pipelineWithStages)
-        val allBuilds = buildRepository.getAllBuilds(pipelineStagesMap.keys)
+        val pipelineStageMap = pipelineWithStages.map { Pair(it.pipelineId, it.stage) }.toMap()
+        val allBuilds = buildRepository.getAllBuilds(pipelineStageMap.keys)
         val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
 
         return FourKeyMetricsResponse(
@@ -61,7 +60,7 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                pipelineStagesMap,
+                pipelineStageMap,
                 timeRangeByUnit,
                 unit,
                 deploymentFrequencyCalculator,
@@ -70,7 +69,7 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                pipelineStagesMap,
+                pipelineStageMap,
                 timeRangeByUnit,
                 leadTimeForChangeCalculator,
             ),
@@ -78,7 +77,7 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                pipelineStagesMap,
+                pipelineStageMap,
                 timeRangeByUnit,
                 meanTimeToRestoreCalculator,
             ),
@@ -86,19 +85,12 @@ class MetricsApplicationService {
                 allBuilds,
                 startTimestamp,
                 endTimestamp,
-                pipelineStagesMap,
+                pipelineStageMap,
                 timeRangeByUnit,
                 changeFailureRateCalculator,
             )
         )
     }
-
-    private fun parsePipelineStagesMap(pipelineWithStages: List<String>) =
-        pipelineWithStages.stream().map { it.split(DELIMITER, limit = 2) }.peek {
-            if (it.size < 2) {
-                throw BadRequestException("Pipeline and stages are not matching")
-            }
-        }.collect(Collectors.toMap({ it[0] }, { it[1] }))
 
     private fun validateTime(startTimestamp: Long, endTimestamp: Long) {
         if (startTimestamp >= endTimestamp) {

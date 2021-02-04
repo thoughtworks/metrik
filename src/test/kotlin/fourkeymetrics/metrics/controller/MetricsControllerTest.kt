@@ -1,15 +1,18 @@
 package fourkeymetrics.metrics.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.metrics.model.LEVEL
 import fourkeymetrics.metrics.model.MetricsUnit
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.model.Metrics
 import fourkeymetrics.metrics.controller.vo.MetricsInfo
+import fourkeymetrics.metrics.controller.vo.PipelineStageRequest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -24,9 +27,9 @@ internal class MetricsControllerTest {
 
     @Test
     internal fun `should return metrics response when call api`() {
-        val pipelineA = "pipelineA:stageA"
-        val pipelineB = "pipelineB:stageB"
-        val pipelines = "$pipelineA,$pipelineB"
+        val pipelineA = PipelineStageRequest("pipelineA", "stageA")
+        val pipelineB = PipelineStageRequest("pipelineB", "stageB")
+        val pipelines = listOf(pipelineA, pipelineB)
         val startTime = 1609459200000L
         val endTime = 1611964800000L
         val metricUnit = MetricsUnit.Fortnightly
@@ -44,7 +47,7 @@ internal class MetricsControllerTest {
         )
         `when`(
             metricsApplicationService.retrieve4KeyMetrics(
-                listOf(pipelineA, pipelineB),
+                pipelines,
                 startTime,
                 endTime,
                 metricUnit,
@@ -53,10 +56,11 @@ internal class MetricsControllerTest {
 
         mockMvc.perform(
             get("/api/pipeline/metrics")
-                .param("pipelineStages", pipelines)
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString())
                 .param("unit", metricUnit.toString())
+                .content(ObjectMapper().writeValueAsString(pipelines))
         )
             .andExpect(jsonPath("$.leadTimeForChange.summary.level").value("ELITE"))
             .andExpect(jsonPath("$.leadTimeForChange.summary.value").value(value))
