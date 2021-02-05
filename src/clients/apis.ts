@@ -101,12 +101,16 @@ export const getFourKeyMetricsUsingGet = createRequest<
 	FourKeyMetricsResponse
 >("getFourKeyMetricsUsingGet", ({ endTime, pipelineId, startTime, targetStage, unit }) => ({
 	url: `/api/pipeline/metrics`,
-	method: "GET",
+	method: "POST",
+	data: [
+		{
+			pipelineId,
+			stage: targetStage,
+		},
+	],
 	params: {
 		endTime,
-		pipelineId,
 		startTime,
-		targetStage,
 		unit,
 	},
 }));
