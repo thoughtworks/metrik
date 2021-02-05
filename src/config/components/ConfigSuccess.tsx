@@ -4,6 +4,7 @@ import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
 import {
+	createPipelineUsingPost,
 	DashboardDetailVo,
 	getDashboardDetailsUsingGet,
 	PipelineVoRes,
@@ -11,9 +12,11 @@ import {
 } from "../../clients/apis";
 import PipelineSettingModal from "../../components/PipelineSettingModal";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
+import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 
 const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDashboard }) => {
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>(defaultDashboard);
+	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 	const [visible, setVisible] = useState(false);
 	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
 
@@ -29,6 +32,12 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 	function handleUpdatePipeline(pipeline: PipelineVoRes) {
 		setVisible(true);
 		setEditPipeline(pipeline);
+		setStatus(PipelineSettingStatus.UPDATE);
+	}
+
+	function handleAddPipeline() {
+		setVisible(true);
+		setStatus(PipelineSettingStatus.ADD);
 	}
 
 	return (
@@ -60,7 +69,11 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 					</Button>
 				</Link>
 			</div>
-			<DashboardConfig pipelines={dashboard.pipelines} updatePipeline={handleUpdatePipeline} />
+			<DashboardConfig
+				pipelines={dashboard.pipelines}
+				updatePipeline={handleUpdatePipeline}
+				addPipeline={handleAddPipeline}
+			/>
 			<PipelineSettingModal
 				visible={visible}
 				handleToggleVisible={handleToggleVisible}
@@ -70,7 +83,9 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 					updateDashboard={getDashboardDetails}
 					css={{ padding: 24 }}
 					defaultData={editPipeline}
-					onSubmit={updatePipelineUsingPut}
+					onSubmit={
+						status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut
+					}
 					onBack={handleToggleVisible}
 				/>
 			</PipelineSettingModal>

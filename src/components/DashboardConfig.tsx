@@ -10,6 +10,7 @@ interface DashboardConfigurationProps {
 	showDelete?: boolean;
 	showAddPipeline?: boolean;
 	updatePipeline: (pipeline: PipelineVoRes) => void;
+	addPipeline?: () => void;
 	deletePipeline?: (pipelineId: string) => void;
 }
 
@@ -18,61 +19,67 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 	showDelete = false,
 	showAddPipeline = true,
 	updatePipeline,
+	addPipeline,
 	deletePipeline,
 }) => {
 	return (
-			<Table<PipelineVoRes>
-				tableLayout={"fixed"}
-				css={{
-					minHeight: 350,
-					".ant-table-cell": { borderBottom: "none" },
-					".ant-table-expanded-row > .ant-table-cell": {
-						background: "unset",
-					},
-				}}
-				pagination={false}
-				rowKey={"id"}
-				dataSource={pipelines}
-				expandable={{
-					columnWidth: "5%",
-					expandedRowRender: ToolConfig,
-					expandIcon: ({ expanded, onExpand, record }) =>
-						expanded ? (
-							<DownOutlined onClick={e => onExpand(record, e)} />
-						) : (
-							<RightOutlined onClick={e => onExpand(record, e)} />
-						),
-				}}>
-				<Column<PipelineVoRes> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
-				<Column<PipelineVoRes> width={"35%"} title={"Tool"} dataIndex={"type"} />
-				<Column<PipelineVoRes>
-					width={"35%"}
-					title={() => (
-						<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-						Actions {showAddPipeline && <Button type={"link"}>+Add Pipeline</Button>}
-						</div>
-					)}
-					render={(value, record) => (
-						<>
+		<Table<PipelineVoRes>
+			tableLayout={"fixed"}
+			css={{
+				minHeight: 350,
+				".ant-table-cell": { borderBottom: "none" },
+				".ant-table-expanded-row > .ant-table-cell": {
+					background: "unset",
+				},
+			}}
+			pagination={false}
+			rowKey={"id"}
+			dataSource={pipelines}
+			expandable={{
+				columnWidth: "5%",
+				expandedRowRender: ToolConfig,
+				expandIcon: ({ expanded, onExpand, record }) =>
+					expanded ? (
+						<DownOutlined onClick={e => onExpand(record, e)} />
+					) : (
+						<RightOutlined onClick={e => onExpand(record, e)} />
+					),
+			}}>
+			<Column<PipelineVoRes> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<PipelineVoRes> width={"35%"} title={"Tool"} dataIndex={"type"} />
+			<Column<PipelineVoRes>
+				width={"35%"}
+				title={() => (
+					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+						Actions{" "}
+						{showAddPipeline && (
+							<Button type={"link"} onClick={addPipeline}>
+								+Add Pipeline
+							</Button>
+						)}
+					</div>
+				)}
+				render={(value, record) => (
+					<>
+						<Button
+							type={"link"}
+							css={{ padding: "8px 8px 8px 0" }}
+							onClick={() => updatePipeline(record)}>
+							Config
+						</Button>
+						{showDelete && (
 							<Button
 								type={"link"}
-								css={{ padding: "8px 8px 8px 0" }}
-								onClick={() => updatePipeline(record)}>
-								Config
+								danger={true}
+								css={{ padding: 8 }}
+								onClick={() => deletePipeline?.(record.id)}>
+								Delete
 							</Button>
-							{showDelete && (
-								<Button
-									type={"link"}
-									danger={true}
-									css={{ padding: 8 }}
-									onClick={() => deletePipeline?.(record.id)}>
-									Delete
-								</Button>
-							)}
-						</>
-					)}
-				/>
-			</Table>
+						)}
+					</>
+				)}
+			/>
+		</Table>
 	);
 };
 

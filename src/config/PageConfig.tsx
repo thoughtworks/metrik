@@ -22,7 +22,7 @@ export const PageConfig = () => {
 	const [form] = Form.useForm<ConfigFormValues>();
 
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CONFIG_SUCCESS);
+	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
 	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
