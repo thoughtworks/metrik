@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import {
 	DownloadOutlined,
 	LeftOutlined,
@@ -7,18 +7,13 @@ import {
 	UploadOutlined,
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
-import { Button, notification, Typography } from "antd";
-import {
-	createPipelineUsingPost,
-	DashboardDetailVo,
-	deletePipelineUsingDelete,
-	getDashboardDetailsUsingGet,
-	PipelineVoRes,
-	updatePipelineUsingPut,
-} from "../../clients/apis";
+import { Button, Typography } from "antd";
+import { createPipelineUsingPost, updatePipelineUsingPut } from "../../clients/apis";
 import PipelineSettingModal from "../../components/PipelineSettingModal";
 import DashboardConfig from "../../components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
+import { usePipelineSetting } from "../../hooks/usePipelineSetting";
+import { useModalVisible } from "../../hooks/useModalVisible";
 
 const settingStyles = css({
 	fontSize: 16,
@@ -38,56 +33,21 @@ export enum PipelineSettingStatus {
 
 const { Text } = Typography;
 const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
-	const [visible, setVisible] = useState(false);
-	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
-	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
-	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
-
-	//clean up status
-	useEffect(() => {
-		if (!visible) {
-			setStatus(PipelineSettingStatus.VIEW);
-		}
-	}, [visible]);
-
-	useEffect(() => {
-		if (status !== PipelineSettingStatus.UPDATE) {
-			setEditPipeline(undefined);
-		}
-	}, [status]);
-
-	useEffect(() => {
-		if (visible) {
-			getDashboardDetails();
-		}
-	}, [visible]);
-
-	async function getDashboardDetails() {
-		const data = await getDashboardDetailsUsingGet(dashboardId);
-		setDashboard(data);
-	}
-
-	function handleToggleVisible() {
-		setVisible(!visible);
-	}
-
-	function handleUpdatePipeline(pipeline: PipelineVoRes) {
-		setStatus(PipelineSettingStatus.UPDATE);
-		setEditPipeline(pipeline);
-	}
-
-	function checkPipelineAllowedToDelete() {
-		return (dashboard?.pipelines.length ?? 0) > 1;
-	}
-
-	async function handleDeletePipeline(pipelineId: string) {
-		if (!checkPipelineAllowedToDelete()) {
-			notification.error({ message: "not allow to delete this pipeline" });
-			return;
-		}
-		await deletePipelineUsingDelete({ dashboardId, pipelineId });
-		await getDashboardDetails();
-	}
+	const { visible, handleToggleVisible } = useModalVisible();
+	const {
+		dashboard,
+		status,
+		setStatus,
+		editPipeline,
+		getDashboardDetails,
+		onAddPipeline,
+		onUpdatePipeline,
+		onDeletePipeline,
+	} = usePipelineSetting({
+		defaultDashboardId: dashboardId,
+		shouldUpdateDashboard: visible,
+		shouldResetStatus: !visible,
+	});
 
 	return (
 		<>
@@ -120,10 +80,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 								<Button icon={<UploadOutlined />} disabled={true}>
 									Import
 								</Button>
-								<Button
-									type={"primary"}
-									icon={<PlusOutlined />}
-									onClick={() => setStatus(PipelineSettingStatus.ADD)}>
+								<Button type={"primary"} icon={<PlusOutlined />} onClick={onAddPipeline}>
 									Add Pipeline
 								</Button>
 							</div>
@@ -157,8 +114,8 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						showDelete={true}
 						showAddPipeline={false}
 						pipelines={dashboard?.pipelines ?? []}
-						updatePipeline={handleUpdatePipeline}
-						deletePipeline={handleDeletePipeline}
+						updatePipeline={onUpdatePipeline}
+						deletePipeline={onDeletePipeline}
 					/>
 				) : (
 					<PipelineConfig

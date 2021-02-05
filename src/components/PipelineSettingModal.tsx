@@ -20,6 +20,7 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 			visible={visible}
 			onCancel={handleToggleVisible}
 			centered={true}
+			destroyOnClose={true}
 			css={{
 				".ant-modal-body": {
 					height: 500,

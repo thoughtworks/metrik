@@ -1,44 +1,46 @@
 import { Button } from "antd";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
 import {
 	createPipelineUsingPost,
 	DashboardDetailVo,
-	getDashboardDetailsUsingGet,
 	PipelineVoRes,
 	updatePipelineUsingPut,
 } from "../../clients/apis";
 import PipelineSettingModal from "../../components/PipelineSettingModal";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
+import { useModalVisible } from "../../hooks/useModalVisible";
+import { usePipelineSetting } from "../../hooks/usePipelineSetting";
 import { GREEN_LIGHT } from "../../constants/styles";
 
 const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDashboard }) => {
-	const [dashboard, setDashboard] = useState<DashboardDetailVo>(defaultDashboard);
-	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
-	const [visible, setVisible] = useState(false);
-	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
-
-	async function getDashboardDetails() {
-		const data = await getDashboardDetailsUsingGet(dashboard.id);
-		setDashboard(data);
-	}
-
-	function handleToggleVisible() {
-		setVisible(!visible);
-	}
+	const { visible, handleToggleVisible } = useModalVisible();
+	const {
+		dashboard,
+		editPipeline,
+		status,
+		getDashboardDetails,
+		onAddPipeline,
+		onUpdatePipeline,
+	} = usePipelineSetting({
+		defaultDashboardId: defaultDashboard.id,
+		defaultDashboard: defaultDashboard,
+		defaultStatus: PipelineSettingStatus.ADD,
+		shouldUpdateDashboard: false,
+		shouldResetStatus: !visible,
+	});
 
 	function handleUpdatePipeline(pipeline: PipelineVoRes) {
-		setVisible(true);
-		setEditPipeline(pipeline);
-		setStatus(PipelineSettingStatus.UPDATE);
+		onUpdatePipeline(pipeline);
+		handleToggleVisible();
 	}
 
 	function handleAddPipeline() {
-		setVisible(true);
-		setStatus(PipelineSettingStatus.ADD);
+		onAddPipeline();
+		handleToggleVisible();
 	}
 
 	return (
@@ -64,14 +66,14 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 						following projects
 					</span>
 				</div>
-				<Link to={`/?dashboardId=${dashboard.id}`}>
+				<Link to={`/?dashboardId=${defaultDashboard.id}`}>
 					<Button type={"primary"} size={"large"}>
 						Go to Dashboard
 					</Button>
 				</Link>
 			</div>
 			<DashboardConfig
-				pipelines={dashboard.pipelines}
+				pipelines={dashboard!.pipelines}
 				updatePipeline={handleUpdatePipeline}
 				addPipeline={handleAddPipeline}
 			/>
@@ -80,7 +82,7 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 				handleToggleVisible={handleToggleVisible}
 				title={"Pipeline"}>
 				<PipelineConfig
-					dashboardId={dashboard.id}
+					dashboardId={defaultDashboard.id}
 					updateDashboard={getDashboardDetails}
 					css={{ padding: 24 }}
 					defaultData={editPipeline}
