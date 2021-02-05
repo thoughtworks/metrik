@@ -16,7 +16,15 @@ import MediumIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicat
 import InvalidIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid.png";
 import InvalidIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@2x.png";
 import InvalidIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@3x.png";
-import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
+import {
+	BLUE_5,
+	GRAY_1,
+	GRAY_4,
+	GRAY_6,
+	GREEN_DARK,
+	ORANGE_DARK,
+	RED_DARK,
+} from "../../constants/styles";
 import { formatTickTime } from "../../utils/timeFormats";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { Metrics, MetricsLevel } from "../../clients/apis";
@@ -66,8 +74,8 @@ const MetricsLevelConfig: MetricsLevelInterface = {
 };
 
 const containerStyles = css({
-	backgroundColor: "#FFFFFF",
-	border: "1px solid #F0F0F0",
+	backgroundColor: GRAY_1,
+	border: `1px solid ${GRAY_4}`,
 	padding: "32px 24px",
 	marginBottom: "24px",
 	height: "486px",

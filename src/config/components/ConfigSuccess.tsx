@@ -13,6 +13,7 @@ import {
 import PipelineSettingModal from "../../components/PipelineSettingModal";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
+import { GREEN_LIGHT } from "../../constants/styles";
 
 const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDashboard }) => {
 	const [dashboard, setDashboard] = useState<DashboardDetailVo>(defaultDashboard);
@@ -43,7 +44,7 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 	return (
 		<div>
 			<div css={{ display: "flex", alignItems: "center", marginBottom: 32 }}>
-				<CheckCircleFilled css={{ fontSize: 70, color: "#52C41A" }} />
+				<CheckCircleFilled css={{ fontSize: 70, color: GREEN_LIGHT }} />
 				<div
 					css={{
 						display: "flex",

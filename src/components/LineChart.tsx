@@ -8,6 +8,7 @@ import {
 	YAxis,
 } from "recharts";
 import { Metrics } from "../clients/apis";
+import { GRAY_7 } from "../constants/styles";
 
 export interface CustomizeTickProps {
 	x?: number;
@@ -54,9 +55,9 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 			<Line
 				type="monotone"
 				dataKey="value"
-				stroke="#8C8C8C"
+				stroke={GRAY_7}
 				strokeWidth={2}
-				fill="#8C8C8C"
+				fill={GRAY_7}
 				isAnimationActive={false}
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore

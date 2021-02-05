@@ -6,10 +6,11 @@ import { getFourKeyMetricsUsingGet, MetricsInfo, MetricsLevel } from "../clients
 import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
+import { BACKGROUND_COLOR } from "../constants/styles";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
-	background: "#F0F2F5",
+	background: BACKGROUND_COLOR,
 });
 
 const initialMetricsState: MetricsInfo = {
