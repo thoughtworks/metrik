@@ -50,7 +50,7 @@ export const FieldsStep2: FC<{
 			</Col>
 			<Col span={8}>
 				<Form.Item
-					label="Pipeline Domain"
+					label="Pipeline Url"
 					name="url"
 					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
 					<Input />

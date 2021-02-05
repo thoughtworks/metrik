@@ -73,7 +73,7 @@ export const PageConfig = () => {
 							<div css={{ width: 440, marginBottom: 32 }}>
 								<Text type={"secondary"}>Instructions:</Text>
 								{currentStep === ConfigStep.CREATE_DASHBOARD && (
-									<Paragraph type={"secondary"}>Please Input your dashboard name</Paragraph>
+									<Paragraph type={"secondary"}>Please input your dashboard name</Paragraph>
 								)}
 								{currentStep === ConfigStep.CONFIG_PIPELINE && (
 									<Paragraph type={"secondary"}>
