@@ -15,6 +15,8 @@ import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../hooks/usePipelineSetting";
 import { useModalVisible } from "../../hooks/useModalVisible";
 
+const { Text } = Typography;
+
 const settingStyles = css({
 	fontSize: 16,
 	padding: "5px 0",
@@ -31,7 +33,11 @@ export enum PipelineSettingStatus {
 	UPDATE,
 }
 
-const { Text } = Typography;
+//TODO: justify ui style according design
+//TODO: add error handling in case of api call failed
+//TODO: add loading status during fetching api
+//TODO: see if there's other way to refine logic code
+
 const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
