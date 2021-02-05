@@ -162,8 +162,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 					css={{ marginTop: 16, width: "50%" }}
 					initialValues={{
 						duration: [
-							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
 							moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
 						],
 						unit: "Fortnightly",
 					}}

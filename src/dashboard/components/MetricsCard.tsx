@@ -115,6 +115,10 @@ const spinContainerStyles = css({
 });
 
 const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index = 0 }) => {
+	if (data[index] === undefined) {
+		return <></>;
+	}
+
 	const { startTime, endTime } = formatTickTime(
 		data[index]?.startTimestamp,
 		data[index]?.endTimestamp

@@ -40,8 +40,8 @@ export const PageDashboard = () => {
 		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
 		getFourKeyMetricsUsingPost({
-			endTime: momentObjToEndTimeStamp(formValues.duration[0]),
-			startTime: momentObjToStartTimeStamp(formValues.duration[1]),
+			startTime: momentObjToStartTimeStamp(formValues.duration[0]),
+			endTime: momentObjToEndTimeStamp(formValues.duration[1]),
 			pipelineId: formValues.pipelines[0].value,
 			targetStage: formValues.pipelines[0].childValue,
 			unit: formValues.unit,
