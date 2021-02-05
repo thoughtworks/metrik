@@ -51,7 +51,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 				width={"35%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-						Actions{" "}
+						Action{showDelete ? "s" : ""}
 						{showAddPipeline && (
 							<Button type={"link"} onClick={addPipeline}>
 								+Add Pipeline
