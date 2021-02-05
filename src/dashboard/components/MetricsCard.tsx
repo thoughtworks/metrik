@@ -19,6 +19,7 @@ import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_N
 import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
 import { MetricsDataItem } from "../PageDashboard";
 import { formatTickTime } from "../../utils/timeFormats";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 export enum MetricsLevel {
 	ELITE,
@@ -77,6 +78,7 @@ const containerStyles = css({
 	border: "1px solid #F0F0F0",
 	padding: "32px 24px",
 	marginBottom: "24px",
+	height: "486px",
 });
 const titleStyles = css({
 	marginBottom: "17px",
@@ -104,6 +106,13 @@ const metricsUnitStyles = css({
 	fontSize: "12px",
 	lineHeight: "20px",
 });
+const spinContainerStyles = css({
+	width: "100%",
+	height: "100%",
+	display: "flex",
+	justifyContent: "center",
+	alignItems: "center",
+});
 
 const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index = 0 }) => {
 	return (
@@ -116,10 +125,10 @@ const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index =
 			fontSize={12}
 			textAnchor={textAnchor}>
 			<tspan x={x} dy="1.5em">
-				{formatTickTime(data[index].startTimestamp)}
+				{formatTickTime(data[index]?.startTimestamp)}
 			</tspan>
 			<tspan x={x} dy="1.25em">
-				- {formatTickTime(data[index].endTimestamp)}
+				- {formatTickTime(data[index]?.endTimestamp)}
 			</tspan>
 		</text>
 	);
@@ -131,6 +140,7 @@ interface MetricsCardProps {
 	data: MetricsDataItem[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
+	loading: boolean;
 }
 
 export const MetricsCard: FC<MetricsCardProps> = ({
@@ -139,34 +149,43 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	data,
 	yaxisFormatter,
 	unit,
+	loading,
 }) => {
 	return (
 		<div css={containerStyles}>
-			<div css={titleStyles}>{title}</div>
-			<div css={subtitleStyles}>
-				<img
-					alt={title}
-					css={metricsIndicatorStyles}
-					srcSet={`
+			{loading ? (
+				<div css={spinContainerStyles}>
+					<LoadingSpinner />
+				</div>
+			) : (
+				<>
+					<div css={titleStyles}>{title}</div>
+					<div css={subtitleStyles}>
+						<img
+							alt={title}
+							css={metricsIndicatorStyles}
+							srcSet={`
 						${MetricsLevelConfig[summary.level].indicator1X} 1x, 
 						${MetricsLevelConfig[summary.level].indicator2X} 2x,
 						${MetricsLevelConfig[summary.level].indicator3X} 3x
 					`}
-				/>
-				<div css={metricsValueStyles(summary.level)}>
-					{yaxisFormatter(summary.value.toString())}
-				</div>
-				<div css={metricsUnitStyles}>
-					<div>AVG.</div>
-					<div>{unit}</div>
-				</div>
-			</div>
-			<LineChart
-				data={data}
-				yaxisFormatter={yaxisFormatter}
-				unit={unit}
-				CustomizeTick={CustomizeTick}
-			/>
+						/>
+						<div css={metricsValueStyles(summary.level)}>
+							{yaxisFormatter(summary.value.toString())}
+						</div>
+						<div css={metricsUnitStyles}>
+							<div>AVG.</div>
+							<div>{unit}</div>
+						</div>
+					</div>
+					<LineChart
+						data={data}
+						yaxisFormatter={yaxisFormatter}
+						unit={unit}
+						CustomizeTick={CustomizeTick}
+					/>
+				</>
+			)}
 		</div>
 	);
 };

@@ -106,6 +106,7 @@ export const PageDashboard = () => {
 	);
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsDataState>(initialMetricsState);
 	const [meanTimeToRestore, setMeanTimeToRestore] = useState<MetricsDataState>(initialMetricsState);
+	const [loadingChart, setLoadingChart] = useState(false);
 
 	const syncBuilds = () => {
 		setSyncing(true);
@@ -163,48 +164,10 @@ export const PageDashboard = () => {
 		getLastSyncTime();
 		getDashboard();
 		getPipelineStages();
-		// TODO: change to use API retrieving data
-		const mockData: MetricsDataState = {
-			details: [
-				{
-					endTimestamp: 1613260800000,
-					level: MetricsLevel.ELITE,
-					startTimestamp: 1612137600000,
-					value: 20,
-				},
-				{
-					endTimestamp: 1614384000000,
-					level: MetricsLevel.ELITE,
-					startTimestamp: 1613260800000,
-					value: 21,
-				},
-				{
-					endTimestamp: 1615507200000,
-					level: MetricsLevel.ELITE,
-					startTimestamp: 1614384000000,
-					value: 10,
-				},
-				{
-					endTimestamp: 1616630400000,
-					level: MetricsLevel.ELITE,
-					startTimestamp: 1615507200000,
-					value: 15,
-				},
-			],
-			summary: {
-				endTimestamp: 0,
-				level: MetricsLevel.ELITE,
-				startTimestamp: 0,
-				value: 20.5,
-			},
-		};
-		setChangeFailureRate(mockData);
-		setDeploymentFrequency(mockData);
-		setLeadTimeForChange(mockData);
-		setMeanTimeToRestore(mockData);
 	}, []);
 
 	const getFourKeyMetrics = () => {
+		setLoadingChart(true);
 		// TODO: will pass multiple stages and pipelines after backend api ready
 		getFourKeyMetricsUsingGet({
 			endTime: momentObjToEndTimeStamp(formValues.duration[0]),
@@ -212,6 +175,70 @@ export const PageDashboard = () => {
 			pipelineId: formValues.pipelines[0].value,
 			targetStage: formValues.pipelines[0].childValue,
 			unit: formValues.unit,
+		}).finally(() => {
+			const mockData: MetricsDataState = {
+				details: [
+					{
+						endTimestamp: 1613260800000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1612137600000,
+						value: 20,
+					},
+					{
+						endTimestamp: 1614384000000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1613260800000,
+						value: 21,
+					},
+					{
+						endTimestamp: 1615507200000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1614384000000,
+						value: 10,
+					},
+					{
+						endTimestamp: 1616630400000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1615507200000,
+						value: 15,
+					},
+					{
+						endTimestamp: 1613260800000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1612137600000,
+						value: 20,
+					},
+					{
+						endTimestamp: 1614384000000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1613260800000,
+						value: 21,
+					},
+					{
+						endTimestamp: 1615507200000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1614384000000,
+						value: 10,
+					},
+					{
+						endTimestamp: 1616630400000,
+						level: MetricsLevel.ELITE,
+						startTimestamp: 1615507200000,
+						value: 15,
+					},
+				],
+				summary: {
+					endTimestamp: 0,
+					level: MetricsLevel.ELITE,
+					startTimestamp: 0,
+					value: 20.5,
+				},
+			};
+			setChangeFailureRate(mockData);
+			setDeploymentFrequency(mockData);
+			setLeadTimeForChange(mockData);
+			setMeanTimeToRestore(mockData);
+			setLoadingChart(false);
 		});
 	};
 
@@ -250,9 +277,7 @@ export const PageDashboard = () => {
 							unit: "Fortnightly",
 						}}
 						onFinish={getFourKeyMetrics}
-						// TODO: Fix infinite re-render
-						// onValuesChange={(_, values) => setFormValues(values)}
-					>
+						onValuesChange={(_, values) => setFormValues(values)}>
 						<Row wrap={false} gutter={12}>
 							<Col>
 								<Form.Item label="Duration" name="duration">
@@ -305,6 +330,7 @@ export const PageDashboard = () => {
 							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Times"
+							loading={loadingChart}
 						/>
 					</Col>
 
@@ -315,6 +341,7 @@ export const PageDashboard = () => {
 							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Days"
+							loading={loadingChart}
 						/>
 					</Col>
 
@@ -325,6 +352,7 @@ export const PageDashboard = () => {
 							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
 							unit="Hours"
+							loading={loadingChart}
 						/>
 					</Col>
 
@@ -335,6 +363,7 @@ export const PageDashboard = () => {
 							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}
 							unit="Percentage"
+							loading={loadingChart}
 						/>
 					</Col>
 				</Row>

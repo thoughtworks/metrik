@@ -52,7 +52,6 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 				tickLine={false}
 				domain={[0, (dataMax: number) => Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10]}
 			/>
-			<Tooltip formatter={yaxisFormatter} />
 			<Line
 				type="monotone"
 				dataKey="value"
