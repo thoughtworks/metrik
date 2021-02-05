@@ -45,7 +45,7 @@ internal class JenkinsPipelineServiceTest {
 
 
     @Test
-    internal fun `should return all builds from Jenkins given pipeline ID`() {
+    internal fun `should return all builds from Jenkins when syncBuilds() given pipeline ID`() {
         val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
@@ -86,7 +86,7 @@ internal class JenkinsPipelineServiceTest {
 
 
     @Test
-    internal fun `should return builds with previous status is building null or not exits in DB from Jenkins given pipeline ID`() {
+    internal fun `should return builds with previous status is building null or not exits in DB from Jenkins when syncBuilds() given pipeline ID`() {
         val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
@@ -134,62 +134,5 @@ internal class JenkinsPipelineServiceTest {
         jenkinsPipelineService.syncBuilds(pipelineId)
     }
 
-    @Test
-    internal fun `should return true given stage exists in builds filtered by time range`() {
-        val pipelineId = "fake pipeline"
-        val targetStage = "deploy to dev"
-        val startTimestamp = 100000L
-        val endTimestamp = 200000L
 
-        val lastBuild = Build(
-            stages = listOf(
-                Stage(name = targetStage, startTimeMillis = 100000L),
-                Stage(name = "another stage", startTimeMillis = 100000L)
-            )
-        )
-
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
-
-        assertThat(
-            jenkinsPipelineService.hasStageInTimeRange(
-                pipelineId,
-                targetStage,
-                startTimestamp,
-                endTimestamp
-            )
-        ).isTrue
-    }
-
-    @Test
-    internal fun `should return false given stage not exists in builds filtered by time range`() {
-        val pipelineId = "fake pipeline"
-        val targetStage = "deploy to dev"
-        val startTimestamp = 100000L
-        val endTimestamp = 200000L
-
-        val lastBuild = Build(
-            stages = listOf(
-                Stage(name = "clone"), Stage(name = "build"),
-                Stage(
-                    name = targetStage,
-                    startTimeMillis = 150000L,
-                    durationMillis = 30000L,
-                    pauseDurationMillis = 50000L
-                )
-            )
-        )
-
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
-
-        assertThat(
-            jenkinsPipelineService.hasStageInTimeRange(
-                pipelineId,
-                targetStage,
-                startTimestamp,
-                endTimestamp
-            )
-        ).isFalse
-        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
-        assertThat(jenkinsPipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp)).isFalse
-    }
 }
