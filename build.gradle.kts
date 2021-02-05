@@ -30,6 +30,14 @@ dependencyManagement {
 }
 
 sourceSets {
+    create("unitTest") {
+        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+        runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+        java.srcDir("src/test/kotlin")
+        resources.srcDir("src/test/kotlin")
+        resources.exclude("**/*.kt")
+    }
+
     create("apiTest") { 
         compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output 
         runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
@@ -42,7 +50,6 @@ sourceSets {
 val apiTestImplementation by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
-
 
 configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
 configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
