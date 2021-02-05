@@ -31,7 +31,9 @@ export const FieldsStep2: FC<{
 				<Form.Item
 					label="Pipeline Name"
 					name="name"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME }]}>
+					rules={[
+						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME },
+					]}>
 					<Input />
 				</Form.Item>
 			</Col>
@@ -42,7 +44,9 @@ export const FieldsStep2: FC<{
 				<Form.Item
 					label="Pipeline Tool"
 					name="type"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL }]}>
+					rules={[
+						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL },
+					]}>
 					<Select>
 						<Option value="JENKINS">Jenkins</Option>
 					</Select>
@@ -52,7 +56,7 @@ export const FieldsStep2: FC<{
 				<Form.Item
 					label="Pipeline Url"
 					name="url"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
+					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
 					<Input />
 				</Form.Item>
 			</Col>
@@ -60,7 +64,7 @@ export const FieldsStep2: FC<{
 				<Form.Item
 					label="Username"
 					name="username"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
+					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
 					<Input />
 				</Form.Item>
 			</Col>
@@ -68,7 +72,7 @@ export const FieldsStep2: FC<{
 				<Form.Item
 					label="Token"
 					name="credential"
-					rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
+					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
 					<Input type={"password"} />
 				</Form.Item>
 			</Col>

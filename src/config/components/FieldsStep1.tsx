@@ -23,7 +23,9 @@ export const FieldsStep1: FC<{
 					<Form.Item
 						label="Dashboard Name"
 						name="dashboardName"
-						rules={[{ required: true, message: ERROR_MESSAGES.EMPTY_DASHBOARD_NAME }]}>
+						rules={[
+							{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DASHBOARD_NAME },
+						]}>
 						<Input />
 					</Form.Item>
 				</Col>
