@@ -4,8 +4,17 @@ export const formatLastUpdateTime = (timestamp?: number): string => {
 	return timestamp ? moment(timestamp).format("hh:mm, D MMM, YYYY") : "";
 };
 
-export const formatTickTime = (timestamp: number): string => {
-	return moment(timestamp).format("DD MMM");
+export const formatTickTime = (
+	startTimestamp: number,
+	endTimestamp: number
+): { startTime: string; endTime: string } => {
+	const crossYear = moment(endTimestamp).year() - moment(startTimestamp).year() > 0;
+	const yearPattern = crossYear ? " YYYY" : "";
+
+	const startTime = moment(startTimestamp).format(`DD MMM${yearPattern}`);
+	const endTime = moment(endTimestamp).format(`DD MMM${yearPattern}`);
+
+	return { startTime, endTime };
 };
 
 export const momentObjToStartTimeStamp = (momentObj: moment.Moment): number => {

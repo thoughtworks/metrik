@@ -11,11 +11,23 @@ describe("time formats test", () => {
 		// refers to 2021-01-26 10:43:56:125 +8
 		expect(formatLastUpdateTime(1611629036125)).toEqual("10:43, 26 Jan, 2021");
 	});
+
 	it("should return empty string if given data not exists", () => {
 		expect(formatLastUpdateTime()).toEqual("");
 	});
-	it("should return correct formatted tick time", () => {
-		expect(formatTickTime(1611629036125)).toEqual("26 Jan");
+
+	it("should return correct formatted tick time when time duration in same year", () => {
+		const { startTime, endTime } = formatTickTime(1611629036125, 1629427436125);
+
+		expect(startTime).toEqual("26 Jan");
+		expect(endTime).toEqual("20 Aug");
+	});
+
+	it("should return correct formatted tick time with year when time duration across year", () => {
+		const { startTime, endTime } = formatTickTime(1609430399125, 1609430400000);
+
+		expect(startTime).toEqual("31 Dec 2020");
+		expect(endTime).toEqual("01 Jan 2021");
 	});
 });
 
