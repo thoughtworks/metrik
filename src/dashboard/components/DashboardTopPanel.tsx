@@ -2,7 +2,7 @@ import { EditableText } from "../../components/EditableText";
 import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
 import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../constants/styles";
 import { useRequest } from "../../hooks/useRequest";
@@ -101,6 +101,13 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		getDashboard();
 	};
 
+	const getLastSyncTime = async () => {
+		const resp = await getLastSynchronizationRequest({ dashboardId });
+		if (!resp?.synchronizationTimestamp) {
+			syncBuilds();
+		}
+	};
+
 	const syncBuilds = async () => {
 		await updateBuildsRequest({
 			dashboardId,
@@ -112,16 +119,15 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		onSyncBuildsSuccess();
 	};
 
-	const getLastSyncTime = async () => {
-		const resp = await getLastSynchronizationRequest({ dashboardId });
-		if (!resp?.synchronizationTimestamp) {
-			syncBuilds();
-		}
-	};
-
 	const getDashboard = () => getDashboardRequest({ dashboardId });
 
 	const getPipelineStages = () => getPipelineStagesRequest({ dashboardId });
+
+	useEffect(() => {
+		getLastSyncTime();
+		getPipelineStages();
+		getDashboard();
+	}, []);
 
 	return (
 		<div css={containerStyles}>
