@@ -6,6 +6,8 @@ String[] exclusionPatterns = [
         "**/dto/**",
         "**/vo/**",
         "**/model/**",
+        "**/exception/**",
+        "**/dashboard/exception/**",
         "**/dashboard/controller/TestController**",
         "**/dashboard/repository/DashboardRepository**"
 ]
