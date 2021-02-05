@@ -1,23 +1,16 @@
 import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
-import moment from "moment";
 import { useQuery } from "../hooks/useQuery";
 import { getFourKeyMetricsUsingGet } from "../clients/apis";
 import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../utils/timeFormats";
 import { MetricsCard, MetricsLevel } from "./components/MetricsCard";
-import { DashboardTopPanel } from "./components/DashboardTopPanel";
+import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
 	background: "#F0F2F5",
 });
-
-interface FormValues {
-	duration: [moment.Moment, moment.Moment];
-	pipelines: Array<{ value: string; childValue: string }>;
-	unit: "Fortnightly" | "Monthly";
-}
 
 export interface MetricsDataItem {
 	level: MetricsLevel;
