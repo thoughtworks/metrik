@@ -34,7 +34,7 @@ export const FieldsStep1: FC<{
 			<Divider />
 			<Row>
 				<Col span={24} style={{ textAlign: "right" }}>
-					<Button type="primary" disabled={!formValues.dashboardName} onClick={onNext}>
+					<Button type="primary" disabled={!formValues.dashboardName?.trim()} onClick={onNext}>
 						Next Step
 					</Button>
 				</Col>
