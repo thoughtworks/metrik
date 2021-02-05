@@ -24,10 +24,10 @@ abstract class PipelineService {
 
         return allBuilds
             .flatMap { it.stages }
-            .filter { it.name == targetStage }
-            .any {
+            .filter {
                 (it.startTimeMillis + it.durationMillis + it.pauseDurationMillis) in startTimestamp..endTimestamp
             }
+            .any { it.name == targetStage }
     }
 
     fun getStagesSortedByName(pipelineId: String): List<String> {
