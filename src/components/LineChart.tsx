@@ -4,22 +4,21 @@ import {
 	Line,
 	LineChart as RechartsLineChart,
 	ResponsiveContainer,
-	Tooltip,
 	XAxis,
 	YAxis,
 } from "recharts";
-import { MetricsDataItem } from "../dashboard/PageDashboard";
+import { Metrics } from "../clients/apis";
 
 export interface CustomizeTickProps {
 	x?: number;
 	y?: number;
 	textAnchor?: string;
 	index?: number;
-	data: MetricsDataItem[];
+	data: Metrics[];
 }
 
 interface LineChartProps {
-	data: MetricsDataItem[];
+	data: Metrics[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
 	CustomizeTick: FC<CustomizeTickProps>;

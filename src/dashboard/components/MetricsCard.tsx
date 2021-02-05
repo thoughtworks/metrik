@@ -13,21 +13,13 @@ import LowIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_
 import MediumIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium.png";
 import MediumIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium@2x.png";
 import MediumIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium@3x.png";
-import NAIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_NA.png";
-import NAIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@2x.png";
-import NAIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_NA@3x.png";
+import InvalidIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid.png";
+import InvalidIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@2x.png";
+import InvalidIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@3x.png";
 import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../constants/styles";
-import { MetricsDataItem } from "../PageDashboard";
 import { formatTickTime } from "../../utils/timeFormats";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-
-export enum MetricsLevel {
-	ELITE,
-	HIGH,
-	MEDIUM,
-	LOW,
-	NA,
-}
+import { Metrics, MetricsLevel } from "../../clients/apis";
 
 interface MetricsLevelConfigInterface {
 	color: string;
@@ -65,11 +57,11 @@ const MetricsLevelConfig: MetricsLevelInterface = {
 		indicator2X: LowIndicator2X,
 		indicator3X: LowIndicator3X,
 	},
-	[MetricsLevel.NA]: {
+	[MetricsLevel.INVALID]: {
 		color: GRAY_6,
-		indicator1X: NAIndicator1X,
-		indicator2X: NAIndicator2X,
-		indicator3X: NAIndicator3X,
+		indicator1X: InvalidIndicator1X,
+		indicator2X: InvalidIndicator2X,
+		indicator3X: InvalidIndicator3X,
 	},
 };
 
@@ -136,8 +128,8 @@ const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index =
 
 interface MetricsCardProps {
 	title: string;
-	summary: MetricsDataItem;
-	data: MetricsDataItem[];
+	summary: Metrics;
+	data: Metrics[];
 	yaxisFormatter: (value: string) => string;
 	unit: string;
 	loading: boolean;
@@ -165,13 +157,15 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 							alt={title}
 							css={metricsIndicatorStyles}
 							srcSet={`
-						${MetricsLevelConfig[summary.level].indicator1X} 1x, 
-						${MetricsLevelConfig[summary.level].indicator2X} 2x,
-						${MetricsLevelConfig[summary.level].indicator3X} 3x
+						${MetricsLevelConfig[summary.level as MetricsLevel].indicator1X} 1x, 
+						${MetricsLevelConfig[summary.level as MetricsLevel].indicator2X} 2x,
+						${MetricsLevelConfig[summary.level as MetricsLevel].indicator3X} 3x
 					`}
 						/>
-						<div css={metricsValueStyles(summary.level)}>
-							{yaxisFormatter(summary.value.toString())}
+						<div css={metricsValueStyles(summary.level as MetricsLevel)}>
+							{summary.level === MetricsLevel.INVALID
+								? "--"
+								: yaxisFormatter(summary.value.toString())}
 						</div>
 						<div css={metricsUnitStyles}>
 							<div>AVG.</div>

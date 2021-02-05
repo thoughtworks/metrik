@@ -102,14 +102,14 @@ export const getFourKeyMetricsUsingGet = createRequest<
 >("getFourKeyMetricsUsingGet", ({ endTime, pipelineId, startTime, targetStage, unit }) => ({
 	url: `/api/pipeline/metrics`,
 	method: "POST",
-	data: [
-		{
-			pipelineId,
-			stage: targetStage,
-		},
-	],
-	params: {
+	data: {
 		endTime,
+		pipelineStages: [
+			{
+				pipelineId,
+				stage: targetStage,
+			},
+		],
 		startTime,
 		unit,
 	},
@@ -284,15 +284,11 @@ export interface MetricsInfo {
 }
 
 export enum MetricsLevel {
-	"ELITE" = "ELITE",
-	"HIGH" = "HIGH",
-	"INVALID" = "INVALID",
-	"LOW" = "LOW",
-	"MEDIUM" = "MEDIUM",
-}
-
-export interface Number {
-	[key: string]: any;
+	ELITE = "ELITE",
+	HIGH = "HIGH",
+	MEDIUM = "MEDIUM",
+	LOW = "LOW",
+	INVALID = "INVALID",
 }
 
 export interface PipelineStagesResponse {
