@@ -144,8 +144,9 @@ interface MetricsCardProps {
 	summary: Metrics;
 	data: Metrics[];
 	yaxisFormatter: (value: string) => string;
-	unit: string;
+	yAxisLabel: string;
 	loading: boolean;
+	subTitleUnit: string;
 }
 
 export const MetricsCard: FC<MetricsCardProps> = ({
@@ -153,8 +154,9 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	summary,
 	data,
 	yaxisFormatter,
-	unit,
+	yAxisLabel,
 	loading,
+	subTitleUnit,
 }) => {
 	return (
 		<div css={containerStyles}>
@@ -182,13 +184,13 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 						</div>
 						<div css={metricsUnitStyles}>
 							<div>AVG.</div>
-							<div>{unit}</div>
+							<div>{subTitleUnit}</div>
 						</div>
 					</div>
 					<LineChart
 						data={data}
 						yaxisFormatter={yaxisFormatter}
-						unit={unit}
+						unit={yAxisLabel}
 						CustomizeTick={CustomizeTick}
 					/>
 				</>

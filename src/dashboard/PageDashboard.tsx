@@ -5,7 +5,7 @@ import { useQuery } from "../hooks/useQuery";
 import { getFourKeyMetricsUsingGet, MetricsInfo, MetricsLevel } from "../clients/apis";
 import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
+import { DashboardTopPanel, FormValues, FormValueUnit } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../constants/styles";
 
 const metricsContainerStyles = css({
@@ -28,6 +28,7 @@ export const PageDashboard = () => {
 	const dashboardId = query.get("dashboardId") || "";
 
 	const [formValues, setFormValues] = useState<FormValues>({} as FormValues);
+	const [appliedUnit, setAppliedUnit] = useState<FormValueUnit>("Fortnightly");
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsInfo>(initialMetricsState);
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsInfo>(initialMetricsState);
@@ -36,6 +37,7 @@ export const PageDashboard = () => {
 
 	const getFourKeyMetrics = () => {
 		setLoadingChart(true);
+		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
 		getFourKeyMetricsUsingGet({
 			endTime: momentObjToEndTimeStamp(formValues.duration[0]),
@@ -55,6 +57,14 @@ export const PageDashboard = () => {
 			});
 	};
 
+	const getSubTitleUnit = (unit: FormValueUnit) => {
+		enum SubtitleUnit {
+			Fortnightly = "fortnight",
+			Monthly = "month",
+		}
+		return `Times per ${SubtitleUnit[unit]}`;
+	};
+
 	return (
 		<>
 			<DashboardTopPanel
@@ -71,19 +81,21 @@ export const PageDashboard = () => {
 							summary={deploymentFrequency.summary}
 							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
-							unit="Times"
+							yAxisLabel="Times"
 							loading={loadingChart}
+							subTitleUnit={getSubTitleUnit(appliedUnit)}
 						/>
 					</Col>
 
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
-							title="Mean Lead Time for Change (Days)"
+							title="Average Lead Time for Change (Days)"
 							summary={leadTimeForChange.summary}
 							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
-							unit="Days"
+							yAxisLabel="Days"
 							loading={loadingChart}
+							subTitleUnit="Days"
 						/>
 					</Col>
 
@@ -93,8 +105,9 @@ export const PageDashboard = () => {
 							summary={meanTimeToRestore.summary}
 							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
-							unit="Hours"
+							yAxisLabel="Hours"
 							loading={loadingChart}
+							subTitleUnit="Hours"
 						/>
 					</Col>
 
@@ -104,8 +117,9 @@ export const PageDashboard = () => {
 							summary={changeFailureRate.summary}
 							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}
-							unit="Percentage"
+							yAxisLabel="Percentage"
 							loading={loadingChart}
+							subTitleUnit="Percentage"
 						/>
 					</Col>
 				</Row>

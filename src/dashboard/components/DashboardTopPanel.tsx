@@ -65,10 +65,12 @@ const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = 
 		})),
 	}));
 
+export type FormValueUnit = "Fortnightly" | "Monthly";
+
 export interface FormValues {
 	duration: [moment.Moment, moment.Moment];
 	pipelines: Array<{ value: string; childValue: string }>;
-	unit: "Fortnightly" | "Monthly";
+	unit: FormValueUnit;
 }
 
 interface DashboardTopPanelProps {
