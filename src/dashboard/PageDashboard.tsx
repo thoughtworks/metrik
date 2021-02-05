@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../hooks/useQuery";
-import { getFourKeyMetricsUsingGet, MetricsInfo, MetricsLevel } from "../clients/apis";
+import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../clients/apis";
 import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues, FormValueUnit } from "./components/DashboardTopPanel";
@@ -39,7 +39,7 @@ export const PageDashboard = () => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
-		getFourKeyMetricsUsingGet({
+		getFourKeyMetricsUsingPost({
 			endTime: momentObjToEndTimeStamp(formValues.duration[0]),
 			startTime: momentObjToStartTimeStamp(formValues.duration[1]),
 			pipelineId: formValues.pipelines[0].value,

@@ -90,7 +90,7 @@ export const getDeploymentCountUsingGet = createRequest<
 	})
 );
 
-export const getFourKeyMetricsUsingGet = createRequest<
+export const getFourKeyMetricsUsingPost = createRequest<
 	{
 		endTime: number;
 		pipelineId: string;
@@ -99,7 +99,7 @@ export const getFourKeyMetricsUsingGet = createRequest<
 		unit: keyof typeof GetFourKeyMetricsUsingGetUnit;
 	},
 	FourKeyMetricsResponse
->("getFourKeyMetricsUsingGet", ({ endTime, pipelineId, startTime, targetStage, unit }) => ({
+>("getFourKeyMetricsUsingPost", ({ endTime, pipelineId, startTime, targetStage, unit }) => ({
 	url: `/api/pipeline/metrics`,
 	method: "POST",
 	data: {
