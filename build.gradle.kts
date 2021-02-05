@@ -29,6 +29,23 @@ dependencyManagement {
     }
 }
 
+sourceSets {
+    create("apiTest") { 
+        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output 
+        runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+        java.srcDir("src/api-test/kotlin")
+        resources.srcDir("src/api-test/kotlin")
+        resources.exclude("**/*.kt")
+    }
+}
+
+val apiTestImplementation by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+
+
+configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
+configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -46,8 +63,18 @@ dependencies {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")  {
+        exclude("org.junit.vintage","junit-vintage-engine")
+    }
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+    testImplementation("com.intuit.karate:karate-junit5:0.9.6")
+    testImplementation("com.intuit.karate:karate-apache:0.9.6")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+
+    configurations.testCompile{
+        exclude("ch.qos.logback", "logback-classic")
+    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -59,6 +86,17 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    systemProperty("karate.options", System.getProperty("karate.options"))
+    systemProperty("karate.env", System.getProperty("karate.env"))
+    outputs.upToDateWhen { false }
+}
+
+val apiTest = task<Test>("apiTest") {
+    description = "Runs api tests."
+    group = "verification"
+
+    testClassesDirs = sourceSets["apiTest"].output.classesDirs
+    classpath = sourceSets["apiTest"].runtimeClasspath
 }
 
 
