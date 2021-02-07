@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +25,7 @@ class PipelineController {
 
     @PostMapping("/pipeline/verify")
     @ResponseStatus(HttpStatus.OK)
-    fun verifyPipeline(@RequestBody pipelineVerificationRequest: PipelineVerificationRequest) {
+    fun verifyPipeline(@RequestBody @Valid pipelineVerificationRequest: PipelineVerificationRequest) {
         pipelineApplicationService.verifyPipelineConfiguration(pipelineVerificationRequest)
     }
 
@@ -32,7 +33,7 @@ class PipelineController {
     @ResponseStatus(HttpStatus.CREATED)
     fun createPipeline(
         @PathVariable("dashboardId") dashboardId: String,
-        @RequestBody pipeline: PipelineRequest
+        @RequestBody @Valid pipeline: PipelineRequest
     ): PipelineResponse {
         return pipelineApplicationService.createPipeline(dashboardId, pipeline)
     }
@@ -41,7 +42,7 @@ class PipelineController {
     fun updatePipeline(
         @PathVariable("dashboardId") dashboardId: String,
         @PathVariable("pipelineId") pipelineId: String,
-        @RequestBody pipelineRequest: PipelineRequest
+        @RequestBody @Valid pipelineRequest: PipelineRequest
     ): PipelineResponse {
         return pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipelineRequest)
     }

@@ -1,8 +1,8 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
-import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
+import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/api")
@@ -37,13 +39,13 @@ class DashboardController {
     }
 
     @PostMapping("/dashboard")
-    fun createDashboard(@RequestBody dashboardRequest: DashboardRequest): DashboardDetailResponse {
+    fun createDashboard(@RequestBody @Valid dashboardRequest: DashboardRequest): DashboardDetailResponse {
         return dashboardApplicationService.createDashboard(dashboardRequest)
     }
 
     @PutMapping("/dashboard/{dashboardId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody dashboardName: String): DashboardResponse {
+    fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody @Valid @NotBlank dashboardName: String): DashboardResponse {
         return dashboardApplicationService.updateDashboardName(dashboardId, dashboardName)
     }
 
