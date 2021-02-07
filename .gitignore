@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
+.ideaDataSources
 *.iws
 *.iml
 *.ipr
