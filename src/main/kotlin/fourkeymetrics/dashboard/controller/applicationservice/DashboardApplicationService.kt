@@ -7,6 +7,7 @@ import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
@@ -27,7 +28,6 @@ class DashboardApplicationService {
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository
 
-
     @Transactional
     fun createDashboard(dashboardRequest: DashboardRequest): DashboardDetailResponse {
         val dashboardName = dashboardRequest.dashboardName
@@ -42,7 +42,17 @@ class DashboardApplicationService {
             )
         )
         val pipelines = with(dashboardRequest.pipeline) {
-            listOf(Pipeline(ObjectId().toString(), dashboard.id, name, username, credential, url, type))
+            listOf(
+                Pipeline(
+                    ObjectId().toString(),
+                    dashboard.id,
+                    name,
+                    username,
+                    credential,
+                    url,
+                    PipelineType.valueOf(type)
+                )
+            )
 
         }
         return DashboardDetailResponse(dashboard, pipelineRepository.saveAll(pipelines))
@@ -53,7 +63,6 @@ class DashboardApplicationService {
         dashboard.name = dashboardName
         return DashboardResponse(dashboardRepository.save(dashboard))
     }
-
 
     fun getDashboards(): List<DashboardResponse> {
         return dashboardRepository.findAll().map { DashboardResponse(it) }
@@ -67,11 +76,11 @@ class DashboardApplicationService {
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
         verifyDashboardExist(dashboardId)
-        val pipelines =  pipelineRepository.findByDashboardId(dashboardId)
+        val pipelines = pipelineRepository.findByDashboardId(dashboardId)
 
 
         return pipelines.parallelStream().map {
-            PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id),)
+            PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
         }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
     }
 
@@ -81,9 +90,8 @@ class DashboardApplicationService {
 
     fun getDashboardDetails(dashboardId: String): DashboardDetailResponse {
         val dashboard = dashboardRepository.findById(dashboardId)
-        val pipelines =  pipelineRepository.findByDashboardId(dashboardId)
+        val pipelines = pipelineRepository.findByDashboardId(dashboardId)
 
         return DashboardDetailResponse(dashboard, pipelines)
     }
-
 }

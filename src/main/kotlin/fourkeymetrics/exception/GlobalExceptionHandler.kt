@@ -25,7 +25,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        val message = "Request invalid: ${ex.allErrors.map { it.defaultMessage }.joinToString(";")}"
+        val message = ex.allErrors.map { it.defaultMessage }.joinToString(";")
         return handlerErrorResponse(HttpStatus.BAD_REQUEST, message, ex)
     }
 

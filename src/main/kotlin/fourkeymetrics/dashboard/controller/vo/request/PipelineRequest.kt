@@ -1,5 +1,6 @@
 package fourkeymetrics.dashboard.controller.vo.request
 
+import fourkeymetrics.common.validation.EnumConstraint
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import org.apache.logging.log4j.util.Strings
@@ -16,9 +17,20 @@ data class PipelineRequest(
     @field:NotEmpty(message = "url cannot be empty")
     val url: String = Strings.EMPTY,
     @field:NotNull(message = "type cannot be null")
-    var type: PipelineType = PipelineType.JENKINS
+    @field:EnumConstraint(acceptedValues = ["BAMBOO", "JENKINS"], message = "type only allow BAMBOO and JENKINS")
+    var type: String = Strings.EMPTY
 ) {
     fun toPipeline(dashboardId: String, pipelineId: String): Pipeline {
-        return with(this) { Pipeline(pipelineId, dashboardId, name, username, credential, url, type) }
+        return with(this) {
+            Pipeline(
+                pipelineId,
+                dashboardId,
+                name,
+                username,
+                credential,
+                url,
+                PipelineType.valueOf(type)
+            )
+        }
     }
 }
