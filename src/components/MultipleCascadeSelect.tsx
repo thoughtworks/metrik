@@ -138,7 +138,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	}, [cascadeValue]);
 
 	useEffect(() => {
-		if (prevOptions && !isEqual(prevOptions, options)) {
+		if (!isEmpty(options) && !isEqual(prevOptions, options)) {
 			const existsTags = findExistsTags(options, tags);
 			setCascadeValue(
 				!isEmpty(existsTags)
