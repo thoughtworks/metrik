@@ -139,6 +139,10 @@ jobs:
       - checkout
 
       - run:
+          name: Register Docker tag to enviroment
+          command: echo "export $DOCKER_IMAGE_TAG=$(date +%Y%m%d%H%M%S)" >> $BASH_ENV
+
+      - run:
           name: Create attached workspace folder
           command: mkdir ./artifacts
 
@@ -151,9 +155,7 @@ jobs:
 
       - run:
           name: Build and tag Docker image
-          command: |
-            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')
-            docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:${TAG} -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
+          command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:$DOCKER_IMAGE_TAG -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
 
       - aws-cli/install
 
@@ -165,7 +167,7 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')
+          tag: latest,$DOCKER_IMAGE_TAG
 
 workflows:
   version: 2
