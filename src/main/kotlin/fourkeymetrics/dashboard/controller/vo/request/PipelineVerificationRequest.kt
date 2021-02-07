@@ -1,5 +1,7 @@
 package fourkeymetrics.dashboard.controller.vo.request
 
+import fourkeymetrics.common.validation.EnumConstraint
+import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -12,5 +14,17 @@ data class PipelineVerificationRequest(
     @field:NotEmpty(message = "credential cannot be empty")
     val credential: String,
     @field:NotNull(message = "type cannot be null")
-    val type: PipelineType,
-)
+    @field:EnumConstraint(acceptedValues = ["BAMBOO", "JENKINS"], message = "type only allow BAMBOO and JENKINS")
+    val type: String,
+) {
+    fun toPipeline(): Pipeline {
+        return with(this) {
+            Pipeline(
+                username = username,
+                credential = credential,
+                url = url,
+                type = PipelineType.valueOf(type)
+            )
+        }
+    }
+}

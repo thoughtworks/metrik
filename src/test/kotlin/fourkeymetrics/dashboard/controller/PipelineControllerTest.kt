@@ -1,8 +1,9 @@
 package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.dashboard.buildPipeline
 import fourkeymetrics.dashboard.buildPipelineRequest
-import fourkeymetrics.dashboard.buildPipelineResponse
 import fourkeymetrics.dashboard.buildPipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicationService
 import org.junit.jupiter.api.Test
@@ -30,7 +31,7 @@ internal class PipelineControllerTest {
     @Test
     internal fun `should return OK when verify pipeline successfully`() {
         val pipelineVerificationRequest = buildPipelineVerificationRequest()
-        Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(pipelineVerificationRequest)
+        Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(anyObject())
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")
@@ -42,8 +43,9 @@ internal class PipelineControllerTest {
     @Test
     internal fun `should return PipelineResponse when create pipeline successfully`() {
         val pipelineRequest = buildPipelineRequest()
-        val pipelineResponse = buildPipelineResponse()
-        `when`(pipelineApplicationService.createPipeline(dashboardId, pipelineRequest)).thenReturn(pipelineResponse)
+        val pipeline = buildPipeline()
+        val dashboardId = pipeline.dashboardId
+        `when`(pipelineApplicationService.createPipeline(anyObject())).thenReturn(pipeline)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/pipeline")
@@ -51,54 +53,53 @@ internal class PipelineControllerTest {
                 .content(ObjectMapper().writeValueAsString(pipelineRequest))
         )
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.id").value(pipelineResponse.id))
-            .andExpect(jsonPath("$.name").value(pipelineResponse.name))
-            .andExpect(jsonPath("$.url").value(pipelineResponse.url))
-            .andExpect(jsonPath("$.username").value(pipelineResponse.username))
-            .andExpect(jsonPath("$.credential").value(pipelineResponse.credential))
-            .andExpect(jsonPath("$.type").value(pipelineResponse.type.toString()))
+            .andExpect(jsonPath("$.id").value(pipeline.id))
+            .andExpect(jsonPath("$.name").value(pipeline.name))
+            .andExpect(jsonPath("$.url").value(pipeline.url))
+            .andExpect(jsonPath("$.username").value(pipeline.username))
+            .andExpect(jsonPath("$.credential").value(pipeline.credential))
+            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test
     internal fun `should return PipelineResponse when update pipeline successfully`() {
-        val pipelineRequest = buildPipelineRequest()
-        val pipelineResponse = buildPipelineResponse()
-        val pipelineId = pipelineResponse.id
-        `when`(pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipelineRequest)).thenReturn(
-            pipelineResponse
-        )
+        val pipeline = buildPipeline()
+        val pipelineId = pipeline.id
+        val dashboardId = pipeline.dashboardId
+        `when`(pipelineApplicationService.updatePipeline(anyObject())).thenReturn(pipeline)
 
         mockMvc.perform(
             MockMvcRequestBuilders.put("/api/dashboard/${dashboardId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(pipelineRequest))
+                .content(ObjectMapper().writeValueAsString(buildPipelineRequest()))
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(pipelineResponse.id))
-            .andExpect(jsonPath("$.name").value(pipelineResponse.name))
-            .andExpect(jsonPath("$.url").value(pipelineResponse.url))
-            .andExpect(jsonPath("$.username").value(pipelineResponse.username))
-            .andExpect(jsonPath("$.credential").value(pipelineResponse.credential))
-            .andExpect(jsonPath("$.type").value(pipelineResponse.type.toString()))
+            .andExpect(jsonPath("$.id").value(pipeline.id))
+            .andExpect(jsonPath("$.name").value(pipeline.name))
+            .andExpect(jsonPath("$.url").value(pipeline.url))
+            .andExpect(jsonPath("$.username").value(pipeline.username))
+            .andExpect(jsonPath("$.credential").value(pipeline.credential))
+            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test
     internal fun `should return PipelineResponse when get pipeline successfully`() {
-        val pipelineResponse = buildPipelineResponse()
-        val pipelineId = pipelineResponse.id
-        `when`(pipelineApplicationService.getPipeline(dashboardId, pipelineId)).thenReturn(pipelineResponse)
+        val pipeline = buildPipeline()
+        val pipelineId = pipeline.id
+        val dashboardId = pipeline.dashboardId
+        `when`(pipelineApplicationService.getPipeline(dashboardId, pipelineId)).thenReturn(pipeline)
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/dashboard/${dashboardId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(pipelineResponse.id))
-            .andExpect(jsonPath("$.name").value(pipelineResponse.name))
-            .andExpect(jsonPath("$.url").value(pipelineResponse.url))
-            .andExpect(jsonPath("$.username").value(pipelineResponse.username))
-            .andExpect(jsonPath("$.credential").value(pipelineResponse.credential))
-            .andExpect(jsonPath("$.type").value(pipelineResponse.type.toString()))
+            .andExpect(jsonPath("$.id").value(pipeline.id))
+            .andExpect(jsonPath("$.name").value(pipeline.name))
+            .andExpect(jsonPath("$.url").value(pipeline.url))
+            .andExpect(jsonPath("$.username").value(pipeline.username))
+            .andExpect(jsonPath("$.credential").value(pipeline.credential))
+            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test
@@ -111,6 +112,4 @@ internal class PipelineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
     }
-
-
 }

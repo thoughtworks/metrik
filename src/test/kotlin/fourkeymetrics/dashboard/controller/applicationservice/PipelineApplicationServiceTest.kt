@@ -2,9 +2,7 @@ package fourkeymetrics.dashboard.controller.applicationservice
 
 import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.MockitoHelper.argThat
-import fourkeymetrics.dashboard.buildPipelineRequest
-import fourkeymetrics.dashboard.buildPipelineVerificationRequest
-import fourkeymetrics.dashboard.model.Pipeline
+import fourkeymetrics.dashboard.buildPipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
@@ -38,20 +36,15 @@ internal class PipelineApplicationServiceTest {
     @Mock
     private lateinit var buildRepository: BuildRepository
 
-    private val dashboardId = "dashboardId"
-    private val pipelineId = "pipelineId"
-
     @InjectMocks
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
     @Test
     internal fun `should throw BadRequestException when verifyPipeline() called given pipeline type is not JENKINS`() {
-        val pipelineVerificationRequest = buildPipelineVerificationRequest().copy(type = PipelineType.BAMBOO)
+        val pipeline = buildPipeline().copy(type = PipelineType.BAMBOO)
 
         val exception = assertThrows<BadRequestException> {
-            pipelineApplicationService.verifyPipelineConfiguration(
-                pipelineVerificationRequest
-            )
+            pipelineApplicationService.verifyPipelineConfiguration(pipeline)
         }
 
         assertEquals("Pipeline type not support", exception.message)
@@ -60,30 +53,24 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     internal fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
-        val pipelineVerificationRequest = buildPipelineVerificationRequest().copy(type = PipelineType.JENKINS)
+        val pipeline = buildPipeline().copy(type = PipelineType.JENKINS)
 
-        pipelineApplicationService.verifyPipelineConfiguration(pipelineVerificationRequest)
+        pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipelineVerificationRequest.url,
-            pipelineVerificationRequest.username,
-            pipelineVerificationRequest.credential
+            pipeline.url, pipeline.username, pipeline.credential
         )
     }
 
     @Test
     internal fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
-        val pipelineRequest = buildPipelineRequest()
-        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
+        val pipeline = buildPipeline()
+        val dashboardId = pipeline.dashboardId
+        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(
             true
         )
 
-        val exception = assertThrows<BadRequestException> {
-            pipelineApplicationService.createPipeline(
-                dashboardId,
-                pipelineRequest
-            )
-        }
+        val exception = assertThrows<BadRequestException> { pipelineApplicationService.createPipeline(pipeline) }
 
         verify(dashboardRepository).findById(dashboardId)
         verify(pipelineRepository, times(0)).save(anyObject())
@@ -92,78 +79,64 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return PipelineResponse when createPipeline() called given valid PipelineRequest`() {
-        val pipelineRequest = buildPipelineRequest()
-        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)).thenReturn(
-            false
-        )
+    internal fun `should return saved pipeline when createPipeline() called given valid Pipeline`() {
+        val pipeline = buildPipeline()
+        val dashboardId = pipeline.dashboardId
+        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(false)
+        `when`(pipelineRepository.save(anyObject())).thenReturn(pipeline)
 
-        val result = pipelineApplicationService.createPipeline(dashboardId, pipelineRequest)
+        val result = pipelineApplicationService.createPipeline(pipeline)
 
         verify(dashboardRepository).findById(dashboardId)
         verify(pipelineRepository).save(argThat {
             assertEquals(dashboardId, it.dashboardId)
             assertNotNull(it.id)
-            assertEquals(pipelineRequest.name, it.name)
-            assertEquals(pipelineRequest.username, it.username)
-            assertEquals(pipelineRequest.credential, it.credential)
-            assertEquals(pipelineRequest.url, it.url)
-            assertEquals(pipelineRequest.type, it.type.toString())
+            assertEquals(pipeline.name, it.name)
+            assertEquals(pipeline.username, it.username)
+            assertEquals(pipeline.credential, it.credential)
+            assertEquals(pipeline.url, it.url)
+            assertEquals(pipeline.type, it.type)
             true
         })
-        assertEquals(pipelineRequest.name, result.name)
-        assertEquals(pipelineRequest.url, result.url)
-        assertEquals(pipelineRequest.username, result.username)
-        assertEquals(pipelineRequest.credential, result.credential)
-        assertEquals(pipelineRequest.type, result.type.toString())
+        assertEquals(pipeline.name, result.name)
+        assertEquals(pipeline.url, result.url)
+        assertEquals(pipeline.username, result.username)
+        assertEquals(pipeline.credential, result.credential)
+        assertEquals(pipeline.type, result.type)
     }
 
     @Test
-    internal fun `should return PipelineResponse when updatePipeline() called and successfully`() {
-        val pipelineRequest = buildPipelineRequest()
-        val newPipeline = Pipeline(
-            id = pipelineId,
-            dashboardId = dashboardId,
-            name = pipelineRequest.name,
-            username = pipelineRequest.username,
-            credential = pipelineRequest.credential,
-            url = pipelineRequest.url,
-            type = PipelineType.valueOf(pipelineRequest.type)
-        )
-        `when`(pipelineRepository.save(anyObject())).thenReturn(newPipeline)
+    internal fun `should return saved pipeline when updatePipeline() called and successfully`() {
+        val pipeline = buildPipeline()
+        val savedPipeline = buildPipeline()
+        `when`(pipelineRepository.save(anyObject())).thenReturn(savedPipeline)
 
-        val result = pipelineApplicationService.updatePipeline(dashboardId, pipelineId, pipelineRequest)
+        val result = pipelineApplicationService.updatePipeline(pipeline)
 
-        verify(dashboardRepository).findById(dashboardId)
-        verify(pipelineRepository).findById(pipelineId)
+        verify(dashboardRepository).findById(pipeline.dashboardId)
+        verify(pipelineRepository).findById(pipeline.id)
         verify(pipelineRepository).save(argThat {
-            assertEquals(dashboardId, dashboardId)
-            assertEquals(pipelineId, it.id)
-            assertEquals(pipelineRequest.name, it.name)
-            assertEquals(pipelineRequest.username, it.username)
-            assertEquals(pipelineRequest.credential, it.credential)
-            assertEquals(pipelineRequest.url, it.url)
-            assertEquals(pipelineRequest.type, it.type.toString())
+            assertEquals(pipeline.dashboardId, it.dashboardId)
+            assertEquals(pipeline.id, it.id)
+            assertEquals(pipeline.name, it.name)
+            assertEquals(pipeline.username, it.username)
+            assertEquals(pipeline.credential, it.credential)
+            assertEquals(pipeline.url, it.url)
+            assertEquals(pipeline.type, it.type)
             true
         })
-        assertEquals(pipelineRequest.name, result.name)
-        assertEquals(pipelineRequest.url, result.url)
-        assertEquals(pipelineRequest.username, result.username)
-        assertEquals(pipelineRequest.credential, result.credential)
-        assertEquals(pipelineRequest.type, result.type.toString())
+        assertEquals(pipeline.name, result.name)
+        assertEquals(pipeline.url, result.url)
+        assertEquals(pipeline.username, result.username)
+        assertEquals(pipeline.credential, result.credential)
+        assertEquals(pipeline.type, result.type)
     }
 
     @Test
-    internal fun `should return PipelineResponse when getPipeline() called`() {
-        val pipeline = Pipeline(
-            id = pipelineId,
-            dashboardId = dashboardId,
-            name = "name",
-            username = "username",
-            credential = "credential",
-            url = "url",
-            type = PipelineType.JENKINS
-        )
+    internal fun `should return pipeline when getPipeline() called`() {
+        val pipeline = buildPipeline()
+        val pipelineId = pipeline.id
+        val dashboardId = pipeline.dashboardId
         `when`(pipelineRepository.findById(pipelineId)).thenReturn(pipeline)
 
         val result = pipelineApplicationService.getPipeline(dashboardId, pipelineId)
@@ -179,6 +152,8 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     internal fun `should delete pipeline and its builds when deletePipeline() called`() {
+        val pipelineId = "pipelineId"
+        val dashboardId = "dashboardId"
         pipelineApplicationService.deletePipeline(dashboardId, pipelineId)
 
         verify(dashboardRepository).findById(dashboardId)

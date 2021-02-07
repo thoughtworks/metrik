@@ -3,6 +3,7 @@ package fourkeymetrics.dashboard
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
+import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 
 fun buildPipelineRequest() =
@@ -14,7 +15,7 @@ fun buildPipelineRequest() =
         PipelineType.JENKINS.toString()
     ).copy()
 
-fun buildPipelineResponse(): PipelineResponse = PipelineResponse(
+fun buildPipelineResponse() = PipelineResponse(
     id = "pipelineId",
     name = "name",
     username = "username",
@@ -23,8 +24,18 @@ fun buildPipelineResponse(): PipelineResponse = PipelineResponse(
 ).copy()
 
 fun buildPipelineVerificationRequest() = PipelineVerificationRequest(
-    "url",
-    "username",
-    "credential",
-    PipelineType.JENKINS
+    url = "url",
+    username = "username",
+    credential = "credential",
+    type = PipelineType.JENKINS.toString()
+).copy()
+
+fun buildPipeline() = Pipeline(
+    id = "pipelineId",
+    dashboardId = "dashboardId",
+    name = "pipeline",
+    username = "username",
+    credential = "credential",
+    url = "url",
+    type = PipelineType.JENKINS
 ).copy()

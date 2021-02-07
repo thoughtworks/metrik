@@ -1,15 +1,12 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
-import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
-import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
-import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
+import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.BadRequestException
-import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -27,42 +24,37 @@ class PipelineApplicationService {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
-    fun verifyPipelineConfiguration(pipelineVerificationRequest: PipelineVerificationRequest) {
-        if (PipelineType.JENKINS == pipelineVerificationRequest.type) {
+    fun verifyPipelineConfiguration(pipeline: Pipeline) {
+        if (PipelineType.JENKINS == pipeline.type) {
             jenkinsPipelineService.verifyPipelineConfiguration(
-                pipelineVerificationRequest.url,
-                pipelineVerificationRequest.username,
-                pipelineVerificationRequest.credential
+                pipeline.url, pipeline.username, pipeline.credential
             )
         } else {
             throw BadRequestException("Pipeline type not support")
         }
     }
 
-    fun createPipeline(dashboardId: String, pipelineRequest: PipelineRequest): PipelineResponse {
+    fun createPipeline(pipeline: Pipeline): Pipeline {
+        val dashboardId = pipeline.dashboardId
         verifyDashboardExist(dashboardId)
 
-        if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipelineRequest.name, dashboardId)) {
+        if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)) {
             throw BadRequestException("Pipeline name already exist")
         } else {
-            val pipeline = pipelineRequest.toPipeline(dashboardId, ObjectId().toString())
-            pipelineRepository.save(pipeline)
-            return PipelineResponse(pipeline)
+            return pipelineRepository.save(pipeline)
         }
     }
 
-    fun updatePipeline(dashboardId: String, pipelineId: String, pipelineRequest: PipelineRequest): PipelineResponse {
-        verifyDashboardExist(dashboardId)
-        verifyPipelineExist(pipelineId)
+    fun updatePipeline(pipeline: Pipeline): Pipeline {
+        verifyDashboardExist(pipeline.dashboardId)
+        verifyPipelineExist(pipeline.id)
 
-        val pipeline = pipelineRequest.toPipeline(dashboardId, pipelineId)
-        return PipelineResponse(pipelineRepository.save(pipeline))
+        return pipelineRepository.save(pipeline)
     }
 
-    fun getPipeline(dashboardId: String, pipelineId: String): PipelineResponse {
+    fun getPipeline(dashboardId: String, pipelineId: String): Pipeline {
         verifyDashboardExist(dashboardId)
-        val pipeline = pipelineRepository.findById(pipelineId)
-        return PipelineResponse(pipeline)
+        return pipelineRepository.findById(pipelineId)
     }
 
     fun deletePipeline(dashboardId: String, pipelineId: String) {
