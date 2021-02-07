@@ -1,15 +1,15 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
-import { PipelineVoRes } from "../clients/apis";
+import { PipelineResponse } from "../clients/apis";
 
 const { Column } = Table;
 
 interface DashboardConfigurationProps {
-	pipelines: PipelineVoRes[];
+	pipelines: PipelineResponse[];
 	showDelete?: boolean;
 	showAddPipeline?: boolean;
-	updatePipeline: (pipeline: PipelineVoRes) => void;
+	updatePipeline: (pipeline: PipelineResponse) => void;
 	addPipeline?: () => void;
 	deletePipeline?: (pipelineId: string) => void;
 }
@@ -23,7 +23,7 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 	deletePipeline,
 }) => {
 	return (
-		<Table<PipelineVoRes>
+		<Table<PipelineResponse>
 			tableLayout={"fixed"}
 			css={{
 				minHeight: 350,
@@ -45,9 +45,9 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 						<RightOutlined onClick={e => onExpand(record, e)} />
 					),
 			}}>
-			<Column<PipelineVoRes> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<PipelineVoRes> width={"35%"} title={"Tool"} dataIndex={"type"} />
-			<Column<PipelineVoRes>
+			<Column<PipelineResponse> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<PipelineResponse> width={"35%"} title={"Tool"} dataIndex={"type"} />
+			<Column<PipelineResponse>
 				width={"35%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -90,8 +90,8 @@ interface ToolConfig {
 	url: string;
 }
 
-const ToolConfig = (config: PipelineVoRes) => {
-	const convertConfig = (config: PipelineVoRes): ToolConfig[] => {
+const ToolConfig = (config: PipelineResponse) => {
+	const convertConfig = (config: PipelineResponse): ToolConfig[] => {
 		return [{ id: config.id, type: "Pipelines", tool: config.type, url: config.url }];
 	};
 	const data = convertConfig(config);

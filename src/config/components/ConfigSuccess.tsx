@@ -5,9 +5,10 @@ import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
 import {
 	createPipelineUsingPost,
-	DashboardDetailVo,
-	PipelineVoRes,
+	DashboardResponse,
+	PipelineResponse,
 	updatePipelineUsingPut,
+	DashboardDetailResponse,
 } from "../../clients/apis";
 import PipelineSettingModal from "../../components/PipelineSettingModal";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
@@ -16,7 +17,7 @@ import { useModalVisible } from "../../hooks/useModalVisible";
 import { usePipelineSetting } from "../../hooks/usePipelineSetting";
 import { GREEN_LIGHT } from "../../constants/styles";
 
-const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDashboard }) => {
+const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defaultDashboard }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
 		dashboard,
@@ -33,7 +34,7 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailVo }> = ({ defaultDas
 		shouldResetStatus: !visible,
 	});
 
-	function handleUpdatePipeline(pipeline: PipelineVoRes) {
+	function handleUpdatePipeline(pipeline: PipelineResponse) {
 		onUpdatePipeline(pipeline);
 		handleToggleVisible();
 	}

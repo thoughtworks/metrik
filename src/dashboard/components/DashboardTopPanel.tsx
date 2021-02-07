@@ -7,7 +7,7 @@ import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../constants/styles";
 import { useRequest } from "../../hooks/useRequest";
 import {
-	getDashboardUsingGet,
+	getDashboardDetailsUsingGet,
 	updateBuildsUsingPost,
 	updateDashboardNameUsingPut,
 	getPipelineStagesUsingGet,
@@ -87,7 +87,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 		unit: "Fortnightly",
 		pipelines: [],
 	} as FormValues;
-	const [dashboard, getDashboardRequest] = useRequest(getDashboardUsingGet);
+	const [dashboard, getDashboardRequest] = useRequest(getDashboardDetailsUsingGet);
 	const [, updateBuildsRequest, syncing] = useRequest(updateBuildsUsingPost);
 	const [, updateDashboardNameRequest] = useRequest(updateDashboardNameUsingPut);
 	const [synchronization, getLastSynchronizationRequest] = useRequest(

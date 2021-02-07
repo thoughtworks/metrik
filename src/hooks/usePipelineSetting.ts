@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import {
-	DashboardDetailVo,
 	deletePipelineUsingDelete,
 	getDashboardDetailsUsingGet,
-	PipelineVoRes,
+	DashboardDetailResponse,
+	PipelineResponse,
 } from "../clients/apis";
 import { PipelineSettingStatus } from "../dashboard/components/PipelineSetting";
 import { notification } from "antd";
@@ -19,11 +19,11 @@ export const usePipelineSetting = ({
 	shouldUpdateDashboard: boolean;
 	shouldResetStatus: boolean;
 	defaultStatus?: PipelineSettingStatus;
-	defaultDashboard?: DashboardDetailVo;
+	defaultDashboard?: DashboardDetailResponse;
 }) => {
-	const [dashboard, setDashboard] = useState<DashboardDetailVo | undefined>(defaultDashboard);
+	const [dashboard, setDashboard] = useState<DashboardDetailResponse | undefined>(defaultDashboard);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
-	const [editPipeline, setEditPipeline] = useState<PipelineVoRes>();
+	const [editPipeline, setEditPipeline] = useState<PipelineResponse>();
 
 	useEffect(() => {
 		if (shouldResetStatus) {
@@ -38,7 +38,9 @@ export const usePipelineSetting = ({
 	}, [shouldUpdateDashboard]);
 
 	async function getDashboardDetails() {
-		const data = await getDashboardDetailsUsingGet(defaultDashboardId);
+		const data = await getDashboardDetailsUsingGet({
+			dashboardId: defaultDashboardId,
+		});
 		setDashboard(data);
 	}
 
@@ -47,7 +49,7 @@ export const usePipelineSetting = ({
 		setEditPipeline(undefined);
 	}
 
-	function onUpdatePipeline(pipeline: PipelineVoRes) {
+	function onUpdatePipeline(pipeline: PipelineResponse) {
 		setStatus(PipelineSettingStatus.UPDATE);
 		setEditPipeline(pipeline);
 	}

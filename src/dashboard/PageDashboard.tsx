@@ -19,7 +19,7 @@ const initialMetricsState: MetricsInfo = {
 		endTimestamp: 0,
 		level: MetricsLevel.INVALID,
 		startTimestamp: 0,
-		value: NaN,
+		value: {},
 	},
 	details: [],
 };
@@ -42,11 +42,15 @@ export const PageDashboard = () => {
 		const durationTimestamps = formValues.duration.map(momentObjToEndTimeStamp);
 
 		getFourKeyMetricsUsingPost({
-			startTime: min(durationTimestamps)!,
-			endTime: max(durationTimestamps)!,
-			pipelineId: formValues.pipelines[0].value,
-			targetStage: formValues.pipelines[0].childValue,
-			unit: formValues.unit,
+			requestBody: {
+				startTime: min(durationTimestamps)!,
+				endTime: max(durationTimestamps)!,
+				pipelineStages: (formValues.pipelines || []).map(i => ({
+					pipelineId: i.value,
+					stage: i.childValue,
+				})),
+				unit: formValues.unit,
+			},
 		})
 			.then(response => {
 				setChangeFailureRate(response.changeFailureRate);

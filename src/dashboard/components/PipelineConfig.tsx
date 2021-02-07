@@ -4,14 +4,14 @@ import { Form } from "antd";
 import { VerifyStatus } from "../../__types__/base";
 import {
 	createPipelineUsingPost,
-	PipelineVoRes,
+	PipelineResponse,
 	updatePipelineUsingPut,
 	verifyPipelineUsingPost,
 } from "../../clients/apis";
 import { ConfigFormValues } from "../../config/PageConfig";
 
 interface PipelineConfigProps {
-	defaultData?: PipelineVoRes;
+	defaultData?: PipelineResponse;
 	onBack: () => void;
 	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
 	className?: string;

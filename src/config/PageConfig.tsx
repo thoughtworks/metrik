@@ -5,16 +5,16 @@ import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import {
-	createDashboardAndPipelineUsingPost,
-	DashboardDetailVo,
-	PipelineVoRes,
+	DashboardDetailResponse,
 	verifyPipelineUsingPost,
+	PipelineResponse,
+	createDashboardUsingPost,
 } from "../clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;
 
-export interface ConfigFormValues extends PipelineVoRes {
+export interface ConfigFormValues extends PipelineResponse {
 	dashboardName: string;
 }
 
@@ -23,10 +23,10 @@ export const PageConfig = () => {
 
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
-	const [dashboard, setDashboard] = useState<DashboardDetailVo>();
+	const [dashboard, setDashboard] = useState<DashboardDetailResponse>();
 	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
-		const response = await createDashboardAndPipelineUsingPost({
+		const response = await createDashboardUsingPost({
 			requestBody: {
 				dashboardName,
 				pipeline,
