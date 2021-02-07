@@ -29,5 +29,5 @@ export const useRequest = <T extends RequestCreator<T["TReq"], T["TResp"]>>(
 		};
 	}, []);
 
-	return [data, getData, loading] as const;
+	return [data, getData, loading, setData] as const;
 };

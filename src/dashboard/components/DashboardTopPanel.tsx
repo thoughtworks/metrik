@@ -17,7 +17,7 @@ import {
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../constants/date-format";
 import { MultipleCascadeSelect } from "../../components/MultipleCascadeSelect";
-import { isEmpty } from "lodash";
+import { isEmpty, isEqual } from "lodash";
 import { formatLastUpdateTime } from "../../utils/timeFormats";
 import { usePrevious } from "../../hooks/usePrevious";
 
@@ -93,7 +93,9 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
 		getLastSynchronizationUsingGet
 	);
-	const [pipelineStagesResp, getPipelineStagesRequest] = useRequest(getPipelineStagesUsingGet);
+	const [pipelineStagesResp, getPipelineStagesRequest, , setPipelineStages] = useRequest(
+		getPipelineStagesUsingGet
+	);
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
 
 	const updateDashboardName = async (name: string) => {
@@ -117,6 +119,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 		});
 
 		getLastSyncTime();
+
+		setPipelineStages([]);
 		getPipelineStages();
 	};
 
@@ -131,18 +135,22 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 	}, []);
 
 	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
-	const options = isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages;
 	const prevPipelines = usePrevious(formValues.pipelines);
+	const options = isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages;
+	const prevOptions = usePrevious(options);
 
 	useEffect(() => {
 		if (isEmpty(formValues.pipelines)) {
 			return;
 		}
 
-		if (isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) {
+		if (
+			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
+			(!isEmpty(options) && !isEqual(prevOptions, options))
+		) {
 			onApply && onApply(formValues);
 		}
-	}, [formValues.pipelines]);
+	}, [formValues.pipelines, options]);
 
 	return (
 		<div css={containerStyles}>
@@ -195,8 +203,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 										!isEmpty(pipelineStages[0]?.children)
 											? [
 													{
-														value: pipelineStages[0]?.value,
-														childValue: (pipelineStages[0]?.children ?? [])[0]?.label,
+														value: formValues.pipelines[0]?.value || pipelineStages[0]?.value,
+														childValue:
+															formValues.pipelines[0]?.childValue ||
+															(pipelineStages[0]?.children ?? [])[0]?.label,
 													},
 											  ]
 											: []
