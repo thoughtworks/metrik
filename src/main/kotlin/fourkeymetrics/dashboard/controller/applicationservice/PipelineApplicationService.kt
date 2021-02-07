@@ -37,6 +37,7 @@ class PipelineApplicationService {
     fun createPipeline(pipeline: Pipeline): Pipeline {
         val dashboardId = pipeline.dashboardId
         verifyDashboardExist(dashboardId)
+        verifyPipelineConfiguration(pipeline)
 
         if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)) {
             throw BadRequestException("Pipeline name already exist")
@@ -48,6 +49,7 @@ class PipelineApplicationService {
     fun updatePipeline(pipeline: Pipeline): Pipeline {
         verifyDashboardExist(pipeline.dashboardId)
         verifyPipelineExist(pipeline.id)
+        verifyPipelineConfiguration(pipeline)
 
         return pipelineRepository.save(pipeline)
     }

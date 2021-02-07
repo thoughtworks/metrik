@@ -88,6 +88,9 @@ internal class PipelineApplicationServiceTest {
         val result = pipelineApplicationService.createPipeline(pipeline)
 
         verify(dashboardRepository).findById(dashboardId)
+        verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
+            pipeline.url, pipeline.username, pipeline.credential
+        )
         verify(pipelineRepository).save(argThat {
             assertEquals(dashboardId, it.dashboardId)
             assertNotNull(it.id)
@@ -115,6 +118,9 @@ internal class PipelineApplicationServiceTest {
 
         verify(dashboardRepository).findById(pipeline.dashboardId)
         verify(pipelineRepository).findById(pipeline.id)
+        verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
+            pipeline.url, pipeline.username, pipeline.credential
+        )
         verify(pipelineRepository).save(argThat {
             assertEquals(pipeline.dashboardId, it.dashboardId)
             assertEquals(pipeline.id, it.id)

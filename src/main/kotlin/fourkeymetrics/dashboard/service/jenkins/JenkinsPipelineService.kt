@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.nio.charset.Charset
@@ -99,13 +100,12 @@ class JenkinsPipelineService(
         val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
             restTemplate.exchange(
                 "$baseUrl/api/json?tree=allBuilds[building,number," +
-                        "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
+                    "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
                 HttpMethod.GET,
                 entity
             )
         return allBuildsResponse.body!!.allBuilds
     }
-
 
     override fun verifyPipelineConfiguration(url: String, username: String, credential: String) {
         val headers = setAuthHeader(username, credential)
@@ -117,12 +117,11 @@ class JenkinsPipelineService(
             if (!response.statusCode.is2xxSuccessful) {
                 throw ApplicationException(response.statusCode, response.body!!)
             }
-        } catch (e: HttpClientErrorException) {
-            throw ApplicationException(e.statusCode, e.message!!)
-        } catch (e: IllegalArgumentException) {
-            throw ApplicationException(HttpStatus.BAD_REQUEST, e.message!!)
+        } catch (ex: HttpServerErrorException) {
+            throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
+        } catch (ex: HttpClientErrorException) {
+            throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
-
     }
 
     private fun setAuthHeader(username: String, credential: String): HttpHeaders {
@@ -133,5 +132,4 @@ class JenkinsPipelineService(
         headers.set("Authorization", authHeader)
         return headers
     }
-
 }
