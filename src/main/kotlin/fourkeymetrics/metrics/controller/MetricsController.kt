@@ -2,9 +2,13 @@ package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse
 import fourkeymetrics.metrics.controller.vo.MetricsQueryRequest
+import fourkeymetrics.metrics.controller.vo.PipelineStageRequest
+import fourkeymetrics.metrics.model.MetricsUnit
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -20,6 +24,22 @@ class MetricsController {
             metricsQueryRequest.startTime,
             metricsQueryRequest.endTime,
             metricsQueryRequest.unit,
+        )
+    }
+
+    @GetMapping("/api/pipeline/metrics")
+    fun getFourKeyMetrics(
+        @RequestParam pipelineId: String,
+        @RequestParam targetStage: String,
+        @RequestParam startTime: Long,
+        @RequestParam endTime: Long,
+        @RequestParam unit: MetricsUnit
+    ): FourKeyMetricsResponse {
+        return metricsApplicationService.retrieve4KeyMetrics(
+            listOf(PipelineStageRequest(pipelineId, targetStage)),
+            startTime,
+            endTime,
+            unit
         )
     }
 }
