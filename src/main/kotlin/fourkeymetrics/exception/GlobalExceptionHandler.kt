@@ -15,43 +15,38 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException::class)
     fun handleAppException(ex: ApplicationException): ResponseEntity<ErrorResponse> {
-        logger.error("Application exception happened with error message: ${ex.message}", ex)
-        val httpStatus = ex.httpStatus
-        val errorResponse = ErrorResponse(httpStatus.value(), ex.message)
-        return ResponseEntity(errorResponse, httpStatus)
+        return handlerErrorResponse(ex.httpStatus, ex.message, ex)
     }
 
     @ExceptionHandler(Throwable::class)
     fun handleThrowable(ex: Throwable): ResponseEntity<ErrorResponse> {
-        logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
-        val httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
-        val errorResponse = ErrorResponse(httpStatus.value(), ex.message)
-        return ResponseEntity(errorResponse, httpStatus)
+        return handlerErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.message, ex)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
-        val httpStatus = HttpStatus.BAD_REQUEST
         val message = "Request invalid: ${ex.allErrors.map { it.defaultMessage }.joinToString(";")}"
-        val errorResponse = ErrorResponse(httpStatus.value(), message)
-        return ResponseEntity(errorResponse, httpStatus)
+        return handlerErrorResponse(HttpStatus.BAD_REQUEST, message, ex)
     }
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleParamMissingException(ex: MissingServletRequestParameterException): ResponseEntity<ErrorResponse> {
-        logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
-        val httpStatus = HttpStatus.BAD_REQUEST
-        val errorResponse = ErrorResponse(httpStatus.value(), ex.message)
-        return ResponseEntity(errorResponse, httpStatus)
+        return handlerErrorResponse(HttpStatus.BAD_REQUEST, ex.message, ex)
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleParamIllegalException(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> {
-        logger.error("Unexpected exception happened with error message: ${ex.message}", ex)
-        val httpStatus = HttpStatus.BAD_REQUEST
+        val message = "argument type mismatch"
+        return handlerErrorResponse(HttpStatus.BAD_REQUEST, message, ex)
+    }
 
-        val errorResponse = ErrorResponse(httpStatus.value(), "argument type mismatch")
+    private fun handlerErrorResponse(
+        httpStatus: HttpStatus,
+        message: String?,
+        ex: Throwable
+    ): ResponseEntity<ErrorResponse> {
+        logger.error("Unexpected exception happened with error message: $message", ex)
+        val errorResponse = ErrorResponse(httpStatus.value(), message)
         return ResponseEntity(errorResponse, httpStatus)
     }
 }
