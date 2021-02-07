@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Modal } from "antd";
+import { Button, Modal, Result, Spin } from "antd";
 
 interface PipelineSettingModalProps {
 	visible: boolean;
@@ -7,9 +7,15 @@ interface PipelineSettingModalProps {
 	title?: React.ReactNode | string;
 	footer?: React.ReactNode;
 	className?: string;
+	isLoading?: boolean;
+	error?: Error;
+	reload?: () => void;
 }
 
 const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
+	isLoading = false,
+	error,
+	reload,
 	visible,
 	handleToggleVisible,
 	title,
@@ -17,6 +23,7 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 	children,
 	className,
 }) => {
+	console.log(isLoading);
 	return (
 		<Modal
 			visible={visible}
@@ -31,7 +38,37 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 			title={title}
 			footer={footer}
 			closable={false}>
-			{children}
+			{isLoading ? (
+				<Spin
+					size="large"
+					css={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100%",
+					}}
+				/>
+			) : error ? (
+				<Result
+					css={{
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100%",
+					}}
+					status="warning"
+					title="Fail to connect to pipeline API"
+					subTitle={"Please click the button below, reload the API"}
+					extra={
+						<Button type="primary" key="console" onClick={reload}>
+							Reload
+						</Button>
+					}
+				/>
+			) : (
+				children
+			)}
 		</Modal>
 	);
 };

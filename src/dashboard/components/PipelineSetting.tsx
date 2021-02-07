@@ -41,6 +41,9 @@ export enum PipelineSettingStatus {
 const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
+		isDashboardLoading,
+		dashboardError,
+		reloadDashboard,
 		dashboard,
 		status,
 		setStatus,
@@ -62,6 +65,9 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 				<Text css={settingTextStyles}>Pipeline Setting</Text>
 			</span>
 			<PipelineSettingModal
+				isLoading={isDashboardLoading}
+				error={dashboardError}
+				reload={reloadDashboard}
 				css={{
 					".ant-modal-body": {
 						height: status === PipelineSettingStatus.VIEW ? 511 : 600,
@@ -92,7 +98,11 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 								<Button icon={<UploadOutlined />} disabled={true}>
 									Import
 								</Button>
-								<Button type={"primary"} icon={<PlusOutlined />} onClick={onAddPipeline}>
+								<Button
+									type={"primary"}
+									icon={<PlusOutlined />}
+									onClick={onAddPipeline}
+									disabled={isDashboardLoading}>
 									Add Pipeline
 								</Button>
 							</div>
