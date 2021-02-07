@@ -62,6 +62,12 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 				<Text css={settingTextStyles}>Pipeline Setting</Text>
 			</span>
 			<PipelineSettingModal
+				css={{
+					".ant-modal-body": {
+						height: status === PipelineSettingStatus.VIEW ? 511 : 600,
+						overflowY: "auto",
+					},
+				}}
 				visible={visible}
 				handleToggleVisible={handleToggleVisible}
 				title={
@@ -110,7 +116,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 				}
 				footer={
 					status === PipelineSettingStatus.VIEW ? (
-						<Button size={"large"} css={{ margin: 8 }} onClick={handleToggleVisible}>
+						<Button size={"large"} css={{ margin: 14 }} onClick={handleToggleVisible}>
 							Close
 						</Button>
 					) : null

@@ -6,6 +6,7 @@ interface PipelineSettingModalProps {
 	handleToggleVisible: () => void;
 	title?: React.ReactNode | string;
 	footer?: React.ReactNode;
+	className?: string;
 }
 
 const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
@@ -14,6 +15,7 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 	title,
 	footer,
 	children,
+	className,
 }) => {
 	return (
 		<Modal
@@ -21,12 +23,7 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 			onCancel={handleToggleVisible}
 			centered={true}
 			destroyOnClose={true}
-			css={{
-				".ant-modal-body": {
-					height: 500,
-					overflowY: "auto",
-				},
-			}}
+			className={className}
 			bodyStyle={{
 				padding: 0,
 			}}
