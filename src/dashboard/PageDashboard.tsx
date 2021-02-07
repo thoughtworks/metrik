@@ -3,10 +3,11 @@ import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../hooks/useQuery";
 import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../clients/apis";
-import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../utils/timeFormats";
+import { momentObjToEndTimeStamp } from "../utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues, FormValueUnit } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../constants/styles";
+import { min, max } from "lodash";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -38,11 +39,13 @@ export const PageDashboard = () => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
+		const durationTimestamps = formValues.duration.map(momentObjToEndTimeStamp);
+
 		getFourKeyMetricsUsingPost({
-			startTime: momentObjToStartTimeStamp(formValues.duration[0]),
-			endTime: momentObjToEndTimeStamp(formValues.duration[1]),
-			pipelineId: formValues.pipelines[0]?.value,
-			targetStage: formValues.pipelines[0]?.childValue,
+			startTime: min(durationTimestamps)!,
+			endTime: max(durationTimestamps)!,
+			pipelineId: formValues.pipelines[0].value,
+			targetStage: formValues.pipelines[0].childValue,
 			unit: formValues.unit,
 		})
 			.then(response => {
@@ -61,6 +64,7 @@ export const PageDashboard = () => {
 			Fortnightly = "fortnight",
 			Monthly = "month",
 		}
+
 		return `Times per ${SubtitleUnit[unit]}`;
 	};
 
