@@ -108,14 +108,14 @@ internal class PipelineApplicationServiceTest {
             assertEquals(pipelineRequest.username, it.username)
             assertEquals(pipelineRequest.credential, it.credential)
             assertEquals(pipelineRequest.url, it.url)
-            assertEquals(pipelineRequest.type, it.type)
+            assertEquals(pipelineRequest.type, it.type.toString())
             true
         })
         assertEquals(pipelineRequest.name, result.name)
         assertEquals(pipelineRequest.url, result.url)
         assertEquals(pipelineRequest.username, result.username)
         assertEquals(pipelineRequest.credential, result.credential)
-        assertEquals(pipelineRequest.type, result.type)
+        assertEquals(pipelineRequest.type, result.type.toString())
     }
 
     @Test
@@ -128,7 +128,7 @@ internal class PipelineApplicationServiceTest {
             username = pipelineRequest.username,
             credential = pipelineRequest.credential,
             url = pipelineRequest.url,
-            type = pipelineRequest.type
+            type = PipelineType.valueOf(pipelineRequest.type)
         )
         `when`(pipelineRepository.save(anyObject())).thenReturn(newPipeline)
 
@@ -143,14 +143,14 @@ internal class PipelineApplicationServiceTest {
             assertEquals(pipelineRequest.username, it.username)
             assertEquals(pipelineRequest.credential, it.credential)
             assertEquals(pipelineRequest.url, it.url)
-            assertEquals(pipelineRequest.type, it.type)
+            assertEquals(pipelineRequest.type, it.type.toString())
             true
         })
         assertEquals(pipelineRequest.name, result.name)
         assertEquals(pipelineRequest.url, result.url)
         assertEquals(pipelineRequest.username, result.username)
         assertEquals(pipelineRequest.credential, result.credential)
-        assertEquals(pipelineRequest.type, result.type)
+        assertEquals(pipelineRequest.type, result.type.toString())
     }
 
     @Test

@@ -1,6 +1,7 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
@@ -52,7 +53,6 @@ class DashboardApplicationServiceTest {
             pipelineCredential, pipelineUrl, PipelineType.JENKINS
         )
 
-
     @Test
     internal fun `test create dashboard successfully`() {
         `when`(dashboardRepository.existWithGivenName(dashboardName)).thenReturn(false)
@@ -60,7 +60,7 @@ class DashboardApplicationServiceTest {
         `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
 
         val dashboardResponse =
-            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, PipelineRequest()))
+            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, buildPipelineRequest()))
 
         assertEquals(dashboardResponse.id, dashboardId)
     }
@@ -108,7 +108,7 @@ class DashboardApplicationServiceTest {
         val pipeline2StageName = "pipeline2StageName"
         val pipeline3StageName = "pipeline3StageName"
         val pipeline1 = Pipeline(pipeline1Id, dashboardId, pipeline1Name)
-        val pipeline2 = Pipeline(pipeline2Id, dashboardId, pipeline2Name,)
+        val pipeline2 = Pipeline(pipeline2Id, dashboardId, pipeline2Name)
         val pipeline3 = Pipeline(pipeline3Id, dashboardId, pipeline3Name)
 
         `when`(dashboardRepository.findById(dashboardId)).thenReturn(expectedDashboard)

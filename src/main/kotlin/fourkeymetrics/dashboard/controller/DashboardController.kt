@@ -25,7 +25,6 @@ class DashboardController {
     @Autowired
     private lateinit var dashboardApplicationService: DashboardApplicationService
 
-
     @GetMapping("/dashboard")
     @ResponseStatus(HttpStatus.OK)
     fun getDashboards(): List<DashboardResponse> {
@@ -45,7 +44,10 @@ class DashboardController {
 
     @PutMapping("/dashboard/{dashboardId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateDashboardName(@PathVariable dashboardId: String, @RequestBody @Valid @NotBlank dashboardName: String): DashboardResponse {
+    fun updateDashboardName(
+        @PathVariable dashboardId: String,
+        @RequestBody @Valid @NotBlank dashboardName: String
+    ): DashboardResponse {
         return dashboardApplicationService.updateDashboardName(dashboardId, dashboardName)
     }
 

@@ -1,15 +1,14 @@
 package fourkeymetrics.dashboard.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
-import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -82,7 +81,7 @@ class DashboardControllerTest {
 
     @Test
     internal fun `should create dashboard and pipeline `() {
-        val dashboardRequest = DashboardRequest(dashboardName, PipelineRequest())
+        val dashboardRequest = DashboardRequest(dashboardName, buildPipelineRequest())
         `when`(dashboardApplicationService.createDashboard(dashboardRequest)).thenReturn(dashboardDetailsResponse)
 
         mockMvc.perform(
@@ -132,5 +131,4 @@ class DashboardControllerTest {
             .andExpect(jsonPath("$[0].pipelineId").value(pipelineId))
             .andExpect(jsonPath("$[0].pipelineName").value(pipelineName))
     }
-
 }

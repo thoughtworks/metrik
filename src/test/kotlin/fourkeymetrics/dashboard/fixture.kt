@@ -6,7 +6,13 @@ import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
 import fourkeymetrics.dashboard.model.PipelineType
 
 fun buildPipelineRequest() =
-    PipelineRequest(name = "pipeline", username = "username", credential = "credential", url = "url").copy()
+    PipelineRequest(
+        name = "pipeline",
+        username = "username",
+        credential = "credential",
+        url = "url",
+        PipelineType.JENKINS.toString()
+    ).copy()
 
 fun buildPipelineResponse(): PipelineResponse = PipelineResponse(
     id = "pipelineId",
