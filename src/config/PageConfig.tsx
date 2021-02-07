@@ -82,7 +82,7 @@ export const PageConfig = () => {
 									</Paragraph>
 								)}
 							</div>
-							<Divider />
+							<Divider css={{ margin: "24px -24px", width: "unset" }} />
 
 							<Form
 								layout="vertical"

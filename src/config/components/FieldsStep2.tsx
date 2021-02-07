@@ -95,7 +95,7 @@ export const FieldsStep2: FC<{
 			<Alert message="Pipeline verify failed" type="error" showIcon />
 		)}
 
-		<Divider />
+		<Divider css={{ margin: "24px -24px", width: "unset" }} />
 		<Row>
 			<Col span={24} style={{ textAlign: "right" }}>
 				<Button css={backBtnStyles} onClick={onBack}>
