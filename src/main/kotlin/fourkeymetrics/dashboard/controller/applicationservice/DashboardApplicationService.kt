@@ -13,7 +13,6 @@ import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.streams.toList
 
 @Service
 class DashboardApplicationService {
@@ -61,12 +60,11 @@ class DashboardApplicationService {
 
     fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
         verifyDashboardExist(dashboardId)
-        val pipelines = pipelineRepository.findByDashboardId(dashboardId)
-
-
-        return pipelines.parallelStream().map {
-            PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
-        }.toList().sortedBy { it.pipelineName }.sortedBy { it.pipelineName.toUpperCase() }
+        return pipelineRepository.findByDashboardId(dashboardId)
+            .map {
+                PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
+            }
+            .sortedBy { it.pipelineName.toUpperCase() }
     }
 
     private fun verifyDashboardExist(dashboardId: String) {
