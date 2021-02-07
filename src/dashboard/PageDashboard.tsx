@@ -70,11 +70,7 @@ export const PageDashboard = () => {
 
 	return (
 		<>
-			<DashboardTopPanel
-				onFormFinish={getFourKeyMetrics}
-				dashboardId={dashboardId}
-				onSyncBuildsSuccess={getFourKeyMetrics}
-			/>
+			<DashboardTopPanel onApply={getFourKeyMetrics} dashboardId={dashboardId} />
 			<div css={metricsContainerStyles}>
 				<Row gutter={28}>
 					<Col xs={24} sm={24} md={24} lg={12}>

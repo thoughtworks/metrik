@@ -19,9 +19,7 @@ import { dateFormatYYYYMMDD } from "../../constants/date-format";
 import { MultipleCascadeSelect } from "../../components/MultipleCascadeSelect";
 import { isEmpty } from "lodash";
 import { formatLastUpdateTime } from "../../utils/timeFormats";
-import { FormProps } from "antd/es/form";
 import { usePrevious } from "../../hooks/usePrevious";
-import { isEqual } from "lodash";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -77,16 +75,10 @@ export interface FormValues {
 
 interface DashboardTopPanelProps {
 	dashboardId: string;
-	onSyncBuildsSuccess: (formValues: FormValues) => void;
-	onFormFinish: FormProps<FormValues>["onFinish"];
-	onFormValuesChange?: FormProps<FormValues>["onValuesChange"];
+	onApply: (formValues: FormValues) => void;
 }
 
-export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
-	dashboardId,
-	onSyncBuildsSuccess,
-	onFormFinish,
-}) => {
+export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onApply }) => {
 	const defaultValues = {
 		duration: [
 			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
@@ -141,17 +133,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
 	const options = isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages;
 	const prevPipelines = usePrevious(formValues.pipelines);
-	const prevOptions = usePrevious(options);
 
 	useEffect(() => {
-		if (
-			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
-			!isEqual(prevOptions, options)
-		) {
-			if (isEmpty(formValues.pipelines)) {
-				return;
-			}
-			onSyncBuildsSuccess && onSyncBuildsSuccess(formValues);
+		if (isEmpty(formValues.pipelines)) {
+			return;
+		}
+
+		if (isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) {
+			onApply && onApply(formValues);
 		}
 	}, [formValues.pipelines]);
 
@@ -189,7 +178,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						if (isEmpty(formValues.pipelines)) {
 							return;
 						}
-						onFormFinish && onFormFinish(formValues);
+						onApply && onApply(formValues);
 					}}
 					onValuesChange={(_, values) => setFormValues(values)}>
 					<Row wrap={false} gutter={12}>
