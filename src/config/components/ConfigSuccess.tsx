@@ -67,7 +67,7 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 						following projects
 					</span>
 				</div>
-				<Link to={`/?dashboardId=${defaultDashboard.id}`}>
+				<Link to={`/dashboard?dashboardId=${defaultDashboard.id}`}>
 					<Button type={"primary"} size={"large"}>
 						Go to Dashboard
 					</Button>
