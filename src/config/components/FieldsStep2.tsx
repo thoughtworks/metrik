@@ -98,7 +98,7 @@ export const FieldsStep2: FC<{
 		<Divider css={{ margin: "24px -24px", width: "unset" }} />
 		<Row>
 			<Col span={24} style={{ textAlign: "right" }}>
-				<Button css={backBtnStyles} onClick={onBack}>
+				<Button css={backBtnStyles} onClick={onBack} size={"large"}>
 					Back
 				</Button>
 				<Button
@@ -106,7 +106,8 @@ export const FieldsStep2: FC<{
 					htmlType="submit"
 					disabled={
 						!formValues.name || !formValues.type || !formValues.url || !formValues.credential
-					}>
+					}
+					size={"large"}>
 					Create
 				</Button>
 			</Col>
