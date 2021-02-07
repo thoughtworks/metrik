@@ -54,6 +54,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	return (
 		<div className={className}>
 			<Form
+				css={{ height: "100%" }}
 				layout="vertical"
 				onFinish={onFinish}
 				form={form}

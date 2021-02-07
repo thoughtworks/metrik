@@ -23,7 +23,7 @@ export const FieldsStep2: FC<{
 	onVerify?: () => void;
 	showTitle?: boolean;
 }> = ({ onBack, formValues, visible = true, verifyStatus, onVerify, showTitle = true }) => (
-	<div css={{ display: visible ? "block" : "none" }}>
+	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
 		{showTitle && <Text css={groupTitleStyles}>Pipelines</Text>}
 
 		<Row gutter={8} wrap={false}>
@@ -95,6 +95,7 @@ export const FieldsStep2: FC<{
 			<Alert message="Pipeline verify failed" type="error" showIcon />
 		)}
 
+		<div css={{ flexGrow: 1 }} />
 		<Divider css={{ margin: "24px -24px", width: "unset" }} />
 		<Row>
 			<Col span={24} style={{ textAlign: "right" }}>

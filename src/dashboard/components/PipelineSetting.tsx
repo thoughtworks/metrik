@@ -133,7 +133,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 					<PipelineConfig
 						dashboardId={dashboardId}
 						updateDashboard={getDashboardDetails}
-						css={{ padding: 24 }}
+						css={{ padding: 24, height: "100%" }}
 						defaultData={editPipeline}
 						onSubmit={
 							status === PipelineSettingStatus.ADD
