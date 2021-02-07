@@ -2,7 +2,7 @@ import { EditableText } from "../../components/EditableText";
 import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
 import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../constants/styles";
 import { useRequest } from "../../hooks/useRequest";
@@ -20,6 +20,8 @@ import { MultipleCascadeSelect } from "../../components/MultipleCascadeSelect";
 import { isEmpty } from "lodash";
 import { formatLastUpdateTime } from "../../utils/timeFormats";
 import { FormProps } from "antd/es/form";
+import { usePrevious } from "../../hooks/usePrevious";
+import { isEqual } from "lodash";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -75,7 +77,7 @@ export interface FormValues {
 
 interface DashboardTopPanelProps {
 	dashboardId: string;
-	onSyncBuildsSuccess: () => void;
+	onSyncBuildsSuccess: (formValues: FormValues) => void;
 	onFormFinish: FormProps<FormValues>["onFinish"];
 	onFormValuesChange?: FormProps<FormValues>["onValuesChange"];
 }
@@ -84,8 +86,15 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	dashboardId,
 	onSyncBuildsSuccess,
 	onFormFinish,
-	onFormValuesChange,
 }) => {
+	const defaultValues = {
+		duration: [
+			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
+			moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
+		] as any,
+		unit: "Fortnightly",
+		pipelines: [],
+	} as FormValues;
 	const [dashboard, getDashboardRequest] = useRequest(getDashboardUsingGet);
 	const [, updateBuildsRequest, syncing] = useRequest(updateBuildsUsingPost);
 	const [, updateDashboardNameRequest] = useRequest(updateDashboardNameUsingPut);
@@ -117,8 +126,6 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 
 		getLastSyncTime();
 		getPipelineStages();
-
-		onSyncBuildsSuccess();
 	};
 
 	const getDashboard = () => getDashboardRequest({ dashboardId });
@@ -130,6 +137,23 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		getPipelineStages();
 		getDashboard();
 	}, []);
+
+	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
+	const options = isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages;
+	const prevPipelines = usePrevious(formValues.pipelines);
+	const prevOptions = usePrevious(options);
+
+	useEffect(() => {
+		if (
+			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
+			!isEqual(prevOptions, options)
+		) {
+			if (isEmpty(formValues.pipelines)) {
+				return;
+			}
+			onSyncBuildsSuccess && onSyncBuildsSuccess(formValues);
+		}
+	}, [formValues.pipelines]);
 
 	return (
 		<div css={containerStyles}>
@@ -160,15 +184,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				<Form
 					layout={"vertical"}
 					css={{ marginTop: 16, width: "50%" }}
-					initialValues={{
-						duration: [
-							moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
-							moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
-						],
-						unit: "Fortnightly",
+					initialValues={defaultValues}
+					onFinish={() => {
+						if (isEmpty(formValues.pipelines)) {
+							return;
+						}
+						onFormFinish && onFormFinish(formValues);
 					}}
-					onFinish={onFormFinish}
-					onValuesChange={onFormValuesChange}>
+					onValuesChange={(_, values) => setFormValues(values)}>
 					<Row wrap={false} gutter={12}>
 						<Col>
 							<Form.Item label="Duration" name="duration">
@@ -178,7 +201,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						<Col span={10}>
 							<Form.Item label="Pipelines" name="pipelines">
 								<MultipleCascadeSelect
-									options={isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages}
+									options={options}
 									defaultValues={
 										!isEmpty(pipelineStages[0]?.children)
 											? [

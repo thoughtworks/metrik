@@ -1,5 +1,5 @@
 import { Checkbox, Row, Col, Radio, Tag, Typography } from "antd";
-import React, { useState, useEffect, FC, useRef } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
 import Trigger from "rc-trigger";
@@ -7,6 +7,7 @@ import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import Overflow from "rc-overflow";
 import { first, omit, compact, isEqual, isEmpty } from "lodash";
+import { usePrevious } from "../hooks/usePrevious";
 
 const { Text } = Typography;
 
@@ -66,15 +67,6 @@ const findExistsTags = (options: Option[], tags: CascadeValueItem[]) =>
 		const option = findOptionByValue(options, tag.value);
 		return option && findOptionByValue(option?.children || [], tag.childValue);
 	});
-
-const usePrevious = (value: any) => {
-	const ref = useRef();
-	useEffect(() => {
-		ref.current = value;
-	}, [value]);
-
-	return ref.current;
-};
 
 export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	onChange,

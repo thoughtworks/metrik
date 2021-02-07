@@ -27,7 +27,6 @@ export const PageDashboard = () => {
 	const query = useQuery();
 	const dashboardId = query.get("dashboardId") || "";
 
-	const [formValues, setFormValues] = useState<FormValues>({} as FormValues);
 	const [appliedUnit, setAppliedUnit] = useState<FormValueUnit>("Fortnightly");
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsInfo>(initialMetricsState);
@@ -35,15 +34,15 @@ export const PageDashboard = () => {
 	const [meanTimeToRestore, setMeanTimeToRestore] = useState<MetricsInfo>(initialMetricsState);
 	const [loadingChart, setLoadingChart] = useState(false);
 
-	const getFourKeyMetrics = () => {
+	const getFourKeyMetrics = (formValues: FormValues) => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
 		getFourKeyMetricsUsingPost({
 			startTime: momentObjToStartTimeStamp(formValues.duration[0]),
 			endTime: momentObjToEndTimeStamp(formValues.duration[1]),
-			pipelineId: formValues.pipelines[0].value,
-			targetStage: formValues.pipelines[0].childValue,
+			pipelineId: formValues.pipelines[0]?.value,
+			targetStage: formValues.pipelines[0]?.childValue,
 			unit: formValues.unit,
 		})
 			.then(response => {
@@ -71,7 +70,6 @@ export const PageDashboard = () => {
 				onFormFinish={getFourKeyMetrics}
 				dashboardId={dashboardId}
 				onSyncBuildsSuccess={getFourKeyMetrics}
-				onFormValuesChange={(_, values) => setFormValues(values)}
 			/>
 			<div css={metricsContainerStyles}>
 				<Row gutter={28}>
