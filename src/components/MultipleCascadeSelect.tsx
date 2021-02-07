@@ -207,17 +207,22 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 						renderRest={(items: CascadeValueItem[]) => (
 							<div className={"ant-select-selection-item"}>+{items.length}...</div>
 						)}
-						renderItem={tag => (
-							<div className={"ant-select-selection-overflow-item"}>
-								<Tag
-									className={"ant-select-selection-item"}
-									css={{ alignItems: "center" }}
-									closable={tags.length > 1}
-									onClose={() => setCascadeValue(omit(cascadeValue, tag.value))}>
-									{generateTagLabel(options, tag)}
-								</Tag>
-							</div>
-						)}
+						renderItem={tag => {
+							const label = generateTagLabel(options, tag);
+							return (
+								label && (
+									<div className={"ant-select-selection-overflow-item"}>
+										<Tag
+											className={"ant-select-selection-item"}
+											css={{ alignItems: "center" }}
+											closable={tags.length > 1}
+											onClose={() => setCascadeValue(omit(cascadeValue, tag.value))}>
+											{label}
+										</Tag>
+									</div>
+								)
+							);
+						}}
 					/>
 				</div>
 			</div>

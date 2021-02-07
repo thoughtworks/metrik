@@ -224,7 +224,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item label=" ">
-								<Button htmlType="submit" disabled={syncing}>
+								<Button htmlType="submit" disabled={syncing || isEmpty(options)}>
 									Apply
 								</Button>
 							</Form.Item>
