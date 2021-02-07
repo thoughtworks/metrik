@@ -23,7 +23,6 @@ const PipelineSettingModal: FC<PipelineSettingModalProps> = ({
 	children,
 	className,
 }) => {
-	console.log(isLoading);
 	return (
 		<Modal
 			visible={visible}
