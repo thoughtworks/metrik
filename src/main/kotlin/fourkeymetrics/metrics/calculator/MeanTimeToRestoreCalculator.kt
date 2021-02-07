@@ -38,7 +38,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
             }
 
         if (restoreTimes > 0) {
-            return totalTime / restoreTimes
+            return totalTime / restoreTimes / MILLISECOND_TO_HOURS
         }
         return NO_VALUE
     }
@@ -51,7 +51,6 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         }
 
         val hours = meanTimeToRestore
-            .div(MILLISECOND_TO_HOURS)
             .toBigDecimal()
             .setScale(2, RoundingMode.HALF_UP)
             .toDouble()

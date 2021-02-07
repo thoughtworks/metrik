@@ -21,6 +21,10 @@ class ChangeFailureRateCalculatorTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
+    companion object {
+        private const val PERCENTAGE_FACTOR = 100.0
+    }
+
     /**
      * test file: builds-cfr.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod)
@@ -46,7 +50,7 @@ class ChangeFailureRateCalculatorTest {
                 endTimestamp,
                 pipelineStageMap
             )
-        ).isEqualTo(1 / 3.0)
+        ).isEqualTo(1 / 3.0 * PERCENTAGE_FACTOR)
     }
 
     /**
@@ -79,7 +83,7 @@ class ChangeFailureRateCalculatorTest {
                 endTimestamp,
                 pipelineStageMap
             )
-        ).isEqualTo(1 / 5.0)
+        ).isEqualTo(1 / 5.0 * PERCENTAGE_FACTOR)
     }
 
     /**
@@ -143,22 +147,22 @@ class ChangeFailureRateCalculatorTest {
 
     @Test
     internal fun `should return level low given value is 0_45 when calculate level`() {
-        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45))
+        assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45 * PERCENTAGE_FACTOR))
     }
 
     @Test
     internal fun `should return level medium given value is 0_3 when calculate level`() {
-        assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3))
+        assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level high given value is 0_3 when calculate level`() {
-        assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15))
+    internal fun `should return level high given value is 0_15 when calculate level`() {
+        assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level elite given value lower than 0_15 when calculate level`() {
-        assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14))
+    internal fun `should return level elite given value lower than 0_14 when calculate level`() {
+        assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14 * PERCENTAGE_FACTOR))
     }
 
     @Test

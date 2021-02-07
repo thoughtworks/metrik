@@ -11,9 +11,11 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     companion object {
         private val TARGET_STAGE_STATUS_LIST = listOf(StageStatus.FAILED, StageStatus.SUCCESS)
         private const val INVALID_VALUE = Double.NaN
-        private const val LEVEL_ELITE_UPPER_LIMIT = 0.15
-        private const val LEVEL_HIGH_UPPER_LIMIT = 0.3
-        private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45
+        private const val PERCENTAGE_FACTOR = 100.0
+
+        private const val LEVEL_ELITE_UPPER_LIMIT = 0.15 * PERCENTAGE_FACTOR
+        private const val LEVEL_HIGH_UPPER_LIMIT = 0.3 * PERCENTAGE_FACTOR
+        private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45 * PERCENTAGE_FACTOR
     }
 
     override fun calculateValue(
@@ -28,7 +30,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
 
         val totalCount = statusCountMap.values.sum()
         return if (totalCount > 0) {
-            statusCountMap.getOrDefault(StageStatus.FAILED, 0).toDouble() / totalCount
+            statusCountMap.getOrDefault(StageStatus.FAILED, 0).toDouble() / totalCount * PERCENTAGE_FACTOR
         } else {
             INVALID_VALUE
         }

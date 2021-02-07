@@ -22,7 +22,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     ): Number {
         return allBuilds.groupBy { it.pipelineId }.flatMap {
             getLeadTimeForChangeList(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key])
-        }.average()
+        }.average() / MILLI_SECONDS_FOR_ONE_DAY
     }
 
     private fun getLeadTimeForChangeList(
@@ -53,7 +53,7 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     override fun calculateLevel(value: Number, days: Int?): LEVEL {
-        val leadTime: Double = value.toDouble() / MILLI_SECONDS_FOR_ONE_DAY
+        val leadTime: Double = value.toDouble()
 
         return when {
             leadTime >= 30 -> {
