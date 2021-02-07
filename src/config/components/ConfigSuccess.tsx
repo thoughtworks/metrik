@@ -80,12 +80,19 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 			/>
 			<PipelineSettingModal
 				visible={visible}
+				css={{
+					".ant-modal-body": {
+						height: 600,
+						overflowY: "auto",
+					},
+				}}
 				handleToggleVisible={handleToggleVisible}
-				title={"Pipeline"}>
+				title={"Pipeline"}
+				footer={null}>
 				<PipelineConfig
 					dashboardId={defaultDashboard.id}
 					updateDashboard={getDashboardDetails}
-					css={{ padding: 24 }}
+					css={{ padding: 24, height: "100%" }}
 					defaultData={editPipeline}
 					onSubmit={
 						status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut
