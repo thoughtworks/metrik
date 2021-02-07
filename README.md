@@ -29,6 +29,48 @@ https://docs.google.com/spreadsheets/d/1qyyYG4XNPvOlmGSaP8Bs4OrnpBXvKTIkVK5M46R-
 ```
 Then you can access [http://localhost:9000/actuator/health](http://localhost:9000/actuator/health) to check the app health
 
+
+### Run Api Tests
+
+#### Feed test data 
+For those who first time running api tests on your local, you need to feed test data for api tests into your local mongodb. 
+1) replace "******" in connect-to-mongodb.sh with your local mongodb password
+```
+docker exec -i $container_id mongo --port 27017 -u "4km" --authenticationDatabase "4-Key-Metrics" -p "******" < ./feed-test-data.js
+```
+2) run connect-to-mongodb.sh
+```
+./connect-to-mongodb.sh
+```
+
+#### Run Api tests
+To run api tests, we need start our backend first.
+```
+./gradlew clean bootRun
+```
+
+To run all api tests, run command below
+```
+./gradlew clean apiTest
+```
+
+To run all *.feature files under src.api-test/karate/metrics, run command below
+```
+./gradlew clean apiTest --tests MetricsRunner
+```
+
+To run one single feature file, for example, deployment-frequency.feature
+```
+./gradlew clean apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
+```
+
+To skip a scenario in feature files, add "@skip" tag as below
+```
+@skip
+Scenario: targeted stage status is successful and time is within the selected date range should be counted in
+```
+
+
 ### Swagger documentation
 Swagger url: [http://localhost:9000/swagger-ui/index.html](http://localhost:9000/swagger-ui/index.html)
 
