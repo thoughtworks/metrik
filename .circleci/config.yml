@@ -133,6 +133,8 @@ jobs:
   create-push-image:
     docker:
       - image: cimg/base:2021.01
+        environment:
+          TZ: "Asia/Shanghai"
     resource_class: small
 
     steps:
@@ -140,7 +142,7 @@ jobs:
 
       - run:
           name: Register Docker tag to enviroment
-          command: echo "export $DOCKER_IMAGE_TAG=$(date +%Y%m%d%H%M%S)" >> $BASH_ENV
+          command: echo "export DOCKER_IMAGE_TAG=$(date +%Y%m%d%H%M%S)" >> $BASH_ENV
 
       - run:
           name: Create attached workspace folder
