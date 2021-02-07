@@ -114,7 +114,7 @@ export const pullBuildsUsingPost = createRequest<
 }));
 
 export const testUsingGet = createRequest<undefined, string>("testUsingGet", () => ({
-	url: `//test`,
+	url: `/test`,
 	method: "GET",
 }));
 

@@ -19,7 +19,7 @@ const initialMetricsState: MetricsInfo = {
 		endTimestamp: 0,
 		level: MetricsLevel.INVALID,
 		startTimestamp: 0,
-		value: {},
+		value: NaN,
 	},
 	details: [],
 };
