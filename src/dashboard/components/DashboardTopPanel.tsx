@@ -136,7 +136,9 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 
 	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
 	const prevPipelines = usePrevious(formValues.pipelines);
-	const options = isEmpty(pipelineStages[0]?.children) ? [] : pipelineStages;
+	const options = pipelineStages
+		? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
+		: [];
 	const prevOptions = usePrevious(options);
 
 	useEffect(() => {
@@ -200,13 +202,13 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 								<MultipleCascadeSelect
 									options={options}
 									defaultValues={
-										!isEmpty(pipelineStages[0]?.children)
+										!isEmpty(options[0]?.children)
 											? [
 													{
-														value: formValues.pipelines[0]?.value || pipelineStages[0]?.value,
+														value: formValues.pipelines[0]?.value || options[0]?.value,
 														childValue:
 															formValues.pipelines[0]?.childValue ||
-															(pipelineStages[0]?.children ?? [])[0]?.label,
+															(options[0]?.children ?? [])[0]?.label,
 													},
 											  ]
 											: []
