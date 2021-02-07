@@ -6,8 +6,6 @@ import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
 import fourkeymetrics.dashboard.model.Dashboard
-import fourkeymetrics.dashboard.model.Pipeline
-import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
@@ -23,6 +21,9 @@ class DashboardApplicationService {
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Autowired
+    private lateinit var pipelineApplicationService: PipelineApplicationService
+
+    @Autowired
     private lateinit var dashboardRepository: DashboardRepository
 
     @Autowired
@@ -35,27 +36,11 @@ class DashboardApplicationService {
             throw DashboardNameDuplicateException()
         }
 
-        val dashboard = dashboardRepository.save(
-            Dashboard(
-                name = dashboardName,
-                id = ObjectId().toString(),
-            )
-        )
-        val pipelines = with(dashboardRequest.pipeline) {
-            listOf(
-                Pipeline(
-                    ObjectId().toString(),
-                    dashboard.id,
-                    name,
-                    username,
-                    credential,
-                    url,
-                    PipelineType.valueOf(type)
-                )
-            )
+        val dashboard = dashboardRepository.save(Dashboard(name = dashboardName, id = ObjectId().toString()))
+        val pipeline = dashboardRequest.pipeline.toPipeline(dashboard.id, ObjectId().toString())
+        pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
-        }
-        return DashboardDetailResponse(dashboard, pipelineRepository.saveAll(pipelines))
+        return DashboardDetailResponse(dashboard, pipelineRepository.saveAll(listOf(pipeline)))
     }
 
     fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardResponse {

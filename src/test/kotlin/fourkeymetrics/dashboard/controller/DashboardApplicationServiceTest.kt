@@ -1,8 +1,10 @@
 package fourkeymetrics.dashboard.controller
 
 import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.MockitoHelper.argThat
 import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicationService
+import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicationService
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
@@ -18,10 +20,10 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyList
 import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
 
@@ -32,6 +34,9 @@ class DashboardApplicationServiceTest {
 
     @Mock
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
+
+    @Mock
+    private lateinit var pipelineApplicationService: PipelineApplicationService
 
     @Mock
     private lateinit var dashboardRepository: DashboardRepository
@@ -59,10 +64,17 @@ class DashboardApplicationServiceTest {
         `when`(dashboardRepository.save(anyObject())).thenReturn(expectedDashboard)
         `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
 
+        val pipeline = buildPipelineRequest()
         val dashboardResponse =
-            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, buildPipelineRequest()))
+            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, pipeline))
 
         assertEquals(dashboardResponse.id, dashboardId)
+        verify(pipelineApplicationService).verifyPipelineConfiguration(argThat {
+            assertEquals(pipeline.url, it.url)
+            assertEquals(pipeline.username, it.username)
+            assertEquals(pipeline.credential, it.credential)
+            true
+        })
     }
 
     @Test
@@ -92,8 +104,8 @@ class DashboardApplicationServiceTest {
     internal fun `test delete pipeline`() {
         dashboardApplicationService.deleteDashboard(dashboardId)
 
-        Mockito.verify(dashboardRepository, times(1)).deleteById(dashboardId)
-        Mockito.verify(pipelineRepository, times(1)).deleteByDashboardId(dashboardId)
+        verify(dashboardRepository, times(1)).deleteById(dashboardId)
+        verify(pipelineRepository, times(1)).deleteByDashboardId(dashboardId)
     }
 
     @Test
