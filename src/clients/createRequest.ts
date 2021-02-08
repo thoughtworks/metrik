@@ -1,7 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { notification } from "antd";
 
-const axiosInstance = axios.create({});
+const axiosInstance = axios.create({
+	timeout: 300000, // 5 minutes timeout
+});
 
 export const createRequest = <TReq, TResp = any>(
 	_: string,
