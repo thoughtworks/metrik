@@ -7,7 +7,6 @@ import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
-import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -118,17 +117,5 @@ class DashboardControllerTest {
             MockMvcRequestBuilders.delete("/api/dashboard/$dashboardId")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
-    }
-
-    @Test
-    internal fun `should get dashbaord pipeline stages `() {
-        val pipelineStagesResponse = PipelineStagesResponse(pipelineId, pipelineName, listOf("some stage"))
-        `when`(dashboardApplicationService.getPipelineStages(dashboardId)).thenReturn(listOf(pipelineStagesResponse))
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/pipelines-stages")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk)
-            .andExpect(jsonPath("$[0].pipelineId").value(pipelineId))
-            .andExpect(jsonPath("$[0].pipelineName").value(pipelineName))
     }
 }

@@ -6,6 +6,7 @@ import fourkeymetrics.dashboard.buildPipeline
 import fourkeymetrics.dashboard.buildPipelineRequest
 import fourkeymetrics.dashboard.buildPipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicationService
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -111,5 +112,19 @@ internal class PipelineControllerTest {
             MockMvcRequestBuilders.delete("/api/dashboard/${dashboardId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
+    }
+
+    @Test
+    internal fun `should return PipelineStagesResponse when get pipeline stages successfully`() {
+        val pipelineId = "pipelineId"
+        val pipelineName = "pipelineName"
+        val pipelineStagesResponse = PipelineStagesResponse(pipelineId, pipelineName, listOf("some stage"))
+        `when`(pipelineApplicationService.getPipelineStages(dashboardId)).thenReturn(listOf(pipelineStagesResponse))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/pipelines-stages")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$[0].pipelineId").value(pipelineId))
+            .andExpect(jsonPath("$[0].pipelineName").value(pipelineName))
     }
 }

@@ -1,5 +1,6 @@
 package fourkeymetrics.dashboard.controller.applicationservice
 
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.BuildRepository
@@ -64,6 +65,14 @@ class PipelineApplicationService {
         verifyPipelineExist(pipelineId)
         pipelineRepository.deleteById(pipelineId)
         buildRepository.clear(pipelineId)
+    }
+    fun getPipelineStages(dashboardId: String): List<PipelineStagesResponse> {
+        verifyDashboardExist(dashboardId)
+        return pipelineRepository.findByDashboardId(dashboardId)
+            .map {
+                PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
+            }
+            .sortedBy { it.pipelineName.toUpperCase() }
     }
 
     private fun verifyDashboardExist(dashboardId: String) =

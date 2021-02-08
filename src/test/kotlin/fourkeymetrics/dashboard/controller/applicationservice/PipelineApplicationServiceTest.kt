@@ -3,6 +3,8 @@ package fourkeymetrics.dashboard.controller.applicationservice
 import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.MockitoHelper.argThat
 import fourkeymetrics.dashboard.buildPipeline
+import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
@@ -166,5 +168,37 @@ internal class PipelineApplicationServiceTest {
         verify(pipelineRepository).findById(pipelineId)
         verify(pipelineRepository).deleteById(pipelineId)
         verify(buildRepository).clear(pipelineId)
+    }
+
+    @Test
+    internal fun `should return Pipelines when getPipelineStages() called given dashboardId`() {
+        val dashboardId = "dashboardId"
+        val dashboardName = "dashboardName"
+        val pipeline1Id = "pipeline1Id"
+        val pipeline2Id = "pipeline2Id"
+        val pipeline3Id = "pipeline3Id"
+        val pipeline1Name = "bpipelineName"
+        val pipeline2Name = "ApipelineName"
+        val pipeline3Name = "apipelineName"
+        val pipeline1StageName = "pipeline1StageName"
+        val pipeline2StageName = "pipeline2StageName"
+        val pipeline3StageName = "pipeline3StageName"
+        val pipeline1 = Pipeline(pipeline1Id, dashboardId, pipeline1Name)
+        val pipeline2 = Pipeline(pipeline2Id, dashboardId, pipeline2Name)
+        val pipeline3 = Pipeline(pipeline3Id, dashboardId, pipeline3Name)
+        val expectedDashboard = Dashboard(dashboardId, dashboardName)
+
+        `when`(dashboardRepository.findById(dashboardId)).thenReturn(expectedDashboard)
+        `when`(pipelineRepository.findByDashboardId(dashboardId)).thenReturn(listOf(pipeline1, pipeline2, pipeline3))
+        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline1Id)).thenReturn(listOf(pipeline1StageName))
+        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline2Id)).thenReturn(listOf(pipeline2StageName))
+        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline3Id)).thenReturn(listOf(pipeline3StageName))
+
+        val pipelineStages = pipelineApplicationService.getPipelineStages(dashboardId)
+
+        assertEquals(pipelineStages.size, 3)
+        assertEquals(pipelineStages[0].pipelineId, pipeline2Id)
+        assertEquals(pipelineStages[1].pipelineId, pipeline3Id)
+        assertEquals(pipelineStages[2].pipelineId, pipeline1Id)
     }
 }

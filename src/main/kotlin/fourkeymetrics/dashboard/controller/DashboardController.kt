@@ -4,7 +4,6 @@ import fourkeymetrics.dashboard.controller.applicationservice.DashboardApplicati
 import fourkeymetrics.dashboard.controller.vo.request.DashboardRequest
 import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
-import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -55,10 +54,5 @@ class DashboardController {
     @ResponseStatus(HttpStatus.OK)
     fun deleteDashboard(@PathVariable dashboardId: String) {
         return dashboardApplicationService.deleteDashboard(dashboardId)
-    }
-
-    @GetMapping("/dashboard/{dashboardId}/pipelines-stages")
-    fun getPipelineStages(@PathVariable("dashboardId") dashboardId: String): List<PipelineStagesResponse> {
-        return dashboardApplicationService.getPipelineStages(dashboardId)
     }
 }

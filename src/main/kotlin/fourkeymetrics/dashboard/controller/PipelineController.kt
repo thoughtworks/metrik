@@ -4,6 +4,7 @@ import fourkeymetrics.dashboard.controller.applicationservice.PipelineApplicatio
 import fourkeymetrics.dashboard.controller.vo.request.PipelineRequest
 import fourkeymetrics.dashboard.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.dashboard.controller.vo.response.PipelineResponse
+import fourkeymetrics.dashboard.controller.vo.response.PipelineStagesResponse
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -77,5 +78,10 @@ class PipelineController {
         @PathVariable("pipelineId") pipelineId: String
     ) {
         pipelineApplicationService.deletePipeline(dashboardId, pipelineId)
+    }
+
+    @GetMapping("/dashboard/{dashboardId}/pipelines-stages")
+    fun getPipelineStages(@PathVariable("dashboardId") dashboardId: String): List<PipelineStagesResponse> {
+        return pipelineApplicationService.getPipelineStages(dashboardId)
     }
 }
