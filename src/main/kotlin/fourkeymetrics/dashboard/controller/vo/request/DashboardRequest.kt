@@ -4,7 +4,7 @@ import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 data class DashboardRequest(
-    @field:NotBlank(message = "dashboardName cannot be empty")
+    @field:NotBlank(message = "dashboardName cannot be null or empty")
     val dashboardName: String,
     @field:Valid
     val pipeline: PipelineRequest

@@ -3,33 +3,32 @@ package fourkeymetrics.dashboard.controller.vo.request
 import fourkeymetrics.common.validation.EnumConstraint
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
-import org.apache.logging.log4j.util.Strings
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 data class PipelineRequest(
-    @field:NotEmpty(message = "name cannot be empty")
-    val name: String = Strings.EMPTY,
-    @field:NotEmpty(message = "username cannot be empty")
-    val username: String = Strings.EMPTY,
-    @field:NotEmpty(message = "credential cannot be empty")
-    val credential: String = Strings.EMPTY,
-    @field:NotEmpty(message = "url cannot be empty")
-    val url: String = Strings.EMPTY,
+    @field:NotBlank(message = "name cannot be null or empty")
+    val name: String?,
+    @field:NotBlank(message = "username cannot be null or empty")
+    val username: String?,
+    @field:NotBlank(message = "credential cannot be null or empty")
+    val credential: String?,
+    @field:NotBlank(message = "url cannot be null or empty")
+    val url: String?,
     @field:NotNull(message = "type cannot be null")
-    @field:EnumConstraint(acceptedValues = ["BAMBOO", "JENKINS"], message = "type only allow BAMBOO and JENKINS")
-    var type: String = Strings.EMPTY
+    @field:EnumConstraint(acceptedValues = ["JENKINS"], message = "type only allow JENKINS")
+    var type: String?
 ) {
     fun toPipeline(dashboardId: String, pipelineId: String): Pipeline {
         return with(this) {
             Pipeline(
                 pipelineId,
                 dashboardId,
-                name,
-                username,
-                credential,
-                url,
-                PipelineType.valueOf(type)
+                name!!,
+                username!!,
+                credential!!,
+                url!!,
+                PipelineType.valueOf(type!!)
             )
         }
     }
