@@ -35,11 +35,14 @@ class DashboardApplicationService {
             throw DashboardNameDuplicateException()
         }
 
-        val dashboard = dashboardRepository.save(Dashboard(name = dashboardName, id = ObjectId().toString()))
-        val pipeline = dashboardRequest.pipeline.toPipeline(dashboard.id, ObjectId().toString())
+        val dashboardId = ObjectId().toString()
+        val pipelineId = ObjectId().toString()
+        val pipeline = dashboardRequest.pipeline.toPipeline(dashboardId, pipelineId)
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
-        return DashboardDetailResponse(dashboard, pipelineRepository.saveAll(listOf(pipeline)))
+        val savedDashboard = dashboardRepository.save(Dashboard(name = dashboardName, id = dashboardId))
+        val savedPipelines = pipelineRepository.saveAll(listOf(pipeline))
+        return DashboardDetailResponse(savedDashboard, savedPipelines)
     }
 
     fun updateDashboardName(dashboardId: String, dashboardName: String): DashboardResponse {
