@@ -3,6 +3,7 @@ package fourkeymetrics.exception
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -21,6 +22,11 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Throwable::class)
     fun handleThrowable(ex: Throwable): ResponseEntity<ErrorResponse> {
         return handlerErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.message, ex)
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        return handlerErrorResponse(HttpStatus.BAD_REQUEST, "Invalid request body", ex)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
