@@ -64,7 +64,7 @@ To run one single feature file, for example, deployment-frequency.feature
 ./gradlew clean apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
 ```
 
-To skip a scenario in feature files, add "@skip" tag as below
+To skip a scenario in feature file, add "@skip" tag above scenario.
 ```
 @skip
 Scenario: targeted stage status is successful and time is within the selected date range should be counted in

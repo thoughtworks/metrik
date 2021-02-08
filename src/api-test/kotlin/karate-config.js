@@ -2,12 +2,12 @@ function fn() {
     var env = karate.env;
     
     if(!env) {
-        env = "dev";
+        env = "local";
     }
 
     var config = {};
 
-    if(env == "dev") {
+    if(env == "local") {
         config.baseUrl = 'http://localhost:9000'
     }
 
