@@ -28,6 +28,7 @@ import {
 import { formatTickTime } from "../../utils/timeFormats";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { Metrics, MetricsLevel } from "../../clients/apis";
+import { find } from "lodash";
 
 interface MetricsLevelConfigInterface {
 	color: string;
@@ -114,15 +115,12 @@ const spinContainerStyles = css({
 	alignItems: "center",
 });
 
-const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, index = 0 }) => {
-	if (data[index] === undefined) {
+const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, payload, index = 0 }) => {
+	const currentTickItem = find(data, item => item.startTimestamp === payload.value);
+	if (currentTickItem === undefined) {
 		return <></>;
 	}
-
-	const { startTime, endTime } = formatTickTime(
-		data[index]?.startTimestamp,
-		data[index]?.endTimestamp
-	);
+	const { startTime, endTime } = formatTickTime(payload.value, currentTickItem.endTimestamp);
 
 	return (
 		<text
