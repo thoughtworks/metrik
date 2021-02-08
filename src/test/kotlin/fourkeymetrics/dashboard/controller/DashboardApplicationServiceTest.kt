@@ -78,7 +78,7 @@ class DashboardApplicationServiceTest {
         `when`(dashboardRepository.existWithGivenName(dashboardName)).thenReturn(true)
 
         val exception = assertThrows<DashboardNameDuplicateException> {
-            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, PipelineRequest()))
+            dashboardApplicationService.createDashboard(DashboardRequest(dashboardName, buildPipelineRequest()))
         }
 
         assertEquals(exception.httpStatus, HttpStatus.BAD_REQUEST)
