@@ -132,6 +132,9 @@ export const updateDashboardNameUsingPut = createRequest<
 export const createPipelineUsingPost = createRequest<
 	{
 		dashboardId: string;
+		//TODO temporally add pipelineId here to match type of
+		// updatePipelineUsingPut, can replace with better solutions in the future
+		pipelineId: string;
 		requestBody: PipelineRequest;
 	},
 	PipelineResponse

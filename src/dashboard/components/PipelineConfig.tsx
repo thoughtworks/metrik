@@ -9,6 +9,7 @@ import {
 	verifyPipelineUsingPost,
 } from "../../clients/apis";
 import { ConfigFormValues } from "../../config/PageConfig";
+import { useRequest } from "../../hooks/useRequest";
 
 interface PipelineConfigProps {
 	defaultData?: PipelineResponse;
@@ -29,11 +30,18 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 }) => {
 	const [form] = Form.useForm<ConfigFormValues>();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
+	const [, handleSubmit, loading] = useRequest(onSubmit);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
-		await onSubmit({ dashboardId, requestBody: pipeline, pipelineId: defaultData?.id as string });
-		updateDashboard();
-		onBack();
+		handleSubmit({
+			dashboardId,
+			requestBody: pipeline,
+			pipelineId: defaultData?.id as string,
+		}).then(() => {
+			updateDashboard();
+			onBack();
+		});
 	};
 
 	const verifyPipeline = () => {
@@ -65,6 +73,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 						visible={true}
 						formValues={formValues}
 						onBack={onBack}
+						loading={loading}
 						verifyStatus={verifyStatus}
 						onVerify={verifyPipeline}
 					/>

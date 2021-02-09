@@ -22,7 +22,16 @@ export const FieldsStep2: FC<{
 	verifyStatus: VerifyStatus;
 	onVerify?: () => void;
 	showTitle?: boolean;
-}> = ({ onBack, formValues, visible = true, verifyStatus, onVerify, showTitle = true }) => (
+	loading?: boolean;
+}> = ({
+	onBack,
+	formValues,
+	visible = true,
+	verifyStatus,
+	onVerify,
+	showTitle = true,
+	loading = false,
+}) => (
 	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
 		{showTitle && <Text css={groupTitleStyles}>Pipelines</Text>}
 
@@ -108,7 +117,8 @@ export const FieldsStep2: FC<{
 					disabled={
 						!formValues.name || !formValues.type || !formValues.url || !formValues.credential
 					}
-					size={"large"}>
+					size={"large"}
+					loading={loading}>
 					Create
 				</Button>
 			</Col>
