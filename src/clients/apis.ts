@@ -12,19 +12,6 @@ export const createDashboardUsingPost = createRequest<
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const createPipelineUsingPost = createRequest<
-	{
-		dashboardId: string;
-		requestBody: PipelineRequest;
-	},
-	PipelineResponse
->("createPipelineUsingPost", ({ dashboardId, requestBody }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline`,
-	method: "POST",
-	data: requestBody,
-	headers: { "Content-Type": "application/json" },
-}));
-
 export const deleteDashboardUsingDelete = createRequest<{
 	dashboardId: string;
 }>("deleteDashboardUsingDelete", ({ dashboardId }) => ({
@@ -138,6 +125,19 @@ export const updateDashboardNameUsingPut = createRequest<
 >("updateDashboardNameUsingPut", ({ dashboardId, requestBody }) => ({
 	url: `/api/dashboard/${dashboardId}`,
 	method: "PUT",
+	data: requestBody,
+	headers: { "Content-Type": "application/json" },
+}));
+
+export const createPipelineUsingPost = createRequest<
+	{
+		dashboardId: string;
+		requestBody: PipelineRequest;
+	},
+	PipelineResponse
+>("createPipelineUsingPost", ({ dashboardId, requestBody }) => ({
+	url: `/api/dashboard/${dashboardId}/pipeline`,
+	method: "POST",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
 }));
