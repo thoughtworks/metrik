@@ -76,6 +76,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 						loading={loading}
 						verifyStatus={verifyStatus}
 						onVerify={verifyPipeline}
+						isUpdate={!!defaultData}
 					/>
 				)}
 			</Form>

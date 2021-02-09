@@ -23,6 +23,7 @@ export const FieldsStep2: FC<{
 	onVerify?: () => void;
 	showTitle?: boolean;
 	loading?: boolean;
+	isUpdate?: boolean;
 }> = ({
 	onBack,
 	formValues,
@@ -31,6 +32,7 @@ export const FieldsStep2: FC<{
 	onVerify,
 	showTitle = true,
 	loading = false,
+	isUpdate = false,
 }) => (
 	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
 		{showTitle && <Text css={groupTitleStyles}>Pipelines</Text>}
@@ -119,7 +121,7 @@ export const FieldsStep2: FC<{
 					}
 					size={"large"}
 					loading={loading}>
-					Create
+					{isUpdate ? "Update" : "Create"}
 				</Button>
 			</Col>
 		</Row>
