@@ -72,7 +72,8 @@ const DashboardConfig: FC<DashboardConfigurationProps> = ({
 								type={"link"}
 								danger={true}
 								css={{ padding: 8 }}
-								onClick={() => deletePipeline?.(record.id)}>
+								onClick={() => deletePipeline?.(record.id)}
+								disabled={pipelines.length <= 1}>
 								Delete
 							</Button>
 						)}

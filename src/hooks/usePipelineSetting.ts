@@ -61,7 +61,6 @@ export const usePipelineSetting = ({
 
 	async function onDeletePipeline(pipelineId: string) {
 		if (!checkPipelineAllowedToDelete()) {
-			notification.error({ message: "not allow to delete this pipeline" });
 			return;
 		}
 		await deletePipelineUsingDelete({ dashboardId: defaultDashboardId, pipelineId });
