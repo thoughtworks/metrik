@@ -11,15 +11,23 @@ export const useRequest = <T extends RequestCreator<T["TReq"], T["TResp"]>>(
 	defaultData?: T["TResp"]
 ) => {
 	const [data, setData] = useState<T["TResp"]>(defaultData);
+	const [error, setError] = useState();
 	const [loading, setLoading] = useState(false);
 
 	const getData = useMemo(() => {
 		return (params: T["TReq"]) => {
 			setLoading(true);
-			const promise = requestCreator(params).then((resp: T["TResp"]) => {
-				setData(resp);
-				return resp;
-			});
+			setError(undefined);
+
+			const promise = requestCreator(params)
+				.then((resp: T["TResp"]) => {
+					setData(resp);
+					return resp;
+				})
+				.catch(err => {
+					setError(err);
+					return Promise.reject(err);
+				});
 
 			promise.finally(() => {
 				setLoading(false);
@@ -29,5 +37,5 @@ export const useRequest = <T extends RequestCreator<T["TReq"], T["TResp"]>>(
 		};
 	}, []);
 
-	return [data, getData, loading, setData] as const;
+	return [data, getData, loading, setData, error] as const;
 };

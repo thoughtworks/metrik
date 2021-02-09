@@ -43,7 +43,6 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 	const {
 		isDashboardLoading,
 		dashboardError,
-		reloadDashboard,
 		dashboard,
 		status,
 		setStatus,
@@ -67,7 +66,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 			<PipelineSettingModal
 				isLoading={isDashboardLoading}
 				error={dashboardError}
-				reload={reloadDashboard}
+				reload={getDashboardDetails}
 				css={{
 					".ant-modal-body": {
 						height: status === PipelineSettingStatus.VIEW ? 511 : 600,

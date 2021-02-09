@@ -5,7 +5,6 @@ import DashboardConfig from "../../components/DashboardConfig";
 import { Link } from "react-router-dom";
 import {
 	createPipelineUsingPost,
-	DashboardResponse,
 	PipelineResponse,
 	updatePipelineUsingPut,
 	DashboardDetailResponse,

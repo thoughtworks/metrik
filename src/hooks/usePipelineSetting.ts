@@ -7,7 +7,7 @@ import {
 } from "../clients/apis";
 import { PipelineSettingStatus } from "../dashboard/components/PipelineSetting";
 import { notification } from "antd";
-import { useFetch } from "./useFetch";
+import { useRequest } from "./useRequest";
 
 export const usePipelineSetting = ({
 	defaultDashboardId,
@@ -22,12 +22,16 @@ export const usePipelineSetting = ({
 	defaultStatus?: PipelineSettingStatus;
 	defaultDashboard?: DashboardDetailResponse;
 }) => {
-	const [dashboard, setDashboard] = useState<DashboardDetailResponse | undefined>(defaultDashboard);
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 	const [editPipeline, setEditPipeline] = useState<PipelineResponse>();
-	const { response, error, isLoading, doFetch } = useFetch(() =>
-		getDashboardDetailsUsingGet({ dashboardId: defaultDashboardId })
+	const [dashboard, getDashboard, isDashboardLoading, , dashboardError] = useRequest(
+		getDashboardDetailsUsingGet,
+		defaultDashboard
 	);
+
+	function getDashboardDetails() {
+		getDashboard({ dashboardId: defaultDashboardId });
+	}
 
 	useEffect(() => {
 		if (shouldResetStatus) {
@@ -37,15 +41,9 @@ export const usePipelineSetting = ({
 
 	useEffect(() => {
 		if (shouldUpdateDashboard) {
-			doFetch();
+			getDashboardDetails();
 		}
 	}, [shouldUpdateDashboard]);
-
-	useEffect(() => {
-		if (response) {
-			setDashboard(response);
-		}
-	}, [response]);
 
 	function onAddPipeline() {
 		setStatus(PipelineSettingStatus.ADD);
@@ -67,19 +65,18 @@ export const usePipelineSetting = ({
 			return;
 		}
 		await deletePipelineUsingDelete({ dashboardId: defaultDashboardId, pipelineId });
-		await doFetch();
+		await getDashboardDetails();
 	}
 
 	return {
-		isDashboardLoading: isLoading,
-		dashboardError: error,
-		reloadDashboard: doFetch,
+		isDashboardLoading,
+		dashboardError,
 		dashboard,
 		status,
 		setStatus,
 		editPipeline,
 		setEditPipeline,
-		getDashboardDetails: doFetch,
+		getDashboardDetails,
 		onAddPipeline,
 		onUpdatePipeline,
 		onDeletePipeline,
