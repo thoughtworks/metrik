@@ -7,9 +7,8 @@ import {
 	UploadOutlined,
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
-import { Button, Typography } from "antd";
+import { Button, Modal, Result, Spin, Typography } from "antd";
 import { createPipelineUsingPost, updatePipelineUsingPut } from "../../clients/apis";
-import PipelineSettingModal from "../../components/PipelineSettingModal";
 import DashboardConfig from "../../components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../hooks/usePipelineSetting";
@@ -25,6 +24,13 @@ const settingStyles = css({
 
 const settingTextStyles = css({
 	marginLeft: 10,
+});
+
+const modalHeaderTextStyles = css({
+	fontSize: 16,
+	color: "rgba(0, 0, 0, 0.85)",
+	display: "flex",
+	alignItems: "center",
 });
 
 export enum PipelineSettingStatus {
@@ -63,34 +69,24 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 				<SettingOutlined />
 				<Text css={settingTextStyles}>Pipeline Setting</Text>
 			</span>
-			<PipelineSettingModal
-				isLoading={isDashboardLoading}
-				error={dashboardError}
-				reload={getDashboardDetails}
-				css={{
-					".ant-modal-body": {
-						height: status === PipelineSettingStatus.VIEW ? 511 : 600,
-						overflowY: "auto",
-					},
-				}}
+			<Modal
 				visible={visible}
-				handleToggleVisible={handleToggleVisible}
+				onCancel={handleToggleVisible}
+				centered={true}
+				destroyOnClose={true}
+				closable={false}
+				maskClosable={false}
+				bodyStyle={{
+					padding: 0,
+					height: status === PipelineSettingStatus.VIEW ? 511 : 600,
+					overflowY: "auto",
+				}}
+				width={896}
 				title={
 					status === PipelineSettingStatus.VIEW ? (
-						<div
-							css={{
-								fontSize: 16,
-								color: "rgba(0, 0, 0, 0.85)",
-								display: "flex",
-								alignItems: "center",
-							}}>
+						<div css={modalHeaderTextStyles}>
 							<span css={{ flexGrow: 1 }}>Pipeline Setting</span>
-							<div
-								css={{
-									button: {
-										margin: "0 4px",
-									},
-								}}>
+							<div css={{ button: { margin: "0 4px" } }}>
 								<Button icon={<DownloadOutlined />} disabled={true}>
 									Export All
 								</Button>
@@ -107,13 +103,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 							</div>
 						</div>
 					) : (
-						<div
-							css={{
-								fontSize: 16,
-								color: "rgba(0, 0, 0, 0.85)",
-								display: "flex",
-								alignItems: "center",
-							}}>
+						<div css={modalHeaderTextStyles}>
 							<Button
 								icon={<LeftOutlined />}
 								css={{ marginRight: 16 }}
@@ -130,7 +120,35 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						</Button>
 					) : null
 				}>
-				{status === PipelineSettingStatus.VIEW ? (
+				{isDashboardLoading ? (
+					<Spin
+						size="large"
+						css={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							height: "100%",
+						}}
+					/>
+				) : dashboardError ? (
+					<Result
+						css={{
+							display: "flex",
+							flexDirection: "column",
+							justifyContent: "center",
+							alignItems: "center",
+							height: "100%",
+						}}
+						status="warning"
+						title="Fail to connect to pipeline API"
+						subTitle={"Please click the button below, reload the API"}
+						extra={
+							<Button type="primary" key="console" onClick={getDashboardDetails}>
+								Reload
+							</Button>
+						}
+					/>
+				) : status === PipelineSettingStatus.VIEW ? (
 					<DashboardConfig
 						showDelete={true}
 						showAddPipeline={false}
@@ -152,7 +170,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						onBack={() => setStatus(PipelineSettingStatus.VIEW)}
 					/>
 				)}
-			</PipelineSettingModal>
+			</Modal>
 		</>
 	);
 };

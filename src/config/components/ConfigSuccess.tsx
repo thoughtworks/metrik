@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import DashboardConfig from "../../components/DashboardConfig";
@@ -9,7 +9,6 @@ import {
 	updatePipelineUsingPut,
 	DashboardDetailResponse,
 } from "../../clients/apis";
-import PipelineSettingModal from "../../components/PipelineSettingModal";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 import { useModalVisible } from "../../hooks/useModalVisible";
@@ -77,15 +76,15 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 				updatePipeline={handleUpdatePipeline}
 				addPipeline={handleAddPipeline}
 			/>
-			<PipelineSettingModal
+			<Modal
+				maskClosable={false}
+				bodyStyle={{ padding: 0, height: 600, overflowY: "auto" }}
+				width={896}
+				centered={true}
+				destroyOnClose={true}
+				closable={false}
 				visible={visible}
-				css={{
-					".ant-modal-body": {
-						height: 600,
-						overflowY: "auto",
-					},
-				}}
-				handleToggleVisible={handleToggleVisible}
+				onCancel={handleToggleVisible}
 				title={"Pipeline"}
 				footer={null}>
 				<PipelineConfig
@@ -98,7 +97,7 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 					}
 					onBack={handleToggleVisible}
 				/>
-			</PipelineSettingModal>
+			</Modal>
 		</div>
 	);
 };
