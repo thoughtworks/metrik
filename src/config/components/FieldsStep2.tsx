@@ -9,7 +9,7 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const backBtnStyles = css({
-	marginRight: 8,
+	marginLeft: 8,
 });
 
 const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marginBottom: 12 });
@@ -110,9 +110,6 @@ export const FieldsStep2: FC<{
 		<Divider css={{ margin: "24px -24px", width: "unset" }} />
 		<Row>
 			<Col span={24} style={{ textAlign: "right" }}>
-				<Button css={backBtnStyles} onClick={onBack} size={"large"}>
-					Back
-				</Button>
 				<Button
 					type="primary"
 					htmlType="submit"
@@ -122,6 +119,9 @@ export const FieldsStep2: FC<{
 					size={"large"}
 					loading={loading}>
 					{isUpdate ? "Update" : "Create"}
+				</Button>
+				<Button css={backBtnStyles} onClick={onBack} size={"large"}>
+					Back
 				</Button>
 			</Col>
 		</Row>
