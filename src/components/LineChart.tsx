@@ -73,8 +73,10 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 									0,
 									(dataMax: number) => {
 										setInitDomain(true);
-										setYAxisMax(Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10);
-										return dataMax === 0 ? 1 : Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10;
+										const yAxisMaxValue =
+											dataMax === 0 ? 1 : Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10;
+										setYAxisMax(yAxisMaxValue);
+										return yAxisMaxValue;
 									},
 							  ]
 							: [0, yAxisMax]
