@@ -55,9 +55,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 			setChartWidth(data.length > fullDisplayAmount ? ref.current?.offsetWidth : "100%");
 			window.addEventListener(
 				"resize",
-				throttle(() => {
-					() => setChartWidth(ref.current?.offsetWidth || "100%");
-				}, 500)
+				throttle(() => setChartWidth(ref.current?.offsetWidth || "100%"), 500)
 			);
 		}
 	}, [ref.current, chartWidth]);
@@ -67,28 +65,12 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 			<div css={yAxisStyles}>
 				<ResponsiveContainer width="100%" height="80%">
 					<RechartsLineChart
-						data={data}
 						margin={{
 							top: 5,
 							right: 30,
 							left: 20,
 							bottom: 20,
 						}}>
-						<CartesianGrid
-							stroke="#416180"
-							strokeWidth={0.5}
-							strokeOpacity={0.2}
-							vertical={false}
-						/>
-						<XAxis
-							dataKey="startTimestamp"
-							stroke="#416180"
-							strokeWidth={0.5}
-							strokeOpacity={0.45}
-							height={50}
-							padding={{ left: 20, right: 20 }}
-							tick={<CustomizeTick data={data} />}
-						/>
 						<YAxis
 							tickFormatter={yaxisFormatter}
 							axisLine={false}
@@ -103,9 +85,8 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 			<div
 				css={css`
 					width: ${chartWidth};
-					height: 300;
 					position: relative;
-					overflow-x: scroll;
+					overflow-x: auto;
 				`}>
 				<div css={heightStyles}>
 					<ResponsiveContainer width={scrollWidth > chartWidth ? scrollWidth : chartWidth}>
