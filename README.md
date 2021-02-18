@@ -77,7 +77,15 @@ codes for production, please do as the following steps:
 
 Please make sure that [Docker](https://www.docker.com) has already installed on your OS.
 
-You can run the 4-Key-Metrics docker container by run the following command:
+You can pull the latest version of 4-Key-Metrics docker image by run the following command:
+
+``` bash
+docker pull public.ecr.aws/j2s5d3z8/4-key-metrics:latest
+```
+
+You can run the 4-Key-Metrics docker container by run the following command.
+
+⚠️ It is necessary to publish 80 port to access the dashboard. 
 
 ``` bash
 docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:latest
