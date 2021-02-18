@@ -15,7 +15,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "b2:7a:cb:5e:38:45:da:d6:71:22:5e:80:88:10:f0:82"
+            - "9f:14:9c:f1:94:36:a9:c5:5a:21:8c:75:ea:c9:84:d1"
       - run:
           name: Add Github to trusted hosts
           command: |
@@ -80,7 +80,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "bd:e4:27:92:07:b8:9e:1a:2c:0c:2e:19:9c:2a:7d:2e"
+            - "54:d0:65:a6:90:ef:ae:45:ae:7d:a6:89:76:8e:f9:71"
       - run:
           name: Add Github to trusted hosts
           command: |
