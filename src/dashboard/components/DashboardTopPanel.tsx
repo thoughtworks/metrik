@@ -20,6 +20,7 @@ import { MultipleCascadeSelect } from "../../components/MultipleCascadeSelect";
 import { isEmpty, isEqual } from "lodash";
 import { formatLastUpdateTime } from "../../utils/timeFormats";
 import { usePrevious } from "../../hooks/usePrevious";
+import { DurationUnit } from "../../__types__/base";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -65,12 +66,10 @@ const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = 
 		})),
 	}));
 
-export type FormValueUnit = "Fortnightly" | "Monthly";
-
 export interface FormValues {
 	duration: [moment.Moment, moment.Moment];
 	pipelines: Array<{ value: string; childValue: string }>;
-	unit: FormValueUnit;
+	unit: DurationUnit;
 }
 
 interface DashboardTopPanelProps {

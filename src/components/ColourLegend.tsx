@@ -4,7 +4,7 @@ import { Typography } from "antd";
 import { GRAY_1 } from "../constants/styles";
 import { Row, Col } from "antd";
 
-const { Text, Paragraph } = Typography;
+const { Text, Title } = Typography;
 
 interface ColourLegendProps {
 	elite: string;
@@ -15,10 +15,12 @@ interface ColourLegendProps {
 
 export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }) => (
 	<div>
-		<Paragraph style={{ color: GRAY_1 }}>How to evaluate it?</Paragraph>
+		<Title style={{ color: GRAY_1, fontSize: 14 }} level={5}>
+			How to evaluate it?
+		</Title>
 		<Row align={"middle"} justify={"space-between"}>
 			<Col>
-				<LegendRect color={"green"} />
+				<LegendRect color={"green"} text={"ELITE"} />
 			</Col>
 			<Col>
 				<Text style={{ color: GRAY_1 }}>{elite}</Text>
@@ -26,7 +28,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"}>
 			<Col>
-				<LegendRect color={"blue"} />
+				<LegendRect color={"blue"} text={"HIGH"} />
 			</Col>
 			<Col>
 				<Text style={{ color: GRAY_1 }}>{high}</Text>
@@ -34,7 +36,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"}>
 			<Col>
-				<LegendRect color={"orange"} />
+				<LegendRect color={"orange"} text={"MEDIUM"} />
 			</Col>
 			<Col>
 				<Text style={{ color: GRAY_1 }}>{medium}</Text>
@@ -42,7 +44,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"}>
 			<Col>
-				<LegendRect color={"red"} />
+				<LegendRect color={"red"} text={"LOW"} />
 			</Col>
 			<Col>
 				<Text style={{ color: GRAY_1 }}>{low}</Text>

@@ -1,5 +1,8 @@
 import React, { FC } from "react";
-import { GREEN_LIGHT, BLUE_5, ORANGE_DARK, RED_DARK } from "../constants/styles";
+import { GREEN_LIGHT, BLUE_5, ORANGE_DARK, RED_DARK, GRAY_1 } from "../constants/styles";
+import { Typography } from "antd";
+
+const { Text } = Typography;
 
 enum Colour {
 	green = "green",
@@ -15,6 +18,19 @@ const colors = {
 	red: RED_DARK,
 };
 
-export const LegendRect: FC<{ color: keyof typeof Colour }> = ({ color }) => (
-	<div css={{ width: 24, height: 12, backgroundColor: colors[color] }} />
+const levelTextStyle = { color: GRAY_1, marginLeft: 8, fontSize: 12, verticalAlign: "middle" };
+
+export const LegendRect: FC<{ color: keyof typeof Colour; text?: string }> = ({ color, text }) => (
+	<>
+		<span
+			css={{
+				display: "inline-block",
+				width: 24,
+				height: 12,
+				backgroundColor: colors[color],
+				verticalAlign: "middle",
+			}}
+		/>
+		{text && <Text style={levelTextStyle}>{text}</Text>}
+	</>
 );

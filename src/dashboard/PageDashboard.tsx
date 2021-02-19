@@ -5,9 +5,10 @@ import { useQuery } from "../hooks/useQuery";
 import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../clients/apis";
 import { momentObjToEndTimeStamp } from "../utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues, FormValueUnit } from "./components/DashboardTopPanel";
+import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../constants/styles";
 import { min, max } from "lodash";
+import { DurationUnit } from "../__types__/base";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -28,7 +29,7 @@ export const PageDashboard = () => {
 	const query = useQuery();
 	const dashboardId = query.get("dashboardId") || "";
 
-	const [appliedUnit, setAppliedUnit] = useState<FormValueUnit>("Fortnightly");
+	const [appliedUnit, setAppliedUnit] = useState<DurationUnit>("Fortnightly");
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsInfo>(initialMetricsState);
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsInfo>(initialMetricsState);
@@ -63,7 +64,7 @@ export const PageDashboard = () => {
 			});
 	};
 
-	const getSubTitleUnit = (unit: FormValueUnit) => {
+	const getSubTitleUnit = (unit: DurationUnit) => {
 		enum SubtitleUnit {
 			Fortnightly = "fortnight",
 			Monthly = "month",
