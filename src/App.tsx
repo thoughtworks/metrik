@@ -5,6 +5,13 @@ import { BrowserRouter as Router, Switch } from "react-router-dom";
 import Header from "./components/Header";
 import { getDashboardsUsingGet } from "./clients/apis";
 import { useRequest } from "./hooks/useRequest";
+import { Global } from "@emotion/react";
+
+const globalStyles = {
+	".metric-info-overlay div.ant-tooltip-inner": {
+		width: "300px !important",
+	},
+};
 
 export const App: FC = () => {
 	const [dashboards, getDashboardsRequest] = useRequest(getDashboardsUsingGet);
@@ -14,12 +21,15 @@ export const App: FC = () => {
 	}, []);
 
 	return dashboards !== undefined ? (
-		<Router>
-			<Header />
-			<Switch>
-				<Routes dashboardId={dashboards[0]?.id} />
-			</Switch>
-		</Router>
+		<>
+			<Global styles={globalStyles} />
+			<Router>
+				<Header />
+				<Switch>
+					<Routes dashboardId={dashboards[0]?.id} />
+				</Switch>
+			</Router>
+		</>
 	) : null;
 };
 
