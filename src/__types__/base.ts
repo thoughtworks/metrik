@@ -11,3 +11,4 @@ export enum ConfigStep {
 }
 
 export type DurationUnit = "Fortnightly" | "Monthly";
+export type MetricType = "df" | "lt" | "mttr" | "cfr";

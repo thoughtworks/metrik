@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { css } from "@emotion/react";
 import { CustomizeTickProps, LineChart } from "../../components/LineChart";
 import EliteIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite.png";
@@ -149,6 +149,7 @@ interface MetricsCardProps {
 	yAxisLabel: string;
 	loading: boolean;
 	subTitleUnit: string;
+	info: ReactNode;
 }
 
 export const MetricsCard: FC<MetricsCardProps> = ({
@@ -159,6 +160,7 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	yAxisLabel,
 	loading,
 	subTitleUnit,
+	info,
 }) => {
 	return (
 		<div css={containerStyles}>
@@ -168,7 +170,10 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 				</div>
 			) : (
 				<>
-					<div css={titleStyles}>{title}</div>
+					<div css={titleStyles}>
+						<span>{title}</span>
+						{info}
+					</div>
 					<div css={subtitleStyles}>
 						<img
 							alt={title}

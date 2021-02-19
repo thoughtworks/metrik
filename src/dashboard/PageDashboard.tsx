@@ -9,6 +9,7 @@ import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../constants/styles";
 import { min, max } from "lodash";
 import { DurationUnit } from "../__types__/base";
+import { MetricTooltip } from "./components/MetricTooltip";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -81,6 +82,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Deployment Frequency (Times)"
+							info={<MetricTooltip durationUnit={appliedUnit} type={"df"} />}
 							summary={deploymentFrequency.summary}
 							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
@@ -93,6 +95,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Average Lead Time for Change (Days)"
+							info={<MetricTooltip durationUnit={appliedUnit} type={"lt"} />}
 							summary={leadTimeForChange.summary}
 							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
@@ -105,6 +108,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Mean Time to Restore Service (Hours)"
+							info={<MetricTooltip durationUnit={appliedUnit} type={"mttr"} />}
 							summary={meanTimeToRestore.summary}
 							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
@@ -117,6 +121,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Change Failure Rate"
+							info={<MetricTooltip durationUnit={appliedUnit} type={"cfr"} />}
 							summary={changeFailureRate.summary}
 							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}
