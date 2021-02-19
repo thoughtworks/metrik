@@ -18,7 +18,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		<Title style={{ color: GRAY_1, fontSize: 14 }} level={5}>
 			How to evaluate it?
 		</Title>
-		<Row align={"middle"} justify={"space-between"}>
+		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
 				<LegendRect color={"green"} text={"ELITE"} />
 			</Col>
@@ -26,7 +26,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<Text style={{ color: GRAY_1 }}>{elite}</Text>
 			</Col>
 		</Row>
-		<Row align={"middle"} justify={"space-between"}>
+		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
 				<LegendRect color={"blue"} text={"HIGH"} />
 			</Col>
@@ -34,7 +34,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<Text style={{ color: GRAY_1 }}>{high}</Text>
 			</Col>
 		</Row>
-		<Row align={"middle"} justify={"space-between"}>
+		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
 				<LegendRect color={"orange"} text={"MEDIUM"} />
 			</Col>

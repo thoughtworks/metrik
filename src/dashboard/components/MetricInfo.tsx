@@ -13,7 +13,7 @@ export const MetricInfo: FC<{ durationUnit: DurationUnit; type: MetricType }> = 
 	durationUnit,
 	type,
 }) => (
-	<div>
+	<div css={{ padding: 10 }}>
 		<Title style={titleStyle} level={5}>
 			What is it?
 		</Title>
