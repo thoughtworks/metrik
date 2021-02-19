@@ -49,10 +49,6 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 	const ref = useRef<HTMLDivElement>(null);
 	const [chartWidth, setChartWidth] = useState<string | number>("100%");
 	const scrollWidth = data.length ? lineUnit * (data.length - 1) + yAxisWidth : 0;
-	const realChartWidth = document
-		?.getElementsByClassName("real-chart")
-		?.item(0)
-		?.getAttribute("width");
 
 	useEffect(() => {
 		if (ref.current) {
@@ -93,9 +89,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 					overflow-x: auto;
 				`}>
 				<div css={heightStyles}>
-					<ResponsiveContainer
-						width={scrollWidth > chartWidth ? scrollWidth : chartWidth}
-						className="real-chart">
+					<ResponsiveContainer width={scrollWidth > chartWidth ? scrollWidth : chartWidth}>
 						<RechartsLineChart
 							data={data}
 							margin={{
@@ -112,13 +106,6 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 							/>
 							<XAxis
 								dataKey="startTimestamp"
-								interval={
-									realChartWidth === null ||
-									realChartWidth === undefined ||
-									Number(realChartWidth) <= 699
-										? "preserveEnd"
-										: 0
-								}
 								stroke="#416180"
 								strokeWidth={0.5}
 								strokeOpacity={0.45}
