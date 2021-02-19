@@ -31,8 +31,9 @@ interface LineChartProps {
 const domainMaximizeRatio = 1.1;
 const lineUnit = 100;
 const yAxisWidth = 80;
+const minLengthForDisplayScrollBar = 10;
 const yAxisStyles = css({
-	width: 80,
+	width: yAxisWidth,
 	height: 300,
 	position: "absolute",
 	backgroundColor: "#ffffff",
@@ -54,7 +55,8 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 	useEffect(() => {
 		const adjustXAxisInterval = throttle(() => {
 			setXAxisInterval(
-				ref.current?.offsetWidth === undefined || ref.current?.offsetWidth / data.length <= 80
+				data.length < minLengthForDisplayScrollBar &&
+					(ref.current?.offsetWidth === undefined || ref.current?.offsetWidth / data.length <= 80)
 					? "preserveEnd"
 					: 0
 			);
@@ -91,7 +93,8 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 			</div>
 
 			<div css={chartContainerStyle}>
-				<ResponsiveContainer width={data.length > 9 ? scrollWidth : "100%"}>
+				<ResponsiveContainer
+					width={data.length >= minLengthForDisplayScrollBar ? scrollWidth : "100%"}>
 					<RechartsLineChart
 						data={data}
 						margin={{
