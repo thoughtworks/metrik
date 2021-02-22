@@ -1,21 +1,21 @@
 import React, { FC, ReactNode } from "react";
 import { css } from "@emotion/react";
-import { CustomizeTickProps, LineChart } from "../../components/LineChart";
-import EliteIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite.png";
-import EliteIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite@2x.png";
-import EliteIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Elite@3x.png";
-import HighIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_High.png";
-import HighIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_High@2x.png";
-import HighIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_High@3x.png";
-import LowIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Low.png";
-import LowIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Low@2x.png";
-import LowIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Low@3x.png";
-import MediumIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium.png";
-import MediumIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium@2x.png";
-import MediumIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Medium@3x.png";
-import InvalidIndicator1X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid.png";
-import InvalidIndicator2X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@2x.png";
-import InvalidIndicator3X from "../../assets/metricsLevelIndicators/StatusIndicator_Invalid@3x.png";
+import { CustomizeTickProps, LineChart } from "../../shared/components/LineChart";
+import EliteIndicator1X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Elite.png";
+import EliteIndicator2X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Elite@2x.png";
+import EliteIndicator3X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Elite@3x.png";
+import HighIndicator1X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_High.png";
+import HighIndicator2X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_High@2x.png";
+import HighIndicator3X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_High@3x.png";
+import LowIndicator1X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Low.png";
+import LowIndicator2X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Low@2x.png";
+import LowIndicator3X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Low@3x.png";
+import MediumIndicator1X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Medium.png";
+import MediumIndicator2X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Medium@2x.png";
+import MediumIndicator3X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Medium@3x.png";
+import InvalidIndicator1X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Invalid.png";
+import InvalidIndicator2X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Invalid@2x.png";
+import InvalidIndicator3X from "../../shared/assets/metricsLevelIndicators/StatusIndicator_Invalid@3x.png";
 import {
 	BLUE_5,
 	GRAY_1,
@@ -24,10 +24,10 @@ import {
 	GREEN_DARK,
 	ORANGE_DARK,
 	RED_DARK,
-} from "../../constants/styles";
-import { formatTickTime } from "../../utils/timeFormats";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { Metrics, MetricsLevel } from "../../clients/apis";
+} from "../../shared/constants/styles";
+import { formatTickTime } from "../../shared/utils/timeFormats";
+import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
+import { Metrics, MetricsLevel } from "../../shared/clients/apis";
 import { find } from "lodash";
 
 interface MetricsLevelConfigInterface {

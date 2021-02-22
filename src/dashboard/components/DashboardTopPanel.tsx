@@ -1,11 +1,11 @@
-import { EditableText } from "../../components/EditableText";
+import { EditableText } from "../../shared/components/EditableText";
 import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
 import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../constants/styles";
-import { useRequest } from "../../hooks/useRequest";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../shared/constants/styles";
+import { useRequest } from "../../shared/hooks/useRequest";
 import {
 	getDashboardDetailsUsingGet,
 	updateBuildsUsingPost,
@@ -13,14 +13,14 @@ import {
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
 	getLastSynchronizationUsingGet,
-} from "../../clients/apis";
+} from "../../shared/clients/apis";
 import moment from "moment";
-import { dateFormatYYYYMMDD } from "../../constants/date-format";
-import { MultipleCascadeSelect } from "../../components/MultipleCascadeSelect";
+import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
+import { MultipleCascadeSelect } from "../../shared/components/MultipleCascadeSelect";
 import { isEmpty, isEqual } from "lodash";
-import { formatLastUpdateTime } from "../../utils/timeFormats";
-import { usePrevious } from "../../hooks/usePrevious";
-import { DurationUnit } from "../../__types__/base";
+import { formatLastUpdateTime } from "../../shared/utils/timeFormats";
+import { usePrevious } from "../../shared/hooks/usePrevious";
+import { DurationUnit } from "../../shared/__types__/base";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;

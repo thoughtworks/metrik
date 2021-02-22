@@ -2,9 +2,9 @@ import React, { FC, useEffect } from "react";
 import ReactDom from "react-dom";
 import { Routes } from "./Routes";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
-import Header from "./components/Header";
-import { getDashboardsUsingGet } from "./clients/apis";
-import { useRequest } from "./hooks/useRequest";
+import Header from "./shared/components/Header";
+import { getDashboardsUsingGet } from "./shared/clients/apis";
+import { useRequest } from "./shared/hooks/useRequest";
 import { Global } from "@emotion/react";
 
 const globalStyles = {

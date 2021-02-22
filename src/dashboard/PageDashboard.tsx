@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
-import { useQuery } from "../hooks/useQuery";
-import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../clients/apis";
-import { momentObjToEndTimeStamp } from "../utils/timeFormats";
+import { useQuery } from "../shared/hooks/useQuery";
+import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../shared/clients/apis";
+import { momentObjToEndTimeStamp } from "../shared/utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
-import { BACKGROUND_COLOR } from "../constants/styles";
+import { BACKGROUND_COLOR } from "../shared/constants/styles";
 import { min, max } from "lodash";
-import { DurationUnit } from "../__types__/base";
+import { DurationUnit } from "../shared/__types__/base";
 import { MetricTooltip } from "./components/MetricTooltip";
 
 const metricsContainerStyles = css({

@@ -10,11 +10,11 @@ module.exports = {
 	coverageDirectory: "coverage",
 	collectCoverageFrom: [
 		"./src/**/*.ts",
-		"!./src/__types__/*",
-		"!./src/clients/*",
+		"!./src/shared/__types__/*",
+		"!./src/shared/clients/*",
 		"!**/*.d.ts",
-		"!./src/constants/*",
-		"!./src/hooks/*",
+		"!./src/shared/constants/*",
+		"!./src/shared/hooks/*",
 	],
 	coverageReporters: ["html", "text", "cobertura"],
 	coverageThreshold: {

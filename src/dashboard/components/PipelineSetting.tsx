@@ -8,11 +8,11 @@ import {
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
 import { Button, Modal, Result, Spin, Typography } from "antd";
-import { createPipelineUsingPost, updatePipelineUsingPut } from "../../clients/apis";
-import DashboardConfig from "../../components/DashboardConfig";
+import { createPipelineUsingPost, updatePipelineUsingPut } from "../../shared/clients/apis";
+import DashboardConfig from "../../shared/components/DashboardConfig";
 import PipelineConfig from "./PipelineConfig";
-import { usePipelineSetting } from "../../hooks/usePipelineSetting";
-import { useModalVisible } from "../../hooks/useModalVisible";
+import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
+import { useModalVisible } from "../../shared/hooks/useModalVisible";
 
 const { Text } = Typography;
 

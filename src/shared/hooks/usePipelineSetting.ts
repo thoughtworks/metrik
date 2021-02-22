@@ -5,7 +5,7 @@ import {
 	DashboardDetailResponse,
 	PipelineResponse,
 } from "../clients/apis";
-import { PipelineSettingStatus } from "../dashboard/components/PipelineSetting";
+import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 import { notification } from "antd";
 import { useRequest } from "./useRequest";
 

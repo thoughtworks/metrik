@@ -2,8 +2,8 @@ import { MetricInfo } from "./MetricInfo";
 import { Button, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import React, { FC } from "react";
-import { DurationUnit, MetricType } from "../../__types__/base";
-import { GRAY_13 } from "../../constants/styles";
+import { DurationUnit, MetricType } from "../../shared/__types__/base";
+import { GRAY_13 } from "../../shared/constants/styles";
 
 export const MetricTooltip: FC<{ durationUnit: DurationUnit; type: MetricType }> = ({
 	durationUnit,

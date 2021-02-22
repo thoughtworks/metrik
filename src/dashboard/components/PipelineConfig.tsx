@@ -1,15 +1,15 @@
 import React, { FC, useState } from "react";
 import { FieldsStep2 } from "../../config/components/FieldsStep2";
 import { Form } from "antd";
-import { VerifyStatus } from "../../__types__/base";
+import { VerifyStatus } from "../../shared/__types__/base";
 import {
 	createPipelineUsingPost,
 	PipelineResponse,
 	updatePipelineUsingPut,
 	verifyPipelineUsingPost,
-} from "../../clients/apis";
+} from "../../shared/clients/apis";
 import { ConfigFormValues } from "../../config/PageConfig";
-import { useRequest } from "../../hooks/useRequest";
+import { useRequest } from "../../shared/hooks/useRequest";
 
 interface PipelineConfigProps {
 	defaultData?: PipelineResponse;

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Divider, Form, Layout, Steps, Typography } from "antd";
 import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
-import { ConfigStep, VerifyStatus } from "../__types__/base";
+import { ConfigStep, VerifyStatus } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import {
 	DashboardDetailResponse,
 	verifyPipelineUsingPost,
 	PipelineResponse,
 	createDashboardUsingPost,
-} from "../clients/apis";
+} from "../shared/clients/apis";
 
 const { Text, Paragraph } = Typography;
 const { Step } = Steps;

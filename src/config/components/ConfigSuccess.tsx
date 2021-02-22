@@ -1,19 +1,19 @@
 import { Button, Modal } from "antd";
 import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
-import DashboardConfig from "../../components/DashboardConfig";
+import DashboardConfig from "../../shared/components/DashboardConfig";
 import { Link } from "react-router-dom";
 import {
 	createPipelineUsingPost,
 	PipelineResponse,
 	updatePipelineUsingPut,
 	DashboardDetailResponse,
-} from "../../clients/apis";
+} from "../../shared/clients/apis";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
-import { useModalVisible } from "../../hooks/useModalVisible";
-import { usePipelineSetting } from "../../hooks/usePipelineSetting";
-import { GREEN_LIGHT } from "../../constants/styles";
+import { useModalVisible } from "../../shared/hooks/useModalVisible";
+import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
+import { GREEN_LIGHT } from "../../shared/constants/styles";
 
 const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defaultDashboard }) => {
 	const { visible, handleToggleVisible } = useModalVisible();

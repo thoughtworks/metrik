@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
-import { ERROR_MESSAGES } from "../../constants/errorMessages";
-import { VerifyStatus } from "../../__types__/base";
+import { ERROR_MESSAGES } from "../../shared/constants/errorMessages";
+import { VerifyStatus } from "../../shared/__types__/base";
 import { ConfigFormValues } from "../PageConfig";
 
 const { Option } = Select;
