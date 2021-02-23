@@ -65,11 +65,9 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 						following projects
 					</span>
 				</div>
-				<Link to={`/dashboard?dashboardId=${defaultDashboard.id}`}>
-					<Button type={"primary"} size={"large"}>
-						Go to Dashboard
-					</Button>
-				</Link>
+				<Button type={"primary"} size={"large"} onClick={() => location.reload()}>
+					Go to Dashboard
+				</Button>
 			</div>
 			<DashboardConfig
 				pipelines={dashboard!.pipelines}
