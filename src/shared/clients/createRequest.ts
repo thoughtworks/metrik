@@ -16,8 +16,9 @@ export const createRequest = <TReq, TResp = any>(
 axiosInstance.interceptors.response.use(
 	response => response.data,
 	error => {
+		const message = error.response?.data?.message || error.message;
 		notification.error({
-			message: error.message,
+			message,
 			duration: 3,
 			placement: "topRight",
 		});
