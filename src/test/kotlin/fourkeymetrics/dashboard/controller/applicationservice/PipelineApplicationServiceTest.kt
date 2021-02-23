@@ -119,7 +119,7 @@ internal class PipelineApplicationServiceTest {
         val result = pipelineApplicationService.updatePipeline(pipeline)
 
         verify(dashboardRepository).findById(pipeline.dashboardId)
-        verify(pipelineRepository).findById(pipeline.id)
+        verify(pipelineRepository).findByIdAndDashboardId(pipeline.id, pipeline.dashboardId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
             pipeline.url, pipeline.username, pipeline.credential
         )
@@ -145,7 +145,7 @@ internal class PipelineApplicationServiceTest {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val dashboardId = pipeline.dashboardId
-        `when`(pipelineRepository.findById(pipelineId)).thenReturn(pipeline)
+        `when`(pipelineRepository.findByIdAndDashboardId(pipelineId, dashboardId)).thenReturn(pipeline)
 
         val result = pipelineApplicationService.getPipeline(dashboardId, pipelineId)
 
@@ -156,6 +156,7 @@ internal class PipelineApplicationServiceTest {
         assertEquals(pipeline.credential, result.credential)
         assertEquals(pipeline.url, result.url)
         assertEquals(pipeline.type, result.type)
+        assertEquals(pipeline.type, result.type)
     }
 
     @Test
@@ -165,7 +166,7 @@ internal class PipelineApplicationServiceTest {
         pipelineApplicationService.deletePipeline(dashboardId, pipelineId)
 
         verify(dashboardRepository).findById(dashboardId)
-        verify(pipelineRepository).findById(pipelineId)
+        verify(pipelineRepository).findByIdAndDashboardId(pipelineId, dashboardId)
         verify(pipelineRepository).deleteById(pipelineId)
         verify(buildRepository).clear(pipelineId)
     }

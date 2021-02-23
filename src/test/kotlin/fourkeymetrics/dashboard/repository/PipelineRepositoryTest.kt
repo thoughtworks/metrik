@@ -27,6 +27,7 @@ internal class PipelineRepositoryTest {
     private lateinit var pipelineRepository: PipelineRepository
 
     private val pipelineId = "pipelineId"
+    private val dashboardId = "dashboardId"
 
     @Test
     internal fun `should return Pipeline when findById() called given pipelineId exist in repo`() {
@@ -42,6 +43,22 @@ internal class PipelineRepositoryTest {
         `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
 
         assertThrows<PipelineNotFoundException> { pipelineRepository.findById(pipelineId) }
+    }
+
+    @Test
+    internal fun `should return pipeline when findByIdAndDashboardId() called given the pipeline exist`() {
+        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(Pipeline(id = pipelineId))
+
+        val pipeline = pipelineRepository.findByIdAndDashboardId(pipelineId, dashboardId)
+
+        assertEquals(pipelineId, pipeline.id)
+    }
+
+    @Test
+    internal fun `should throw PipelineNotFoundException exception when findByIdAndDashboardId() called given pipelineId not exist in repo`() {
+        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
+
+        assertThrows<PipelineNotFoundException> { pipelineRepository.findByIdAndDashboardId(pipelineId, dashboardId) }
     }
 
     @Test

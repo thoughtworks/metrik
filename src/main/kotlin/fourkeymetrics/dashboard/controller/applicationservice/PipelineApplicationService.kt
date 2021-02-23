@@ -10,6 +10,7 @@ import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.BadRequestException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PipelineApplicationService {
@@ -49,7 +50,7 @@ class PipelineApplicationService {
 
     fun updatePipeline(pipeline: Pipeline): Pipeline {
         verifyDashboardExist(pipeline.dashboardId)
-        verifyPipelineExist(pipeline.id)
+        verifyPipelineExist(pipeline.id, pipeline.dashboardId)
         verifyPipelineConfiguration(pipeline)
 
         return pipelineRepository.save(pipeline)
@@ -57,12 +58,13 @@ class PipelineApplicationService {
 
     fun getPipeline(dashboardId: String, pipelineId: String): Pipeline {
         verifyDashboardExist(dashboardId)
-        return pipelineRepository.findById(pipelineId)
+        return pipelineRepository.findByIdAndDashboardId(pipelineId, dashboardId)
     }
 
+    @Transactional
     fun deletePipeline(dashboardId: String, pipelineId: String) {
         verifyDashboardExist(dashboardId)
-        verifyPipelineExist(pipelineId)
+        verifyPipelineExist(pipelineId, dashboardId)
         pipelineRepository.deleteById(pipelineId)
         buildRepository.clear(pipelineId)
     }
@@ -78,6 +80,6 @@ class PipelineApplicationService {
     private fun verifyDashboardExist(dashboardId: String) =
         dashboardRepository.findById(dashboardId)
 
-    private fun verifyPipelineExist(pipelineId: String) =
-        pipelineRepository.findById(pipelineId)
+    private fun verifyPipelineExist(pipelineId: String, dashboardId: String) =
+        pipelineRepository.findByIdAndDashboardId(pipelineId, dashboardId)
 }
