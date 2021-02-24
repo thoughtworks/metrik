@@ -170,7 +170,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 				</div>
 				<div>
 					<span css={dividerStyles}>
-						<PipelineSetting dashboardId={dashboardId} />
+						<PipelineSetting dashboardId={dashboardId} syncBuild={syncBuilds} />
 					</span>
 					<span css={fullScreenStyles}>
 						<FullscreenOutlined css={fullScreenIconStyles} />

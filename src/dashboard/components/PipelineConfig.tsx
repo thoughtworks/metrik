@@ -15,6 +15,7 @@ interface PipelineConfigProps {
 	defaultData?: PipelineResponse;
 	onBack: () => void;
 	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
+	onSuccess?: () => void;
 	className?: string;
 	dashboardId: string;
 	updateDashboard: () => void;
@@ -27,6 +28,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	dashboardId,
 	updateDashboard,
 	onSubmit,
+	onSuccess,
 }) => {
 	const [form] = Form.useForm<ConfigFormValues>();
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
@@ -41,9 +43,9 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 		}).then(() => {
 			updateDashboard();
 			onBack();
+			onSuccess?.();
 		});
 	};
-
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { dashboardName, ...pipelineValues } = form.getFieldsValue();

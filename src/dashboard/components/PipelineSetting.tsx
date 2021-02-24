@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import {
 	DownloadOutlined,
 	LeftOutlined,
@@ -39,7 +39,10 @@ export enum PipelineSettingStatus {
 	UPDATE,
 }
 
-const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
+const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
+	dashboardId,
+	syncBuild,
+}) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
 		isDashboardLoading,
@@ -58,6 +61,15 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 		shouldResetStatus: !visible,
 	});
 
+	const triggerSyncBuild = useRef(false);
+
+	function onAfterClose() {
+		if (triggerSyncBuild.current) {
+			triggerSyncBuild.current = false;
+			syncBuild();
+		}
+	}
+
 	return (
 		<>
 			<span css={settingStyles} onClick={handleToggleVisible}>
@@ -67,6 +79,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 			<Modal
 				visible={visible}
 				onCancel={handleToggleVisible}
+				afterClose={onAfterClose}
 				centered={true}
 				destroyOnClose={true}
 				closable={false}
@@ -149,7 +162,10 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						showAddPipeline={false}
 						pipelines={dashboard?.pipelines ?? []}
 						updatePipeline={onUpdatePipeline}
-						deletePipeline={onDeletePipeline}
+						deletePipeline={pipelineId => {
+							triggerSyncBuild.current = true;
+							return onDeletePipeline(pipelineId);
+						}}
 					/>
 				) : (
 					<PipelineConfig
@@ -157,6 +173,7 @@ const PipelineSetting: FC<{ dashboardId: string }> = ({ dashboardId }) => {
 						updateDashboard={getDashboardDetails}
 						css={{ padding: 24, height: "100%" }}
 						defaultData={editPipeline}
+						onSuccess={() => (triggerSyncBuild.current = true)}
 						onSubmit={
 							status === PipelineSettingStatus.ADD
 								? createPipelineUsingPost
