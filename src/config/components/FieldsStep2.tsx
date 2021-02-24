@@ -114,7 +114,11 @@ export const FieldsStep2: FC<{
 					type="primary"
 					htmlType="submit"
 					disabled={
-						!formValues.name || !formValues.type || !formValues.url || !formValues.credential
+						!formValues.name ||
+						!formValues.type ||
+						!formValues.url ||
+						!formValues.username ||
+						!formValues.credential
 					}
 					size={"large"}
 					loading={loading}>
@@ -127,4 +131,5 @@ export const FieldsStep2: FC<{
 		</Row>
 	</div>
 );
+
 /* eslint-disable react/prop-types */
