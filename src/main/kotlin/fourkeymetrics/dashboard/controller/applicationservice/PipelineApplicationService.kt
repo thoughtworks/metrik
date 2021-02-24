@@ -37,20 +37,25 @@ class PipelineApplicationService {
     }
 
     fun createPipeline(pipeline: Pipeline): Pipeline {
-        val dashboardId = pipeline.dashboardId
-        verifyDashboardExist(dashboardId)
+        verifyDashboardExist(pipeline.dashboardId)
+        verifyPipelineNameNotDuplicate(pipeline)
         verifyPipelineConfiguration(pipeline)
+        return pipelineRepository.save(pipeline)
 
-        if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)) {
+    }
+
+    private fun verifyPipelineNameNotDuplicate(
+        pipeline: Pipeline
+    ) {
+        if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)) {
             throw BadRequestException("Pipeline name already exist")
-        } else {
-            return pipelineRepository.save(pipeline)
         }
     }
 
     fun updatePipeline(pipeline: Pipeline): Pipeline {
         verifyDashboardExist(pipeline.dashboardId)
         verifyPipelineExist(pipeline.id, pipeline.dashboardId)
+        verifyPipelineNameNotDuplicate(pipeline)
         verifyPipelineConfiguration(pipeline)
 
         return pipelineRepository.save(pipeline)

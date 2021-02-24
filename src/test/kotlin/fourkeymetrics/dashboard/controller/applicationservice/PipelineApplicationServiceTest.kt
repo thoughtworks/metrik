@@ -10,6 +10,7 @@ import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.exception.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -120,6 +121,7 @@ internal class PipelineApplicationServiceTest {
 
         verify(dashboardRepository).findById(pipeline.dashboardId)
         verify(pipelineRepository).findByIdAndDashboardId(pipeline.id, pipeline.dashboardId)
+        verify(pipelineRepository).pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
             pipeline.url, pipeline.username, pipeline.credential
         )
@@ -138,6 +140,18 @@ internal class PipelineApplicationServiceTest {
         assertEquals(pipeline.username, result.username)
         assertEquals(pipeline.credential, result.credential)
         assertEquals(pipeline.type, result.type)
+    }
+
+    @Test
+    internal fun `should throw Exception when updatePipeline() with pipeline name already exist`() {
+        val pipeline = buildPipeline()
+        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)).thenReturn(true)
+
+        val exception = assertThrows<BadRequestException> { pipelineApplicationService.updatePipeline(pipeline) }
+
+        assertEquals(exception.message, "Pipeline name already exist")
+        verify(dashboardRepository).findById(pipeline.dashboardId)
+        verify(pipelineRepository).findByIdAndDashboardId(pipeline.id, pipeline.dashboardId)
     }
 
     @Test
