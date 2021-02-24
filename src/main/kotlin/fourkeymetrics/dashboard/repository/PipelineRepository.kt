@@ -31,9 +31,9 @@ class PipelineRepository {
         return mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
     }
 
-    fun pipelineExistWithNameAndDashboardId(name: String, dashboardId: String): Boolean {
+    fun findByNameAndDashboardId(name: String, dashboardId: String): Pipeline? {
         val query = Query().addCriteria(Criteria.where("name").`is`(name).and("dashboardId").`is`(dashboardId))
-        return mongoTemplate.find(query, Pipeline::class.java).isNotEmpty()
+        return mongoTemplate.findOne(query, Pipeline::class.java)
     }
 
     fun deleteById(pipelineId: String) {

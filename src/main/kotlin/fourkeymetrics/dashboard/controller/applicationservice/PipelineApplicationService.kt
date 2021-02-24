@@ -47,7 +47,8 @@ class PipelineApplicationService {
     private fun verifyPipelineNameNotDuplicate(
         pipeline: Pipeline
     ) {
-        if (pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)) {
+        val foundPipeline = pipelineRepository.findByNameAndDashboardId(pipeline.name, pipeline.dashboardId)
+        if (foundPipeline != null && foundPipeline.id != pipeline.id) {
             throw BadRequestException("Pipeline name already exist")
         }
     }

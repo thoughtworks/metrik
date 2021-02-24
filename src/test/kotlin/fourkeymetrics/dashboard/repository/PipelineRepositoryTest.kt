@@ -6,6 +6,7 @@ import fourkeymetrics.dashboard.exception.PipelineNotFoundException
 import fourkeymetrics.dashboard.model.Pipeline
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -62,15 +63,16 @@ internal class PipelineRepositoryTest {
     }
 
     @Test
-    internal fun `should return true when pipelineExistWithNameAndDashboardId() called given name with dashboardId exist in repo`() {
-        `when`(mongoTemplate.find(anyObject(), eq(Pipeline::class.java))).thenReturn(listOf(Pipeline()))
-        assertTrue(pipelineRepository.pipelineExistWithNameAndDashboardId("pipelineName", "dashboardId"))
+    internal fun `should return pipeline when findByNameAndDashboardId() called given pipelineExist`() {
+        val pipeline = Pipeline()
+        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(pipeline)
+        assertEquals(pipelineRepository.findByNameAndDashboardId("pipelineName", "dashboardId"), pipeline)
     }
 
     @Test
-    internal fun `should return false when pipelineExistWithNameAndDashboardId() called given name with dashboardId not exist in repo`() {
-        `when`(mongoTemplate.find(anyObject(), eq(Pipeline::class.java))).thenReturn(emptyList<Pipeline>())
-        assertFalse(pipelineRepository.pipelineExistWithNameAndDashboardId("name", "dashboardId"))
+    internal fun `should return null when findByNameAndDashboardId() called given name with dashboardId not exist in repo`() {
+        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
+        assertNull(pipelineRepository.findByNameAndDashboardId("name", "dashboardId"))
     }
 
     @Test

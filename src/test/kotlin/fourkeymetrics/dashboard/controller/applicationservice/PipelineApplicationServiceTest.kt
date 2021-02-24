@@ -10,7 +10,6 @@ import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.jenkins.JenkinsPipelineService
-import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.exception.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -69,8 +68,9 @@ internal class PipelineApplicationServiceTest {
     internal fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
         val pipeline = buildPipeline()
         val dashboardId = pipeline.dashboardId
-        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(
-            true
+        val pipelineInDB = Pipeline()
+        `when`(pipelineRepository.findByNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(
+            pipelineInDB
         )
 
         val exception = assertThrows<BadRequestException> { pipelineApplicationService.createPipeline(pipeline) }
@@ -85,7 +85,7 @@ internal class PipelineApplicationServiceTest {
     internal fun `should return saved pipeline when createPipeline() called given valid Pipeline`() {
         val pipeline = buildPipeline()
         val dashboardId = pipeline.dashboardId
-        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(false)
+        `when`(pipelineRepository.findByNameAndDashboardId(pipeline.name, dashboardId)).thenReturn(null)
         `when`(pipelineRepository.save(anyObject())).thenReturn(pipeline)
 
         val result = pipelineApplicationService.createPipeline(pipeline)
@@ -121,7 +121,7 @@ internal class PipelineApplicationServiceTest {
 
         verify(dashboardRepository).findById(pipeline.dashboardId)
         verify(pipelineRepository).findByIdAndDashboardId(pipeline.id, pipeline.dashboardId)
-        verify(pipelineRepository).pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)
+        verify(pipelineRepository).findByNameAndDashboardId(pipeline.name, pipeline.dashboardId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
             pipeline.url, pipeline.username, pipeline.credential
         )
@@ -145,7 +145,8 @@ internal class PipelineApplicationServiceTest {
     @Test
     internal fun `should throw Exception when updatePipeline() with pipeline name already exist`() {
         val pipeline = buildPipeline()
-        `when`(pipelineRepository.pipelineExistWithNameAndDashboardId(pipeline.name, pipeline.dashboardId)).thenReturn(true)
+        val pipelineInDB = Pipeline()
+        `when`(pipelineRepository.findByNameAndDashboardId(pipeline.name, pipeline.dashboardId)).thenReturn(pipelineInDB)
 
         val exception = assertThrows<BadRequestException> { pipelineApplicationService.updatePipeline(pipeline) }
 
