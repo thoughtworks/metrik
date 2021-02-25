@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://4km:4000km@localhost:27017/4-Key-Metrics
+      uri: mongodb://4km:123456@localhost:27017/4-Key-Metrics
 
 logging:
   config: classpath:log4j2-console.xml
