@@ -3,7 +3,6 @@
     "pipelineId": "fake pipeline",
     "number": 82,
     "duration": 60420,
-    "result": "OTHER",
     "timestamp": 1610949317906,
     "url": "http://localhost:8001/job/4km-backend/82/",
     "stages": [
@@ -15,7 +14,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "FAILED",
+        "status": "OTHER",
         "name": "Build Docker image",
         "startTimeMillis": 1610949324441,
         "durationMillis": 53584,

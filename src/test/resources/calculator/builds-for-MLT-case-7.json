@@ -15,7 +15,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis": 14,
         "durationMillis": 1,
@@ -154,7 +154,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis": 14,
         "durationMillis": 1,
@@ -217,7 +217,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis":23,
         "durationMillis": 1,
@@ -242,7 +242,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis": 28,
         "durationMillis": 1,

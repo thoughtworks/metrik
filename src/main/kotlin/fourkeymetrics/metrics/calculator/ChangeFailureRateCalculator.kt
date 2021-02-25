@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.StageStatus
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.metrics.model.LEVEL
 import org.springframework.stereotype.Component
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class ChangeFailureRateCalculator : MetricsCalculator {
 
     companion object {
-        private val TARGET_STAGE_STATUS_LIST = listOf(StageStatus.FAILED, StageStatus.SUCCESS)
+        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
         private const val INVALID_VALUE = Double.NaN
         private const val PERCENTAGE_FACTOR = 100.0
 
@@ -30,7 +30,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
 
         val totalCount = statusCountMap.values.sum()
         return if (totalCount > 0) {
-            statusCountMap.getOrDefault(StageStatus.FAILED, 0).toDouble() / totalCount * PERCENTAGE_FACTOR
+            statusCountMap.getOrDefault(Status.FAILED, 0).toDouble() / totalCount * PERCENTAGE_FACTOR
         } else {
             INVALID_VALUE
         }
@@ -47,8 +47,8 @@ class ChangeFailureRateCalculator : MetricsCalculator {
         }
     }
 
-    private fun mergeMap(mapA: Map<StageStatus, Int>, mapB: Map<StageStatus, Int>): MutableMap<StageStatus, Int> {
-        val result = mutableMapOf<StageStatus, Int>()
+    private fun mergeMap(mapA: Map<Status, Int>, mapB: Map<Status, Int>): MutableMap<Status, Int> {
+        val result = mutableMapOf<Status, Int>()
         TARGET_STAGE_STATUS_LIST.forEach { result[it] = mapA.getOrDefault(it, 0) + mapB.getOrDefault(it, 0) }
         return result
     }
@@ -58,7 +58,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
         startTimestamp: Long,
         endTimestamp: Long,
         targetStage: String?
-    ): Map<StageStatus, Int> {
+    ): Map<Status, Int> {
         if (targetStage == null) {
             return emptyMap()
         }

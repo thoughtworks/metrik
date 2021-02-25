@@ -2,7 +2,7 @@ package fourkeymetrics.dashboard.service
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.StageStatus
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.dashboard.repository.BuildRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -25,7 +25,11 @@ internal class PipelineServiceTest {
             println("fake implementation")
         }
 
-        override fun mapStageStatus(statusInPipeline: String): StageStatus {
+        override fun mapStageStatus(statusInPipeline: String): Status {
+            TODO("Not yet implemented")
+        }
+
+        override fun mapBuildStatus(statusInPipeline: String?): Status? {
             TODO("Not yet implemented")
         }
     }

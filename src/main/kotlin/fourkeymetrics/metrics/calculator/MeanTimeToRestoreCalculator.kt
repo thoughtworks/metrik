@@ -2,7 +2,7 @@ package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.StageStatus
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.metrics.model.LEVEL
 import org.springframework.stereotype.Component
 import java.math.RoundingMode
@@ -11,7 +11,7 @@ import java.math.RoundingMode
 class MeanTimeToRestoreCalculator : MetricsCalculator {
 
     companion object {
-        private val TARGET_STAGE_STATUS_LIST = listOf(StageStatus.FAILED, StageStatus.SUCCESS)
+        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
         private const val MILLISECOND_TO_HOURS: Double = 3600000.0
         private const val NO_VALUE: Double = Double.NaN
         private const val ONE_HOUR: Double = 1.00
@@ -75,7 +75,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
             .sortedBy { it.getStageDoneTime() }
 
         val lastSuccessfulDeploymentBeforeGivenTime = targetStages.findLast {
-            it.status == StageStatus.SUCCESS && it.getStageDoneTime() < startTimestamp
+            it.status == Status.SUCCESS && it.getStageDoneTime() < startTimestamp
         } ?: return targetStages.takeWhile { it.getStageDoneTime() <= endTimestamp }.toList()
 
         val lastSuccessfulDeploymentTimestamp = lastSuccessfulDeploymentBeforeGivenTime.getStageDoneTime()
@@ -91,11 +91,11 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
         var totalTime = 0.0
         var restoredTimes = 0
         for (stage in selectedStages) {
-            if (stage.status == StageStatus.FAILED && firstFailedStage == null) {
+            if (stage.status == Status.FAILED && firstFailedStage == null) {
                 firstFailedStage = stage
                 continue
             }
-            if (stage.status == StageStatus.SUCCESS && firstFailedStage != null) {
+            if (stage.status == Status.SUCCESS && firstFailedStage != null) {
                 totalTime += stage.getStageDoneTime().minus(firstFailedStage.getStageDoneTime())
                 restoredTimes++
                 firstFailedStage = null

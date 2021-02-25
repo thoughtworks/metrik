@@ -35,7 +35,7 @@
     "pipelineId": 1,
     "number": 2,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609459200000,
     "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [

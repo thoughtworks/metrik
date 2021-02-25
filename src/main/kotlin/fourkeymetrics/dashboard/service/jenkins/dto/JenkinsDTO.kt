@@ -1,11 +1,10 @@
 package fourkeymetrics.dashboard.service.jenkins.dto
 
-import fourkeymetrics.common.model.BuildResult
 import org.apache.logging.log4j.util.Strings
 
 data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())
 
-data class BuildSummaryDTO(val number: Int = 0, val result: BuildResult? = BuildResult.FAILURE,
+data class BuildSummaryDTO(val number: Int = 0, val result: String? = Strings.EMPTY,
                            val duration: Long = 0,
                            val timestamp: Long = 0,
                            val url: String = Strings.EMPTY,

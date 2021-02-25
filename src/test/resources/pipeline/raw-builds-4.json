@@ -1,0 +1,28 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+  "allBuilds": [
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+      "building": false,
+      "duration": 60420,
+      "number": 82,
+      "result": null,
+      "timestamp": 1610949317906,
+      "url": "http://localhost:8001/job/4km-backend/82/",
+      "changeSets":[
+         {
+          "_class": "hudson.plugins.git.GitChangeSetList",
+          "items": [
+            {
+              "_class": "hudson.plugins.git.GitChangeSet",
+              "commitId": "d3de1d66161a3badee06471594a2b9b9e3a129fa",
+              "timestamp": 1610944812000,
+              "date": "2021-01-18 12:40:12 +0800",
+              "msg": "[Fireman] add check status when deploy to dev"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

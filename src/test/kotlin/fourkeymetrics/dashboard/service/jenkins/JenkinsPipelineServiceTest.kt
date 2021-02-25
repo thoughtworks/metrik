@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.test.web.client.ExpectedCount.manyTimes
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
@@ -79,6 +80,86 @@ internal class JenkinsPipelineServiceTest {
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
+        val allBuilds = jenkinsPipelineService.syncBuilds(pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        verify(buildRepository, times(1)).save(allBuilds)
+    }
+
+    @Test
+    internal fun `should sync builds from Jenkins when syncBuilds() given build status is failure`() {
+        val pipelineId = "fake pipeline"
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
+                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
+        val mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        `when`(pipelineRepository.findById(pipelineId)).thenReturn(
+            Pipeline(
+                username = username,
+                credential = credential,
+                url = baseUrl
+            )
+        )
+        mockServer.expect(requestTo(getBuildSummariesUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-builds-3.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        mockServer.expect(requestTo(getBuildDetailUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-3.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val expectedBuilds: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-3.json").readText())
+        val allBuilds = jenkinsPipelineService.syncBuilds(pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        verify(buildRepository, times(1)).save(allBuilds)
+    }
+
+    @Test
+    internal fun `should sync builds from Jenkins when syncBuilds() given build status is null`() {
+        val pipelineId = "fake pipeline"
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
+                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
+        val mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        `when`(pipelineRepository.findById(pipelineId)).thenReturn(
+            Pipeline(
+                username = username,
+                credential = credential,
+                url = baseUrl
+            )
+        )
+        mockServer.expect(requestTo(getBuildSummariesUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-builds-4.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        mockServer.expect(requestTo(getBuildDetailUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-4.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val expectedBuilds: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-4.json").readText())
         val allBuilds = jenkinsPipelineService.syncBuilds(pipelineId)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)

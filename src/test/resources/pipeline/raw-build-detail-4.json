@@ -39,7 +39,7 @@
       "id": "21",
       "name": "Build Docker image",
       "execNode": "",
-      "status": "FAILED",
+      "status": "ABORTED",
       "error": {
         "message": null,
         "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"

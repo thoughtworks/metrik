@@ -3,7 +3,7 @@
     "pipelineId": "1",
     "number": 1,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609171000000,
     "url": "http://localhost:8001/job/4km-backend/1/",
     "stages": [
@@ -28,7 +28,7 @@
     "pipelineId": "1",
     "number": 2,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609257400000,
     "url": "http://localhost:8001/job/4km-backend/2/",
     "stages": [
@@ -53,7 +53,7 @@
     "pipelineId": "1",
     "number": 3,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609343000000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [
@@ -78,7 +78,7 @@
     "pipelineId": "1",
     "number": 4,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609459000000,
     "url": "http://localhost:8001/job/4km-backend/4/",
     "stages": [
@@ -103,7 +103,7 @@
     "pipelineId": "2",
     "number": 5,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609516600000,
     "url": "http://localhost:8001/job/4km-backend/5/",
     "stages": [
@@ -128,7 +128,7 @@
     "pipelineId": "2",
     "number": 6,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609603100000,
     "url": "http://localhost:8001/job/4km-backend/6/",
     "stages": [
@@ -153,7 +153,7 @@
     "pipelineId": "2",
     "number": 7,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609776000000,
     "url": "http://localhost:8001/job/4km-backend/6/",
     "stages": [

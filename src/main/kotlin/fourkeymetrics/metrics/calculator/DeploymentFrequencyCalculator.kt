@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.calculator
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.StageStatus
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.metrics.model.LEVEL
 import org.springframework.stereotype.Component
 
@@ -53,7 +53,7 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
-        build.stages.find { stage -> stage.name == targetStage }?.status == StageStatus.SUCCESS
+        build.stages.find { stage -> stage.name == targetStage }?.status == Status.SUCCESS
 
     private fun isTargetStageWithinTimeRange(
         build: Build, startTimestamp: Long,

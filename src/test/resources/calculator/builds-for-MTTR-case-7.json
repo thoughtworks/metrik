@@ -53,7 +53,7 @@
     "pipelineId": "1",
     "number": 3,
     "duration": 60420,
-    "result": "ABORTED",
+    "result": "OTHER",
     "timestamp": 1609343000000,
     "url": "http://localhost:8001/job/4km-backend/3/",
     "stages": [
@@ -65,7 +65,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis": 1609344000000,
         "durationMillis": 1000,
@@ -103,7 +103,7 @@
     "pipelineId": "2",
     "number": 5,
     "duration": 60420,
-    "result": "ABORTED",
+    "result": "OTHER",
     "timestamp": 1609516600000,
     "url": "http://localhost:8001/job/4km-backend/5/",
     "stages": [
@@ -115,7 +115,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "OTHERS",
+        "status": "OTHER",
         "name": "deploy to prod",
         "startTimeMillis": 1609516800000,
         "durationMillis": 8000,

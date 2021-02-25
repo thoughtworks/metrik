@@ -28,7 +28,7 @@
     "pipelineId": "1",
     "number": 6,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609603100000,
     "url": "http://localhost:8001/job/4km-backend/6/",
     "stages": [
@@ -78,7 +78,7 @@
     "pipelineId": "2",
     "number": 6,
     "duration": 60420,
-    "result": "FAILURE",
+    "result": "FAILED",
     "timestamp": 1609603100000,
     "url": "http://localhost:8001/job/4km-backend/6/",
     "stages": [

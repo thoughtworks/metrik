@@ -3,7 +3,7 @@ package fourkeymetrics.dashboard.service.jenkins
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.StageStatus
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import fourkeymetrics.dashboard.service.PipelineService
@@ -46,7 +46,7 @@ class JenkinsPipelineService(
             Build(
                 pipelineId,
                 buildSummary.number,
-                buildSummary.result,
+                mapBuildStatus(buildSummary.result),
                 buildSummary.duration,
                 buildSummary.timestamp,
                 buildSummary.url,
@@ -95,16 +95,33 @@ class JenkinsPipelineService(
         }
     }
 
-    override fun mapStageStatus(statusInPipeline: String): StageStatus =
+    override fun mapStageStatus(statusInPipeline: String): Status =
         when (statusInPipeline) {
             "SUCCESS" -> {
-                StageStatus.SUCCESS
+                Status.SUCCESS
             }
             "FAILED" -> {
-                StageStatus.FAILED
+                Status.FAILED
             }
             else -> {
-                StageStatus.OTHERS
+                Status.OTHER
+            }
+        }
+
+
+    override fun mapBuildStatus(statusInPipeline: String?): Status? =
+        when (statusInPipeline) {
+            null -> {
+                null
+            }
+            "SUCCESS" -> {
+                Status.SUCCESS
+            }
+            "FAILURE" -> {
+                Status.FAILED
+            }
+            else -> {
+                Status.OTHER
             }
         }
 

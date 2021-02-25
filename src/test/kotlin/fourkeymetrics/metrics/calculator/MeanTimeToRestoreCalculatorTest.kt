@@ -3,8 +3,6 @@ package fourkeymetrics.metrics.calculator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.StageStatus
 import fourkeymetrics.metrics.model.LEVEL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
