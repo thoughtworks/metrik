@@ -1,4 +1,4 @@
-Feature: Single pipeline MTTR and Unit conversion. Card #52 and Card#123
+Feature: Single pipeline MTTR and Unit conversion. Card#52 and Card#123
 // refer to https://docs.google.com/presentation/d/12dQD9Zhkj4NXEa7Xdecb4wAr_fXIq8fJ7nW_4IZ2O_c/edit#slide=id.gb9d0735675_0_384 for manual testing result
     Background: 
         Given url baseUrl
@@ -29,7 +29,7 @@ Feature: Single pipeline MTTR and Unit conversion. Card #52 and Card#123
         """
         And method post
         Then status 200
-        Then match response.deploymentFrequency.summary.value == 30.00
+        Then match response.deploymentFrequency.summary.value == 14.00
         Then match response.deploymentFrequency.summary.level == "HIGH"
         Then match response.deploymentFrequency.details[0].value == 4
 
@@ -65,7 +65,7 @@ Feature: Single pipeline MTTR and Unit conversion. Card #52 and Card#123
                }
             ],
             "startTime": 1578499200000,
-            "unit": "Fortnightly"
+            "unit": "Monthly"
         }
         """
         And method post
@@ -82,7 +82,7 @@ Feature: Single pipeline MTTR and Unit conversion. Card #52 and Card#123
         Then match response.meanTimeToRestore.summary.level == "MEDIUM"
         Then match response.meanTimeToRestore.details[0].value == 60.48
 
-        Then match response.changeFailureRate.summary.value == 50/00
+        Then match response.changeFailureRate.summary.value == 50.00
         Then match response.changeFailureRate.summary.level == "LOW"
         Then match response.changeFailureRate.details[0].value == 50.00
 
