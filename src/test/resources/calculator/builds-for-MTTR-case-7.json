@@ -65,7 +65,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 1609344000000,
         "durationMillis": 1000,
@@ -115,7 +115,7 @@
         "pauseDurationMillis": 20
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 1609516800000,
         "durationMillis": 8000,

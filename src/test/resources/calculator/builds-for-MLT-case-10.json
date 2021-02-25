@@ -135,7 +135,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 21,
         "durationMillis": 1,
@@ -173,7 +173,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 27,
         "durationMillis": 1,
@@ -225,7 +225,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 37,
         "durationMillis": 1,
@@ -301,7 +301,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 47,
         "durationMillis": 1,
@@ -461,7 +461,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 21,
         "durationMillis": 1,
@@ -499,7 +499,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 27,
         "durationMillis": 1,
@@ -551,7 +551,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 37,
         "durationMillis": 1,
@@ -627,7 +627,7 @@
         "pauseDurationMillis": 0
       },
       {
-        "status": "ABORTED",
+        "status": "OTHERS",
         "name": "deploy to prod",
         "startTimeMillis": 47,
         "durationMillis": 1,

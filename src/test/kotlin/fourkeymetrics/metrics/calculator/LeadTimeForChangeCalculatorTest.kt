@@ -204,18 +204,18 @@ internal class LeadTimeForChangeCalculatorTest {
      * pipeline 1
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 11, two commits time: 4, 5
-     * build 3 : start time 12: deploy to prod, ABORTED, deployment finish time 14, no commits
+     * build 3 : start time 12: deploy to prod, OTHERS, deployment finish time 14, no commits
      * build 4 : start time 15: deploy to prod, SUCCESS, deployment finish time 19, two commits time: 13, 14
-     * build 5 : start time 20: deploy to prod, ABORTED, deployment finish time 25, no commits
-     * build 6 : start time 26: deploy to prod, ABORTED, deployment finish time 30, two commits time: 22, 23
+     * build 5 : start time 20: deploy to prod, OTHERS, deployment finish time 25, no commits
+     * build 6 : start time 26: deploy to prod, OTHERS, deployment finish time 30, two commits time: 22, 23
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      * pipeline 2
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 11, two commits time: 9, 9
-     * build 3 : start time 12: deploy to prod, ABORTED, deployment finish time 14, no commits
+     * build 3 : start time 12: deploy to prod, OTHERS, deployment finish time 14, no commits
      * build 4 : start time 15: deploy to prod, SUCCESS, deployment finish time 19, two commits time: 19, 19
-     * build 5 : start time 20: deploy to prod, ABORTED, deployment finish time 25, no commits
-     * build 6 : start time 26: deploy to prod, ABORTED, deployment finish time 30, two commits time: 22, 23
+     * build 5 : start time 20: deploy to prod, OTHERS, deployment finish time 25, no commits
+     * build 6 : start time 26: deploy to prod, OTHERS, deployment finish time 30, two commits time: 22, 23
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
@@ -236,13 +236,13 @@ internal class LeadTimeForChangeCalculatorTest {
 
     /**
      * test file: builds-for-MLT-case-7.json
-     * build 3 : start time 12: deploy to prod, ABORTED, deployment finish time 14, no commits
+     * build 3 : start time 12: deploy to prod, OTHERS, deployment finish time 14, no commits
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 11, two commits time: 4, 5
      * build 4 : start time 15: deploy to prod, SUCCESS, deployment finish time 19, two commits time: 13, 14
-     * build 5 : start time 20: deploy to prod, ABORTED, deployment finish time 25, no commits
-     * build 6 : start time 26: deploy to prod, ABORTED, deployment finish time 30, two commits time: 22, 23
+     * build 5 : start time 20: deploy to prod, OTHERS, deployment finish time 25, no commits
+     * build 6 : start time 26: deploy to prod, OTHERS, deployment finish time 30, two commits time: 22, 23
      */
     @Test
     internal fun `case 7 there are multiple builds with different status and wrong order and there are three deployment with the middle one in time range`() {
@@ -263,10 +263,10 @@ internal class LeadTimeForChangeCalculatorTest {
     /**
      * test file: builds-for-MLT-case-8.json
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 11, two commits time: 4, 5
-     * build 3 : start time 12: deploy to prod, ABORTED, deployment finish time 14, no commits
+     * build 3 : start time 12: deploy to prod, OTHERS, deployment finish time 14, no commits
      * build 4 : start time 15: deploy to prod, SUCCESS, deployment finish time 19, two commits time: 13, 14
-     * build 5 : start time 20: deploy to prod, ABORTED, deployment finish time 25, no commits
-     * build 6 : start time 26: deploy to prod, ABORTED, deployment finish time 30, two commits time: 22, 23
+     * build 5 : start time 20: deploy to prod, OTHERS, deployment finish time 25, no commits
+     * build 6 : start time 26: deploy to prod, OTHERS, deployment finish time 30, two commits time: 22, 23
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
@@ -319,23 +319,23 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 13, two commits time: 6, 7
      * build 3 : start time 12: deploy to prod, SUCCESS, deployment finish time 17, three commits time: 10, 11,12
-     * build 5 : start time 18: deploy to prod, ABORTED, deployment finish time 23, two commits time: 16, 17
-     * build 6 : start time 24: deploy to prod, ABORTED, deployment finish time 29, no commits
+     * build 5 : start time 18: deploy to prod, OTHERS, deployment finish time 23, two commits time: 16, 17
+     * build 6 : start time 24: deploy to prod, OTHERS, deployment finish time 29, no commits
      * build 7 : start time 30: deploy to prod, SUCCESS, deployment finish time 34, no commits
-     * build 8 : start time 35: deploy to prod, ABORTED, deployment finish time 39, two commits time: 33, 34
+     * build 8 : start time 35: deploy to prod, OTHERS, deployment finish time 39, two commits time: 33, 34
      * build 9 : start time 40: deploy to prod, SUCCESS, deployment finish time 44, two commits time: 37, 38
-     * build 10 : start time 45: deploy to prod, ABORTED, deployment finish time 49, two commits time: 41, 42
+     * build 10 : start time 45: deploy to prod, OTHERS, deployment finish time 49, two commits time: 41, 42
      *
      * pipeline 2
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 13, two commits time: 6, 7
      * build 3 : start time 12: deploy to prod, SUCCESS, deployment finish time 17, three commits time: 10, 11,12
-     * build 5 : start time 18: deploy to prod, ABORTED, deployment finish time 23, two commits time: 16, 17
-     * build 6 : start time 24: deploy to prod, ABORTED, deployment finish time 29, no commits
+     * build 5 : start time 18: deploy to prod, OTHERS, deployment finish time 23, two commits time: 16, 17
+     * build 6 : start time 24: deploy to prod, OTHERS, deployment finish time 29, no commits
      * build 7 : start time 30: deploy to prod, SUCCESS, deployment finish time 34, no commits
-     * build 8 : start time 35: deploy to prod, ABORTED, deployment finish time 39, two commits time: 33, 34
+     * build 8 : start time 35: deploy to prod, OTHERS, deployment finish time 39, two commits time: 33, 34
      * build 9 : start time 40: deploy to prod, SUCCESS, deployment finish time 44, two commits time: 37, 38
-     * build 10 : start time 45: deploy to prod, ABORTED, deployment finish time 49, two commits time: 41, 42
+     * build 10 : start time 45: deploy to prod, OTHERS, deployment finish time 49, two commits time: 41, 42
      * result  = (  (44*4-37-38-33-34) + (34*2-16-17) + (17*5-10-11-12-6-7)  )*2/11*2
      */
     @Test

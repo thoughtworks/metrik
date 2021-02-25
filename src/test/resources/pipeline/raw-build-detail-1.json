@@ -75,7 +75,7 @@
       "id": "31",
       "name": "Deploy to DEV",
       "execNode": "",
-      "status": "ABORTED",
+      "status": "NOT_EXECUTED",
       "error": {
         "message": null,
         "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"

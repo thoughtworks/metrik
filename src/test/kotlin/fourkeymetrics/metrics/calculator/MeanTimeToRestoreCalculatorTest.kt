@@ -153,10 +153,10 @@ internal class MeanTimeToRestoreCalculatorTest {
      * test file: builds-for-MTTR-case-6.json
      * build 1, pipeline 1 : deploy to prod, SUCCESS, end at 2020-12-29
      * build 2, pipeline 1 : deploy to prod, FAILED, end at 2020-12-30 *
-     * build 3, pipeline 1 : deploy to prod, ABORTED, end at 2020-12-31 *
+     * build 3, pipeline 1 : deploy to prod, OTHERS, end at 2020-12-31 *
      * build 4, pipeline 1 : deploy to prod, SUCCESS, end at 2021-01-01 *
      * build 5, pipeline 2 : deploy to prod, FAILED, end at 2021-01-02 *
-     * build 6, pipeline 2 : deploy to prod, ABORTED, end at 2021-01-02 *
+     * build 6, pipeline 2 : deploy to prod, OTHERS, end at 2021-01-02 *
      * build 7, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-03 *
      */
     @Test
@@ -178,9 +178,9 @@ internal class MeanTimeToRestoreCalculatorTest {
      * test file: builds-for-MTTR-case-7.json
      * build 1, pipeline 1 : deploy to prod, SUCCESS, end at 2020-12-29
      * build 2, pipeline 1 : deploy to prod, SUCCESS, end at 2020-12-30 *
-     * build 3, pipeline 1 : deploy to prod, ABORTED, end at 2020-12-31 *
+     * build 3, pipeline 1 : deploy to prod, OTHERS, end at 2020-12-31 *
      * build 4, pipeline 1 : deploy to prod, SUCCESS, end at 2021-01-01 *
-     * build 5, pipeline 2 : deploy to prod, ABORTED, end at 2021-01-02 *
+     * build 5, pipeline 2 : deploy to prod, OTHERS, end at 2021-01-02 *
      * build 6, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-03 *
      * build 7, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-05
      */
