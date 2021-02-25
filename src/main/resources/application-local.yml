@@ -5,3 +5,7 @@ spring:
 
 logging:
   config: classpath:log4j2-console.xml
+
+aes:
+  key: "hello"
+  iv: "world"

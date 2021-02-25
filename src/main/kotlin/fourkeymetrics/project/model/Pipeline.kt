@@ -11,7 +11,7 @@ data class Pipeline(
     var projectId: String = Strings.EMPTY,
     val name: String = Strings.EMPTY,
     val username: String = Strings.EMPTY,
-    val credential: String = Strings.EMPTY,
+    var credential: String = Strings.EMPTY,
     val url: String = Strings.EMPTY,
     var type: PipelineType = PipelineType.JENKINS,
 )
