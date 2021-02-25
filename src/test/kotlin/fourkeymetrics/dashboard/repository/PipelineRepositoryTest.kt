@@ -107,12 +107,6 @@ internal class PipelineRepositoryTest {
     }
 
     @Test
-    internal fun `should invoke mongoTemplate to delete when deleteByDashboardId() called`() {
-        pipelineRepository.deleteByDashboardId("dashboardId")
-        verify(mongoTemplate).remove(anyObject(), eq(Pipeline::class.java))
-    }
-
-    @Test
     internal fun `should invoke mongoTemplate to find when findByDashboardId() called`() {
         pipelineRepository.findByDashboardId("dashboardId")
         verify(mongoTemplate).find(anyObject(), eq(Pipeline::class.java))

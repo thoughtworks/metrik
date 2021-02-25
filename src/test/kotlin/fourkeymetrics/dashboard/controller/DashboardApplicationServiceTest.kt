@@ -11,6 +11,7 @@ import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
 import fourkeymetrics.dashboard.model.Dashboard
 import fourkeymetrics.dashboard.model.Pipeline
 import fourkeymetrics.dashboard.model.PipelineType
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,6 +40,9 @@ class DashboardApplicationServiceTest {
 
     @Mock
     private lateinit var pipelineRepository: PipelineRepository
+
+    @Mock
+    private lateinit var buildRepository: BuildRepository
 
     private var dashboardId = "601a2d059deac2220dd0756b"
     private var dashboardName = "first dashboard"
@@ -97,11 +101,15 @@ class DashboardApplicationServiceTest {
     }
 
     @Test
-    internal fun `test delete pipeline`() {
+    internal fun `test delete dashboard`() {
+        `when`(dashboardRepository.findById(dashboardId)).thenReturn(Dashboard(dashboardId))
+        `when`(pipelineRepository.findByDashboardId(dashboardId)).thenReturn(listOf(Pipeline(pipelineId, dashboardId)))
+
         dashboardApplicationService.deleteDashboard(dashboardId)
 
         verify(dashboardRepository, times(1)).deleteById(dashboardId)
-        verify(pipelineRepository, times(1)).deleteByDashboardId(dashboardId)
+        verify(pipelineRepository, times(1)).deleteById(pipelineId)
+        verify(buildRepository, times(1)).clear(pipelineId)
     }
 
     @Test

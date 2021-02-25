@@ -49,11 +49,6 @@ class PipelineRepository {
         return mongoTemplate.insert(pipelines.toMutableList(), Pipeline::class.java).toList()
     }
 
-    fun deleteByDashboardId(dashboardId: String) {
-        val query = Query().addCriteria(Criteria.where("dashboardId").isEqualTo(dashboardId))
-        mongoTemplate.remove(query, Pipeline::class.java)
-    }
-
     fun findByDashboardId(dashboardId: String): List<Pipeline> {
         val query = Query().addCriteria(Criteria.where("dashboardId").isEqualTo(dashboardId))
         return mongoTemplate.find(query, Pipeline::class.java)

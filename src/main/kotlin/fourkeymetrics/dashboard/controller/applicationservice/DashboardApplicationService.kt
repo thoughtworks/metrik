@@ -5,6 +5,7 @@ import fourkeymetrics.dashboard.controller.vo.response.DashboardDetailResponse
 import fourkeymetrics.dashboard.controller.vo.response.DashboardResponse
 import fourkeymetrics.dashboard.exception.DashboardNameDuplicateException
 import fourkeymetrics.dashboard.model.Dashboard
+import fourkeymetrics.dashboard.repository.BuildRepository
 import fourkeymetrics.dashboard.repository.DashboardRepository
 import fourkeymetrics.dashboard.repository.PipelineRepository
 import org.bson.types.ObjectId
@@ -22,6 +23,9 @@ class DashboardApplicationService {
 
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository
+
+    @Autowired
+    private lateinit var buildRepository: BuildRepository
 
     @Transactional
     fun createDashboard(dashboardRequest: DashboardRequest): DashboardDetailResponse {
@@ -52,8 +56,13 @@ class DashboardApplicationService {
 
     @Transactional
     fun deleteDashboard(dashboardId: String) {
-        pipelineRepository.deleteByDashboardId(dashboardId)
-        dashboardRepository.deleteById(dashboardId)
+        val dashboard = dashboardRepository.findById(dashboardId)
+        val pipelines = pipelineRepository.findByDashboardId(dashboard.id)
+        pipelines.forEach {
+            pipelineRepository.deleteById(it.id)
+            buildRepository.clear(it.id)
+        }
+        dashboardRepository.deleteById(dashboard.id)
     }
 
     fun getDashboardDetails(dashboardId: String): DashboardDetailResponse {
