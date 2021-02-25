@@ -30,13 +30,21 @@ interface LineChartProps {
 
 const domainMaximizeRatio = 1.1;
 const lineUnit = 100;
-const yAxisWidth = 80;
+const yAxisWidth = 72;
 const minLengthForDisplayScrollBar = 10;
 
 const chartContainerStyle = css({
 	position: "relative",
 	height: 300,
 	"overflow-x": "auto",
+});
+
+const yAxisStyles = css({
+	width: yAxisWidth,
+	height: 300,
+	position: "absolute",
+	backgroundColor: "#ffffff",
+	zIndex: 1000,
 });
 
 export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, CustomizeTick }) => {
@@ -66,6 +74,26 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 
 	return (
 		<div ref={ref}>
+			<div css={yAxisStyles}>
+				<ResponsiveContainer width="100%" height="80%">
+					<RechartsLineChart
+						margin={{
+							top: 5,
+							right: 30,
+							left: 20,
+							bottom: 20,
+						}}>
+						<YAxis
+							tickFormatter={yaxisFormatter}
+							axisLine={false}
+							label={{ value: unit, angle: -90, position: "insideLeft" }}
+							tickLine={false}
+							domain={[0, yMaxValue]}
+						/>
+					</RechartsLineChart>
+				</ResponsiveContainer>
+			</div>
+
 			<div css={chartContainerStyle}>
 				<ResponsiveContainer
 					width={data.length >= minLengthForDisplayScrollBar ? scrollWidth : "100%"}>
@@ -99,7 +127,6 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 							label={{ value: unit, angle: -90, position: "insideLeft" }}
 							tickLine={false}
 							domain={[0, yMaxValue]}
-							dy={-6}
 						/>
 						<Line
 							type="monotone"
