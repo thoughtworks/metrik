@@ -158,6 +158,8 @@ export const LineChart: FC<LineChartProps> = ({
 							domain={yAxisDomain}
 						/>
 						<Line
+							connectNulls
+							activeDot={{ fill: GRAY_9, r: 6 }}
 							type="monotone"
 							dataKey="value"
 							stroke={GRAY_7}
