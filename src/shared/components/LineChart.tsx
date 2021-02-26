@@ -30,14 +30,13 @@ interface LineChartProps {
 
 const domainMaximizeRatio = 1.1;
 const lineUnit = 100;
-const yAxisWidth = 55;
+const yAxisWidth = 72;
 const minLengthForDisplayScrollBar = 10;
 
 const chartContainerStyle = css({
 	position: "relative",
 	height: 300,
 	"overflow-x": "auto",
-	marginLeft: yAxisWidth - minLengthForDisplayScrollBar,
 });
 
 const yAxisStyles = css({
@@ -52,7 +51,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 	const dataMax = Math.max(...map(data, item => item.value).filter(item => !isNaN(item)));
 	const yMaxValue = dataMax === 0 ? 1 : Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10;
 	const ref = useRef<HTMLDivElement>(null);
-	const scrollWidth = data.length ? lineUnit * (data.length - 1) : 0;
+	const scrollWidth = data.length ? lineUnit * (data.length - 1) + yAxisWidth : 0;
 	const [xAxisInterval, setXAxisInterval] = useState<"preserveEnd" | 0>(0);
 
 	useEffect(() => {
@@ -77,7 +76,13 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 		<div ref={ref}>
 			<div css={yAxisStyles}>
 				<ResponsiveContainer width="100%" height="80%" id={"levelSvg"}>
-					<RechartsLineChart margin={{ top: 5, bottom: 20 }}>
+					<RechartsLineChart
+						margin={{
+							top: 5,
+							right: 30,
+							left: 20,
+							bottom: 20,
+						}}>
 						<YAxis
 							tickFormatter={yaxisFormatter}
 							axisLine={false}
@@ -116,6 +121,13 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 							height={50}
 							padding={{ left: 30, right: 30 }}
 							tick={<CustomizeTick data={data} />}
+						/>
+						<YAxis
+							tickFormatter={yaxisFormatter}
+							axisLine={false}
+							label={{ value: unit, angle: -90, position: "insideLeft" }}
+							tickLine={false}
+							domain={[0, yMaxValue]}
 						/>
 						<Line
 							type="monotone"
