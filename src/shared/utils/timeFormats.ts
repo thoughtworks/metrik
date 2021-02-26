@@ -4,7 +4,7 @@ export const formatLastUpdateTime = (timestamp?: number): string => {
 	return timestamp ? moment(timestamp).format("hh:mm, D MMM, YYYY") : "";
 };
 
-export const formatTickTime = (
+export const durationFormatter = (
 	startTimestamp: number,
 	endTimestamp: number
 ): { startTime: string; endTime: string } => {

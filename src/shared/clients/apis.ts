@@ -224,7 +224,7 @@ export interface Metrics {
 	endTimestamp: number;
 	level?: keyof typeof MetricsLevel;
 	startTimestamp: number;
-	value: number | "NaN";
+	value?: number | "NaN";
 }
 
 export interface ValidMetric extends Metrics {

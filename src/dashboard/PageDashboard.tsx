@@ -11,6 +11,7 @@ import { min, max } from "lodash";
 import { DurationUnit } from "../shared/__types__/base";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio";
+import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -22,7 +23,6 @@ const initialMetricsState: MetricsInfo = {
 		endTimestamp: 0,
 		level: MetricsLevel.INVALID,
 		startTimestamp: 0,
-		value: NaN,
 	},
 	details: [],
 };
@@ -58,10 +58,10 @@ export const PageDashboard = () => {
 			},
 		})
 			.then(response => {
-				setChangeFailureRate(response.changeFailureRate);
-				setDeploymentFrequency(response.deploymentFrequency);
-				setLeadTimeForChange(response.leadTimeForChange);
-				setMeanTimeToRestore(response.meanTimeToRestore);
+				setChangeFailureRate(cleanMetricsInfo(response.changeFailureRate));
+				setDeploymentFrequency(cleanMetricsInfo(response.deploymentFrequency));
+				setLeadTimeForChange(cleanMetricsInfo(response.leadTimeForChange));
+				setMeanTimeToRestore(cleanMetricsInfo(response.meanTimeToRestore));
 			})
 			.finally(() => {
 				setLoadingChart(false);

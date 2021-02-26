@@ -2,7 +2,7 @@ import {
 	formatLastUpdateTime,
 	momentObjToStartTimeStamp,
 	momentObjToEndTimeStamp,
-	formatTickTime,
+	durationFormatter,
 } from "../timeFormats";
 import moment from "moment";
 
@@ -17,14 +17,14 @@ describe("time formats test", () => {
 	});
 
 	it("should return correct formatted tick time when time duration in same year", () => {
-		const { startTime, endTime } = formatTickTime(1611629036125, 1629427436125);
+		const { startTime, endTime } = durationFormatter(1611629036125, 1629427436125);
 
 		expect(startTime).toEqual("26 Jan");
 		expect(endTime).toEqual("20 Aug");
 	});
 
 	it("should return correct formatted tick time with year when time duration across year", () => {
-		const { startTime, endTime } = formatTickTime(1609430399125, 1609430400000);
+		const { startTime, endTime } = durationFormatter(1609430399125, 1609430400000);
 
 		expect(startTime).toEqual("31 Dec 2020");
 		expect(endTime).toEqual("01 Jan 2021");

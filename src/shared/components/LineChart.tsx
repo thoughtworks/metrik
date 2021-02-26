@@ -4,14 +4,16 @@ import {
 	Line,
 	LineChart as RechartsLineChart,
 	ResponsiveContainer,
+	Tooltip,
 	XAxis,
 	YAxis,
 } from "recharts";
 import { Metrics } from "../clients/apis";
-import { GRAY_1, GRAY_7 } from "../constants/styles";
+import { GRAY_1, GRAY_5, GRAY_7, GRAY_9 } from "../constants/styles";
 import { css } from "@emotion/react";
-import { throttle } from "lodash";
+import { find, throttle } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
+import { durationFormatter } from "../utils/timeFormats";
 
 export interface CustomizeTickProps {
 	x?: number;
@@ -47,6 +49,27 @@ const yAxisStyles = css({
 	backgroundColor: "#ffffff",
 	zIndex: 1000,
 });
+
+const tooltipLabelFormatter = (data: Metrics[]) => {
+	return (labelContent: number) => {
+		const currentDataPoint = find(data, item => item.startTimestamp === labelContent);
+		if (!currentDataPoint) {
+			return "N/A";
+		}
+		const { startTime, endTime } = durationFormatter(
+			currentDataPoint.startTimestamp,
+			currentDataPoint.endTimestamp
+		);
+		return `${startTime} - ${endTime}`;
+	};
+};
+
+const tooltipValueFormatterBuilder = (yaxisFormatter: (value: string) => string) => (
+	value: string
+): any => {
+	const formattedValue = yaxisFormatter(value);
+	return [formattedValue, "Value"];
+};
 
 export const LineChart: FC<LineChartProps> = ({
 	data,
@@ -149,6 +172,16 @@ export const LineChart: FC<LineChartProps> = ({
 								fontSize: 12,
 								style: { transform: "translateY(-5px)" },
 							}}
+						/>
+						<Tooltip
+							cursor={{ stroke: GRAY_5, strokeWidth: 1, strokeDasharray: 4 }}
+							labelFormatter={tooltipLabelFormatter(data)}
+							formatter={tooltipValueFormatterBuilder(yaxisFormatter)}
+							filterNull
+							contentStyle={{ padding: "3px 5px" }}
+							isAnimationActive={false}
+							labelStyle={{ fontSize: 12, color: GRAY_9, padding: "3px 2px 0" }}
+							itemStyle={{ fontSize: 12, fontWeight: "bold", color: GRAY_9, padding: "0 2px 3px" }}
 						/>
 					</RechartsLineChart>
 				</ResponsiveContainer>

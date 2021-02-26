@@ -25,7 +25,7 @@ import {
 	ORANGE_DARK,
 	RED_DARK,
 } from "../../shared/constants/styles";
-import { formatTickTime } from "../../shared/utils/timeFormats";
+import { durationFormatter } from "../../shared/utils/timeFormats";
 import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
 import { Metrics, MetricsLevel } from "../../shared/clients/apis";
 import { find } from "lodash";
@@ -121,7 +121,7 @@ const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, payload
 	if (currentTickItem === undefined) {
 		return <></>;
 	}
-	const { startTime, endTime } = formatTickTime(payload.value, currentTickItem.endTimestamp);
+	const { startTime, endTime } = durationFormatter(payload.value, currentTickItem.endTimestamp);
 
 	return (
 		<text
@@ -190,7 +190,7 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 						<div css={metricsValueStyles(summary.level as MetricsLevel)}>
 							{summary.level === MetricsLevel.INVALID
 								? "--"
-								: yaxisFormatter(summary.value.toString())}
+								: yaxisFormatter((summary.value || "").toString())}
 						</div>
 						<div css={metricsUnitStyles}>
 							<div>AVG.</div>
