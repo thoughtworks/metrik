@@ -20,13 +20,19 @@ Checkout the repo to local and go to the project folder: /**/sea-4-key-metrics-s
 ```aidl
 ./gradlew clean build 
 ```
-* Start App: 
+* Set up mongodb locally: 
 ```aidl
-- you need to start mongo locally first: cd local-mongodb-setup, then run ./setup-mongodb.sh
-
-- then run ./gradlew clean bootRun
+cd local-mongodb-setup
+./setup-mongodb.sh
 ```
-Then you can access [http://localhost:9000/actuator/health](http://localhost:9000/actuator/health) to check the app health
+* Start up APP locally
+```aidl
+go to project folder first: 
+cd ../
+then
+./gradlew clean bootRun 
+```
+  Then you can access [http://localhost:9000/actuator/health](http://localhost:9000/actuator/health) to check the app health
 
 
 ### Run Api Tests
