@@ -29,6 +29,7 @@ import { formatTickTime } from "../../shared/utils/timeFormats";
 import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
 import { Metrics, MetricsLevel } from "../../shared/clients/apis";
 import { find } from "lodash";
+import { AxisDomain } from "recharts/types/util/types";
 
 interface MetricsLevelConfigInterface {
 	color: string;
@@ -150,6 +151,7 @@ interface MetricsCardProps {
 	loading: boolean;
 	subTitleUnit: string;
 	info: ReactNode;
+	yAxisDomain?: AxisDomain;
 }
 
 export const MetricsCard: FC<MetricsCardProps> = ({
@@ -161,6 +163,7 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 	loading,
 	subTitleUnit,
 	info,
+	yAxisDomain,
 }) => {
 	return (
 		<div css={containerStyles}>
@@ -199,6 +202,7 @@ export const MetricsCard: FC<MetricsCardProps> = ({
 						yaxisFormatter={yaxisFormatter}
 						unit={yAxisLabel}
 						CustomizeTick={CustomizeTick}
+						yAxisDomain={yAxisDomain}
 					/>
 				</>
 			)}

@@ -10,6 +10,7 @@ import { BACKGROUND_COLOR } from "../shared/constants/styles";
 import { min, max } from "lodash";
 import { DurationUnit } from "../shared/__types__/base";
 import { MetricTooltip } from "./components/MetricTooltip";
+import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -25,6 +26,8 @@ const initialMetricsState: MetricsInfo = {
 	},
 	details: [],
 };
+
+const domainMaximizeRatio = 1.1;
 
 export const PageDashboard = () => {
 	const query = useQuery();
@@ -89,6 +92,10 @@ export const PageDashboard = () => {
 							yAxisLabel="Times"
 							loading={loadingChart}
 							subTitleUnit={getSubTitleUnit(appliedUnit)}
+							yAxisDomain={[
+								0,
+								calcMaxValueWithRatio(deploymentFrequency.details, 20, domainMaximizeRatio),
+							]}
 						/>
 					</Col>
 
@@ -102,6 +109,10 @@ export const PageDashboard = () => {
 							yAxisLabel="Days"
 							loading={loadingChart}
 							subTitleUnit="Days"
+							yAxisDomain={[
+								0,
+								calcMaxValueWithRatio(leadTimeForChange.details, 1, domainMaximizeRatio),
+							]}
 						/>
 					</Col>
 
@@ -115,6 +126,10 @@ export const PageDashboard = () => {
 							yAxisLabel="Hours"
 							loading={loadingChart}
 							subTitleUnit="Hours"
+							yAxisDomain={[
+								0,
+								calcMaxValueWithRatio(meanTimeToRestore.details, 1, domainMaximizeRatio),
+							]}
 						/>
 					</Col>
 
@@ -128,6 +143,7 @@ export const PageDashboard = () => {
 							yAxisLabel="Percentage"
 							loading={loadingChart}
 							subTitleUnit="Percentage"
+							yAxisDomain={[0, calcMaxValueWithRatio(changeFailureRate.details, 100, 1)]}
 						/>
 					</Col>
 				</Row>

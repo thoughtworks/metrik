@@ -10,7 +10,8 @@ import {
 import { Metrics } from "../clients/apis";
 import { GRAY_1, GRAY_7 } from "../constants/styles";
 import { css } from "@emotion/react";
-import { map, throttle } from "lodash";
+import { throttle } from "lodash";
+import { AxisDomain } from "recharts/types/util/types";
 
 export interface CustomizeTickProps {
 	x?: number;
@@ -26,9 +27,9 @@ interface LineChartProps {
 	yaxisFormatter: (value: string) => string;
 	unit: string;
 	CustomizeTick: FC<CustomizeTickProps>;
+	yAxisDomain?: AxisDomain;
 }
 
-const domainMaximizeRatio = 1.1;
 const lineUnit = 100;
 const yAxisWidth = 72;
 const minLengthForDisplayScrollBar = 10;
@@ -47,9 +48,13 @@ const yAxisStyles = css({
 	zIndex: 1000,
 });
 
-export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, CustomizeTick }) => {
-	const dataMax = Math.max(...map(data, item => item.value).filter(item => !isNaN(item)));
-	const yMaxValue = dataMax === 0 ? 1 : Math.ceil((dataMax * domainMaximizeRatio) / 10) * 10;
+export const LineChart: FC<LineChartProps> = ({
+	data,
+	yaxisFormatter,
+	unit,
+	CustomizeTick,
+	yAxisDomain,
+}) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const scrollWidth = data.length ? lineUnit * (data.length - 1) + yAxisWidth : 0;
 	const [xAxisInterval, setXAxisInterval] = useState<"preserveEnd" | 0>(0);
@@ -78,7 +83,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 				<ResponsiveContainer width="100%" height="80%" id={"levelSvg"}>
 					<RechartsLineChart
 						margin={{
-							top: 5,
+							top: 20,
 							right: 30,
 							left: 20,
 							bottom: 20,
@@ -88,7 +93,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 							axisLine={false}
 							label={{ value: unit, angle: -90, position: "insideLeft" }}
 							tickLine={false}
-							domain={[0, yMaxValue]}
+							domain={yAxisDomain}
 						/>
 					</RechartsLineChart>
 				</ResponsiveContainer>
@@ -101,7 +106,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 					<RechartsLineChart
 						data={data}
 						margin={{
-							top: 5,
+							top: 20,
 							right: 30,
 							left: 20,
 							bottom: 20,
@@ -127,7 +132,7 @@ export const LineChart: FC<LineChartProps> = ({ data, yaxisFormatter, unit, Cust
 							axisLine={false}
 							label={{ value: unit, angle: -90, position: "insideLeft" }}
 							tickLine={false}
-							domain={[0, yMaxValue]}
+							domain={yAxisDomain}
 						/>
 						<Line
 							type="monotone"
