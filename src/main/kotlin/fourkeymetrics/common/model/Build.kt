@@ -5,6 +5,7 @@ import org.apache.logging.log4j.util.Strings
 enum class Status {
     SUCCESS,
     FAILED,
+    IN_PROGRESS,
     OTHER
 }
 

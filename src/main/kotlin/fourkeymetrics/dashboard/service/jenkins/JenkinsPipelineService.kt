@@ -37,7 +37,10 @@ class JenkinsPipelineService(
 
         val buildsNeedToSync = getBuildSummariesFromJenkins(username, credential, baseUrl)
             .parallelStream()
-            .filter { buildRepository.findByBuildNumber(pipelineId, it.number)?.result == null }
+            .filter {
+                val buildInDB = buildRepository.findByBuildNumber(pipelineId, it.number)
+                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
+            }
             .toList()
 
         val builds = buildsNeedToSync.parallelStream().map { buildSummary ->
@@ -103,6 +106,9 @@ class JenkinsPipelineService(
             "FAILED" -> {
                 Status.FAILED
             }
+            "IN_PROGRESS" -> {
+                Status.IN_PROGRESS
+            }
             else -> {
                 Status.OTHER
             }
@@ -112,7 +118,7 @@ class JenkinsPipelineService(
     override fun mapBuildStatus(statusInPipeline: String?): Status? =
         when (statusInPipeline) {
             null -> {
-                null
+                Status.IN_PROGRESS
             }
             "SUCCESS" -> {
                 Status.SUCCESS
