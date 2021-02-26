@@ -10,6 +10,7 @@ jobs:
       - image: circleci/openjdk:11.0.8-jdk
         environment:
           TZ: "Asia/Shanghai"
+      - image: circleci/mongo:4.4.3-bionic
     resource_class: medium
 
     steps:
@@ -26,6 +27,31 @@ jobs:
       - run:
           name: Run tests and build artifact
           command: ./gradlew build
+
+      - run:
+          name: Install MongoDB on primary docker instance 
+          command: |
+            sudo apt-get install libcurl4 openssl liblzma5
+            wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.4.4.tgz
+            tar -zxvf mongodb-linux-*-4.4.4.tgz
+            sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/
+            mongo --eval 'db.serverStatus()'
+
+      - run:
+          name: Configure MongoDB
+          command: |
+            mongo 4-Key-Metrics --eval "db.createUser({ user: '$DB_USER', pwd: '$DB_PASSWORD', roles: [{ role: 'readWrite', db: '4-Key-Metrics' }]})"
+            mongo < feed-test-data.js
+
+      - run:
+          name: Start Service and Run Api Test
+          command: ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
+
+      - store_test_results:
+          path: build/test-results/apiTest/
+
+      - store_artifacts:
+          path: build/surefire-reports/
 
       - save_cache:
           paths:
