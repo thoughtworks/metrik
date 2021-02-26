@@ -69,7 +69,7 @@ db.build.insertMany([{
     "pipelineId" : "601cbb3425c1392117aa042a",
     "number" : 1.0,
     "duration" : 40000.0,
-    "result" : "FAILURE",
+    "result" : "FAILED",
     "timestamp" : NumberLong(1609488000000),
     "url" : "http://localhost:8001/job/4km-backend/1/",
     "stages" : [ 
@@ -102,7 +102,7 @@ db.build.insertMany([{
     "pipelineId" : "601cbb3425c1392117aa042a",
     "number" : 1.0,
     "duration" : 40000.0,
-    "result" : "ABORTED",
+    "result" : "FAILED",
     "timestamp" : NumberLong(1609477200000),
     "url" : "http://localhost:8001/job/4km-backend/1/",
     "stages" : [ 
@@ -114,7 +114,7 @@ db.build.insertMany([{
             "pauseDurationMillis" : 0.0
         }, 
         {
-            "status" : "ABORTED",
+            "status" : "OTHER",
             "name" : "Deploy to DEV",
             "startTimeMillis" : NumberLong(1609477500000),
             "durationMillis" : 5000.0,
