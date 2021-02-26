@@ -22,10 +22,9 @@ Checkout the repo to local and go to the project folder: /**/sea-4-key-metrics-s
 ```
 * Start App: 
 ```aidl
-*  you need to start mongo locally first. 
-Please use the script to start up mongo DB locally. Please refer to the link below(please make sure the DB passworkd is 4000km):
-https://docs.google.com/spreadsheets/d/1qyyYG4XNPvOlmGSaP8Bs4OrnpBXvKTIkVK5M46R--3Q/edit#gid=350000577
-* then run ./gradlew clean bootRun
+- you need to start mongo locally first: cd local-mongodb-setup, then run ./setup-mongodb.sh
+
+- then run ./gradlew clean bootRun
 ```
 Then you can access [http://localhost:9000/actuator/health](http://localhost:9000/actuator/health) to check the app health
 
