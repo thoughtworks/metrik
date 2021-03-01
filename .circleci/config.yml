@@ -40,12 +40,12 @@ jobs:
       - run:
           name: Configure MongoDB
           command: |
-            mongo 4-Key-Metrics --eval "db.createUser({ user: '$DB_USER', pwd: '$DB_PASSWORD', roles: [{ role: 'readWrite', db: '4-Key-Metrics' }]})"
+            mongo 4-key-metrics --eval "db.createUser({ user: '$DB_USER', pwd: '$DB_PASSWORD', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
             mongo < feed-test-data.js
 
       - run:
           name: Start Service and Run Api Test
-          command: ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
+          command: ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest
 
       - store_test_results:
           path: build/test-results/apiTest/
