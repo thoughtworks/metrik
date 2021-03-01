@@ -50,9 +50,8 @@ const fullScreenIconStyles = css({
 
 const fullScreenTextStyles = css({ marginLeft: 10, color: PRIMARY_COLOR });
 
-const dividerStyles = css({
+const pipelineSettingStyles = css({
 	display: "inline-block",
-	borderRight: `1px solid ${SECONDARY_COLOR}`,
 	padding: "4px 24px 4px 0",
 });
 
@@ -183,14 +182,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 					<Text type={"secondary"}>
 						Last updated : {formatLastUpdateTime(synchronization?.synchronizationTimestamp)}
 					</Text>
-					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
-						{syncing ? "Synchronizing...." : "Sync Data"}
-					</Button>
 				</div>
 				<div>
-					<span css={dividerStyles}>
+					<span css={pipelineSettingStyles}>
 						<PipelineSetting dashboardId={dashboardId} syncBuild={syncBuilds} />
 					</span>
+					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
+						{syncing ? "Synchronizing" : "Sync Data"}
+					</Button>
 					<span css={fullScreenStyles}>
 						<FullscreenOutlined css={fullScreenIconStyles} />
 						<Text css={fullScreenTextStyles}>Full Screen</Text>
@@ -200,7 +199,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 			<div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 				<Form
 					layout={"vertical"}
-					css={{ marginTop: 16, width: "50%" }}
+					css={{ marginTop: 16 }}
 					initialValues={defaultValues}
 					onFinish={() => {
 						if (isEmpty(formValues.pipelines)) {
