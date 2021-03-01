@@ -72,10 +72,10 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 
 	return (
 		<>
-			<span css={settingStyles} onClick={handleToggleVisible}>
+			<Button css={settingStyles} onClick={handleToggleVisible} type={"link"}>
 				<SettingOutlined />
-				<Text css={settingTextStyles}>Pipeline Setting</Text>
-			</span>
+				Pipeline Settings
+			</Button>
 			<Modal
 				visible={visible}
 				onCancel={handleToggleVisible}
@@ -93,7 +93,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 				title={
 					status === PipelineSettingStatus.VIEW ? (
 						<div css={modalHeaderTextStyles}>
-							<span css={{ flexGrow: 1 }}>Pipeline Setting</span>
+							<span css={{ flexGrow: 1 }}>Pipeline Settings</span>
 							<div css={{ button: { margin: "0 4px" } }}>
 								<Button icon={<DownloadOutlined />} disabled={true}>
 									Export All
