@@ -1,7 +1,7 @@
 package fourkeymetrics.metrics.controller
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.dashboard.repository.BuildRepository
+import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.metrics.calculator.*
 import fourkeymetrics.metrics.controller.vo.FourKeyMetricsResponse

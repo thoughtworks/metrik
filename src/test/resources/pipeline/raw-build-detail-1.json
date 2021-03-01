@@ -93,7 +93,7 @@
       "id": "35",
       "name": "Deploy to UAT",
       "execNode": "",
-      "status": "PAUSED_PENDING_INPUT",
+      "status": "IN_PROGRESS",
       "error": {
         "message": null,
         "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"

@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+  mongodb:
+    image: mongo:4.4.4-bionic
+    container_name: mongodb
+    hostname: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: 4-key-metrics
+      MONGO_REPLICA_SET_NAME: rs0
+    volumes:
+      - ./config/:/home/mongo/:ro
+      - ./mongo-db-data/:/data/db/
+    ports:
+      - "27017:27017"
+    command: --keyFile /home/mongo/keyfile.txt --bind_ip_all --replSet rs0
+#    command:
+#      - /bin/bash
+#      - -c
+#      - |
+#       /usr/local/bin/docker-entrypoint.sh /usr/bin/mongod -keyFile /home/mongo/keyfile.txt --replSet rs0 --bind_ip_all || true
+#       /home/mongo/init.sh
+
