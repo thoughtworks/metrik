@@ -5,3 +5,7 @@ spring:
 
 logging:
   config: classpath:log4j2-file-and-console.xml
+
+aes:
+  key: ${AES_KEY}
+  iv: ${AES_IV}

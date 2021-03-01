@@ -7,5 +7,5 @@ logging:
   config: classpath:log4j2-console.xml
 
 aes:
-  key: "hello"
-  iv: "world"
+  key: "&E)H@MbQeThWmZq4"
+  iv: "D(G+KbPeShVkYp3s"
