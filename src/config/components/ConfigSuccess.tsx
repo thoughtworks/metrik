@@ -55,14 +55,14 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 						color: "black",
 						margin: "0 30px",
 					}}>
-					<span>Pipeline successfully created!</span>
+					<span>Project successfully created!</span>
 					<span
 						css={{
 							fontSize: 14,
 							opacity: 0.5,
 						}}>
-						The initial configuration is complete，4 Key Metrics will be presented based on the
-						following projects
+						Congratulations! Your project has been successfully created. The 4 key metrics will be
+						displayed based on the following pipeline data.
 					</span>
 				</div>
 				<Button type={"primary"} size={"large"} onClick={() => location.reload()}>

@@ -16,12 +16,11 @@ export const FieldsStep1: FC<{
 }> = ({ onNext, visible = true, formValues }) => {
 	return (
 		<div css={{ display: visible ? "block" : "none" }}>
-			<Text css={groupTitleStyles}>Dashboard Name</Text>
+			<Text css={groupTitleStyles}>Project Name</Text>
 
 			<Row gutter={8} wrap={false}>
 				<Col span={8}>
 					<Form.Item
-						label="Dashboard Name"
 						name="dashboardName"
 						rules={[
 							{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DASHBOARD_NAME },
@@ -39,7 +38,7 @@ export const FieldsStep1: FC<{
 						disabled={!formValues.dashboardName?.trim()}
 						onClick={onNext}
 						size={"large"}>
-						Next Step
+						Next
 					</Button>
 				</Col>
 			</Row>

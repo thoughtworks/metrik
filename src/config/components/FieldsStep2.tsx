@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { ERROR_MESSAGES } from "../../shared/constants/errorMessages";
 import { VerifyStatus } from "../../shared/__types__/base";
 import { ConfigFormValues } from "../PageConfig";
+import HintIcon from "../../shared/components/HintIcon";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -35,20 +36,7 @@ export const FieldsStep2: FC<{
 	isUpdate = false,
 }) => (
 	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
-		{showTitle && <Text css={groupTitleStyles}>Pipelines</Text>}
-
-		<Row gutter={8} wrap={false}>
-			<Col span={8}>
-				<Form.Item
-					label="Pipeline Name"
-					name="name"
-					rules={[
-						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME },
-					]}>
-					<Input />
-				</Form.Item>
-			</Col>
-		</Row>
+		{showTitle && <Text css={groupTitleStyles}>Pipeline Details</Text>}
 
 		<Row gutter={8} wrap={false}>
 			<Col span={4}>
@@ -63,31 +51,62 @@ export const FieldsStep2: FC<{
 					</Select>
 				</Form.Item>
 			</Col>
+		</Row>
+
+		<Row gutter={24} wrap={false}>
 			<Col span={8}>
 				<Form.Item
-					label="Pipeline Url"
-					name="url"
-					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
+					label="Pipeline Name"
+					name="name"
+					rules={[
+						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_NAME },
+					]}>
 					<Input />
 				</Form.Item>
 			</Col>
-			<Col span={4}>
+
+			<Col span={16}>
 				<Form.Item
-					label="Username"
+					name="url"
+					label={
+						<HintIcon
+							text={"Pipeline URL"}
+							tooltip={
+								"URL of the pipeline. Please do ensure the URL is complete, including the folder/subfolder information if there’s any."
+							}
+						/>
+					}
+					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
+					<Input placeholder={"e.g: http://jenkins_domain_name/job/folder_name/job/job_name/"} />
+				</Form.Item>
+			</Col>
+		</Row>
+
+		<Row gutter={24} wrap={false}>
+			<Col span={8}>
+				<Form.Item
+					label="Jenkins Username"
 					name="username"
 					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
 					<Input />
 				</Form.Item>
 			</Col>
-			<Col span={5}>
+			<Col span={8}>
 				<Form.Item
-					label="Token"
 					name="credential"
+					label={
+						<HintIcon
+							text={"Access Token"}
+							tooltip={
+								"The access token will be used to invoke Jenkins APIs to fetch pipeline execution status.The regular password for the Jenkins UI also works here, though not recommended."
+							}
+						/>
+					}
 					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
 					<Input type={"password"} />
 				</Form.Item>
 			</Col>
-			<Col span={1}>
+			<Col span={2}>
 				<Form.Item label={" "}>
 					<Button
 						onClick={onVerify}
@@ -100,10 +119,14 @@ export const FieldsStep2: FC<{
 			</Col>
 		</Row>
 		{verifyStatus === VerifyStatus.SUCCESS && (
-			<Alert message="Pipeline verify success" type="success" showIcon />
+			<Alert message="Pipeline successfully verified." type="success" showIcon />
 		)}
 		{verifyStatus === VerifyStatus.Fail && (
-			<Alert message="Pipeline verify failed" type="error" showIcon />
+			<Alert
+				message="Pipeline verify is failed. Please check your pipeline URL and token."
+				type="error"
+				showIcon
+			/>
 		)}
 
 		<div css={{ flexGrow: 1 }} />

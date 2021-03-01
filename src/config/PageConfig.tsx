@@ -5,10 +5,10 @@ import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import {
-	DashboardDetailResponse,
-	verifyPipelineUsingPost,
-	PipelineResponse,
 	createDashboardUsingPost,
+	DashboardDetailResponse,
+	PipelineResponse,
+	verifyPipelineUsingPost,
 } from "../shared/clients/apis";
 
 const { Text, Paragraph } = Typography;
@@ -66,23 +66,29 @@ export const PageConfig = () => {
 					{currentStep !== ConfigStep.CONFIG_SUCCESS ? (
 						<div>
 							<Steps current={currentStep} css={{ margin: "44px 0" }}>
-								<Step title="Create Dashboard" />
-								<Step title="Config Project" />
+								<Step title="Create Project" />
+								<Step title="Config Pipeline" />
 								<Step title="Success" />
 							</Steps>
-							<div css={{ width: 440, marginBottom: 32 }}>
-								<Text type={"secondary"}>Instructions:</Text>
+							<div css={{ width: 620, marginBottom: 56 }}>
 								{currentStep === ConfigStep.CREATE_DASHBOARD && (
-									<Paragraph type={"secondary"}>Please input your dashboard name</Paragraph>
+									<Paragraph
+										type={"secondary"}
+										css={{ "&.ant-typography-secondary": { color: "black" } }}>
+										Please input your project name below. The project name will be shown as the
+										dashboard title.
+									</Paragraph>
 								)}
 								{currentStep === ConfigStep.CONFIG_PIPELINE && (
-									<Paragraph type={"secondary"}>
-										The 4 key metrics is displayed based on PIPELINE and GIT data. Please configure
-										the project data source you want to detect here.
+									<Paragraph
+										type={"secondary"}
+										css={{ "&.ant-typography-secondary": { color: "black" } }}>
+										Please note that the 4 key metrics data is calculated based on data collected
+										from your pipelines. Input your pipeline details below to configure the
+										dashboard data source.
 									</Paragraph>
 								)}
 							</div>
-							<Divider css={{ margin: "24px -24px", width: "unset" }} />
 
 							<Form
 								layout="vertical"
