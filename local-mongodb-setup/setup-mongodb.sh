@@ -3,6 +3,8 @@
 chmod 400 ./config/keyfile.txt
 
 docker-compose down || true
+docker stop mongodb || true
+docker rm mongodb || true
 docker-compose up -d
 
 is_health_check_success=0
