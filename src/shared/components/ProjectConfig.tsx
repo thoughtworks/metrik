@@ -5,7 +5,7 @@ import { PipelineResponse } from "../clients/apis";
 
 const { Column } = Table;
 
-interface DashboardConfigurationProps {
+interface ProjectConfigProps {
 	pipelines: PipelineResponse[];
 	showDelete?: boolean;
 	showAddPipeline?: boolean;
@@ -14,7 +14,7 @@ interface DashboardConfigurationProps {
 	deletePipeline?: (pipelineId: string) => void;
 }
 
-const DashboardConfig: FC<DashboardConfigurationProps> = ({
+const ProjectConfig: FC<ProjectConfigProps> = ({
 	pipelines,
 	showDelete = false,
 	showAddPipeline = true,
@@ -118,4 +118,4 @@ const ToolConfig = (config: PipelineResponse) => {
 	);
 };
 
-export default DashboardConfig;
+export default ProjectConfig;

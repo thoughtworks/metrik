@@ -1,36 +1,35 @@
 import { useEffect, useState } from "react";
 import {
 	deletePipelineUsingDelete,
-	getDashboardDetailsUsingGet,
-	DashboardDetailResponse,
+	getProjectDetailsUsingGet,
 	PipelineResponse,
+	ProjectDetailResponse,
 } from "../clients/apis";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
-import { notification } from "antd";
 import { useRequest } from "./useRequest";
 
 export const usePipelineSetting = ({
-	defaultDashboardId,
-	defaultDashboard,
-	shouldUpdateDashboard,
+	defaultProjectId,
+	defaultProject,
+	shouldUpdateProject,
 	defaultStatus = PipelineSettingStatus.VIEW,
 	shouldResetStatus,
 }: {
-	defaultDashboardId: string;
-	shouldUpdateDashboard: boolean;
+	defaultProjectId: string;
+	shouldUpdateProject: boolean;
 	shouldResetStatus: boolean;
 	defaultStatus?: PipelineSettingStatus;
-	defaultDashboard?: DashboardDetailResponse;
+	defaultProject?: ProjectDetailResponse;
 }) => {
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
 	const [editPipeline, setEditPipeline] = useState<PipelineResponse>();
-	const [dashboard, getDashboard, isDashboardLoading, , dashboardError] = useRequest(
-		getDashboardDetailsUsingGet,
-		defaultDashboard
+	const [project, getProject, isProjectLoading, , projectError] = useRequest(
+		getProjectDetailsUsingGet,
+		defaultProject
 	);
 
-	function getDashboardDetails() {
-		getDashboard({ dashboardId: defaultDashboardId });
+	function getProjectDetails() {
+		getProject({ projectId: defaultProjectId });
 	}
 
 	useEffect(() => {
@@ -40,10 +39,10 @@ export const usePipelineSetting = ({
 	}, [shouldResetStatus]);
 
 	useEffect(() => {
-		if (shouldUpdateDashboard) {
-			getDashboardDetails();
+		if (shouldUpdateProject) {
+			getProjectDetails();
 		}
-	}, [shouldUpdateDashboard]);
+	}, [shouldUpdateProject]);
 
 	function onAddPipeline() {
 		setStatus(PipelineSettingStatus.ADD);
@@ -56,26 +55,26 @@ export const usePipelineSetting = ({
 	}
 
 	function checkPipelineAllowedToDelete() {
-		return (dashboard?.pipelines.length ?? 0) > 1;
+		return (project?.pipelines.length ?? 0) > 1;
 	}
 
 	async function onDeletePipeline(pipelineId: string) {
 		if (!checkPipelineAllowedToDelete()) {
 			return;
 		}
-		await deletePipelineUsingDelete({ dashboardId: defaultDashboardId, pipelineId });
-		await getDashboardDetails();
+		await deletePipelineUsingDelete({ projectId: defaultProjectId, pipelineId });
+		await getProjectDetails();
 	}
 
 	return {
-		isDashboardLoading,
-		dashboardError,
-		dashboard,
+		isProjectLoading,
+		projectError,
+		project,
 		status,
 		setStatus,
 		editPipeline,
 		setEditPipeline,
-		getDashboardDetails,
+		getProjectDetails,
 		onAddPipeline,
 		onUpdatePipeline,
 		onDeletePipeline,

@@ -3,23 +3,23 @@ import { PageDashboard } from "./dashboard/PageDashboard";
 import { PageConfig } from "./config/PageConfig";
 import { Redirect, Route } from "react-router-dom";
 
-export const Routes = ({ dashboardId }: { dashboardId: string | undefined }) => (
+export const Routes = ({ projectId }: { projectId: string | undefined }) => (
 	<>
 		<Route path={"/"} exact>
-			{dashboardId ? (
-				<Redirect to={{ pathname: "/dashboard", search: `?dashboardId=${dashboardId}` }} />
+			{projectId ? (
+				<Redirect to={{ pathname: "/dashboard", search: `?dashboardId=${projectId}` }} />
 			) : (
 				<Redirect to={{ pathname: "/config" }} />
 			)}
 		</Route>
 
 		<Route path={"/dashboard"} exact>
-			{dashboardId ? <PageDashboard /> : <Redirect to={{ pathname: "/config" }} />}
+			{projectId ? <PageDashboard /> : <Redirect to={{ pathname: "/config" }} />}
 		</Route>
 
 		<Route path={"/config"} exact>
-			{dashboardId ? (
-				<Redirect to={{ pathname: "/dashboard", search: `?dashboardId=${dashboardId}` }} />
+			{projectId ? (
+				<Redirect to={{ pathname: "/dashboard", search: `?projectId=${projectId}` }} />
 			) : (
 				<PageConfig />
 			)}

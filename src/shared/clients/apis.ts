@@ -1,46 +1,46 @@
 import { createRequest } from "./createRequest";
 
-export const createDashboardUsingPost = createRequest<
+export const createProjectUsingPost = createRequest<
 	{
-		requestBody: DashboardRequest;
+		requestBody: ProjectRequest;
 	},
-	DashboardDetailResponse
->("createDashboardUsingPost", ({ requestBody }) => ({
-	url: `/api/dashboard`,
+	ProjectDetailResponse
+>("createProjectUsingPost", ({ requestBody }) => ({
+	url: `/api/project`,
 	method: "POST",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const deleteDashboardUsingDelete = createRequest<{
-	dashboardId: string;
-}>("deleteDashboardUsingDelete", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}`,
+export const deleteProjectUsingDelete = createRequest<{
+	projectId: string;
+}>("deleteProjectUsingDelete", ({ projectId }) => ({
+	url: `/api/project/${projectId}`,
 	method: "DELETE",
 }));
 
 export const deletePipelineUsingDelete = createRequest<{
-	dashboardId: string;
+	projectId: string;
 	pipelineId: string;
-}>("deletePipelineUsingDelete", ({ dashboardId, pipelineId }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}`,
+}>("deletePipelineUsingDelete", ({ projectId, pipelineId }) => ({
+	url: `/api/project/${projectId}/pipeline/${pipelineId}`,
 	method: "DELETE",
 }));
 
-export const getDashboardDetailsUsingGet = createRequest<
+export const getProjectDetailsUsingGet = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 	},
-	DashboardDetailResponse
->("getDashboardDetailsUsingGet", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}`,
+	ProjectDetailResponse
+>("getProjectDetailsUsingGet", ({ projectId }) => ({
+	url: `/api/project/${projectId}`,
 	method: "GET",
 }));
 
-export const getDashboardsUsingGet = createRequest<undefined, DashboardResponse[]>(
-	"getDashboardsUsingGet",
+export const getProjectsUsingGet = createRequest<undefined, ProjectResponse[]>(
+	"getProjectsUsingGet",
 	() => ({
-		url: `/api/dashboard`,
+		url: `/api/project`,
 		method: "GET",
 	})
 );
@@ -59,71 +59,66 @@ export const getFourKeyMetricsUsingPost = createRequest<
 
 export const getLastSynchronizationUsingGet = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 	},
 	SynchronizationRecordResponse
->("getLastSynchronizationUsingGet", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}/synchronization`,
+>("getLastSynchronizationUsingGet", ({ projectId }) => ({
+	url: `/api/project/${projectId}/synchronization`,
 	method: "GET",
 }));
 
 export const getPipelineStagesUsingGet = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 	},
 	PipelineStagesResponse[]
->("getPipelineStagesUsingGet", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}/pipelines-stages`,
+>("getPipelineStagesUsingGet", ({ projectId }) => ({
+	url: `/api/project/${projectId}/pipelines-stages`,
 	method: "GET",
 }));
 
 export const getPipelineUsingGet = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 		pipelineId: string;
 	},
 	PipelineResponse
->("getPipelineUsingGet", ({ dashboardId, pipelineId }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}`,
+>("getPipelineUsingGet", ({ projectId, pipelineId }) => ({
+	url: `/api/project/${projectId}/pipeline/${pipelineId}`,
 	method: "GET",
 }));
 
 export const pullBuildsUsingPost = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 		pipelineId: string;
 	},
 	Build[]
->("pullBuildsUsingPost", ({ dashboardId, pipelineId }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}/builds`,
+>("pullBuildsUsingPost", ({ projectId, pipelineId }) => ({
+	url: `/api/project/${projectId}/pipeline/${pipelineId}/builds`,
 	method: "POST",
 	headers: { "Content-Type": "application/json" },
-}));
-
-export const testUsingGet = createRequest<undefined, string>("testUsingGet", () => ({
-	url: `/test`,
-	method: "GET",
 }));
 
 export const updateBuildsUsingPost = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 	},
 	SynchronizationRecordResponse
->("updateBuildsUsingPost", ({ dashboardId }) => ({
-	url: `/api/dashboard/${dashboardId}/synchronization`,
+>("updateBuildsUsingPost", ({ projectId }) => ({
+	url: `/api/project/${projectId}/synchronization`,
 	method: "POST",
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const updateDashboardNameUsingPut = createRequest<
+export const updateProjectNameUsingPut = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 		requestBody: string;
 	},
-	DashboardResponse
->("updateDashboardNameUsingPut", ({ dashboardId, requestBody }) => ({
-	url: `/api/dashboard/${dashboardId}`,
+	ProjectResponse
+>("updateProjectNameUsingPut", ({ projectId, requestBody }) => ({
+	url: `/api/project/${projectId}`,
 	method: "PUT",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
@@ -131,15 +126,15 @@ export const updateDashboardNameUsingPut = createRequest<
 
 export const createPipelineUsingPost = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 		//TODO temporally add pipelineId here to match type of
 		// updatePipelineUsingPut, can replace with better solutions in the future
 		pipelineId: string;
 		requestBody: PipelineRequest;
 	},
 	PipelineResponse
->("createPipelineUsingPost", ({ dashboardId, requestBody }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline`,
+>("createPipelineUsingPost", ({ projectId, requestBody }) => ({
+	url: `/api/project/${projectId}/pipeline`,
 	method: "POST",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
@@ -147,13 +142,13 @@ export const createPipelineUsingPost = createRequest<
 
 export const updatePipelineUsingPut = createRequest<
 	{
-		dashboardId: string;
+		projectId: string;
 		pipelineId: string;
 		requestBody: PipelineRequest;
 	},
 	PipelineResponse
->("updatePipelineUsingPut", ({ dashboardId, pipelineId, requestBody }) => ({
-	url: `/api/dashboard/${dashboardId}/pipeline/${pipelineId}`,
+>("updatePipelineUsingPut", ({ projectId, pipelineId, requestBody }) => ({
+	url: `/api/project/${projectId}/pipeline/${pipelineId}`,
 	method: "PUT",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
@@ -195,19 +190,19 @@ export interface Commit {
 	timestamp: number;
 }
 
-export interface DashboardDetailResponse {
+export interface ProjectDetailResponse {
 	id: string;
 	name: string;
 	pipelines: PipelineResponse[];
 	synchronizationTimestamp?: number;
 }
 
-export interface DashboardRequest {
-	dashboardName: string;
+export interface ProjectRequest {
+	projectName: string;
 	pipeline: PipelineRequest;
 }
 
-export interface DashboardResponse {
+export interface ProjectResponse {
 	id: string;
 	name: string;
 	synchronizationTimestamp?: number;
@@ -254,10 +249,6 @@ export interface MetricsQueryRequest {
 export enum MetricsQueryRequestUnit {
 	"Fortnightly" = "Fortnightly",
 	"Monthly" = "Monthly",
-}
-
-export interface Number {
-	[key: string]: any;
 }
 
 export interface PipelineRequest {

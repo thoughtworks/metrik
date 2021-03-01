@@ -1,13 +1,12 @@
 import { Button, Modal } from "antd";
 import React, { FC } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
-import DashboardConfig from "../../shared/components/DashboardConfig";
-import { Link } from "react-router-dom";
+import ProjectConfig from "../../shared/components/ProjectConfig";
 import {
 	createPipelineUsingPost,
 	PipelineResponse,
+	ProjectDetailResponse,
 	updatePipelineUsingPut,
-	DashboardDetailResponse,
 } from "../../shared/clients/apis";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
@@ -15,20 +14,20 @@ import { useModalVisible } from "../../shared/hooks/useModalVisible";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { GREEN_LIGHT } from "../../shared/constants/styles";
 
-const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defaultDashboard }) => {
+const ConfigSuccess: FC<{ defaultProject: ProjectDetailResponse }> = ({ defaultProject }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
-		dashboard,
+		project,
 		editPipeline,
 		status,
-		getDashboardDetails,
+		getProjectDetails,
 		onAddPipeline,
 		onUpdatePipeline,
 	} = usePipelineSetting({
-		defaultDashboardId: defaultDashboard.id,
-		defaultDashboard: defaultDashboard,
+		defaultProjectId: defaultProject.id,
+		defaultProject: defaultProject,
 		defaultStatus: PipelineSettingStatus.ADD,
-		shouldUpdateDashboard: false,
+		shouldUpdateProject: false,
 		shouldResetStatus: !visible,
 	});
 
@@ -69,8 +68,8 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 					Go to Dashboard
 				</Button>
 			</div>
-			<DashboardConfig
-				pipelines={dashboard!.pipelines}
+			<ProjectConfig
+				pipelines={project!.pipelines}
 				updatePipeline={handleUpdatePipeline}
 				addPipeline={handleAddPipeline}
 			/>
@@ -86,8 +85,8 @@ const ConfigSuccess: FC<{ defaultDashboard: DashboardDetailResponse }> = ({ defa
 				title={"Pipeline"}
 				footer={null}>
 				<PipelineConfig
-					dashboardId={defaultDashboard.id}
-					updateDashboard={getDashboardDetails}
+					projectId={defaultProject.id}
+					updateProject={getProjectDetails}
 					css={{ padding: 24, height: "100%" }}
 					defaultData={editPipeline}
 					onSubmit={

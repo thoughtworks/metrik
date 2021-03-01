@@ -3,7 +3,7 @@ import ReactDom from "react-dom";
 import { Routes } from "./Routes";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 import Header from "./shared/components/Header";
-import { getDashboardsUsingGet } from "./shared/clients/apis";
+import { getProjectsUsingGet } from "./shared/clients/apis";
 import { useRequest } from "./shared/hooks/useRequest";
 import { Global } from "@emotion/react";
 
@@ -14,19 +14,19 @@ const globalStyles = {
 };
 
 export const App: FC = () => {
-	const [dashboards, getDashboardsRequest] = useRequest(getDashboardsUsingGet);
+	const [projects, getProjectsRequest] = useRequest(getProjectsUsingGet);
 
 	useEffect(() => {
-		getDashboardsRequest(undefined);
+		getProjectsRequest(undefined);
 	}, []);
 
-	return dashboards !== undefined ? (
+	return projects !== undefined ? (
 		<>
 			<Global styles={globalStyles} />
 			<Router>
 				<Header />
 				<Switch>
-					<Routes dashboardId={dashboards[0]?.id} />
+					<Routes projectId={projects[0]?.id} />
 				</Switch>
 			</Router>
 		</>

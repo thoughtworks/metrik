@@ -1,38 +1,38 @@
 import React, { useState } from "react";
-import { Divider, Form, Layout, Steps, Typography } from "antd";
+import { Form, Layout, Steps, Typography } from "antd";
 import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import {
-	createDashboardUsingPost,
-	DashboardDetailResponse,
+	createProjectUsingPost,
 	PipelineResponse,
+	ProjectDetailResponse,
 	verifyPipelineUsingPost,
 } from "../shared/clients/apis";
 
-const { Text, Paragraph } = Typography;
+const { Paragraph } = Typography;
 const { Step } = Steps;
 
 export interface ConfigFormValues extends PipelineResponse {
-	dashboardName: string;
+	projectName: string;
 }
 
 export const PageConfig = () => {
 	const [form] = Form.useForm<ConfigFormValues>();
 
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_DASHBOARD);
-	const [dashboard, setDashboard] = useState<DashboardDetailResponse>();
-	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
+	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
+	const [project, setProject] = useState<ProjectDetailResponse>();
+	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
-		const response = await createDashboardUsingPost({
+		const response = await createProjectUsingPost({
 			requestBody: {
-				dashboardName,
+				projectName,
 				pipeline,
 			},
 		});
-		setDashboard(response);
+		setProject(response);
 		toNextStep();
 	};
 
@@ -46,7 +46,7 @@ export const PageConfig = () => {
 
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { dashboardName, ...pipelineValues } = form.getFieldsValue();
+		const { projectName, ...pipelineValues } = form.getFieldsValue();
 		return verifyPipelineUsingPost({
 			requestBody: pipelineValues,
 		})
@@ -71,7 +71,7 @@ export const PageConfig = () => {
 								<Step title="Success" />
 							</Steps>
 							<div css={{ width: 620, marginBottom: 56 }}>
-								{currentStep === ConfigStep.CREATE_DASHBOARD && (
+								{currentStep === ConfigStep.CREATE_PROJECT && (
 									<Paragraph
 										type={"secondary"}
 										css={{ "&.ant-typography-secondary": { color: "black" } }}>
@@ -99,7 +99,7 @@ export const PageConfig = () => {
 									<>
 										<FieldsStep1
 											onNext={toNextStep}
-											visible={currentStep === ConfigStep.CREATE_DASHBOARD}
+											visible={currentStep === ConfigStep.CREATE_PROJECT}
 											formValues={formValues}
 										/>
 										<FieldsStep2
@@ -115,7 +115,7 @@ export const PageConfig = () => {
 						</div>
 					) : (
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						<ConfigSuccess defaultDashboard={dashboard!} />
+						<ConfigSuccess defaultProject={project!} />
 					)}
 				</div>
 			</Layout.Content>

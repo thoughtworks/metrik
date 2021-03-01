@@ -5,7 +5,7 @@ export enum VerifyStatus {
 }
 
 export enum ConfigStep {
-	CREATE_DASHBOARD,
+	CREATE_PROJECT,
 	CONFIG_PIPELINE,
 	CONFIG_SUCCESS,
 }

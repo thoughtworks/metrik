@@ -21,7 +21,7 @@ export const FieldsStep1: FC<{
 			<Row gutter={8} wrap={false}>
 				<Col span={8}>
 					<Form.Item
-						name="dashboardName"
+						name="projectName"
 						rules={[
 							{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DASHBOARD_NAME },
 						]}>
@@ -35,7 +35,7 @@ export const FieldsStep1: FC<{
 				<Col span={24} style={{ textAlign: "right" }}>
 					<Button
 						type="primary"
-						disabled={!formValues.dashboardName?.trim()}
+						disabled={!formValues.projectName?.trim()}
 						onClick={onNext}
 						size={"large"}>
 						Next

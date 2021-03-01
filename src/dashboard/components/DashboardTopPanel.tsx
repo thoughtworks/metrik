@@ -7,9 +7,9 @@ import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR, GRAY_13 } from "../../shared/constants/styles";
 import { useRequest } from "../../shared/hooks/useRequest";
 import {
-	getDashboardDetailsUsingGet,
+	getProjectDetailsUsingGet,
 	updateBuildsUsingPost,
-	updateDashboardNameUsingPut,
+	updateProjectNameUsingPut,
 	getPipelineStagesUsingGet,
 	PipelineStagesResponse,
 	getLastSynchronizationUsingGet,
@@ -72,7 +72,7 @@ export interface FormValues {
 }
 
 interface DashboardTopPanelProps {
-	dashboardId: string;
+	projectId: string;
 	onApply: (formValues: FormValues) => void;
 }
 
@@ -96,7 +96,7 @@ const INPUT_FIELD_LABELS = {
 	PIPELINE_STAGE: "Pipeline/Stage",
 };
 
-export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onApply }) => {
+export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApply }) => {
 	const defaultValues = {
 		duration: [
 			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
@@ -105,9 +105,9 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 		unit: "Fortnightly",
 		pipelines: [],
 	} as FormValues;
-	const [dashboard, getDashboardRequest] = useRequest(getDashboardDetailsUsingGet);
+	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
 	const [, updateBuildsRequest, syncing] = useRequest(updateBuildsUsingPost);
-	const [, updateDashboardNameRequest] = useRequest(updateDashboardNameUsingPut);
+	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
 		getLastSynchronizationUsingGet
 	);
@@ -116,16 +116,16 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 	);
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
 
-	const updateDashboardName = async (name: string) => {
-		await updateDashboardNameRequest({
-			dashboardId,
+	const updateProjectName = async (name: string) => {
+		await updateProjectNameRequest({
+			projectId: projectId,
 			requestBody: name,
 		});
-		getDashboard();
+		getProject();
 	};
 
 	const getLastSyncTime = async () => {
-		const resp = await getLastSynchronizationRequest({ dashboardId });
+		const resp = await getLastSynchronizationRequest({ projectId });
 		if (!resp?.synchronizationTimestamp) {
 			syncBuilds();
 		}
@@ -133,7 +133,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 
 	const syncBuilds = async () => {
 		await updateBuildsRequest({
-			dashboardId,
+			projectId,
 		});
 
 		getLastSyncTime();
@@ -142,14 +142,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 		getPipelineStages();
 	};
 
-	const getDashboard = () => getDashboardRequest({ dashboardId });
+	const getProject = () => getProjectRequest({ projectId });
 
-	const getPipelineStages = () => getPipelineStagesRequest({ dashboardId });
+	const getPipelineStages = () => getPipelineStagesRequest({ projectId });
 
 	useEffect(() => {
 		getLastSyncTime();
 		getPipelineStages();
-		getDashboard();
+		getProject();
 	}, []);
 
 	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
@@ -176,8 +176,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 		<div css={containerStyles}>
 			<div css={headerStyles}>
 				<div>
-					{dashboard?.name && (
-						<EditableText defaultValue={dashboard?.name ?? ""} onEditDone={updateDashboardName} />
+					{project?.name && (
+						<EditableText defaultValue={project?.name ?? ""} onEditDone={updateProjectName} />
 					)}
 					<Text type={"secondary"}>
 						Last updated : {formatLastUpdateTime(synchronization?.synchronizationTimestamp)}
@@ -185,7 +185,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 				</div>
 				<div>
 					<span css={pipelineSettingStyles}>
-						<PipelineSetting dashboardId={dashboardId} syncBuild={syncBuilds} />
+						<PipelineSetting dashboardId={projectId} syncBuild={syncBuilds} />
 					</span>
 					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing" : "Sync Data"}

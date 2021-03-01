@@ -9,7 +9,7 @@ import {
 import { css } from "@emotion/react";
 import { Button, Modal, Result, Spin, Typography } from "antd";
 import { createPipelineUsingPost, updatePipelineUsingPut } from "../../shared/clients/apis";
-import DashboardConfig from "../../shared/components/DashboardConfig";
+import ProjectConfig from "../../shared/components/ProjectConfig";
 import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
@@ -45,19 +45,19 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
-		isDashboardLoading,
-		dashboardError,
-		dashboard,
+		isProjectLoading,
+		projectError,
+		project,
 		status,
 		setStatus,
 		editPipeline,
-		getDashboardDetails,
+		getProjectDetails,
 		onAddPipeline,
 		onUpdatePipeline,
 		onDeletePipeline,
 	} = usePipelineSetting({
-		defaultDashboardId: dashboardId,
-		shouldUpdateDashboard: visible,
+		defaultProjectId: dashboardId,
+		shouldUpdateProject: visible,
 		shouldResetStatus: !visible,
 	});
 
@@ -105,7 +105,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 									type={"primary"}
 									icon={<PlusOutlined />}
 									onClick={onAddPipeline}
-									disabled={isDashboardLoading}>
+									disabled={isProjectLoading}>
 									Add Pipeline
 								</Button>
 							</div>
@@ -128,7 +128,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 						</Button>
 					) : null
 				}>
-				{isDashboardLoading ? (
+				{isProjectLoading ? (
 					<Spin
 						size="large"
 						css={{
@@ -138,7 +138,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 							height: "100%",
 						}}
 					/>
-				) : dashboardError ? (
+				) : projectError ? (
 					<Result
 						css={{
 							display: "flex",
@@ -151,16 +151,16 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 						title="Fail to connect to pipeline API"
 						subTitle={"Please click the button below, reload the API"}
 						extra={
-							<Button type="primary" key="console" onClick={getDashboardDetails}>
+							<Button type="primary" key="console" onClick={getProjectDetails}>
 								Reload
 							</Button>
 						}
 					/>
 				) : status === PipelineSettingStatus.VIEW ? (
-					<DashboardConfig
+					<ProjectConfig
 						showDelete={true}
 						showAddPipeline={false}
-						pipelines={dashboard?.pipelines ?? []}
+						pipelines={project?.pipelines ?? []}
 						updatePipeline={onUpdatePipeline}
 						deletePipeline={pipelineId => {
 							triggerSyncBuild.current = true;
@@ -169,8 +169,8 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 					/>
 				) : (
 					<PipelineConfig
-						dashboardId={dashboardId}
-						updateDashboard={getDashboardDetails}
+						projectId={dashboardId}
+						updateProject={getProjectDetails}
 						css={{ padding: 24, height: "100%" }}
 						defaultData={editPipeline}
 						onSuccess={() => (triggerSyncBuild.current = true)}

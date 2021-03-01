@@ -17,16 +17,16 @@ interface PipelineConfigProps {
 	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
 	onSuccess?: () => void;
 	className?: string;
-	dashboardId: string;
-	updateDashboard: () => void;
+	projectId: string;
+	updateProject: () => void;
 }
 
 const PipelineConfig: FC<PipelineConfigProps> = ({
 	defaultData,
 	onBack,
 	className,
-	dashboardId,
-	updateDashboard,
+	projectId,
+	updateProject,
 	onSubmit,
 	onSuccess,
 }) => {
@@ -34,21 +34,21 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [, handleSubmit, loading] = useRequest(onSubmit);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const onFinish = async ({ dashboardName, ...pipeline }: ConfigFormValues) => {
+	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
 		handleSubmit({
-			dashboardId,
+			projectId: projectId,
 			requestBody: pipeline,
 			pipelineId: defaultData?.id as string,
 		}).then(() => {
-			updateDashboard();
+			updateProject();
 			onBack();
 			onSuccess?.();
 		});
 	};
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { dashboardName, ...pipelineValues } = form.getFieldsValue();
+		const { projectName, ...pipelineValues } = form.getFieldsValue();
 		return verifyPipelineUsingPost({
 			requestBody: pipelineValues,
 		})

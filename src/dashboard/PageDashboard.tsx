@@ -31,7 +31,7 @@ const domainMaximizeRatio = 1.1;
 
 export const PageDashboard = () => {
 	const query = useQuery();
-	const dashboardId = query.get("dashboardId") || "";
+	const projectId = query.get("projectId") || "";
 
 	const [appliedUnit, setAppliedUnit] = useState<DurationUnit>("Fortnightly");
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
@@ -79,7 +79,7 @@ export const PageDashboard = () => {
 
 	return (
 		<>
-			<DashboardTopPanel onApply={getFourKeyMetrics} dashboardId={dashboardId} />
+			<DashboardTopPanel onApply={getFourKeyMetrics} projectId={projectId} />
 			<div css={metricsContainerStyles}>
 				<Row gutter={28}>
 					<Col xs={24} sm={24} md={24} lg={12}>
