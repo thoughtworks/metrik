@@ -2,6 +2,7 @@ import { Input, Typography } from "antd";
 import React, { FC, useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { BLUE_5 } from "../constants/styles";
+import { trim } from "lodash";
 
 const { Title } = Typography;
 
@@ -14,7 +15,9 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 	const [editable, setEditable] = useState(false);
 	const [value, setValue] = useState(defaultValue);
 
-	const handleEdit = (nextValue: string) => {
+	const handleEdit = (value?: string) => {
+		const nextValue = trim(value) || defaultValue;
+
 		setValue(nextValue);
 		setEditable(false);
 		onEditDone && onEditDone(nextValue);
@@ -28,10 +31,10 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 					type={"text"}
 					defaultValue={value}
 					autoFocus
-					onBlur={evt => handleEdit(evt.target.value || defaultValue)}
+					onBlur={evt => handleEdit(evt.target.value)}
 					onKeyDown={e => {
 						if (e.key === "Enter") {
-							handleEdit((e.target as HTMLInputElement).value || defaultValue);
+							handleEdit((e.target as HTMLInputElement).value);
 						}
 					}}
 				/>
