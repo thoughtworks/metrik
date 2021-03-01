@@ -1,18 +1,25 @@
 #!/bin/bash
 
-chmod 400 ./config/keyfile.txt
+container_name=mongodb
 
-docker-compose down || true
-docker stop mongodb || true
-docker rm mongodb || true
+echo "checking if $container_name existance"
+status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
+echo "the container $container_name status is: $status"
+if [[ ${status} == "running" ]]; then
+    echo "the $container_name is already exist"
+    exit 0
+fi
+
+
+echo "start $container_name"
+chmod 400 ./config/keyfile.txt
 docker-compose up -d
 
 is_health_check_success=0
-container_name=mongodb
 
 for i in 1 2 3 4 5
 do
-  echo "checking status times: $i"
+  echo "checking $container_name status times: $i"
   status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
   echo "the container $container_name status is: $status"
    if [[ ${status} == "running" ]]; then
