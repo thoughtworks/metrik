@@ -20,15 +20,12 @@ data class AESEncryptionProperties(
 )
 
 @Component
-class AESEncryptionService {
-    @Autowired
-    private lateinit var properties: AESEncryptionProperties
-    private var key: SecretKey
-    private var iv: IvParameterSpec
+class AESEncryptionService(@Autowired private var properties: AESEncryptionProperties) {
+    private lateinit var key: SecretKey
+    private lateinit var iv: IvParameterSpec
     private val algorithm = "AES/CBC/PKCS5Padding"
 
-
-    constructor() {
+    init {
         this.key = getSecretKeyFromString(properties.keyString)
         this.iv = IvParameterSpec(properties.ivString.toByteArray())
     }
@@ -51,19 +48,7 @@ class AESEncryptionService {
         return String(plainText)
     }
 
-    private fun getSecretKeyFromString(encodedKey: String?): SecretKey {
-        val decodedKey = Base64.getDecoder().decode(encodedKey)
-        return SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
+    private fun getSecretKeyFromString(key: String): SecretKey {
+        return SecretKeySpec(key.encodeToByteArray(), 0, key.length, "AES")
     }
-}
-
-@Autowired
-lateinit var aesEncryption: AESEncryptionService
-
-fun String.encrypt(): String {
-    return aesEncryption.encrypt(this)
-}
-
-fun String.decrypt(): String {
-    return aesEncryption.decrypt(this)
 }

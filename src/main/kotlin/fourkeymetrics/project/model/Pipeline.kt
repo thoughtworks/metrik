@@ -10,7 +10,7 @@ data class Pipeline(
     val id: String = Strings.EMPTY,
     var projectId: String = Strings.EMPTY,
     val name: String = Strings.EMPTY,
-    val username: String = Strings.EMPTY,
+    var username: String = Strings.EMPTY,
     var credential: String = Strings.EMPTY,
     val url: String = Strings.EMPTY,
     var type: PipelineType = PipelineType.JENKINS,
