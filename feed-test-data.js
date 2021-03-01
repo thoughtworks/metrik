@@ -65,75 +65,75 @@ db.pipeline.remove({"_id": ObjectId("600a701221048076f92c4e43")});
 db.pipeline.remove({"_id": ObjectId("601a2f129deac2220dd07570")});
 db.pipeline.remove({"_id": ObjectId("6012505c42fbb8439fc08b21")});
 db.pipeline.remove({"_id": ObjectId("601cbb3425c1392117aa042a")});
-db.dashboard.remove({"_id": ObjectId("601cbae825c1392117aa0429")});
+db.project.remove({"_id": ObjectId("601cbae825c1392117aa0429")});
 
 //insert test data 
-db.dashboard.insert({
+db.project.insert({
     "_id" : ObjectId("601cbae825c1392117aa0429"),
     "name" : "4-key",
-    "_class" : "fourkeymetrics.dashboard.model.Dashboard",
+    "_class" : "fourkeymetrics.project.model.Project",
     "synchronizationTimes" : "1580709600000"
 });
 db.pipeline.insertMany([
     {
     "_id" : ObjectId("601cbb3425c1392117aa053b"),
-    "dashboardId" : "601cbae825c1392117aa0429",
+    "projectId" : "601cbae825c1392117aa0429",
     "name" : "dfservice",
     "username" : "4km",
     "credential" : "4000km",
     "url" : "http://localhost:8001/job/4km-df/",
     "type" : "JENKINS",
-    "_class" : "fourkeymetrics.dashboard.model.Pipeline"
+    "_class" : "fourkeymetrics.project.model.Pipeline"
    },
     {
         "_id": ObjectId("6018c32f42fbb8439fc08b24"),
-        "dashboardId": "601cbae825c1392117aa0429",
+        "projectId": "601cbae825c1392117aa0429",
         "name": "pipeline1",
         "username": "4KM",
         "credential": "4000km",
         "url": "http://localhost:8001/job/4km-mttr/",
         "type": "JENKINS",
-        "_class": "fourkeymetrics.dashboard.model.Pipeline"
+        "_class": "fourkeymetrics.project.model.Pipeline"
     },
     {
         "_id": ObjectId("600a701221048076f92c4e43"),
-        "dashboardId": "601cbae825c1392117aa0429",
+        "projectId": "601cbae825c1392117aa0429",
         "name": "pipeline2",
         "username": "4km",
         "credential": "4000km",
         "url": "http://localhost:8001/job/4km-df/",
         "type": "JENKINS",
-        "_class": "fourkeymetrics.dashboard.model.Pipeline"
+        "_class": "fourkeymetrics.project.model.Pipeline"
     },
     {
         "_id": ObjectId("601a2f129deac2220dd07570"),
-        "dashboardId": "601cbae825c1392117aa0429",
+        "projectId": "601cbae825c1392117aa0429",
         "name": "pipeline3",
         "username": "4KM",
         "credential": "4000km",
         "url": "http://localhost:8001/job/4km-mlt/",
         "type": "JENKINS",
-        "_class": "fourkeymetrics.dashboard.model.Pipeline"
+        "_class": "fourkeymetrics.project.model.Pipeline"
     },
     {
         "_id": ObjectId("6012505c42fbb8439fc08b21"),
-        "dashboardId": "601cbae825c1392117aa0429",
+        "projectId": "601cbae825c1392117aa0429",
         "name": "cfr",
         "username": "4km",
         "credential": "4000km",
         "url": "http://localhost:8001/job/4km-cfr/",
         "type": "JENKINS",
-        "_class": "fourkeymetrics.dashboard.model.Pipeline"
+        "_class": "fourkeymetrics.project.model.Pipeline"
     },
     {
         "_id": ObjectId("601cbb3425c1392117aa042a"),
-        "dashboardId": "601cbae825c1392117aa0429",
+        "projectId": "601cbae825c1392117aa0429",
         "name": "dfservice",
         "username": "4km",
         "credential": "4000km",
         "url": "http://localhost:8001/job/4km-df/",
         "type": "JENKINS",
-        "_class": "fourkeymetrics.dashboard.model.Pipeline"
+        "_class": "fourkeymetrics.project.model.Pipeline"
     }
 ]);
 db.build.insertMany([{

@@ -1,7 +1,7 @@
 package fourkeymetrics.datasource.pipeline.builddata.controller
 
-import fourkeymetrics.dashboard.controller.SynchronizationController
-import fourkeymetrics.dashboard.controller.applicationservice.SynchronizationApplicationService
+import fourkeymetrics.project.controller.SynchronizationController
+import fourkeymetrics.project.controller.applicationservice.SynchronizationApplicationService
 import fourkeymetrics.exception.ApplicationException
 import org.apache.logging.log4j.util.Strings
 import org.junit.jupiter.api.Test
@@ -27,65 +27,65 @@ class SynchronizationControllerTest {
     @Test
     internal fun `should return update timestamp when update all build data success`() {
         val updatedTimestamp: Long = 12345
-        val dashboardId = "fake-dashboard-id"
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(dashboardId)).thenReturn(updatedTimestamp)
+        `when`(synchronizationApplicationService.synchronize(projectId)).thenReturn(updatedTimestamp)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.synchronizationTimestamp").value(updatedTimestamp))
     }
 
     @Test
     internal fun `should return 500 when update all build data failed`() {
-        val dashboardId = "fake-dashboard-id"
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(dashboardId)).thenReturn(null)
+        `when`(synchronizationApplicationService.synchronize(projectId)).thenReturn(null)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)
     }
 
     @Test
     internal fun `should return last update timestamp`() {
         val updatedTimestamp: Long = 12345
-        val dashboardId = "fake-dashboard-id"
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenReturn(updatedTimestamp)
+        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenReturn(updatedTimestamp)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization/"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization/"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.synchronizationTimestamp").value(updatedTimestamp))
     }
 
     @Test
     internal fun `should return null when last sync timestamp not exist`() {
-        val dashboardId = "fake-dashboard-id"
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenReturn(null)
+        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenReturn(null)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.synchronizationTimestamp").value(null))
     }
 
     @Test
-    internal fun `should return 404 given dashboard id not exist when synchronization`() {
-        val dashboardId = "fake-dashboard-id"
+    internal fun `should return 404 given project id not exist when synchronization`() {
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(dashboardId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
+        `when`(synchronizationApplicationService.synchronize(projectId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/dashboard/$dashboardId/synchronization"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
-    internal fun `should return 404 given dashboard id not exist when get synchronization record`() {
-        val dashboardId = "fake-dashboard-id"
+    internal fun `should return 404 given project id not exist when get synchronization record`() {
+        val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(dashboardId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
+        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/dashboard/$dashboardId/synchronization"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 }

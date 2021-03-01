@@ -7,7 +7,7 @@ String[] exclusionPatterns = [
         "**/vo/**",
         "**/model/**",
         "**/common/validation/**",
-        "**/dashboard/controller/TestController**"
+        "**/project/controller/TestController**"
 ]
 
 project.ext.set('coverageExclusionPatterns', exclusionPatterns)

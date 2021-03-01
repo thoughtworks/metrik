@@ -1,6 +1,6 @@
 [
   {
-    "id": "dashboardId",
+    "id": "projectId",
     "name": "4-key",
     "pipelines": [
       {
