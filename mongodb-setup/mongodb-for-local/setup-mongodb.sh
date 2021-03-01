@@ -34,7 +34,7 @@ done
 
 if [[ ${is_health_check_success} == 1 ]]; then
         echo "initializing replicaSet and add user"
-        docker exec $container_name /home/mongo/init.sh
+        docker exec $container_name /app/mongo/init.sh
         echo "mongodb set up success ✓✓✓, databaseName=4-key-metrics, username=4km, password=4000km."
     else
         echo "$container_name set up failed XXX"
