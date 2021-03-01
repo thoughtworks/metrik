@@ -1,4 +1,4 @@
-use 4-Key-Metrics;
+use 4-key-metrics;
 
 // remove all test data before insert
 db.build.remove({"_id": ObjectId("601cbb7625c1392117aa042b")});
