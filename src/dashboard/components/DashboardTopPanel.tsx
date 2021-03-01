@@ -1,10 +1,10 @@
 import { EditableText } from "../../shared/components/EditableText";
-import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
-import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
+import { Button, Typography, DatePicker, Form, Row, Col, Select, Tooltip } from "antd";
+import { SyncOutlined, FullscreenOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../shared/constants/styles";
+import { PRIMARY_COLOR, SECONDARY_COLOR, GRAY_13 } from "../../shared/constants/styles";
 import { useRequest } from "../../shared/hooks/useRequest";
 import {
 	getDashboardDetailsUsingGet,
@@ -76,6 +76,26 @@ interface DashboardTopPanelProps {
 	dashboardId: string;
 	onApply: (formValues: FormValues) => void;
 }
+
+export const InfoTooltip: FC<{ info: string }> = ({ info }) => (
+	<Tooltip color={GRAY_13} placement={"topRight"} arrowPointAtCenter title={info}>
+		<Button icon={<InfoCircleOutlined />} type={"text"} />
+	</Tooltip>
+);
+
+const INPUT_FIELD_EXPLANATIONS = {
+	TIME_RANGE:
+		"The start and end date of the pipeline data sampling where four key metrics is analysed.",
+	SAMPLING_INTERVAL: "The data sampling interval for each displayed number.",
+	PIPELINE_STAGE:
+		"The configured pipeline(s) and their stages will be listed here.The four key metrics data will be analysed based on the selected ones only.",
+};
+
+const INPUT_FIELD_LABELS = {
+	TIME_RANGE: "Time Range",
+	SAMPLING_INTERVAL: "Sampling Interval",
+	PIPELINE_STAGE: "Pipeline/Stage",
+};
 
 export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onApply }) => {
 	const defaultValues = {
@@ -189,14 +209,43 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 						onApply && onApply(formValues);
 					}}
 					onValuesChange={(_, values) => setFormValues(values)}>
-					<Row wrap={false} gutter={12}>
+					<Row wrap={false} gutter={16}>
 						<Col>
-							<Form.Item label="Duration" name="duration">
+							<Form.Item
+								label={
+									<>
+										<Text>{INPUT_FIELD_LABELS.TIME_RANGE}</Text>
+										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.TIME_RANGE} />
+									</>
+								}
+								name="duration">
 								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
 							</Form.Item>
 						</Col>
-						<Col span={10}>
-							<Form.Item label="Pipelines" name="pipelines">
+						<Col>
+							<Form.Item
+								label={
+									<>
+										<Text>{INPUT_FIELD_LABELS.SAMPLING_INTERVAL}</Text>
+										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.SAMPLING_INTERVAL} />
+									</>
+								}
+								name="unit">
+								<Select>
+									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
+									<Select.Option value="Monthly">Monthly</Select.Option>
+								</Select>
+							</Form.Item>
+						</Col>
+						<Col>
+							<Form.Item
+								label={
+									<>
+										<Text>{INPUT_FIELD_LABELS.PIPELINE_STAGE}</Text>
+										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.PIPELINE_STAGE} />
+									</>
+								}
+								name="pipelines">
 								<MultipleCascadeSelect
 									options={options}
 									defaultValues={
@@ -212,14 +261,6 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 											: []
 									}
 								/>
-							</Form.Item>
-						</Col>
-						<Col span={4}>
-							<Form.Item label="Unit" name="unit">
-								<Select>
-									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
-									<Select.Option value="Monthly">Monthly</Select.Option>
-								</Select>
 							</Form.Item>
 						</Col>
 						<Col style={{ textAlign: "right" }}>
