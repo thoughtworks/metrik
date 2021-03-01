@@ -4,7 +4,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 logs/
-local-mongodb-setup/mongo-db-data/
+mongodb-setup/mongodb-for-apitest/mongo-db-data/
+mongodb-setup/mongodb-for-local/mongo-db-data/
 
 ### STS ###
 .apt_generated

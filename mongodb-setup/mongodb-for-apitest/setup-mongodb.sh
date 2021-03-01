@@ -1,19 +1,14 @@
 #!/bin/bash
 
-container_name=mongodb
+container_name=mongodb-for-apitest
+echo "removing mongodb-for-apitest if exist"
+./remove-mongodb.sh
+docker stop "${container_name}"
+docker rm "${container_name}"
 
-echo "checking if $container_name existance"
-status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
-echo "the container $container_name status is: $status"
-if [[ ${status} == "running" ]]; then
-    echo "the $container_name is already exist"
-    exit 0
-fi
-
-
-echo "start $container_name"
-chmod 400 ./config/keyfile.txt
-docker-compose up -d
+echo "setting up mongodb-for-apitest"
+chmod 400 ../config/keyfile.txt
+docker-compose -f docker-compose-for-apitest.yml up -d
 
 is_health_check_success=0
 
@@ -32,7 +27,7 @@ done
 
 
 if [[ ${is_health_check_success} == 1 ]]; then
-        echo "initialize replicaSet and add user"
+        echo "initializing replicaSet and add user"
         docker exec $container_name /home/mongo/init.sh
         echo "mongodb set up success ✓✓✓, databaseName=4-key-metrics, username=4km, password=4000km."
     else

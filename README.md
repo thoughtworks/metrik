@@ -22,13 +22,13 @@ Checkout the repo to local and go to the project folder: /**/sea-4-key-metrics-s
 ```
 * Set up mongodb locally: 
 ```aidl
-cd local-mongodb-setup
+cd mongodb-setup/mongodb-for-loca
 ./setup-mongodb.sh
 ```
 * Start up APP locally
 ```aidl
 go to project folder first: 
-cd ../
+cd ../../
 then
 ./gradlew clean bootRun 
 ```
@@ -51,7 +51,7 @@ docker exec -i $container_id mongo --port 27017 -u "4km" --authenticationDatabas
 #### Run Api tests
 To run api tests, we need start our backend first.
 ```
-./gradlew clean bootRun
+ SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun
 ```
 
 To run all api tests, run command below
