@@ -18,7 +18,13 @@ const colors = {
 	red: RED_DARK,
 };
 
-const levelTextStyle = { color: GRAY_1, marginLeft: 8, fontSize: 12, verticalAlign: "middle" };
+const levelTextStyle = {
+	color: GRAY_1,
+	opacity: 0.75,
+	marginLeft: 8,
+	fontSize: 12,
+	verticalAlign: "middle",
+};
 
 export const LegendRect: FC<{ color: keyof typeof Colour; text?: string }> = ({ color, text }) => (
 	<>

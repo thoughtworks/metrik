@@ -13,6 +13,8 @@ interface ColourLegendProps {
 	low: string;
 }
 
+const textStyle = { color: GRAY_1, fontSize: 12 };
+
 export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }) => (
 	<div>
 		<Title style={{ color: GRAY_1, fontSize: 14 }} level={5}>
@@ -23,7 +25,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<LegendRect color={"green"} text={"ELITE"} />
 			</Col>
 			<Col>
-				<Text style={{ color: GRAY_1 }}>{elite}</Text>
+				<Text style={textStyle}>{elite}</Text>
 			</Col>
 		</Row>
 		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
@@ -31,7 +33,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<LegendRect color={"blue"} text={"HIGH"} />
 			</Col>
 			<Col>
-				<Text style={{ color: GRAY_1 }}>{high}</Text>
+				<Text style={textStyle}>{high}</Text>
 			</Col>
 		</Row>
 		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
@@ -39,7 +41,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<LegendRect color={"orange"} text={"MEDIUM"} />
 			</Col>
 			<Col>
-				<Text style={{ color: GRAY_1 }}>{medium}</Text>
+				<Text style={textStyle}>{medium}</Text>
 			</Col>
 		</Row>
 		<Row align={"middle"} justify={"space-between"}>
@@ -47,7 +49,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 				<LegendRect color={"red"} text={"LOW"} />
 			</Col>
 			<Col>
-				<Text style={{ color: GRAY_1 }}>{low}</Text>
+				<Text style={textStyle}>{low}</Text>
 			</Col>
 		</Row>
 	</div>
