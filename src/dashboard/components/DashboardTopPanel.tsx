@@ -161,8 +161,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ dashboardId, onA
 						<EditableText defaultValue={dashboard?.name ?? ""} onEditDone={updateDashboardName} />
 					)}
 					<Text type={"secondary"}>
-						The latest available data end at :{" "}
-						{formatLastUpdateTime(synchronization?.synchronizationTimestamp)}
+						Last updated : {formatLastUpdateTime(synchronization?.synchronizationTimestamp)}
 					</Text>
 					<Button type="link" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing...." : "Sync Data"}

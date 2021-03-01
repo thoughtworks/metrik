@@ -1,8 +1,7 @@
 import moment from "moment";
 
-export const formatLastUpdateTime = (timestamp?: number): string => {
-	return timestamp ? moment(timestamp).format("hh:mm, D MMM, YYYY") : "";
-};
+export const formatLastUpdateTime = (timestamp?: number): string =>
+	timestamp ? moment(timestamp).format("hh:mm a, D MMM, YYYY") : "";
 
 export const durationFormatter = (
 	startTimestamp: number,
