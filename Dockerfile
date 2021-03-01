@@ -27,12 +27,16 @@ RUN mkdir -p /etc/supervisor/conf.d/
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # MongoDB Config
-ENV MONGO_INITDB_DATABASE 4-Key-Metrics
-ENV DB_USER 4km
-ENV DB_PASSWORD 4000km
+# Note. Do not put "mongo-init.js" to /docker-entrypoint-initdb.d for automated initialization.
+# Currently it causes error when initializing replica set in mongo entrypoint execution.
+# Use supervisord instead.
+COPY config/mongo-init.js /app/mongo/mongo-init.js
+RUN openssl rand -base64 756 > /app/mongo/keyfile
+RUN chown 999 /app/mongo/keyfile && chmod 400 /app/mongo/keyfile
 
-COPY config/monogo-init.js /docker-entrypoint-initdb.d
-RUN mv -f /usr/local/bin/docker-entrypoint.sh /app/mongo.sh
+ENV MONGO_INITDB_DATABASE 4-Key-Metrics
+ENV MONGO_INITDB_ROOT_USERNAME admin
+ENV MONGO_INITDB_ROOT_PASSWORD root
 
 # Copy BACKEND artifact
 ENV APP_ENV local
