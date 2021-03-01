@@ -125,7 +125,7 @@ jobs:
 
               echo \"Deploying with the latest image...\"
               aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
-              docker run --name \$CONTAINER_NAME -d -p 9000:9000 -e DB_USER=${MONGO_USER} -e DB_PASSWORD=${MONGO_PASSWORD} --net=4km-docker_default --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
+              docker run --name \$CONTAINER_NAME -d -p 9000:9000 -e DB_USER=${MONGO_USER} -e DB_PASSWORD=${MONGO_PASSWORD} -e AES_KEY=${PROVIDED_AES_KEY} -e AES_IV=${PROVIDED_AES_IV} --net=4km-docker_default --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
 
               echo \"Cleaning up...\"
               docker system prune -f
