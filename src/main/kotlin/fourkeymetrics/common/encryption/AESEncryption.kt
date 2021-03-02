@@ -1,5 +1,8 @@
 package fourkeymetrics.common.encryption
 
+import fourkeymetrics.project.model.Pipeline
+import org.aspectj.lang.annotation.AfterReturning
+import org.aspectj.lang.annotation.Aspect
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
@@ -9,7 +12,6 @@ import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-
 
 @Configuration
 data class AESEncryptionProperties(
@@ -50,5 +52,40 @@ class AESEncryptionService(@Autowired private var properties: AESEncryptionPrope
 
     private fun getSecretKeyFromString(key: String): SecretKey {
         return SecretKeySpec(key.encodeToByteArray(), 0, key.length, "AES")
+    }
+}
+
+@Aspect
+@Component
+class DatabaseEncryptionAspect {
+    @Autowired
+    private lateinit var encryptionService: AESEncryptionService
+
+    @AfterReturning(
+        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..))",
+        returning = "collection"
+    )
+    fun decryptAfterRetrievingFromDB(collection: ArrayList<Any>) {
+        var pipelines: List<Pipeline> = emptyList()
+        try {
+            pipelines = collection.map { it as Pipeline }
+        } catch (e: ClassCastException) {
+        }
+
+        pipelines.forEach {
+            it.username = encryptionService.decrypt(it.username)
+            it.credential = encryptionService.decrypt(it.credential)
+        }
+    }
+
+    @AfterReturning(
+        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.findOne(..))",
+        returning = "pipeline"
+    )
+    fun decryptAfterRetrievingFromDB(pipeline: Pipeline?) {
+        if (pipeline != null) {
+            pipeline.username = encryptionService.decrypt(pipeline.username)
+            pipeline.credential = encryptionService.decrypt(pipeline.credential)
+        }
     }
 }

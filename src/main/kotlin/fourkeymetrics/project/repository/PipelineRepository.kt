@@ -23,30 +23,28 @@ class PipelineRepository {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId)
         )
-        val pipeline = mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
-        pipeline.username = encryptionService.decrypt(pipeline.username)
-        pipeline.credential = encryptionService.decrypt(pipeline.credential)
-        return pipeline
+
+        return mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
     }
 
     fun findByIdAndProjectId(pipelineId: String, projectId: String): Pipeline {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId).and("projectId").isEqualTo(projectId)
         )
-        val pipeline = mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
-        pipeline.username = encryptionService.decrypt(pipeline.username)
-        pipeline.credential = encryptionService.decrypt(pipeline.credential)
-        return pipeline
+
+        return mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
     }
 
     fun findByNameAndProjectId(name: String, projectId: String): Pipeline? {
         val query = Query().addCriteria(Criteria.where("name").`is`(name).and("projectId").`is`(projectId))
-        val pipeline = mongoTemplate.findOne(query, Pipeline::class.java)
-        if (pipeline != null) {
-            pipeline.username = encryptionService.decrypt(pipeline.username)
-            pipeline.credential = encryptionService.decrypt(pipeline.credential)
-        }
-        return pipeline
+
+        return mongoTemplate.findOne(query, Pipeline::class.java)
+    }
+
+    fun findByProjectId(projectId: String): List<Pipeline> {
+        val query = Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId))
+
+        return mongoTemplate.find(query, Pipeline::class.java)
     }
 
     fun deleteById(pipelineId: String) {
@@ -66,15 +64,5 @@ class PipelineRepository {
             it.credential = encryptionService.encrypt(it.credential)
         }
         return mongoTemplate.insert(pipelines.toMutableList(), Pipeline::class.java).toList()
-    }
-
-    fun findByProjectId(projectId: String): List<Pipeline> {
-        val query = Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId))
-        val pipelines = mongoTemplate.find(query, Pipeline::class.java)
-        pipelines.forEach {
-            it.username = encryptionService.decrypt(it.username)
-            it.credential = encryptionService.decrypt(it.credential)
-        }
-        return pipelines
     }
 }
