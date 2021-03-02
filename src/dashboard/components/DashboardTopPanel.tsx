@@ -172,6 +172,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 		}
 	}, [formValues.pipelines, options]);
 
+	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
+
 	return (
 		<div css={containerStyles}>
 			<div css={headerStyles}>
@@ -179,9 +181,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					{project?.name && (
 						<EditableText defaultValue={project?.name ?? ""} onEditDone={updateProjectName} />
 					)}
-					<Text type={"secondary"}>
-						Last updated : {formatLastUpdateTime(synchronization?.synchronizationTimestamp)}
-					</Text>
+					{lastUpdateTime && <Text type={"secondary"}>Last updated : {lastUpdateTime}</Text>}
 				</div>
 				<div>
 					<span css={pipelineSettingStyles}>
@@ -208,7 +208,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 						onApply && onApply(formValues);
 					}}
 					onValuesChange={(_, values) => setFormValues(values)}>
-					<Row wrap={false} gutter={16}>
+					<Row wrap={false} gutter={16} align={"bottom"}>
 						<Col>
 							<Form.Item
 								label={
@@ -236,7 +236,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col>
+						<Col style={{ maxWidth: 522 }}>
 							<Form.Item
 								label={
 									<>
