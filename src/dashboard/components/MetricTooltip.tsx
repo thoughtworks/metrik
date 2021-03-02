@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import React, { FC } from "react";
 import { DurationUnit, MetricType } from "../../shared/__types__/base";
-import { GRAY_13 } from "../../shared/constants/styles";
+import { GRAY_13, HINT_ICON_COLOR } from "../../shared/constants/styles";
 
 export const MetricTooltip: FC<{ durationUnit: DurationUnit; type: MetricType }> = ({
 	durationUnit,
@@ -15,6 +15,6 @@ export const MetricTooltip: FC<{ durationUnit: DurationUnit; type: MetricType }>
 		arrowPointAtCenter
 		overlayClassName={"metric-info-overlay"}
 		title={<MetricInfo durationUnit={durationUnit} type={type} />}>
-		<Button icon={<InfoCircleOutlined />} type={"text"} />
+		<Button icon={<InfoCircleOutlined css={{ color: HINT_ICON_COLOR }} />} type={"text"} />
 	</Tooltip>
 );

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
-import { Tooltip, Typography } from "antd";
+import { Tooltip, Typography, Button } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons/lib/icons";
+import { HINT_ICON_COLOR } from "../constants/styles";
 
 interface HintIconProps {
 	text?: string;
@@ -14,9 +15,7 @@ const HintIcon: FC<HintIconProps> = ({ text, tooltip }) => {
 		<>
 			{text ? <Text>{text}</Text> : null}
 			<Tooltip placement={"topLeft"} arrowPointAtCenter={true} title={tooltip}>
-				<InfoCircleOutlined
-					css={{ marginLeft: 6, color: "rgba(0, 0, 0, 0.45)", cursor: "pointer" }}
-				/>
+				<Button icon={<InfoCircleOutlined css={{ color: HINT_ICON_COLOR }} />} type={"text"} />
 			</Tooltip>
 		</>
 	);
