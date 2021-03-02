@@ -16,5 +16,5 @@ data class CommitDTO(val commitId: String, val timestamp: Long, val date: String
 
 data class BuildDetailsDTO(val stages: List<StageDTO> = emptyList())
 
-data class StageDTO(val name: String, val status: String, val startTimeMillis: Long,
+data class StageDTO(val name: String, val status: String?, val startTimeMillis: Long,
                     val durationMillis: Long, val pauseDurationMillis: Long)

@@ -15,9 +15,9 @@ abstract class PipelineService {
 
     abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
 
-    protected abstract fun mapStageStatus(statusInPipeline: String): Status
+    protected abstract fun mapStageStatus(statusInPipeline: String?): Status
 
-    protected abstract fun mapBuildStatus(statusInPipeline: String?): Status?
+    protected abstract fun mapBuildStatus(statusInPipeline: String?): Status
 
     fun hasStageInTimeRange(
         pipelineId: String,

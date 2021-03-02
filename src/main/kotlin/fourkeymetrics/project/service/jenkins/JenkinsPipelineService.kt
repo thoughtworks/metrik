@@ -98,7 +98,7 @@ class JenkinsPipelineService(
         }
     }
 
-    override fun mapStageStatus(statusInPipeline: String): Status =
+    override fun mapStageStatus(statusInPipeline: String?): Status =
         when (statusInPipeline) {
             "SUCCESS" -> {
                 Status.SUCCESS
@@ -115,7 +115,7 @@ class JenkinsPipelineService(
         }
 
 
-    override fun mapBuildStatus(statusInPipeline: String?): Status? =
+    override fun mapBuildStatus(statusInPipeline: String?): Status =
         when (statusInPipeline) {
             null -> {
                 Status.IN_PROGRESS

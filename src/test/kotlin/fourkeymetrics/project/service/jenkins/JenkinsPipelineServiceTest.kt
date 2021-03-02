@@ -164,6 +164,46 @@ internal class JenkinsPipelineServiceTest {
         verify(buildRepository, times(1)).save(allBuilds)
     }
 
+    @Test
+    internal fun `should sync builds from Jenkins when syncBuilds() given build status is success`() {
+        val pipelineId = "fake pipeline"
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
+                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
+        val mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        `when`(pipelineRepository.findById(pipelineId)).thenReturn(
+            Pipeline(
+                username = username,
+                credential = credential,
+                url = baseUrl
+            )
+        )
+        mockServer.expect(requestTo(getBuildSummariesUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-builds-5.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        mockServer.expect(requestTo(getBuildDetailUrl))
+            .andRespond(
+                withSuccess(
+                    this.javaClass.getResource("/pipeline/raw-build-detail-5.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val expectedBuilds: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-5.json").readText())
+        val allBuilds = jenkinsPipelineService.syncBuilds(pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        verify(buildRepository, times(1)).save(allBuilds)
+    }
+
 
     @Test
     internal fun `should return builds with previous status is building null or not exits in DB from Jenkins when syncBuilds() given pipeline ID`() {

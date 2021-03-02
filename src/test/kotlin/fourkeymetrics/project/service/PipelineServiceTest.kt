@@ -25,11 +25,11 @@ internal class PipelineServiceTest {
             println("fake implementation")
         }
 
-        override fun mapStageStatus(statusInPipeline: String): Status {
+        override fun mapStageStatus(statusInPipeline: String?): Status {
             TODO("Not yet implemented")
         }
 
-        override fun mapBuildStatus(statusInPipeline: String?): Status? {
+        override fun mapBuildStatus(statusInPipeline: String?): Status {
             TODO("Not yet implemented")
         }
     }
