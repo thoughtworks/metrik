@@ -27,10 +27,11 @@ RUN mkdir -p /etc/supervisor/conf.d/
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # MongoDB Config
-# Note. Do not put "mongo-init.js" to /docker-entrypoint-initdb.d for automated initialization.
+# Note. Do not put the mongo init scripts to /docker-entrypoint-initdb.d for automated initialization.
 # Currently it causes error when initializing replica set in mongo entrypoint execution.
 # Use supervisord instead.
-COPY config/mongo-init.js /app/mongo/mongo-init.js
+COPY config/mongo-create-user.js /app/mongo/mongo-init-replica-set.js
+COPY config/mongo-create-user.js /app/mongo/mongo-create-user.js
 RUN openssl rand -base64 756 > /app/mongo/keyfile
 RUN chown 999 /app/mongo/keyfile && chmod 400 /app/mongo/keyfile
 
