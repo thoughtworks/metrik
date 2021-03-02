@@ -24,7 +24,7 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 	};
 
 	return (
-		<div css={{ height: 45, display: "flex" }}>
+		<div css={{ minHeight: 30, display: "flex" }}>
 			{editable ? (
 				<Input
 					css={{ cursor: "pointer" }}
@@ -44,7 +44,7 @@ export const EditableText: FC<EditableTextProps> = ({ defaultValue, onEditDone }
 					onClick={() => {
 						setEditable(true);
 					}}>
-					<Title level={2} style={{ marginBottom: 0 }}>
+					<Title level={2} style={{ marginBottom: 0, lineHeight: 1 }}>
 						{value}
 					</Title>
 					<EditOutlined style={{ fontSize: 16, color: BLUE_5, marginLeft: 8 }} />

@@ -176,7 +176,11 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					{project?.name && (
 						<EditableText defaultValue={project?.name ?? ""} onEditDone={updateProjectName} />
 					)}
-					{lastUpdateTime && <Text type={"secondary"}>Last updated : {lastUpdateTime}</Text>}
+					{lastUpdateTime && (
+						<Text type={"secondary"} style={{ display: "inline-block", marginTop: 16 }}>
+							Last updated : {lastUpdateTime}
+						</Text>
+					)}
 				</div>
 				<div>
 					<span css={pipelineSettingStyles}>
