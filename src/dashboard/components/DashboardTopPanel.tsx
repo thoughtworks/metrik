@@ -263,7 +263,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 							</Form.Item>
 						</Col>
 						<Col style={{ textAlign: "right" }}>
-							<Form.Item label=" ">
+							<Form.Item css={{ marginTop: 40 }}>
 								<Button htmlType="submit" disabled={syncing || isEmpty(options)}>
 									Apply
 								</Button>

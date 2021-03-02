@@ -147,7 +147,6 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 			);
 		}
 	}, [options]);
-
 	return (
 		<Trigger
 			action={["click"]}
@@ -203,7 +202,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					<Overflow
 						prefixCls={"ant-select-selection-overflow"}
 						data={tags}
-						maxCount={"responsive"}
+						maxCount={2}
 						renderRest={(items: CascadeValueItem[]) => (
 							<div className={"ant-select-selection-item"}>+{items.length}...</div>
 						)}
