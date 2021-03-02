@@ -202,7 +202,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 					<Overflow
 						prefixCls={"ant-select-selection-overflow"}
 						data={tags}
-						maxCount={2}
+						maxCount={3}
 						renderRest={(items: CascadeValueItem[]) => (
 							<div className={"ant-select-selection-item"}>+{items.length}...</div>
 						)}

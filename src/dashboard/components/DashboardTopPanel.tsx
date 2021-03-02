@@ -209,57 +209,61 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					onValuesChange={(_, values) => setFormValues(values)}>
 					<Row wrap={false} gutter={16} align={"bottom"}>
 						<Col>
-							<Form.Item
-								label={
-									<HintIcon
-										text={INPUT_FIELD_LABELS.TIME_RANGE}
-										tooltip={INPUT_FIELD_EXPLANATIONS.TIME_RANGE}
-									/>
-								}
-								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
-							</Form.Item>
-						</Col>
-						<Col>
-							<Form.Item
-								label={
-									<HintIcon
-										text={INPUT_FIELD_LABELS.SAMPLING_INTERVAL}
-										tooltip={INPUT_FIELD_EXPLANATIONS.SAMPLING_INTERVAL}
-									/>
-								}
-								name="unit">
-								<Select>
-									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
-									<Select.Option value="Monthly">Monthly</Select.Option>
-								</Select>
-							</Form.Item>
-						</Col>
-						<Col>
-							<Form.Item
-								label={
-									<HintIcon
-										text={INPUT_FIELD_LABELS.PIPELINE_STAGE}
-										tooltip={INPUT_FIELD_EXPLANATIONS.PIPELINE_STAGE}
-									/>
-								}
-								name="pipelines">
-								<MultipleCascadeSelect
-									options={options}
-									defaultValues={
-										!isEmpty(options[0]?.children)
-											? [
-													{
-														value: formValues.pipelines[0]?.value || options[0]?.value,
-														childValue:
-															formValues.pipelines[0]?.childValue ||
-															(options[0]?.children ?? [])[0]?.label,
-													},
-											  ]
-											: []
-									}
-								/>
-							</Form.Item>
+							<Row wrap={false} gutter={16} align={"bottom"}>
+								<Col>
+									<Form.Item
+										label={
+											<HintIcon
+												text={INPUT_FIELD_LABELS.TIME_RANGE}
+												tooltip={INPUT_FIELD_EXPLANATIONS.TIME_RANGE}
+											/>
+										}
+										name="duration">
+										<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
+									</Form.Item>
+								</Col>
+								<Col>
+									<Form.Item
+										label={
+											<HintIcon
+												text={INPUT_FIELD_LABELS.SAMPLING_INTERVAL}
+												tooltip={INPUT_FIELD_EXPLANATIONS.SAMPLING_INTERVAL}
+											/>
+										}
+										name="unit">
+										<Select>
+											<Select.Option value="Fortnightly">Fortnightly</Select.Option>
+											<Select.Option value="Monthly">Monthly</Select.Option>
+										</Select>
+									</Form.Item>
+								</Col>
+								<Col>
+									<Form.Item
+										label={
+											<HintIcon
+												text={INPUT_FIELD_LABELS.PIPELINE_STAGE}
+												tooltip={INPUT_FIELD_EXPLANATIONS.PIPELINE_STAGE}
+											/>
+										}
+										name="pipelines">
+										<MultipleCascadeSelect
+											options={options}
+											defaultValues={
+												!isEmpty(options[0]?.children)
+													? [
+															{
+																value: formValues.pipelines[0]?.value || options[0]?.value,
+																childValue:
+																	formValues.pipelines[0]?.childValue ||
+																	(options[0]?.children ?? [])[0]?.label,
+															},
+													  ]
+													: []
+											}
+										/>
+									</Form.Item>
+								</Col>
+							</Row>
 						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item css={{ marginTop: 40 }}>
