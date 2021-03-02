@@ -6,6 +6,7 @@ spring:
 logging:
   config: classpath:log4j2-file-and-console.xml
 
+# Use length 16 for both key and IV
 aes:
   key: ${AES_KEY}
   iv: ${AES_IV}
