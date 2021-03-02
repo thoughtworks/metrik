@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_DATABASE: 4-key-metrics
       MONGO_REPLICA_SET_NAME: rs0
     volumes:
-      - ../config/:/app/mongo/:ro
+      - ../config/:/app/mongo/
       - ./mongo-db-data/:/data/db/
     ports:
       - "27017:27017"
