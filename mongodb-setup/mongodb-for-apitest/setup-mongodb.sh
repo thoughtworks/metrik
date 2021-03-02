@@ -3,8 +3,6 @@
 container_name=mongodb-for-apitest
 echo "removing mongodb-for-apitest if exist"
 ./remove-mongodb.sh
-docker stop "${container_name}"
-docker rm "${container_name}"
 
 echo "setting up mongodb-for-apitest"
 #this command to specify the network
