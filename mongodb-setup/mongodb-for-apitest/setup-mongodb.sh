@@ -7,6 +7,8 @@ docker stop "${container_name}"
 docker rm "${container_name}"
 
 echo "setting up mongodb-for-apitest"
+#this command to specify the network
+export COMPOSE_PROJECT_NAME=4km-container
 chmod 400 ../config/keyfile.txt
 docker-compose -f docker-compose-for-apitest.yml up -d
 
