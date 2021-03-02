@@ -2,7 +2,7 @@
 
 container_name=mongodb
 #this command to specify the network
-export COMPOSE_PROJECT_NAME=4km-container
+export COMPOSE_PROJECT_NAME=4km-docker
 echo "checking if $container_name existance"
 status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
 echo "the container $container_name status is: $status"
