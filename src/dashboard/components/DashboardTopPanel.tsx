@@ -1,10 +1,10 @@
 import { EditableText } from "../../shared/components/EditableText";
-import { Button, Typography, DatePicker, Form, Row, Col, Select, Tooltip } from "antd";
-import { SyncOutlined, FullscreenOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
+import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR, SECONDARY_COLOR, GRAY_13 } from "../../shared/constants/styles";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../shared/constants/styles";
 import { useRequest } from "../../shared/hooks/useRequest";
 import {
 	getProjectDetailsUsingGet,
@@ -79,7 +79,7 @@ interface DashboardTopPanelProps {
 
 const INPUT_FIELD_EXPLANATIONS = {
 	TIME_RANGE:
-		"The start and end date of the pipeline data sampling where four key metrics is analysed.",
+		"The start and end date of the pipeline data sampling where four key metrics are analysed.",
 	SAMPLING_INTERVAL: "The data sampling interval for each displayed number.",
 	PIPELINE_STAGE:
 		"The configured pipeline(s) and their stages will be listed here.The four key metrics data will be analysed based on the selected ones only.",
@@ -210,7 +210,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					<Row wrap={false} gutter={16} align={"bottom"}>
 						<Col>
 							<Row wrap={false} gutter={16} align={"bottom"}>
-								<Col>
+								<Col css={{ minWidth: 260 }}>
 									<Form.Item
 										label={
 											<HintIcon

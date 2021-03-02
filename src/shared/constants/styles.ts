@@ -26,3 +26,4 @@ export const GREEN_DARK = "#49AA19";
 
 export const BACKGROUND_COLOR = "#F0F2F5";
 export const HINT_ICON_COLOR = "rgba(0, 0,0, 0.45)";
+export const OVERLAY_COLOR = "rgba(0,0,0,0.85)";
