@@ -1,13 +1,16 @@
 #!/bin/bash
 
 container_name=mongodb-for-apitest
+export COMPOSE_PROJECT_NAME=mongodb-apitest
+
 echo "removing mongodb-for-apitest if exist"
 ./remove-mongodb.sh
 
 echo "setting up mongodb-for-apitest"
 #this command to specify the network
-export COMPOSE_PROJECT_NAME=4km-container
+
 chmod 400 ../config/keyfile.txt
+chmod +x ../config/*.sh
 docker-compose -f docker-compose-for-apitest.yml up -d
 
 is_health_check_success=0

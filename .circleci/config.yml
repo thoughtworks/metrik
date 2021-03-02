@@ -40,7 +40,7 @@ jobs:
       - run:
           name: Configure MongoDB
           command: |
-            mongo 4-key-metrics --eval "db.createUser({ user: '$DB_USER', pwd: '$DB_PASSWORD', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
+            mongo 4-key-metrics --eval "db.createUser({ user: '$MONGO_USER', pwd: '$MONGO_PASSWORD', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
             mongo < feed-test-data.js
 
       - run:

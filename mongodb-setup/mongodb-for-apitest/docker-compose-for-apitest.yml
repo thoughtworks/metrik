@@ -15,5 +15,5 @@ services:
       - ./mongo-db-data/:/data/db/
     ports:
       - "27018:27017"
-    command: --keyFile /app/mongo/keyfile.txt --bind_ip_all --replSet rs0
+    entrypoint: /app/mongo/startup.sh
 

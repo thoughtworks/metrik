@@ -1,6 +1,8 @@
 #!/bin/bash
 
 container_name=mongodb
+#this command to specify the network
+export COMPOSE_PROJECT_NAME=4km-container
 
 echo "checking if $container_name existance"
 status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
@@ -13,8 +15,7 @@ fi
 
 echo "start $container_name"
 docker rm "${container_name}"
-#this command to specify the network
-export COMPOSE_PROJECT_NAME=4km-container
+
 chmod 400 ../config/keyfile.txt
 chmod +x ../config/*.sh
 docker-compose -f docker-compose-for-local.yml up  -d
