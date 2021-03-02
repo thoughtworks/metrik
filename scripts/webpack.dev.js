@@ -14,7 +14,8 @@ const devConfig = {
 		open: true,
 		historyApiFallback: true,
 		proxy: {
-			"/api": "http://18.162.205.128:9000",
+			"/api":
+				process.env.API_ENV === "local" ? "http://localhost:9000" : "http://18.162.205.128:9000",
 		},
 	},
 };
