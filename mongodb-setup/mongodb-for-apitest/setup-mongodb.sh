@@ -1,7 +1,7 @@
 #!/bin/bash
 
 container_name=mongodb-for-apitest
-COMPOSE_PROJECT_NAME=mongodb-apitest
+export COMPOSE_PROJECT_NAME=mongodb-apitest
 
 echo "removing mongodb-for-apitest if exist"
 ./remove-mongodb.sh
