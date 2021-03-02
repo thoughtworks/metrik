@@ -14,3 +14,4 @@ if [ $EXIT_CODE -ne 0 ]; then
   exit $EXIT_CODE
 fi
 rm $OUTPUT
+
