@@ -30,8 +30,9 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Note. Do not put the mongo init scripts to /docker-entrypoint-initdb.d for automated initialization.
 # Currently it causes error when initializing replica set in mongo entrypoint execution.
 # Use supervisord instead.
-COPY config/mongo-create-user.js /app/mongo/mongo-init-replica-set.js
-COPY config/mongo-create-user.js /app/mongo/mongo-create-user.js
+COPY config/mongo/mongo-init.sh /app/mongo/mongo-init.sh
+COPY config/mongo/mongo-init-replica-set.js /app/mongo/mongo-init-replica-set.js
+COPY config/mongo/mongo-create-user.js /app/mongo/mongo-create-user.js
 RUN openssl rand -base64 756 > /app/mongo/keyfile
 RUN chown 999 /app/mongo/keyfile && chmod 400 /app/mongo/keyfile
 
@@ -49,7 +50,7 @@ COPY artifacts/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics
 COPY artifacts/dist /usr/share/nginx/html
 COPY artifacts/nginx.conf /etc/nginx/
 
-RUN chmod +x /app/*.sh
+RUN find /app -name "*.sh" -exec chmod +x {} \;
 
 EXPOSE 80 9000 27017
 
