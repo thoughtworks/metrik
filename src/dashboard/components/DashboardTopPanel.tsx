@@ -235,7 +235,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col style={{ maxWidth: 522 }}>
+						<Col>
 							<Form.Item
 								label={
 									<HintIcon
