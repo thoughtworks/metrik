@@ -21,6 +21,7 @@ import { isEmpty, isEqual } from "lodash";
 import { formatLastUpdateTime } from "../../shared/utils/timeFormats";
 import { usePrevious } from "../../shared/hooks/usePrevious";
 import { DurationUnit } from "../../shared/__types__/base";
+import HintIcon from "../../shared/components/HintIcon";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -75,12 +76,6 @@ interface DashboardTopPanelProps {
 	projectId: string;
 	onApply: (formValues: FormValues) => void;
 }
-
-export const InfoTooltip: FC<{ info: string }> = ({ info }) => (
-	<Tooltip color={GRAY_13} placement={"topRight"} arrowPointAtCenter title={info}>
-		<Button icon={<InfoCircleOutlined />} type={"text"} />
-	</Tooltip>
-);
 
 const INPUT_FIELD_EXPLANATIONS = {
 	TIME_RANGE:
@@ -212,10 +207,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 						<Col>
 							<Form.Item
 								label={
-									<>
-										<Text>{INPUT_FIELD_LABELS.TIME_RANGE}</Text>
-										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.TIME_RANGE} />
-									</>
+									<HintIcon
+										text={INPUT_FIELD_LABELS.TIME_RANGE}
+										tooltip={INPUT_FIELD_EXPLANATIONS.TIME_RANGE}
+									/>
 								}
 								name="duration">
 								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
@@ -224,10 +219,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 						<Col>
 							<Form.Item
 								label={
-									<>
-										<Text>{INPUT_FIELD_LABELS.SAMPLING_INTERVAL}</Text>
-										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.SAMPLING_INTERVAL} />
-									</>
+									<HintIcon
+										text={INPUT_FIELD_LABELS.SAMPLING_INTERVAL}
+										tooltip={INPUT_FIELD_EXPLANATIONS.SAMPLING_INTERVAL}
+									/>
 								}
 								name="unit">
 								<Select>
@@ -239,10 +234,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 						<Col style={{ maxWidth: 522 }}>
 							<Form.Item
 								label={
-									<>
-										<Text>{INPUT_FIELD_LABELS.PIPELINE_STAGE}</Text>
-										<InfoTooltip info={INPUT_FIELD_EXPLANATIONS.PIPELINE_STAGE} />
-									</>
+									<HintIcon
+										text={INPUT_FIELD_LABELS.PIPELINE_STAGE}
+										tooltip={INPUT_FIELD_EXPLANATIONS.PIPELINE_STAGE}
+									/>
 								}
 								name="pipelines">
 								<MultipleCascadeSelect
