@@ -7,19 +7,19 @@ export const Routes = ({ projectId }: { projectId: string | undefined }) => (
 	<>
 		<Route path={"/"} exact>
 			{projectId ? (
-				<Redirect to={{ pathname: "/dashboard", search: `?dashboardId=${projectId}` }} />
+				<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
 			) : (
 				<Redirect to={{ pathname: "/config" }} />
 			)}
 		</Route>
 
-		<Route path={"/dashboard"} exact>
+		<Route path={"/project"} exact>
 			{projectId ? <PageDashboard /> : <Redirect to={{ pathname: "/config" }} />}
 		</Route>
 
 		<Route path={"/config"} exact>
 			{projectId ? (
-				<Redirect to={{ pathname: "/dashboard", search: `?projectId=${projectId}` }} />
+				<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
 			) : (
 				<PageConfig />
 			)}
