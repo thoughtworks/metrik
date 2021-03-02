@@ -59,7 +59,7 @@ const generateTagLabel = (options: Option[], tag: CascadeValueItem) => {
 	return compact([
 		option?.label,
 		findOptionByValue(option?.children ?? [], tag.childValue)?.label,
-	]).join(",");
+	]).join(":");
 };
 
 const findExistsTags = (options: Option[], tags: CascadeValueItem[]) =>
@@ -203,9 +203,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 						prefixCls={"ant-select-selection-overflow"}
 						data={tags}
 						maxCount={3}
-						renderRest={(items: CascadeValueItem[]) => (
-							<div className={"ant-select-selection-item"}>+{items.length}...</div>
-						)}
+						renderRest={() => <div className={"ant-select-selection-item"}>more</div>}
 						renderItem={tag => {
 							const label = generateTagLabel(options, tag);
 							return (

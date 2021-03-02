@@ -14,16 +14,10 @@ import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
 
-const { Text } = Typography;
-
 const settingStyles = css({
 	fontSize: 16,
 	padding: "5px 0",
 	cursor: "pointer",
-});
-
-const settingTextStyles = css({
-	marginLeft: 10,
 });
 
 const modalHeaderTextStyles = css({

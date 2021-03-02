@@ -38,7 +38,7 @@ export const FieldsStep2: FC<{
 	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
 		{showTitle && <Text css={groupTitleStyles}>Pipeline Details</Text>}
 
-		<Row gutter={8} wrap={false}>
+		<Row gutter={8} wrap={false} align={"bottom"}>
 			<Col span={4}>
 				<Form.Item
 					label="Pipeline Tool"
@@ -53,7 +53,7 @@ export const FieldsStep2: FC<{
 			</Col>
 		</Row>
 
-		<Row gutter={24} wrap={false}>
+		<Row gutter={24} wrap={false} align={"bottom"}>
 			<Col span={8}>
 				<Form.Item
 					label="Pipeline Name"
@@ -82,7 +82,7 @@ export const FieldsStep2: FC<{
 			</Col>
 		</Row>
 
-		<Row gutter={24} wrap={false}>
+		<Row gutter={24} wrap={false} align={"bottom"}>
 			<Col span={8}>
 				<Form.Item
 					label="Jenkins Username"
