@@ -3,6 +3,7 @@ package fourkeymetrics.common.encryption
 import fourkeymetrics.project.model.Pipeline
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.annotation.Before
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
@@ -61,11 +62,31 @@ class DatabaseEncryptionAspect {
     @Autowired
     private lateinit var encryptionService: AESEncryptionService
 
+    @Before(value = "execution(* org.springframework.data.mongodb.core.MongoTemplate.save(..)) && args(pipeline)")
+    fun encryptBeforeSavingToDB(pipeline: Pipeline) {
+        pipeline.username = encryptionService.encrypt(pipeline.username)
+        pipeline.credential = encryptionService.encrypt(pipeline.credential)
+    }
+
+    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && args(collection, ..)")
+    fun encryptBeforeSavingToDB(collection: ArrayList<Any>) {
+        var pipelines: List<Pipeline> = emptyList()
+        try {
+            pipelines = collection.map { it as Pipeline }
+        } catch (e: ClassCastException) {
+        }
+
+        pipelines.forEach {
+            it.username = encryptionService.encrypt(it.username)
+            it.credential = encryptionService.encrypt(it.credential)
+        }
+    }
+
     @AfterReturning(
         pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..))",
         returning = "collection"
     )
-    fun decryptAfterRetrievingFromDB(collection: ArrayList<Any>) {
+    fun decryptAfterRetrievingFromDB(collection: List<Any>) {
         var pipelines: List<Pipeline> = emptyList()
         try {
             pipelines = collection.map { it as Pipeline }
