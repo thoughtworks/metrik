@@ -69,8 +69,12 @@ class DatabaseEncryptionAspect {
         pipeline.credential = encryptionService.encrypt(pipeline.credential)
     }
 
-    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && args(pipelines, entityClass)")
-    fun encryptBeforeSavingToDB(pipelines: ArrayList<Any>, entityClass: Class<Pipeline>) {
+    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && " +
+            "args(pipelines, entityClass)")
+    fun encryptBeforeSavingToDB(pipelines: ArrayList<Any>, entityClass: Class<Any>) {
+        if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
+            return
+        }
         pipelines.forEach {
             it as Pipeline
             it.username = encryptionService.encrypt(it.username)
@@ -79,10 +83,14 @@ class DatabaseEncryptionAspect {
     }
 
     @AfterReturning(
-        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..)) && args(query, entityClass)",
+        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..)) && " +
+                "args(query, entityClass)",
         returning = "pipelines"
     )
-    fun decryptAfterRetrievingFromDB(query: Query, entityClass: Class<Pipeline>, pipelines: List<Any>) {
+    fun decryptAfterRetrievingFromDB(query: Query, entityClass: Class<Any>, pipelines: List<Any>) {
+        if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
+            return
+        }
         pipelines.forEach {
             it as Pipeline
             it.username = encryptionService.decrypt(it.username)

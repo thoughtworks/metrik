@@ -24,9 +24,6 @@ internal class PipelineRepositoryTest {
     @MockBean
     private lateinit var mongoTemplate: MongoTemplate
 
-    @MockBean
-    private lateinit var encryptionService: AESEncryptionService
-
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository
 
@@ -35,11 +32,6 @@ internal class PipelineRepositoryTest {
     private val username = "tester"
     private val credential = "fake credential"
 
-    @BeforeEach
-    internal fun setUp() {
-        `when`(encryptionService.encrypt(anyString())).thenReturn("encrypted")
-        `when`(encryptionService.decrypt(anyString())).thenReturn("decrypted")
-    }
 
     @Test
     internal fun `should return Pipeline when findById() called given pipelineId exist in repo`() {
@@ -50,8 +42,6 @@ internal class PipelineRepositoryTest {
         val pipeline = pipelineRepository.findById(pipelineId)
 
         assertEquals(pipelineId, pipeline.id)
-        verify(encryptionService, times(1)).decrypt(username)
-        verify(encryptionService, times(1)).decrypt(credential)
     }
 
     @Test
@@ -74,8 +64,6 @@ internal class PipelineRepositoryTest {
         val pipeline = pipelineRepository.findByIdAndProjectId(pipelineId, projectId)
 
         assertEquals(pipelineId, pipeline.id)
-        verify(encryptionService, times(1)).decrypt(username)
-        verify(encryptionService, times(1)).decrypt(credential)
     }
 
     @Test
@@ -90,8 +78,6 @@ internal class PipelineRepositoryTest {
         val pipeline = Pipeline(id = pipelineId, username = username, credential = credential)
         `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(pipeline)
         assertEquals(pipelineRepository.findByNameAndProjectId("pipelineName", "projectId"), pipeline)
-        verify(encryptionService, times(1)).decrypt(username)
-        verify(encryptionService, times(1)).decrypt(credential)
     }
 
     @Test
@@ -117,8 +103,6 @@ internal class PipelineRepositoryTest {
             assertEquals(pipeline.name, it.name)
             true
         })
-        verify(encryptionService, times(1)).encrypt(username)
-        verify(encryptionService, times(1)).encrypt(credential)
     }
 
     @Test
@@ -131,8 +115,6 @@ internal class PipelineRepositoryTest {
 
         assertEquals(1, result.size)
         assertEquals(pipelineId, result[0].id)
-        verify(encryptionService, times(1)).encrypt(username)
-        verify(encryptionService, times(1)).encrypt(credential)
     }
 
     @Test
@@ -141,8 +123,6 @@ internal class PipelineRepositoryTest {
             listOf(Pipeline(id = pipelineId, username = username, credential = credential))
         )
         pipelineRepository.findByProjectId("projectId")
-        verify(encryptionService, times(1)).decrypt(username)
-        verify(encryptionService, times(1)).decrypt(credential)
         verify(mongoTemplate).find(anyObject(), eq(Pipeline::class.java))
     }
 }
