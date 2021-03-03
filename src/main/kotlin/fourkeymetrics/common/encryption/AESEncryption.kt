@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Before
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.Cipher
@@ -83,17 +84,12 @@ class DatabaseEncryptionAspect {
     }
 
     @AfterReturning(
-        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..))",
-        returning = "collection"
+        pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..)) && args(query, entityClass)",
+        returning = "pipelines"
     )
-    fun decryptAfterRetrievingFromDB(collection: List<Any>) {
-        var pipelines: List<Pipeline> = emptyList()
-        try {
-            pipelines = collection.map { it as Pipeline }
-        } catch (e: ClassCastException) {
-        }
-
+    fun decryptAfterRetrievingFromDB(query: Query, entityClass: Class<Pipeline>, pipelines: List<Any>) {
         pipelines.forEach {
+            it as Pipeline
             it.username = encryptionService.decrypt(it.username)
             it.credential = encryptionService.decrypt(it.credential)
         }
