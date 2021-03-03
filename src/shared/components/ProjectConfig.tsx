@@ -45,7 +45,7 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 						Action{showDelete ? "s" : ""}
 						{showAddPipeline && (
 							<Button type={"link"} onClick={addPipeline}>
-								+Add Pipeline
+								+ Add Pipeline
 							</Button>
 						)}
 					</div>
