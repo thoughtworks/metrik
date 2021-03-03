@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
-import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { PipelineResponse } from "../clients/apis";
 
 const { Column } = Table;
@@ -27,28 +26,20 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 			tableLayout={"fixed"}
 			css={{
 				minHeight: 350,
-				".ant-table-cell": { borderBottom: "none" },
+				padding: 12,
+				".ant-table-cell": { borderBottom: "none", padding: 10 },
 				".ant-table-expanded-row > .ant-table-cell": {
 					background: "unset",
 				},
 			}}
 			pagination={false}
 			rowKey={"id"}
-			dataSource={pipelines}
-			expandable={{
-				columnWidth: "5%",
-				expandedRowRender: ToolConfig,
-				expandIcon: ({ expanded, onExpand, record }) =>
-					expanded ? (
-						<DownOutlined onClick={e => onExpand(record, e)} />
-					) : (
-						<RightOutlined onClick={e => onExpand(record, e)} />
-					),
-			}}>
-			<Column<PipelineResponse> width={"25%"} title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<PipelineResponse> width={"35%"} title={"Tool"} dataIndex={"type"} />
+			dataSource={pipelines}>
+			<Column<PipelineResponse> width={"15%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<PipelineResponse> width={"15%"} title={"Tool"} dataIndex={"type"} />
+			<Column<PipelineResponse> width={"45%"} title={"URL"} dataIndex={"url"} />
 			<Column<PipelineResponse>
-				width={"35%"}
+				width={"25%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
 						Action{showDelete ? "s" : ""}
@@ -80,40 +71,6 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 					</>
 				)}
 			/>
-		</Table>
-	);
-};
-
-interface ToolConfig {
-	id: string;
-	type: string;
-	tool: string;
-	url: string;
-}
-
-const ToolConfig = (config: PipelineResponse) => {
-	const convertConfig = (config: PipelineResponse): ToolConfig[] => {
-		return [{ id: config.id, type: "Pipelines", tool: config.type, url: config.url }];
-	};
-	const data = convertConfig(config);
-
-	return (
-		<Table<ToolConfig>
-			css={{
-				".ant-table-cell": {
-					background: "#fafafa",
-				},
-				".ant-table-thead .ant-table-cell": {
-					fontWeight: "normal",
-					opacity: 0.8,
-				},
-			}}
-			pagination={false}
-			rowKey={"id"}
-			dataSource={data}>
-			<Column<ToolConfig> width={"26%"} title={"Type"} dataIndex={"type"} />
-			<Column<ToolConfig> width={"26%"} title={"Tool"} dataIndex={"tool"} />
-			<Column<ToolConfig> title={"URL"} dataIndex={"url"} />
 		</Table>
 	);
 };
