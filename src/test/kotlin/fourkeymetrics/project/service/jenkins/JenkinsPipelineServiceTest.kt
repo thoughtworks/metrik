@@ -3,26 +3,26 @@ package fourkeymetrics.project.service.jenkins
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.web.client.ExpectedCount.manyTimes
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
-import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
+import org.springframework.test.web.client.response.MockRestResponseCreators.*
 import org.springframework.web.client.RestTemplate
+
 
 @ExtendWith(SpringExtension::class)
 @Import(JenkinsPipelineService::class, BuildRepository::class, ObjectMapper::class, RestTemplate::class)
@@ -254,5 +254,37 @@ internal class JenkinsPipelineServiceTest {
         jenkinsPipelineService.syncBuilds(pipelineId)
     }
 
+    @Test
+    internal fun `should throw exception when verify pipeline given response is 500`() {
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
+        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+            .andRespond(
+                withServerError()
+            )
+
+        Assertions.assertThrows(ApplicationException::class.java) {
+            jenkinsPipelineService.verifyPipelineConfiguration(baseUrl, username, credential)
+        }
+    }
+
+    @Test
+    internal fun `should throw exception when verify pipeline given response is 400`() {
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
+
+        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+            .andRespond(
+                withBadRequest()
+            )
+
+        Assertions.assertThrows(ApplicationException::class.java) {
+            jenkinsPipelineService.verifyPipelineConfiguration(baseUrl, username, credential)
+        }
+    }
 }

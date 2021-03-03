@@ -135,6 +135,16 @@ internal class DatabaseEncryptionAspectTest {
         mongoTemplate.save(Build(pipelineId = "1"))
 
         mongoTemplate.findOne(
+            Query().addCriteria(Criteria.where("projectId").isEqualTo("1")),
+            Pipeline::class.java
+        )
+
+        verify(encryptionService, times(0)).decrypt(anyString())
+    }
+
+    @Test
+    internal fun `should not decrypt data after call findOne() method in mongoTemplate when it returns null`() {
+        mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("pipelineId").isEqualTo("1")),
             Pipeline::class.java
         )
