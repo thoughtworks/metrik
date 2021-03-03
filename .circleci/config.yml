@@ -45,7 +45,7 @@ jobs:
 
       - run:
           name: Start Service and Run Api Test
-
+          command: ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew clean apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
       - store_test_results:
           path: build/test-results/apiTest/
 
