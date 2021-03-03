@@ -69,15 +69,10 @@ class DatabaseEncryptionAspect {
         pipeline.credential = encryptionService.encrypt(pipeline.credential)
     }
 
-    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && args(collection, ..)")
-    fun encryptBeforeSavingToDB(collection: ArrayList<Any>) {
-        var pipelines: List<Pipeline> = emptyList()
-        try {
-            pipelines = collection.map { it as Pipeline }
-        } catch (e: ClassCastException) {
-        }
-
+    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && args(pipelines, entityClass)")
+    fun encryptBeforeSavingToDB(pipelines: ArrayList<Any>, entityClass: Class<Pipeline>) {
         pipelines.forEach {
+            it as Pipeline
             it.username = encryptionService.encrypt(it.username)
             it.credential = encryptionService.encrypt(it.credential)
         }
