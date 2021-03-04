@@ -18,11 +18,11 @@ jobs:
 
       - restore_cache:
           keys:
-              - v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
+            - v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
 
       - run:
           name: Install MongoDB on primary docker instance
-          command: ./install-mongo-from-tarball.sh
+          command: mongo --eval 'db.serverStatus()' || ./install-mongo-from-tarball.sh
 
       - save_cache:
           paths:
