@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 export const formatLastUpdateTime = (timestamp?: number): string =>
 	timestamp ? moment(timestamp).format("hh:mm a, D MMM, YYYY") : "";
@@ -22,4 +22,9 @@ export const momentObjToStartTimeStamp = (momentObj: moment.Moment): number => {
 
 export const momentObjToEndTimeStamp = (momentObj: moment.Moment): number => {
 	return momentObj.endOf("day").unix() * 1000;
+};
+
+export const getRangeTimeStamps = (duration: [Moment, Moment]) => {
+	const [start, end] = duration[0].isBefore(duration[1]) ? duration : [...duration].reverse();
+	return [momentObjToStartTimeStamp(start), momentObjToEndTimeStamp(end)];
 };

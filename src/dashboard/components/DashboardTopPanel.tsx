@@ -215,7 +215,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 									/>
 								}
 								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} order={false} />
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
 							</Form.Item>
 						</Col>
 						<Col>

@@ -3,6 +3,7 @@ import {
 	momentObjToStartTimeStamp,
 	momentObjToEndTimeStamp,
 	durationFormatter,
+	getRangeTimeStamps,
 } from "../timeFormats";
 import moment from "moment";
 
@@ -41,5 +42,17 @@ describe("#momentObjToStartTimeStamp", () => {
 describe("#momentObjToEndTimeStamp", () => {
 	it("should transform moment object to end time timestamp(milliseconds)", () => {
 		expect(momentObjToEndTimeStamp(moment("2010-11-10T12:59:59"))).toEqual(1289404799000);
+	});
+});
+
+describe("#getRangeTimeStamps test", () => {
+	it("should get transformed range timestamp", () => {
+		expect(
+			getRangeTimeStamps([moment("2010-11-10T12:59:59"), moment("2010-12-10T12:59:59")])
+		).toEqual([1289318400000, 1291996799000]);
+
+		expect(
+			getRangeTimeStamps([moment("2010-12-10T12:59:59"), moment("2010-11-10T12:59:59")])
+		).toEqual([1289318400000, 1291996799000]);
 	});
 });
