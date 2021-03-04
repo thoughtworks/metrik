@@ -17,12 +17,12 @@ jobs:
       - checkout
 
       - restore_cache:
-          - key:
+          keys:
               - v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
 
       - run:
-          - name: Install MongoDB on primary docker instance
-          - commands: ./install-mongo-from-tarball.sh
+          name: Install MongoDB on primary docker instance
+          command: ./install-mongo-from-tarball.sh
 
       - save_cache:
           paths:
