@@ -1,18 +1,18 @@
 import { EditableText } from "../../shared/components/EditableText";
-import { Button, Typography, DatePicker, Form, Row, Col, Select } from "antd";
-import { SyncOutlined, FullscreenOutlined } from "@ant-design/icons";
+import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
+import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../shared/constants/styles";
 import { useRequest } from "../../shared/hooks/useRequest";
 import {
+	getLastSynchronizationUsingGet,
+	getPipelineStagesUsingGet,
 	getProjectDetailsUsingGet,
+	PipelineStagesResponse,
 	updateBuildsUsingPost,
 	updateProjectNameUsingPut,
-	getPipelineStagesUsingGet,
-	PipelineStagesResponse,
-	getLastSynchronizationUsingGet,
 } from "../../shared/clients/apis";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
@@ -103,7 +103,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
 	const [, updateBuildsRequest, syncing] = useRequest(updateBuildsUsingPost);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
-	const [synchronization, getLastSynchronizationRequest] = useRequest(
+	const [synchronization, getLastSynchronizationRequest, , setSynchronization] = useRequest(
 		getLastSynchronizationUsingGet
 	);
 	const [pipelineStagesResp, getPipelineStagesRequest, , setPipelineStages] = useRequest(
@@ -127,12 +127,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 	};
 
 	const syncBuilds = async () => {
-		await updateBuildsRequest({
+		const resp = await updateBuildsRequest({
 			projectId,
 		});
-
-		getLastSyncTime();
-
+		setSynchronization(resp);
 		setPipelineStages([]);
 		getPipelineStages();
 	};
@@ -217,7 +215,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 									/>
 								}
 								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} order={false} />
 							</Form.Item>
 						</Col>
 						<Col>

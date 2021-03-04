@@ -3,7 +3,7 @@ import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../shared/hooks/useQuery";
 import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../shared/clients/apis";
-import { momentObjToEndTimeStamp } from "../shared/utils/timeFormats";
+import { momentObjToEndTimeStamp, momentObjToStartTimeStamp } from "../shared/utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../shared/constants/styles";
@@ -44,7 +44,11 @@ export const PageDashboard = () => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 		// TODO: will pass multiple stages and pipelines after backend api ready
-		const durationTimestamps = formValues.duration.map(momentObjToEndTimeStamp);
+
+		const durationTimestamps = [
+			momentObjToStartTimeStamp(formValues.duration[0]),
+			momentObjToEndTimeStamp(formValues.duration[1]),
+		];
 
 		getFourKeyMetricsUsingPost({
 			requestBody: {
