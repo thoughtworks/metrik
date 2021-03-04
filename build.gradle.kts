@@ -100,6 +100,8 @@ val apiTest = task<Test>("apiTest") {
 
     testClassesDirs = sourceSets["apiTest"].output.classesDirs
     classpath = sourceSets["apiTest"].runtimeClasspath
+
+    testLogging.showStandardStreams = true
 }
 
 
