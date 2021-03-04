@@ -41,7 +41,10 @@ jobs:
           name: Configure MongoDB
           command: |
             mongo 4-key-metrics --eval "db.createUser({ user: '$MONGO_USER', pwd: '$MONGO_PASSWORD', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
-            mongo < feed-test-data.js
+            for file in `find $PWD/src/api-test/resources/ -type f -name '*.js'`
+            do
+              mongo 4-key-metrics < $file
+            done
 
       - run:
           name: Start Service and Run Api Test

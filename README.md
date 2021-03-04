@@ -39,11 +39,7 @@ then
 
 #### Feed test data 
 For those who first time running api tests on your local, you need to feed test data for api tests into your local mongodb. 
-1) replace "******" in connect-to-mongodb.sh with your local mongodb password
-```
-docker exec -i $container_id mongo --port 27017 -u "4km" --authenticationDatabase "4-Key-Metrics" -p "******" < ./feed-test-data.js
-```
-2) run connect-to-mongodb.sh
+1) run connect-to-mongodb.sh
 ```
 ./connect-to-mongodb.sh
 ```
