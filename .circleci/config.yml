@@ -26,7 +26,7 @@ jobs:
 
       - save_cache:
           paths:
-            - ~/mongodb-linux-*-4.4.4
+            - ~/mongodb-linux-x86_64-debian10-4.4.4
           key: v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
 
 
