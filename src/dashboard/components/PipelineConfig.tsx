@@ -71,7 +71,6 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 				initialValues={{ type: "JENKINS", ...defaultData }}>
 				{(formValues: ConfigFormValues) => (
 					<FieldsStep2
-						showTitle={false}
 						visible={true}
 						formValues={formValues}
 						onBack={onBack}

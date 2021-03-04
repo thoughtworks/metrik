@@ -111,7 +111,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 								css={{ marginRight: 16 }}
 								onClick={() => setStatus(PipelineSettingStatus.VIEW)}
 							/>
-							<span css={{ flexGrow: 1 }}>Pipeline Setting</span>
+							<span css={{ flexGrow: 1 }}>Pipeline Config</span>
 						</div>
 					)
 				}

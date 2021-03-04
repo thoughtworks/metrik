@@ -22,7 +22,6 @@ export const FieldsStep2: FC<{
 	visible?: boolean;
 	verifyStatus: VerifyStatus;
 	onVerify?: () => void;
-	showTitle?: boolean;
 	loading?: boolean;
 	isUpdate?: boolean;
 }> = ({
@@ -31,12 +30,11 @@ export const FieldsStep2: FC<{
 	visible = true,
 	verifyStatus,
 	onVerify,
-	showTitle = true,
 	loading = false,
 	isUpdate = false,
 }) => (
 	<div css={{ display: visible ? "flex" : "none", height: "100%", flexDirection: "column" }}>
-		{showTitle && <Text css={groupTitleStyles}>Pipeline Details</Text>}
+		<Text css={groupTitleStyles}>Pipeline Details</Text>
 
 		<Row gutter={8} wrap={false} align={"bottom"}>
 			<Col span={4}>
