@@ -37,8 +37,8 @@ class ProjectController {
     }
 
     @PostMapping("/project")
-    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest) {
-        projectApplicationService.createProject(projectRequest)
+    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest): ProjectDetailResponse {
+        return projectApplicationService.createProject(projectRequest)
     }
 
     @PutMapping("/project/{projectId}")

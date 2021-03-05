@@ -40,8 +40,8 @@ class ProjectApplicationService {
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
         val savedProject = projectRepository.save(Project(name = projectName, id = projectId))
-        val savedPipelines = pipelineRepository.saveAll(listOf(pipeline))
-        return ProjectDetailResponse(savedProject, savedPipelines)
+        pipelineRepository.saveAll(listOf(pipeline))
+        return ProjectDetailResponse(savedProject.id, savedProject.name)
     }
 
     fun updateProjectName(projectId: String, projectName: String): ProjectResponse {

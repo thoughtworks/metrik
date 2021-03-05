@@ -81,13 +81,15 @@ class ProjectControllerTest {
     @Test
     internal fun `should create project and pipeline `() {
         val projectRequest = ProjectRequest(projectName, buildPipelineRequest())
-        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(projectDetailsResponse)
+        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(ProjectDetailResponse("fake-id","fake-name"))
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/project")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(projectRequest))
         ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value("fake-id"))
+            .andExpect(jsonPath("$.name").value("fake-name"))
     }
 
     @Test
