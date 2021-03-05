@@ -8,15 +8,7 @@ import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -36,13 +28,11 @@ class PipelineController {
     fun createPipeline(
         @PathVariable("projectId") projectId: String,
         @RequestBody @Valid pipelineRequest: PipelineRequest
-    ): PipelineResponse {
-        return PipelineResponse(
-            pipelineApplicationService.createPipeline(
-                pipelineRequest.toPipeline(
-                    projectId,
-                    ObjectId().toString()
-                )
+    ) {
+        pipelineApplicationService.createPipeline(
+            pipelineRequest.toPipeline(
+                projectId,
+                ObjectId().toString()
             )
         )
     }
@@ -52,13 +42,11 @@ class PipelineController {
         @PathVariable("projectId") projectId: String,
         @PathVariable("pipelineId") pipelineId: String,
         @RequestBody @Valid pipelineRequest: PipelineRequest
-    ): PipelineResponse {
-        return PipelineResponse(
-            pipelineApplicationService.updatePipeline(
-                pipelineRequest.toPipeline(
-                    projectId,
-                    pipelineId
-                )
+    ) {
+        pipelineApplicationService.updatePipeline(
+            pipelineRequest.toPipeline(
+                projectId,
+                pipelineId
             )
         )
     }

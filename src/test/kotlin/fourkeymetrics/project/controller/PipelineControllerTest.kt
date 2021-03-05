@@ -42,7 +42,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return PipelineResponse when create pipeline successfully`() {
+    internal fun `should return 200 when create pipeline successfully`() {
         val pipelineRequest = buildPipelineRequest()
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
@@ -54,16 +54,10 @@ internal class PipelineControllerTest {
                 .content(ObjectMapper().writeValueAsString(pipelineRequest))
         )
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.id").value(pipeline.id))
-            .andExpect(jsonPath("$.name").value(pipeline.name))
-            .andExpect(jsonPath("$.url").value(pipeline.url))
-            .andExpect(jsonPath("$.username").value(pipeline.username))
-            .andExpect(jsonPath("$.credential").value(pipeline.credential))
-            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test
-    internal fun `should return PipelineResponse when update pipeline successfully`() {
+    internal fun `should return 200 when update pipeline successfully`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -75,16 +69,10 @@ internal class PipelineControllerTest {
                 .content(ObjectMapper().writeValueAsString(buildPipelineRequest()))
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(pipeline.id))
-            .andExpect(jsonPath("$.name").value(pipeline.name))
-            .andExpect(jsonPath("$.url").value(pipeline.url))
-            .andExpect(jsonPath("$.username").value(pipeline.username))
-            .andExpect(jsonPath("$.credential").value(pipeline.credential))
-            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test
-    internal fun `should return PipelineResponse when get pipeline successfully`() {
+    internal fun `should return 200 when get pipeline successfully`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -95,12 +83,6 @@ internal class PipelineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(pipeline.id))
-            .andExpect(jsonPath("$.name").value(pipeline.name))
-            .andExpect(jsonPath("$.url").value(pipeline.url))
-            .andExpect(jsonPath("$.username").value(pipeline.username))
-            .andExpect(jsonPath("$.credential").value(pipeline.credential))
-            .andExpect(jsonPath("$.type").value(pipeline.type.toString()))
     }
 
     @Test

@@ -88,10 +88,6 @@ class ProjectControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(projectRequest))
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(projectId))
-            .andExpect(jsonPath("$.name").value(projectName))
-            .andExpect(jsonPath("$.pipelines[0].id").value(pipelineId))
-            .andExpect(jsonPath("$.pipelines[0].name").value(pipelineName))
     }
 
     @Test
@@ -106,8 +102,6 @@ class ProjectControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectNewName)
         ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(projectId))
-            .andExpect(jsonPath("$.name").value(projectNewName))
     }
 
     @Test

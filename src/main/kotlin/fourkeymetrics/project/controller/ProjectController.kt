@@ -37,8 +37,8 @@ class ProjectController {
     }
 
     @PostMapping("/project")
-    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest): ProjectDetailResponse {
-        return projectApplicationService.createProject(projectRequest)
+    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest) {
+        projectApplicationService.createProject(projectRequest)
     }
 
     @PutMapping("/project/{projectId}")
@@ -46,8 +46,8 @@ class ProjectController {
     fun updateProjectName(
         @PathVariable projectId: String,
         @RequestBody @Valid @NotBlank projectName: String
-    ): ProjectResponse {
-        return projectApplicationService.updateProjectName(projectId, projectName)
+    ) {
+        projectApplicationService.updateProjectName(projectId, projectName)
     }
 
     @DeleteMapping("/project/{projectId}")
