@@ -104,6 +104,36 @@ val apiTest = task<Test>("apiTest") {
     testLogging.showStandardStreams = true
 }
 
+val startMongo by tasks.registering {
+    doLast {
+        exec {
+            commandLine("bash", "-c", "cd mongodb-setup && cd mongodb-for-apitest && sh ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh")
+        }
+    }
+}
+
+val startService by tasks.registering {
+    doLast {
+        ProcessBuilder().directory(projectDir).command("bash", "-c", "SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun &").start()
+    }
+}
+
+val apiTestOneCommand by tasks.registering {
+    doLast {
+        exec {
+            commandLine("bash", "-c", "./check-container-status.sh localhost 9000 && ./gradlew clean apiTest")
+        }
+    }
+}
+
+startService {
+    dependsOn(startMongo)
+}
+
+apiTestOneCommand {
+    dependsOn(startService)
+}
+
 
 detekt {
     toolVersion = "1.15.0"
