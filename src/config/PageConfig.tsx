@@ -7,7 +7,6 @@ import ConfigSuccess from "./components/ConfigSuccess";
 import {
 	createProjectUsingPost,
 	PipelineResponse,
-	ProjectDetailResponse,
 	verifyPipelineUsingPost,
 } from "../shared/clients/apis";
 
@@ -23,16 +22,16 @@ export const PageConfig = () => {
 
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
-	const [project, setProject] = useState<ProjectDetailResponse>();
+	const [projectId, setProjectId] = useState<string>();
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
 		await verifyPipeline();
-		const response = await createProjectUsingPost({
+		const { id } = await createProjectUsingPost({
 			requestBody: {
 				projectName,
 				pipeline,
 			},
 		});
-		setProject(response);
+		setProjectId(id);
 		toNextStep();
 	};
 
@@ -62,7 +61,14 @@ export const PageConfig = () => {
 	return (
 		<Layout style={{ minHeight: "100vh" }}>
 			<Layout.Content>
-				<div css={{ width: 896, margin: "24px auto", padding: 24, background: "#fff" }}>
+				<div
+					css={{
+						width: 896,
+						minHeight: 500,
+						margin: "24px auto",
+						padding: 24,
+						background: "#fff",
+					}}>
 					{currentStep !== ConfigStep.CONFIG_SUCCESS ? (
 						<div>
 							<Steps current={currentStep} css={{ margin: "44px 0" }}>
@@ -115,7 +121,7 @@ export const PageConfig = () => {
 						</div>
 					) : (
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						<ConfigSuccess defaultProject={project!} />
+						<ConfigSuccess projectId={projectId!} />
 					)}
 				</div>
 			</Layout.Content>

@@ -1,11 +1,10 @@
-import { Button, Modal } from "antd";
-import React, { FC } from "react";
+import { Button, Modal, Result, Spin } from "antd";
+import React, { FC, useEffect } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import ProjectConfig from "../../shared/components/ProjectConfig";
 import {
 	createPipelineUsingPost,
 	PipelineResponse,
-	ProjectDetailResponse,
 	updatePipelineUsingPut,
 } from "../../shared/clients/apis";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
@@ -14,18 +13,19 @@ import { useModalVisible } from "../../shared/hooks/useModalVisible";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { GREEN_LIGHT } from "../../shared/constants/styles";
 
-const ConfigSuccess: FC<{ defaultProject: ProjectDetailResponse }> = ({ defaultProject }) => {
+const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
 		project,
+		isProjectLoading,
+		projectError,
 		editPipeline,
 		status,
 		getProjectDetails,
 		onAddPipeline,
 		onUpdatePipeline,
 	} = usePipelineSetting({
-		defaultProjectId: defaultProject.id,
-		defaultProject: defaultProject,
+		defaultProjectId: projectId,
 		defaultStatus: PipelineSettingStatus.ADD,
 		shouldUpdateProject: false,
 		shouldResetStatus: !visible,
@@ -40,6 +40,10 @@ const ConfigSuccess: FC<{ defaultProject: ProjectDetailResponse }> = ({ defaultP
 		onAddPipeline();
 		handleToggleVisible();
 	}
+
+	useEffect(() => {
+		getProjectDetails();
+	}, []);
 
 	return (
 		<div>
@@ -68,11 +72,44 @@ const ConfigSuccess: FC<{ defaultProject: ProjectDetailResponse }> = ({ defaultP
 					Go to Dashboard
 				</Button>
 			</div>
-			<ProjectConfig
-				pipelines={project!.pipelines}
-				updatePipeline={handleUpdatePipeline}
-				addPipeline={handleAddPipeline}
-			/>
+
+			{isProjectLoading ? (
+				<Spin
+					size="large"
+					css={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100%",
+					}}
+				/>
+			) : projectError ? (
+				<Result
+					css={{
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100%",
+					}}
+					status="warning"
+					title="Fail to connect to pipeline API"
+					subTitle={"Please click the button below, reload the API"}
+					extra={
+						<Button type="primary" key="console" onClick={getProjectDetails}>
+							Reload
+						</Button>
+					}
+				/>
+			) : (
+				project && (
+					<ProjectConfig
+						pipelines={project.pipelines}
+						updatePipeline={handleUpdatePipeline}
+						addPipeline={handleAddPipeline}
+					/>
+				)
+			)}
 			<Modal
 				maskClosable={false}
 				bodyStyle={{ padding: 0, height: 600, overflowY: "auto" }}
@@ -85,7 +122,7 @@ const ConfigSuccess: FC<{ defaultProject: ProjectDetailResponse }> = ({ defaultP
 				title={"Pipeline"}
 				footer={null}>
 				<PipelineConfig
-					projectId={defaultProject.id}
+					projectId={projectId}
 					updateProject={getProjectDetails}
 					css={{ padding: 24, height: "100%" }}
 					defaultData={editPipeline}
