@@ -215,7 +215,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 									/>
 								}
 								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} />
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} disabled={syncing} />
 							</Form.Item>
 						</Col>
 						<Col>
@@ -227,7 +227,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 									/>
 								}
 								name="unit">
-								<Select>
+								<Select disabled={syncing}>
 									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
 									<Select.Option value="Monthly">Monthly</Select.Option>
 								</Select>
@@ -243,6 +243,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 								}
 								name="pipelines">
 								<MultipleCascadeSelect
+									disabled={syncing}
 									options={options}
 									defaultValues={
 										!isEmpty(options[0]?.children)

@@ -21,6 +21,7 @@ interface MultipleCascadeSelectProps {
 	onChange?: (value: CascadeValueItem[]) => void;
 	defaultValues?: CascadeValueItem[];
 	options: Option[];
+	disabled?: boolean;
 }
 
 interface CascadeValue {
@@ -39,6 +40,36 @@ const popupContainerStyles = css({
 	overflow: "scroll",
 });
 
+const generateSelectContainerStyle = (disabled: boolean) => {
+	return disabled
+		? css`
+				border: none;
+				cursor: not-allowed;
+				* {
+					pointer-events: none;
+					background: #f5f5f5 !important;
+				}
+				.ant-select-selector {
+					border: 1px solid #d9d9d9 !important;
+				}
+				.ant-select-selection-overflow-item {
+					opacity: 0.4;
+				}
+		  `
+		: css`
+				border: none;
+		  `;
+};
+const generateTriggerStyle = (disabled: boolean) => {
+	return disabled
+		? css`
+				cursor: not-allowed;
+				&:hover {
+					border: none;
+				}
+		  `
+		: {};
+};
 const findOptionByValue = (options: Option[], value?: string): Option | undefined =>
 	options.find(o => o.value === value);
 
@@ -72,6 +103,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	onChange,
 	defaultValues = [],
 	options = [],
+	disabled = false,
 }) => {
 	const prevOptions = usePrevious(options);
 	const [popupVisible, setPopupVisible] = useState(false);
@@ -149,6 +181,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	}, [options]);
 	return (
 		<Trigger
+			css={generateTriggerStyle(disabled)}
 			action={["click"]}
 			destroyPopupOnHide
 			popupClassName={"ant-select-dropdown ant-select-dropdown-placement-bottomLeft"}
@@ -197,7 +230,10 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 			}}
 			popupVisible={popupVisible}
 			onPopupVisibleChange={setPopupVisible}>
-			<div className={"ant-select ant-select-multiple"}>
+			<button
+				className={`ant-select ant-select-multiple`}
+				css={generateSelectContainerStyle(disabled)}
+				disabled={disabled}>
 				<div className={"ant-select-selector"}>
 					<Overflow
 						prefixCls={"ant-select-selection-overflow"}
@@ -222,7 +258,7 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 						}}
 					/>
 				</div>
-			</div>
+			</button>
 		</Trigger>
 	);
 };
