@@ -25,14 +25,9 @@ data class AESEncryptionProperties(
 
 @Component
 class AESEncryptionService(@Autowired private var properties: AESEncryptionProperties) {
-    private lateinit var key: SecretKey
-    private lateinit var iv: IvParameterSpec
+    private var key: SecretKey = getSecretKeyFromString(properties.keyString)
+    private var iv: IvParameterSpec = IvParameterSpec(properties.ivString.toByteArray())
     private val algorithm = "AES/CBC/PKCS5Padding"
-
-    init {
-        this.key = getSecretKeyFromString(properties.keyString)
-        this.iv = IvParameterSpec(properties.ivString.toByteArray())
-    }
 
     fun encrypt(rawString: String): String {
         val cipher = Cipher.getInstance(algorithm)
@@ -69,9 +64,11 @@ class DatabaseEncryptionAspect {
         pipeline.credential = encryptionService.encrypt(pipeline.credential)
     }
 
-    @Before("execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && " +
-            "args(pipelines, entityClass)")
-    fun encryptBeforeSavingToDB(pipelines: ArrayList<Any>, entityClass: Class<Any>) {
+    @Before(
+        "execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && " +
+                "args(pipelines, entityClass)"
+    )
+    fun <T> encryptBeforeSavingToDB(pipelines: ArrayList<T>, entityClass: Class<T>) {
         if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
             return
         }
@@ -87,7 +84,7 @@ class DatabaseEncryptionAspect {
                 "args(query, entityClass)",
         returning = "pipelines"
     )
-    fun decryptAfterRetrievingFromDB(query: Query, entityClass: Class<Any>, pipelines: List<Any>) {
+    fun <T> decryptAfterRetrievingFromDB(query: Query, entityClass: Class<T>, pipelines: List<*>) {
         if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
             return
         }
