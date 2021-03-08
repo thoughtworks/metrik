@@ -1,5 +1,5 @@
 package fourkeymetrics.project.model
 
 enum class PipelineType {
-    JENKINS, BAMBOO
+    JENKINS, BAMBOO, GITHUB_ACTIONS
 }

@@ -8,6 +8,7 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.BadRequestException
+import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional
 class PipelineApplicationService {
     @Autowired
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
+
+    @Autowired
+    private lateinit var bambooPipelineService: BambooPipelineService
 
     @Autowired
     private lateinit var pipelineRepository: PipelineRepository
@@ -27,12 +31,16 @@ class PipelineApplicationService {
     private lateinit var buildRepository: BuildRepository
 
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
-        if (PipelineType.JENKINS == pipeline.type) {
-            jenkinsPipelineService.verifyPipelineConfiguration(
-                pipeline.url, pipeline.username!!, pipeline.credential
-            )
-        } else {
-            throw BadRequestException("Pipeline type not support")
+        when {
+            PipelineType.JENKINS == pipeline.type -> {
+                jenkinsPipelineService.verifyPipelineConfiguration(pipeline)
+            }
+            PipelineType.BAMBOO == pipeline.type -> {
+                bambooPipelineService.verifyPipelineConfiguration(pipeline)
+            }
+            else -> {
+                throw BadRequestException("Pipeline type not support")
+            }
         }
     }
 
@@ -74,6 +82,7 @@ class PipelineApplicationService {
         pipelineRepository.deleteById(pipelineId)
         buildRepository.clear(pipelineId)
     }
+
     fun getPipelineStages(projectId: String): List<PipelineStagesResponse> {
         verifyProjectExist(projectId)
         return pipelineRepository.findByProjectId(projectId)

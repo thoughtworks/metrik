@@ -3,6 +3,7 @@ package fourkeymetrics.project.service
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -21,7 +22,7 @@ internal class PipelineServiceTest {
             return emptyList()
         }
 
-        override fun verifyPipelineConfiguration(url: String, username: String, credential: String) {
+        override fun verifyPipelineConfiguration(pipeline: Pipeline) {
             println("fake implementation")
         }
 

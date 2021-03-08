@@ -11,7 +11,9 @@ import fourkeymetrics.project.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryCollectionDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryDTO
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Primary
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -23,6 +25,7 @@ import java.util.*
 import kotlin.streams.toList
 
 @Service
+@Primary
 class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var pipelineRepository: PipelineRepository,
@@ -63,12 +66,12 @@ class JenkinsPipelineService(
         return builds
     }
 
-    override fun verifyPipelineConfiguration(url: String, username: String, credential: String) {
-        val headers = setAuthHeader(username, credential)
+    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+        val headers = setAuthHeader(pipeline.username!!, pipeline.credential)
         val entity = HttpEntity<String>("", headers)
         try {
             val response = restTemplate.exchange<String>(
-                "$url/wfapi/", HttpMethod.GET, entity
+                "${pipeline.url}/wfapi/", HttpMethod.GET, entity
             )
             if (!response.statusCode.is2xxSuccessful) {
                 throw ApplicationException(response.statusCode, response.body!!)

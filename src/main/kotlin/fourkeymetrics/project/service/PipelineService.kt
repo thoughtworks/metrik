@@ -2,6 +2,7 @@ package fourkeymetrics.project.service
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -13,7 +14,7 @@ abstract class PipelineService {
 
     abstract fun syncBuilds(pipelineId: String): List<Build>
 
-    abstract fun verifyPipelineConfiguration(url: String, username: String, credential: String)
+    abstract fun verifyPipelineConfiguration(pipeline: Pipeline)
 
     protected abstract fun mapStageStatus(statusInPipeline: String?): Status
 

@@ -267,7 +267,7 @@ internal class JenkinsPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            jenkinsPipelineService.verifyPipelineConfiguration(baseUrl, username, credential)
+            jenkinsPipelineService.verifyPipelineConfiguration(Pipeline(username = username, credential = credential, url = baseUrl))
         }
     }
 
@@ -284,7 +284,7 @@ internal class JenkinsPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            jenkinsPipelineService.verifyPipelineConfiguration(baseUrl, username, credential)
+            jenkinsPipelineService.verifyPipelineConfiguration(Pipeline(username = username, credential = credential, url = baseUrl))
         }
     }
 }

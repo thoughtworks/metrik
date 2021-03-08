@@ -2,15 +2,16 @@ package fourkeymetrics.project.controller.applicationservice
 
 import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.MockitoHelper.argThat
+import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.project.buildPipeline
-import fourkeymetrics.project.model.Project
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
+import fourkeymetrics.project.model.Project
 import fourkeymetrics.project.repository.BuildRepository
-import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
+import fourkeymetrics.project.repository.ProjectRepository
+import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
-import fourkeymetrics.exception.BadRequestException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -30,6 +31,9 @@ internal class PipelineApplicationServiceTest {
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Mock
+    private lateinit var bambooPipelineService: BambooPipelineService
+
+    @Mock
     private lateinit var pipelineRepository: PipelineRepository
 
     @Mock
@@ -42,13 +46,11 @@ internal class PipelineApplicationServiceTest {
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
     @Test
-    internal fun `should throw BadRequestException when verifyPipeline() called given pipeline type is not JENKINS`() {
-        val pipeline = buildPipeline().copy(type = PipelineType.BAMBOO)
-
+    internal fun `should throw BadRequestException when verify an unsupported pipeline`() {
+        val pipeline = buildPipeline().copy(type = PipelineType.GITHUB_ACTIONS)
         val exception = assertThrows<BadRequestException> {
             pipelineApplicationService.verifyPipelineConfiguration(pipeline)
         }
-
         assertEquals("Pipeline type not support", exception.message)
         assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
     }
@@ -60,7 +62,18 @@ internal class PipelineApplicationServiceTest {
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username!!, pipeline.credential
+            pipeline
+        )
+    }
+
+    @Test
+    internal fun `should verify pipeline given pipeline type is BAMBOO`() {
+        val pipeline = buildPipeline(PipelineType.BAMBOO).copy(type = PipelineType.BAMBOO)
+
+        pipelineApplicationService.verifyPipelineConfiguration(pipeline)
+
+        verify(bambooPipelineService, times(1)).verifyPipelineConfiguration(
+            pipeline
         )
     }
 
@@ -92,7 +105,7 @@ internal class PipelineApplicationServiceTest {
 
         verify(projectRepository).findById(projectId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username!!, pipeline.credential
+            pipeline
         )
         verify(pipelineRepository).save(argThat {
             assertEquals(projectId, it.projectId)
@@ -123,7 +136,7 @@ internal class PipelineApplicationServiceTest {
         verify(pipelineRepository).findByIdAndProjectId(pipeline.id, pipeline.projectId)
         verify(pipelineRepository).findByNameAndProjectId(pipeline.name, pipeline.projectId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username!!, pipeline.credential
+            pipeline
         )
         verify(pipelineRepository).save(argThat {
             assertEquals(pipeline.projectId, it.projectId)
