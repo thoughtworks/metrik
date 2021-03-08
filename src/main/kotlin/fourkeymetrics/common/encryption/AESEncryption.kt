@@ -29,7 +29,10 @@ class AESEncryptionService(@Autowired private var properties: AESEncryptionPrope
     private var iv: IvParameterSpec = IvParameterSpec(properties.ivString.toByteArray())
     private val algorithm = "AES/CBC/PKCS5Padding"
 
-    fun encrypt(rawString: String): String {
+    fun encrypt(rawString: String?): String? {
+        if (rawString == null) {
+            return null
+        }
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, key, iv)
         val cipherText = cipher.doFinal(rawString.toByteArray())
@@ -37,7 +40,10 @@ class AESEncryptionService(@Autowired private var properties: AESEncryptionPrope
             .encodeToString(cipherText)
     }
 
-    fun decrypt(cipherText: String): String {
+    fun decrypt(cipherText: String?): String? {
+        if (cipherText == null) {
+            return null
+        }
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.DECRYPT_MODE, key, iv)
         val plainText = cipher.doFinal(
@@ -61,7 +67,7 @@ class DatabaseEncryptionAspect {
     @Before(value = "execution(* org.springframework.data.mongodb.core.MongoTemplate.save(..)) && args(pipeline)")
     fun encryptBeforeSavingToDB(pipeline: Pipeline) {
         pipeline.username = encryptionService.encrypt(pipeline.username)
-        pipeline.credential = encryptionService.encrypt(pipeline.credential)
+        pipeline.credential = encryptionService.encrypt(pipeline.credential)!!
     }
 
     @Before(
@@ -75,7 +81,7 @@ class DatabaseEncryptionAspect {
         pipelines.forEach {
             it as Pipeline
             it.username = encryptionService.encrypt(it.username)
-            it.credential = encryptionService.encrypt(it.credential)
+            it.credential = encryptionService.encrypt(it.credential)!!
         }
     }
 
@@ -91,7 +97,7 @@ class DatabaseEncryptionAspect {
         pipelines.forEach {
             it as Pipeline
             it.username = encryptionService.decrypt(it.username)
-            it.credential = encryptionService.decrypt(it.credential)
+            it.credential = encryptionService.decrypt(it.credential)!!
         }
     }
 
@@ -102,7 +108,7 @@ class DatabaseEncryptionAspect {
     fun decryptAfterRetrievingFromDB(pipeline: Pipeline?) {
         if (pipeline != null) {
             pipeline.username = encryptionService.decrypt(pipeline.username)
-            pipeline.credential = encryptionService.decrypt(pipeline.credential)
+            pipeline.credential = encryptionService.decrypt(pipeline.credential)!!
         }
     }
 }

@@ -9,14 +9,13 @@ import javax.validation.constraints.NotNull
 data class PipelineRequest(
     @field:NotBlank(message = "name cannot be null or empty")
     val name: String?,
-    @field:NotBlank(message = "username cannot be null or empty")
     val username: String?,
     @field:NotBlank(message = "credential cannot be null or empty")
     val credential: String?,
     @field:NotBlank(message = "url cannot be null or empty")
     val url: String?,
     @field:NotNull(message = "type cannot be null")
-    @field:EnumConstraint(acceptedValues = ["JENKINS"], message = "type only allow JENKINS")
+    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO"], message = "type only allow JENKINS and BAMBOO")
     var type: String?
 ) {
     fun toPipeline(projectId: String, pipelineId: String): Pipeline {
@@ -25,7 +24,7 @@ data class PipelineRequest(
                 pipelineId,
                 projectId,
                 name!!,
-                username!!,
+                username,
                 credential!!,
                 url!!,
                 PipelineType.valueOf(type!!)

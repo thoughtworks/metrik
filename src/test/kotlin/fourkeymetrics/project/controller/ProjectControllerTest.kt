@@ -3,10 +3,12 @@ package fourkeymetrics.project.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.project.buildPipelineRequest
 import fourkeymetrics.project.controller.applicationservice.ProjectApplicationService
+import fourkeymetrics.project.controller.vo.request.PipelineRequest
 import fourkeymetrics.project.controller.vo.request.ProjectRequest
+import fourkeymetrics.project.controller.vo.response.PipelineResponse
 import fourkeymetrics.project.controller.vo.response.ProjectDetailResponse
 import fourkeymetrics.project.controller.vo.response.ProjectResponse
-import fourkeymetrics.project.controller.vo.response.PipelineResponse
+import fourkeymetrics.project.model.PipelineType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -81,7 +83,39 @@ class ProjectControllerTest {
     @Test
     internal fun `should create project and pipeline `() {
         val projectRequest = ProjectRequest(projectName, buildPipelineRequest())
-        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(ProjectDetailResponse("fake-id","fake-name"))
+        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
+            ProjectDetailResponse(
+                "fake-id",
+                "fake-name"
+            )
+        )
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/project")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(projectRequest))
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value("fake-id"))
+            .andExpect(jsonPath("$.name").value("fake-name"))
+    }
+
+    @Test
+    internal fun `should create project and bamboo pipeline`() {
+        val projectRequest = ProjectRequest(
+            projectName, PipelineRequest(
+                name = "pipeline",
+                username = null,
+                credential = "credential",
+                url = "url",
+                type = PipelineType.BAMBOO.toString()
+            )
+        )
+        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
+            ProjectDetailResponse(
+                "fake-id",
+                "fake-name"
+            )
+        )
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/project")

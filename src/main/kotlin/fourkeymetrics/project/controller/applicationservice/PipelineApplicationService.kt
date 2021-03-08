@@ -29,7 +29,7 @@ class PipelineApplicationService {
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
         if (PipelineType.JENKINS == pipeline.type) {
             jenkinsPipelineService.verifyPipelineConfiguration(
-                pipeline.url, pipeline.username, pipeline.credential
+                pipeline.url, pipeline.username!!, pipeline.credential
             )
         } else {
             throw BadRequestException("Pipeline type not support")

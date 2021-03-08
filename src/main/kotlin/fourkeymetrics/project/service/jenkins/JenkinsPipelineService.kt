@@ -35,7 +35,7 @@ class JenkinsPipelineService(
         val credential = pipeline.credential
         val baseUrl = pipeline.url
 
-        val buildsNeedToSync = getBuildSummariesFromJenkins(username, credential, baseUrl)
+        val buildsNeedToSync = getBuildSummariesFromJenkins(username!!, credential, baseUrl)
             .parallelStream()
             .filter {
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it.number)

@@ -60,7 +60,7 @@ internal class PipelineApplicationServiceTest {
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username, pipeline.credential
+            pipeline.url, pipeline.username!!, pipeline.credential
         )
     }
 
@@ -92,7 +92,7 @@ internal class PipelineApplicationServiceTest {
 
         verify(projectRepository).findById(projectId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username, pipeline.credential
+            pipeline.url, pipeline.username!!, pipeline.credential
         )
         verify(pipelineRepository).save(argThat {
             assertEquals(projectId, it.projectId)
@@ -123,7 +123,7 @@ internal class PipelineApplicationServiceTest {
         verify(pipelineRepository).findByIdAndProjectId(pipeline.id, pipeline.projectId)
         verify(pipelineRepository).findByNameAndProjectId(pipeline.name, pipeline.projectId)
         verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
-            pipeline.url, pipeline.username, pipeline.credential
+            pipeline.url, pipeline.username!!, pipeline.credential
         )
         verify(pipelineRepository).save(argThat {
             assertEquals(pipeline.projectId, it.projectId)

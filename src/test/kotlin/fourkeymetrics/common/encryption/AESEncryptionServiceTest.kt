@@ -20,7 +20,17 @@ internal class AESEncryptionServiceTest {
     }
 
     @Test
+    internal fun `should not encrypt null value`() {
+        assertEquals(aesEncryptionService.encrypt(null), null)
+    }
+
+    @Test
     internal fun `should decrypt`() {
         assertEquals(aesEncryptionService.decrypt("wbMbbtoNKyU6tiixRfSh+Q=="), "test")
+    }
+
+    @Test
+    internal fun `should not decrypt null value`() {
+        assertEquals(aesEncryptionService.decrypt(null), null)
     }
 }
