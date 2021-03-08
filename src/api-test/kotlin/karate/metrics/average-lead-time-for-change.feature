@@ -1,4 +1,4 @@
-@MLT
+
 Feature: Single pipeline MLT and Unit conversion. Card #51
   // refer to  https://docs.google.com/document/d/1ZJpcMT-iuCxqv7oAMjC2Z-bH8JoAuAnrOjIT3wK24vY/edit  for manual testing result
   Background:
@@ -12,7 +12,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
             "endTime": 1598388400000,
             "pipelineStages": [
                 {
-                "pipelineId": "2",
+                "pipelineId": "6012505c42fbb8439fc08e17",
                 "stage": "deploy to prod"
                 }
             ],
@@ -26,7 +26,6 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
       Then match response.leadTimeForChange.summary.level == "HIGH"
       Then match response.leadTimeForChange.details[0].value == 5.08
 
-
   Scenario: The deployment deployment done time is within the selected date range but the stage status is failed should not be counted in
       When request
         """
@@ -34,7 +33,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
               "endTime": 1598388400000,
               "pipelineStages": [
                   {
-                  "pipelineId": "3",
+                  "pipelineId": "6012505c42fbb8439fc08e16",
                   "stage": "deploy to prod"
                   }
               ],
@@ -48,7 +47,6 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
       Then match response.leadTimeForChange.summary.level == "INVALID"
       Then match response.leadTimeForChange.details[0].value == "NaN"
 
-
   Scenario: The deployment deployment done time is within the selected date range but the stage status is other should not be counted in
       When request
           """
@@ -56,7 +54,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                 "endTime": 1598388400000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "4",
+                    "pipelineId": "6012505c42fbb8439fc08e15",
                     "stage": "deploy to prod"
                     }
                 ],
@@ -77,7 +75,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                   "endTime": 1598388400000,
                   "pipelineStages": [
                       {
-                      "pipelineId": "5",
+                      "pipelineId": "6012505c42fbb8439fc08e14",
                       "stage": "deploy to prod"
                       }
                   ],
@@ -98,7 +96,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                     "endTime": 1598488400000,
                     "pipelineStages": [
                         {
-                        "pipelineId": "5",
+                        "pipelineId": "6012505c42fbb8439fc08e14",
                         "stage": "deploy to prod"
                         }
                     ],
@@ -119,7 +117,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                       "endTime": 1598292000300,
                       "pipelineStages": [
                           {
-                          "pipelineId": "6",
+                          "pipelineId": "6012505c42fbb8439fc08e13",
                           "stage": "deploy to prod"
                           }
                       ],
@@ -140,7 +138,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                         "endTime": 1598292000300,
                         "pipelineStages": [
                             {
-                            "pipelineId": "7",
+                            "pipelineId": "6012505c42fbb8439fc08e12",
                             "stage": "deploy to prod"
                             }
                         ],
@@ -161,7 +159,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                           "endTime": 1598284800000,
                           "pipelineStages": [
                               {
-                              "pipelineId": "7",
+                              "pipelineId": "6012505c42fbb8439fc08e12",
                               "stage": "deploy to prod"
                               }
                           ],
@@ -182,7 +180,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                             "endTime": 1598292000200,
                             "pipelineStages": [
                                 {
-                                "pipelineId": "7",
+                                "pipelineId": "6012505c42fbb8439fc08e12",
                                 "stage": "deploy to prod"
                                 }
                             ],
@@ -203,7 +201,7 @@ Feature: Single pipeline MLT and Unit conversion. Card #51
                               "endTime": 1599667200000,
                               "pipelineStages": [
                                   {
-                                  "pipelineId": "7",
+                                  "pipelineId": "6012505c42fbb8439fc08e12",
                                   "stage": "deploy to prod"
                                   }
                               ],
