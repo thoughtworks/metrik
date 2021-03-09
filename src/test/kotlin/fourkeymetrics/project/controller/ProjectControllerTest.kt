@@ -8,6 +8,7 @@ import fourkeymetrics.project.controller.vo.request.ProjectRequest
 import fourkeymetrics.project.controller.vo.response.PipelineResponse
 import fourkeymetrics.project.controller.vo.response.ProjectDetailResponse
 import fourkeymetrics.project.controller.vo.response.ProjectResponse
+import fourkeymetrics.project.controller.vo.response.ProjectSummaryResponse
 import fourkeymetrics.project.model.PipelineType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -84,7 +85,7 @@ class ProjectControllerTest {
     internal fun `should create project and pipeline `() {
         val projectRequest = ProjectRequest(projectName, buildPipelineRequest())
         `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
-            ProjectDetailResponse(
+            ProjectSummaryResponse(
                 "fake-id",
                 "fake-name"
             )
@@ -111,7 +112,7 @@ class ProjectControllerTest {
             )
         )
         `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
-            ProjectDetailResponse(
+            ProjectSummaryResponse(
                 "fake-id",
                 "fake-name"
             )

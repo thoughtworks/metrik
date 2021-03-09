@@ -3,6 +3,7 @@ package fourkeymetrics.project.controller.applicationservice
 import fourkeymetrics.project.controller.vo.request.ProjectRequest
 import fourkeymetrics.project.controller.vo.response.ProjectDetailResponse
 import fourkeymetrics.project.controller.vo.response.ProjectResponse
+import fourkeymetrics.project.controller.vo.response.ProjectSummaryResponse
 import fourkeymetrics.project.exception.ProjectNameDuplicateException
 import fourkeymetrics.project.model.Project
 import fourkeymetrics.project.repository.BuildRepository
@@ -28,7 +29,7 @@ class ProjectApplicationService {
     private lateinit var buildRepository: BuildRepository
 
     @Transactional
-    fun createProject(projectRequest: ProjectRequest): ProjectDetailResponse {
+    fun createProject(projectRequest: ProjectRequest): ProjectSummaryResponse {
         val projectName = projectRequest.projectName
         if (projectRepository.existWithGivenName(projectName)) {
             throw ProjectNameDuplicateException()
@@ -41,7 +42,7 @@ class ProjectApplicationService {
 
         val savedProject = projectRepository.save(Project(name = projectName, id = projectId))
         pipelineRepository.saveAll(listOf(pipeline))
-        return ProjectDetailResponse(savedProject.id, savedProject.name)
+        return ProjectSummaryResponse(savedProject)
     }
 
     fun updateProjectName(projectId: String, projectName: String): ProjectResponse {

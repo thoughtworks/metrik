@@ -20,3 +20,14 @@ data class ProjectDetailResponse(
         this.pipelines = pipelines.map { PipelineResponse(it) }
     }
 }
+
+data class ProjectSummaryResponse(
+    var id: String = Strings.EMPTY,
+    var name: String = Strings.EMPTY,
+) {
+    constructor(project: Project) : this() {
+        this.id = project.id
+        this.name = project.name
+    }
+}
+

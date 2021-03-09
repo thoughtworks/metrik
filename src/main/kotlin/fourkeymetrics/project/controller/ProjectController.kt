@@ -4,6 +4,7 @@ import fourkeymetrics.project.controller.applicationservice.ProjectApplicationSe
 import fourkeymetrics.project.controller.vo.request.ProjectRequest
 import fourkeymetrics.project.controller.vo.response.ProjectDetailResponse
 import fourkeymetrics.project.controller.vo.response.ProjectResponse
+import fourkeymetrics.project.controller.vo.response.ProjectSummaryResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -37,7 +38,7 @@ class ProjectController {
     }
 
     @PostMapping("/project")
-    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest): ProjectDetailResponse {
+    fun createProject(@RequestBody @Valid projectRequest: ProjectRequest): ProjectSummaryResponse {
         return projectApplicationService.createProject(projectRequest)
     }
 
