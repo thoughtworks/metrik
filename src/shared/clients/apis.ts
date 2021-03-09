@@ -4,7 +4,7 @@ export const createProjectUsingPost = createRequest<
 	{
 		requestBody: ProjectRequest;
 	},
-	ProjectDetailResponse
+	Pick<ProjectDetailResponse, "id" | "name">
 >("createProjectUsingPost", ({ requestBody }) => ({
 	url: `/api/project`,
 	method: "POST",
@@ -88,18 +88,6 @@ export const getPipelineUsingGet = createRequest<
 	method: "GET",
 }));
 
-export const pullBuildsUsingPost = createRequest<
-	{
-		projectId: string;
-		pipelineId: string;
-	},
-	Build[]
->("pullBuildsUsingPost", ({ projectId, pipelineId }) => ({
-	url: `/api/project/${projectId}/pipeline/${pipelineId}/builds`,
-	method: "POST",
-	headers: { "Content-Type": "application/json" },
-}));
-
 export const updateBuildsUsingPost = createRequest<
 	{
 		projectId: string;
@@ -111,43 +99,34 @@ export const updateBuildsUsingPost = createRequest<
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const updateProjectNameUsingPut = createRequest<
-	{
-		projectId: string;
-		requestBody: string;
-	},
-	ProjectResponse
->("updateProjectNameUsingPut", ({ projectId, requestBody }) => ({
+export const updateProjectNameUsingPut = createRequest<{
+	projectId: string;
+	requestBody: string;
+}>("updateProjectNameUsingPut", ({ projectId, requestBody }) => ({
 	url: `/api/project/${projectId}`,
 	method: "PUT",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const createPipelineUsingPost = createRequest<
-	{
-		projectId: string;
-		//TODO temporally add pipelineId here to match type of
-		// updatePipelineUsingPut, can replace with better solutions in the future
-		pipelineId: string;
-		requestBody: PipelineRequest;
-	},
-	PipelineResponse
->("createPipelineUsingPost", ({ projectId, requestBody }) => ({
+export const createPipelineUsingPost = createRequest<{
+	projectId: string;
+	//TODO temporally add pipelineId here to match type of
+	// updatePipelineUsingPut, can replace with better solutions in the future
+	pipelineId: string;
+	requestBody: PipelineRequest;
+}>("createPipelineUsingPost", ({ projectId, requestBody }) => ({
 	url: `/api/project/${projectId}/pipeline`,
 	method: "POST",
 	data: requestBody,
 	headers: { "Content-Type": "application/json" },
 }));
 
-export const updatePipelineUsingPut = createRequest<
-	{
-		projectId: string;
-		pipelineId: string;
-		requestBody: PipelineRequest;
-	},
-	PipelineResponse
->("updatePipelineUsingPut", ({ projectId, pipelineId, requestBody }) => ({
+export const updatePipelineUsingPut = createRequest<{
+	projectId: string;
+	pipelineId: string;
+	requestBody: PipelineRequest;
+}>("updatePipelineUsingPut", ({ projectId, pipelineId, requestBody }) => ({
 	url: `/api/project/${projectId}/pipeline/${pipelineId}`,
 	method: "PUT",
 	data: requestBody,
