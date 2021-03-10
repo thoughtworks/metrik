@@ -8,12 +8,12 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Metrics } from "../clients/apis";
 import { GRAY_1, GRAY_5, GRAY_7, GRAY_9 } from "../constants/styles";
 import { css } from "@emotion/react";
 import { find, throttle } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
 import { durationFormatter } from "../utils/timeFormats";
+import { Metrics } from "../clients/metricsApis";
 
 export interface CustomizeTickProps {
 	x?: number;

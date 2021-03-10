@@ -10,5 +10,4 @@ export enum ConfigStep {
 	CONFIG_SUCCESS,
 }
 
-export type DurationUnit = "Fortnightly" | "Monthly";
 export type MetricType = "df" | "lt" | "mttr" | "cfr";

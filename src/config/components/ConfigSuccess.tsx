@@ -2,16 +2,16 @@ import { Button, Modal, Result, Spin } from "antd";
 import React, { FC, useEffect } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import ProjectConfig from "../../shared/components/ProjectConfig";
-import {
-	createPipelineUsingPost,
-	PipelineResponse,
-	updatePipelineUsingPut,
-} from "../../shared/clients/apis";
 import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { GREEN_LIGHT } from "../../shared/constants/styles";
+import {
+	createPipelineUsingPost,
+	Pipeline,
+	updatePipelineUsingPut,
+} from "../../shared/clients/pipelineApis";
 
 const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
@@ -31,7 +31,7 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 		shouldResetStatus: !visible,
 	});
 
-	function handleUpdatePipeline(pipeline: PipelineResponse) {
+	function handleUpdatePipeline(pipeline: Pipeline) {
 		onUpdatePipeline(pipeline);
 		handleToggleVisible();
 	}

@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../shared/hooks/useQuery";
-import { getFourKeyMetricsUsingPost, MetricsInfo, MetricsLevel } from "../shared/clients/apis";
 import { getRangeTimeStamps } from "../shared/utils/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../shared/constants/styles";
 import { max, min } from "lodash";
-import { DurationUnit } from "../shared/__types__/base";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio";
 import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils";
+import {
+	getFourKeyMetricsUsingPost,
+	MetricsInfo,
+	MetricsLevel,
+	MetricsUnit,
+} from "../shared/clients/metricsApis";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -20,8 +24,9 @@ const metricsContainerStyles = css({
 
 const initialMetricsState: MetricsInfo = {
 	summary: {
-		endTimestamp: 0,
 		level: MetricsLevel.INVALID,
+		value: 0,
+		endTimestamp: 0,
 		startTimestamp: 0,
 	},
 	details: [],
@@ -33,7 +38,7 @@ export const PageDashboard = () => {
 	const query = useQuery();
 	const projectId = query.get("projectId") || "";
 
-	const [appliedUnit, setAppliedUnit] = useState<DurationUnit>("Fortnightly");
+	const [appliedUnit, setAppliedUnit] = useState<MetricsUnit>(MetricsUnit.FORTNIGHTLY);
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsInfo>(initialMetricsState);
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsInfo>(initialMetricsState);
@@ -43,11 +48,10 @@ export const PageDashboard = () => {
 	const getFourKeyMetrics = (formValues: FormValues) => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
-		// TODO: will pass multiple stages and pipelines after backend api ready
 
 		const durationTimestamps = getRangeTimeStamps(formValues.duration);
 		getFourKeyMetricsUsingPost({
-			requestBody: {
+			metricsQuery: {
 				startTime: min(durationTimestamps)!,
 				endTime: max(durationTimestamps)!,
 				pipelineStages: (formValues.pipelines || []).map(i => ({
@@ -68,13 +72,8 @@ export const PageDashboard = () => {
 			});
 	};
 
-	const getSubTitleUnit = (unit: DurationUnit) => {
-		enum SubtitleUnit {
-			Fortnightly = "fortnight",
-			Monthly = "month",
-		}
-
-		return `Times per ${SubtitleUnit[unit]}`;
+	const getSubTitleUnit = (unit: MetricsUnit) => {
+		return `Times per ${unit.toLowerCase().replace("ly", "")}`;
 	};
 
 	return (
@@ -85,7 +84,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Deployment Frequency (Times)"
-							info={<MetricTooltip durationUnit={appliedUnit} type={"df"} />}
+							info={<MetricTooltip unit={appliedUnit} type={"df"} />}
 							summary={deploymentFrequency.summary}
 							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
@@ -102,7 +101,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Average Lead Time for Change (Days)"
-							info={<MetricTooltip durationUnit={appliedUnit} type={"lt"} />}
+							info={<MetricTooltip unit={appliedUnit} type={"lt"} />}
 							summary={leadTimeForChange.summary}
 							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
@@ -119,7 +118,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Mean Time to Restore Service (Hours)"
-							info={<MetricTooltip durationUnit={appliedUnit} type={"mttr"} />}
+							info={<MetricTooltip unit={appliedUnit} type={"mttr"} />}
 							summary={meanTimeToRestore.summary}
 							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
@@ -136,7 +135,7 @@ export const PageDashboard = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Change Failure Rate"
-							info={<MetricTooltip durationUnit={appliedUnit} type={"cfr"} />}
+							info={<MetricTooltip unit={appliedUnit} type={"cfr"} />}
 							summary={changeFailureRate.summary}
 							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}

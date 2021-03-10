@@ -1,4 +1,5 @@
 import { calcMaxValueWithRatio } from "../calcMaxValueWithRatio";
+import { MetricsLevel } from "../../clients/metricsApis";
 
 describe("#calcMaxValueWithRatio", () => {
 	it("should return default max value if metrics is empty", () => {
@@ -9,8 +10,18 @@ describe("#calcMaxValueWithRatio", () => {
 		expect(
 			calcMaxValueWithRatio(
 				[
-					{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
-					{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+					{
+						value: "NaN",
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: "NaN",
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
 				],
 				100,
 				1
@@ -21,8 +32,18 @@ describe("#calcMaxValueWithRatio", () => {
 	it("should return default max value 1 if theres is no valid metrics value without a given default value", () => {
 		expect(
 			calcMaxValueWithRatio([
-				{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
-				{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+				{
+					value: "NaN",
+					startTimestamp: 1610726400000,
+					endTimestamp: 1611935999999,
+					level: MetricsLevel.ELITE,
+				},
+				{
+					value: "NaN",
+					startTimestamp: 1610726400000,
+					endTimestamp: 1611935999999,
+					level: MetricsLevel.ELITE,
+				},
 			])
 		).toEqual(1);
 	});
@@ -31,8 +52,18 @@ describe("#calcMaxValueWithRatio", () => {
 		expect(
 			calcMaxValueWithRatio(
 				[
-					{ value: 0, startTimestamp: 1603727999000, endTimestamp: 1604678399999 },
-					{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+					{
+						value: 0,
+						startTimestamp: 1603727999000,
+						endTimestamp: 1604678399999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: "NaN",
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
 				],
 				1,
 				1.1
@@ -44,9 +75,24 @@ describe("#calcMaxValueWithRatio", () => {
 		expect(
 			calcMaxValueWithRatio(
 				[
-					{ value: "NaN", startTimestamp: 1603727999000, endTimestamp: 1604678399999 },
-					{ value: 100.0, startTimestamp: 1609516800000, endTimestamp: 1610726399999 },
-					{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+					{
+						value: "NaN",
+						startTimestamp: 1603727999000,
+						endTimestamp: 1604678399999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: 100.0,
+						startTimestamp: 1609516800000,
+						endTimestamp: 1610726399999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: "NaN",
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
 				],
 				100,
 				1
@@ -56,8 +102,18 @@ describe("#calcMaxValueWithRatio", () => {
 		expect(
 			calcMaxValueWithRatio(
 				[
-					{ value: 0, startTimestamp: 1603727999000, endTimestamp: 1604678399999 },
-					{ value: "NaN", startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+					{
+						value: 0,
+						startTimestamp: 1603727999000,
+						endTimestamp: 1604678399999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: "NaN",
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
 				],
 				1,
 				1.1
@@ -67,8 +123,18 @@ describe("#calcMaxValueWithRatio", () => {
 		expect(
 			calcMaxValueWithRatio(
 				[
-					{ value: 899, startTimestamp: 1603727999000, endTimestamp: 1604678399999 },
-					{ value: 100, startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+					{
+						value: 899,
+						startTimestamp: 1603727999000,
+						endTimestamp: 1604678399999,
+						level: MetricsLevel.ELITE,
+					},
+					{
+						value: 100,
+						startTimestamp: 1610726400000,
+						endTimestamp: 1611935999999,
+						level: MetricsLevel.ELITE,
+					},
 				],
 				1,
 				2
@@ -79,8 +145,18 @@ describe("#calcMaxValueWithRatio", () => {
 	it("should return max value with default ratio", () => {
 		expect(
 			calcMaxValueWithRatio([
-				{ value: 899, startTimestamp: 1603727999000, endTimestamp: 1604678399999 },
-				{ value: 100, startTimestamp: 1610726400000, endTimestamp: 1611935999999 },
+				{
+					value: 899,
+					startTimestamp: 1603727999000,
+					endTimestamp: 1604678399999,
+					level: MetricsLevel.ELITE,
+				},
+				{
+					value: 100,
+					startTimestamp: 1610726400000,
+					endTimestamp: 1611935999999,
+					level: MetricsLevel.ELITE,
+				},
 			])
 		).toEqual(990);
 	});

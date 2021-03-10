@@ -1,14 +1,14 @@
-import { PipelineRequestType } from "../clients/apis";
+import { PipelineTool } from "../clients/pipelineApis";
 
 export const TOOLTIP_MAPPING = {
-	[PipelineRequestType.JENKINS]: {
+	[PipelineTool.JENKINS]: {
 		URL:
 			"URL of the pipeline. Please do ensure the URL is complete, including the folder/subfolder information if there’s any.",
 		USERNAME: "Username used to access Jenkins.",
 		CREDENTIAL:
 			"The access token will be used to invoke Jenkins APIs to fetch pipeline execution status.The regular password for the Jenkins UI also works here, though not recommended.",
 	},
-	[PipelineRequestType.BAMBOO]: {
+	[PipelineTool.BAMBOO]: {
 		URL:
 			"URL of the pipeline. Please do ensure the URL is complete, including all information such as project, subproject, plan keys.",
 		CREDENTIAL:

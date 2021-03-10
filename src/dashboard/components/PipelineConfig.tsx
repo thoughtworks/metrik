@@ -2,18 +2,18 @@ import React, { FC, useState } from "react";
 import { FieldsStep2 } from "../../config/components/FieldsStep2";
 import { Form } from "antd";
 import { VerifyStatus } from "../../shared/__types__/base";
-import {
-	createPipelineUsingPost,
-	PipelineResponse,
-	PipelineResponseType,
-	updatePipelineUsingPut,
-	verifyPipelineUsingPost,
-} from "../../shared/clients/apis";
 import { ConfigFormValues } from "../../config/PageConfig";
 import { useRequest } from "../../shared/hooks/useRequest";
+import {
+	createPipelineUsingPost,
+	Pipeline,
+	PipelineTool,
+	updatePipelineUsingPut,
+	verifyPipelineUsingPost,
+} from "../../shared/clients/pipelineApis";
 
 interface PipelineConfigProps {
-	defaultData?: PipelineResponse;
+	defaultData?: Pipeline;
 	onBack: () => void;
 	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
 	onSuccess?: () => void;
@@ -36,15 +36,14 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const [, handleSubmit, loading] = useRequest(onSubmit);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
-		if (pipeline.type === PipelineResponseType.BAMBOO) {
+		if (pipeline.type === PipelineTool.BAMBOO) {
 			delete pipeline.username;
 		}
 
 		await verifyPipeline();
 		handleSubmit({
 			projectId: projectId,
-			requestBody: pipeline,
-			pipelineId: defaultData?.id as string,
+			pipeline,
 		}).then(() => {
 			updateProject();
 			onBack();
@@ -55,12 +54,12 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { projectName, ...pipelineValues } = form.getFieldsValue();
 
-		if (pipelineValues.type === PipelineResponseType.BAMBOO) {
+		if (pipelineValues.type === PipelineTool.BAMBOO) {
 			delete pipelineValues.username;
 		}
 
 		return verifyPipelineUsingPost({
-			requestBody: pipelineValues,
+			verification: pipelineValues,
 		})
 			.then(() => {
 				setVerifyStatus(VerifyStatus.SUCCESS);

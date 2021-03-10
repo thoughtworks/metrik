@@ -4,17 +4,13 @@ import { FieldsStep1 } from "./components/FieldsStep1";
 import { FieldsStep2 } from "./components/FieldsStep2";
 import { ConfigStep, VerifyStatus } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import {
-	createProjectUsingPost,
-	PipelineResponse,
-	PipelineResponseType,
-	verifyPipelineUsingPost,
-} from "../shared/clients/apis";
+import { Pipeline, PipelineTool, verifyPipelineUsingPost } from "../shared/clients/pipelineApis";
+import { createProjectUsingPost } from "../shared/clients/projectApis";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
 
-export interface ConfigFormValues extends PipelineResponse {
+export interface ConfigFormValues extends Pipeline {
 	projectName: string;
 }
 
@@ -25,15 +21,13 @@ export const PageConfig = () => {
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
 	const [projectId, setProjectId] = useState<string>();
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
-		if (pipeline.type === PipelineResponseType.BAMBOO) {
+		if (pipeline.type === PipelineTool.BAMBOO) {
 			delete pipeline.username;
 		}
 		await verifyPipeline();
 		const { id } = await createProjectUsingPost({
-			requestBody: {
-				projectName,
-				pipeline,
-			},
+			projectName,
+			pipeline,
 		});
 		setProjectId(id);
 		toNextStep();
@@ -51,11 +45,11 @@ export const PageConfig = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { projectName, ...pipelineValues } = form.getFieldsValue();
 
-		if (pipelineValues.type === PipelineResponseType.BAMBOO) {
+		if (pipelineValues.type === PipelineTool.BAMBOO) {
 			delete pipelineValues.username;
 		}
 		return verifyPipelineUsingPost({
-			requestBody: pipelineValues,
+			verification: pipelineValues,
 		})
 			.then(() => {
 				setVerifyStatus(VerifyStatus.SUCCESS);

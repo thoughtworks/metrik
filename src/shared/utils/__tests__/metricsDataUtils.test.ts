@@ -1,5 +1,5 @@
 import { cleanMetricsInfo } from "../metricsDataUtils";
-import { MetricsInfo } from "../../clients/apis";
+import { MetricsInfo, MetricsLevel } from "../../clients/metricsApis";
 
 describe("cleanMetricsInfo", () => {
 	it('should erase all "NaN" value from the Metrics data since it causes incorrect Tooltip value', () => {
@@ -7,20 +7,20 @@ describe("cleanMetricsInfo", () => {
 			summary: {
 				startTimestamp: 1289318400000,
 				endTimestamp: 1289318500000,
-				level: "ELITE",
+				level: MetricsLevel.ELITE,
 				value: "NaN",
 			},
 			details: [
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					value: 9,
 				},
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					value: "NaN",
 				},
 			],
@@ -29,19 +29,19 @@ describe("cleanMetricsInfo", () => {
 			summary: {
 				startTimestamp: 1289318400000,
 				endTimestamp: 1289318500000,
-				level: "ELITE",
+				level: MetricsLevel.ELITE,
 			},
 			details: [
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 					value: 9,
 				},
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: "ELITE",
+					level: MetricsLevel.ELITE,
 				},
 			],
 		};

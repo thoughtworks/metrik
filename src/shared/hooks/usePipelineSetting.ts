@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-	deletePipelineUsingDelete,
-	getProjectDetailsUsingGet,
-	PipelineResponse,
-	ProjectDetailResponse,
-} from "../clients/apis";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 import { useRequest } from "./useRequest";
+import { deletePipelineUsingDelete, Pipeline } from "../clients/pipelineApis";
+import { getProjectDetailsUsingGet, Project } from "../clients/projectApis";
 
 export const usePipelineSetting = ({
 	defaultProjectId,
@@ -19,10 +15,10 @@ export const usePipelineSetting = ({
 	shouldUpdateProject: boolean;
 	shouldResetStatus: boolean;
 	defaultStatus?: PipelineSettingStatus;
-	defaultProject?: ProjectDetailResponse;
+	defaultProject?: Project;
 }) => {
 	const [status, setStatus] = useState(PipelineSettingStatus.VIEW);
-	const [editPipeline, setEditPipeline] = useState<PipelineResponse>();
+	const [editPipeline, setEditPipeline] = useState<Pipeline>();
 	const [project, getProject, isProjectLoading, , projectError] = useRequest(
 		getProjectDetailsUsingGet,
 		defaultProject
@@ -49,7 +45,7 @@ export const usePipelineSetting = ({
 		setEditPipeline(undefined);
 	}
 
-	function onUpdatePipeline(pipeline: PipelineResponse) {
+	function onUpdatePipeline(pipeline: Pipeline) {
 		setStatus(PipelineSettingStatus.UPDATE);
 		setEditPipeline(pipeline);
 	}

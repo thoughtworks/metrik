@@ -6,7 +6,6 @@ const axiosInstance = axios.create({
 });
 
 export const createRequest = <TReq, TResp = any>(
-	_: string,
 	getConfig: (request: TReq) => AxiosRequestConfig
 ) => {
 	const createFn = (request: TReq) => axiosInstance.request<TResp, TResp>(getConfig(request));

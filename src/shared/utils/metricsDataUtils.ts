@@ -1,4 +1,4 @@
-import { Metrics, MetricsInfo } from "../clients/apis";
+import { Metrics, MetricsInfo } from "../clients/metricsApis";
 
 export const cleanMetricsInfo = (metricsInfo: MetricsInfo) => {
 	const eraseNaNValue = (metrics: Metrics) =>

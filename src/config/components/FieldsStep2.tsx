@@ -5,8 +5,8 @@ import { ERROR_MESSAGES } from "../../shared/constants/errorMessages";
 import { VerifyStatus } from "../../shared/__types__/base";
 import { ConfigFormValues } from "../PageConfig";
 import HintIcon from "../../shared/components/HintIcon";
-import { PipelineRequestType, PipelineResponseType } from "../../shared/clients/apis";
 import { TOOLTIP_MAPPING } from "../../shared/constants/tooltips";
+import { PipelineTool } from "../../shared/clients/pipelineApis";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -47,8 +47,8 @@ export const FieldsStep2: FC<{
 						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL },
 					]}>
 					<Select>
-						<Option value={PipelineRequestType.JENKINS}>{PipelineRequestType.JENKINS}</Option>
-						<Option value={PipelineRequestType.BAMBOO}>{PipelineRequestType.BAMBOO}</Option>
+						<Option value={PipelineTool.JENKINS}>{PipelineTool.JENKINS}</Option>
+						<Option value={PipelineTool.BAMBOO}>{PipelineTool.BAMBOO}</Option>
 					</Select>
 				</Form.Item>
 			</Col>
@@ -77,7 +77,7 @@ export const FieldsStep2: FC<{
 		</Row>
 
 		<Row gutter={24} wrap={false} align={"bottom"}>
-			{formValues.type === PipelineRequestType.JENKINS && (
+			{formValues.type === PipelineTool.JENKINS && (
 				<Col span={8}>
 					<Form.Item
 						label={
@@ -107,7 +107,7 @@ export const FieldsStep2: FC<{
 							!formValues.type ||
 							!formValues.url ||
 							!formValues.credential ||
-							(formValues.type === PipelineResponseType.JENKINS && !formValues.username)
+							(formValues.type === PipelineTool.JENKINS && !formValues.username)
 						}>
 						Verify
 					</Button>
@@ -137,7 +137,7 @@ export const FieldsStep2: FC<{
 						!formValues.type ||
 						!formValues.url ||
 						!formValues.credential ||
-						(formValues.type === PipelineResponseType.JENKINS && !formValues.username)
+						(formValues.type === PipelineTool.JENKINS && !formValues.username)
 					}
 					size={"large"}
 					loading={loading}>

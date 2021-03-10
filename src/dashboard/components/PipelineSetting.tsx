@@ -7,12 +7,12 @@ import {
 	UploadOutlined,
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
-import { Button, Modal, Result, Spin, Typography } from "antd";
-import { createPipelineUsingPost, updatePipelineUsingPut } from "../../shared/clients/apis";
+import { Button, Modal, Result, Spin } from "antd";
 import ProjectConfig from "../../shared/components/ProjectConfig";
 import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
+import { createPipelineUsingPost, updatePipelineUsingPut } from "../../shared/clients/pipelineApis";
 
 const settingStyles = css({
 	fontSize: 16,

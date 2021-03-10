@@ -1,14 +1,14 @@
 import React, { FC } from "react";
 import { Button, Table } from "antd";
-import { PipelineResponse } from "../clients/apis";
+import { Pipeline } from "../clients/pipelineApis";
 
 const { Column } = Table;
 
 interface ProjectConfigProps {
-	pipelines: PipelineResponse[];
+	pipelines: Pipeline[];
 	showDelete?: boolean;
 	showAddPipeline?: boolean;
-	updatePipeline: (pipeline: PipelineResponse) => void;
+	updatePipeline: (pipeline: Pipeline) => void;
 	addPipeline?: () => void;
 	deletePipeline?: (pipelineId: string) => void;
 }
@@ -22,7 +22,7 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 	deletePipeline,
 }) => {
 	return (
-		<Table<PipelineResponse>
+		<Table<Pipeline>
 			tableLayout={"fixed"}
 			css={{
 				minHeight: 350,
@@ -35,10 +35,10 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 			pagination={false}
 			rowKey={"id"}
 			dataSource={pipelines}>
-			<Column<PipelineResponse> width={"15%"} title={"Pipeline Name"} dataIndex={"name"} />
-			<Column<PipelineResponse> width={"15%"} title={"Tool"} dataIndex={"type"} />
-			<Column<PipelineResponse> width={"45%"} title={"URL"} dataIndex={"url"} />
-			<Column<PipelineResponse>
+			<Column<Pipeline> width={"15%"} title={"Pipeline Name"} dataIndex={"name"} />
+			<Column<Pipeline> width={"15%"} title={"Tool"} dataIndex={"type"} />
+			<Column<Pipeline> width={"45%"} title={"URL"} dataIndex={"url"} />
+			<Column<Pipeline>
 				width={"25%"}
 				title={() => (
 					<div css={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
