@@ -2,6 +2,7 @@ import React from "react";
 import { PageDashboard } from "./dashboard/PageDashboard";
 import { PageConfig } from "./config/PageConfig";
 import { Redirect, Route } from "react-router-dom";
+import Fullscreen from "./fullscreen/Fullscreen";
 
 export const Routes = ({ projectId }: { projectId: string | undefined }) => (
 	<>
@@ -23,6 +24,10 @@ export const Routes = ({ projectId }: { projectId: string | undefined }) => (
 			) : (
 				<PageConfig />
 			)}
+		</Route>
+
+		<Route path={"/fullscreen"} exact>
+			<Fullscreen />
 		</Route>
 	</>
 );
