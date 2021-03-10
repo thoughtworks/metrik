@@ -1,21 +1,18 @@
 #! /bin/bash
 
-# Wait until mongo is up to start, and then init the replica set,
-# and everything else
-echo "Start checking mongod readiness..."
-while [[ $(pgrep mongod) == "" ]]
+echo "Start checking MongoDB readiness..."
+until mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval "print(\"Finally MongoDB is up...\")"
 do
-  echo "Waiting for mongod to come up..."
+  echo "Waiting for MongoDB to come up..."
   sleep 2
-  if [[ $(pgrep mongod) != "" ]]; then
-    echo "mongod seems to be started, continuing with the replica set initialization"
-  fi
 done
-echo "Stop checking mongod readiness..."
+echo "Stop checking MongoDB readiness..."
 
-echo "Start mongodb initialization"
+echo "Start MongoDB initialization"
 echo "Step 1: initializing replica set"
-sleep 20 && mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD < /app/mongo/mongo-init-replica-set.js
+mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD < /app/mongo/mongo-init-replica-set.js
+echo "Wait 10 seconds for replica set to run"
+sleep 10
 echo "Step 2: add user"
-sleep 2 && mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD < /app/mongo/mongo-create-user.js
-echo "Mongo initilazation done"
+mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD < /app/mongo/mongo-create-user.js
+echo "MongoDB initialization done"
