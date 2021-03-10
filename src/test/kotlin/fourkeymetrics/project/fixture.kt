@@ -15,19 +15,19 @@ fun buildPipelineRequest() =
         PipelineType.JENKINS.toString()
     ).copy()
 
-fun buildPipelineResponse() = PipelineResponse(
-    id = "pipelineId",
-    name = "name",
-    username = "username",
-    credential = "credential",
-    url = "url"
-).copy()
 
-fun buildPipelineVerificationRequest() = PipelineVerificationRequest(
+fun buildJenkinsPipelineVerificationRequest() = PipelineVerificationRequest(
     url = "url",
     username = "username",
     credential = "credential",
     type = PipelineType.JENKINS.toString()
+).copy()
+
+fun buildBambooPipelineVerificationRequest() = PipelineVerificationRequest(
+    url = "url",
+    username = null,
+    credential = "credential",
+    type = PipelineType.BAMBOO.toString()
 ).copy()
 
 fun buildPipeline(type: PipelineType = PipelineType.JENKINS): Pipeline {

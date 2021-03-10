@@ -2,9 +2,10 @@ package fourkeymetrics.project.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.project.buildBambooPipelineVerificationRequest
 import fourkeymetrics.project.buildPipeline
 import fourkeymetrics.project.buildPipelineRequest
-import fourkeymetrics.project.buildPipelineVerificationRequest
+import fourkeymetrics.project.buildJenkinsPipelineVerificationRequest
 import fourkeymetrics.project.controller.applicationservice.PipelineApplicationService
 import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
 import org.junit.jupiter.api.Test
@@ -30,8 +31,8 @@ internal class PipelineControllerTest {
     private val projectId = "projectId"
 
     @Test
-    internal fun `should return OK when verify pipeline successfully`() {
-        val pipelineVerificationRequest = buildPipelineVerificationRequest()
+    internal fun `should return OK when verify Jenkins pipeline successfully`() {
+        val pipelineVerificationRequest = buildJenkinsPipelineVerificationRequest()
         Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(anyObject())
 
         mockMvc.perform(
@@ -40,6 +41,19 @@ internal class PipelineControllerTest {
                 .content(ObjectMapper().writeValueAsString(pipelineVerificationRequest))
         ).andExpect(status().isOk)
     }
+
+    @Test
+    internal fun `should return OK when verify Bamboo pipeline successfully`() {
+        val pipelineVerificationRequest = buildBambooPipelineVerificationRequest()
+        Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(anyObject())
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/pipeline/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(pipelineVerificationRequest))
+        ).andExpect(status().isOk)
+    }
+
 
     @Test
     internal fun `should return 200 when create pipeline successfully`() {
