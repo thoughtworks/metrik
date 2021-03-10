@@ -33,7 +33,8 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should throw exception when verify pipeline given response is 500`() {
         val credential = "fake-credential"
-        val baseUrl = "http://localhost"
+        val url = "http://localhost/deploy/viewDeploymentProjectEnvironments.action?id=4751362"
+        val baseUrl = "http://localhost:80"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
@@ -42,14 +43,15 @@ internal class BambooPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = baseUrl))
+            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = url))
         }
     }
 
     @Test
     internal fun `should throw exception when verify pipeline given response is 400`() {
         val credential = "fake-credential"
-        val baseUrl = "http://localhost"
+        val url = "http://localhost/deploy/viewDeploymentProjectEnvironments.action?id=4751362"
+        val baseUrl = "http://localhost:80"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
@@ -58,7 +60,7 @@ internal class BambooPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = baseUrl))
+            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = url))
         }
     }
 }

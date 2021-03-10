@@ -15,15 +15,26 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
+import java.net.URL
+
+private const val HTTP_DEFAULT_PORT = 80
 
 @Service
 class BambooPipelineService(@Autowired private var restTemplate: RestTemplate) : PipelineService() {
+
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         val headers = setAuthHeader(pipeline.credential)
         val entity = HttpEntity<String>(headers)
         try {
+            val url = URL(pipeline.url)
+            val port = if (url.port == -1) {
+                HTTP_DEFAULT_PORT
+            } else {
+                url.port
+            }
             restTemplate.exchange<String>(
-                "${pipeline.url}/rest/api/latest/project/", HttpMethod.GET, entity)
+                "http://${url.host}:${port}/rest/api/latest/project/", HttpMethod.GET, entity
+            )
         } catch (ex: HttpServerErrorException) {
             throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
