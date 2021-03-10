@@ -5,6 +5,7 @@ import { VerifyStatus } from "../../shared/__types__/base";
 import {
 	createPipelineUsingPost,
 	PipelineResponse,
+	PipelineResponseType,
 	updatePipelineUsingPut,
 	verifyPipelineUsingPost,
 } from "../../shared/clients/apis";
@@ -35,6 +36,10 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const [, handleSubmit, loading] = useRequest(onSubmit);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
+		if (pipeline.type === PipelineResponseType.BAMBOO) {
+			delete pipeline.username;
+		}
+
 		await verifyPipeline();
 		handleSubmit({
 			projectId: projectId,
@@ -49,6 +54,11 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { projectName, ...pipelineValues } = form.getFieldsValue();
+
+		if (pipelineValues.type === PipelineResponseType.BAMBOO) {
+			delete pipelineValues.username;
+		}
+
 		return verifyPipelineUsingPost({
 			requestBody: pipelineValues,
 		})

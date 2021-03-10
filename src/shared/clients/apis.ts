@@ -249,7 +249,7 @@ export interface PipelineResponse {
 	name: string;
 	type: keyof typeof PipelineResponseType;
 	url: string;
-	username: string;
+	username?: string;
 }
 
 export enum PipelineResponseType {
@@ -272,7 +272,7 @@ export interface PipelineVerificationRequest {
 	credential: string;
 	type: keyof typeof PipelineVerificationRequestType;
 	url: string;
-	username: string;
+	username?: string;
 }
 
 export enum PipelineVerificationRequestType {

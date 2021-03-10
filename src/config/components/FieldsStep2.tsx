@@ -5,6 +5,8 @@ import { ERROR_MESSAGES } from "../../shared/constants/errorMessages";
 import { VerifyStatus } from "../../shared/__types__/base";
 import { ConfigFormValues } from "../PageConfig";
 import HintIcon from "../../shared/components/HintIcon";
+import { PipelineRequestType, PipelineResponseType } from "../../shared/clients/apis";
+import { TOOLTIP_MAPPING } from "../../shared/constants/tooltips";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -45,7 +47,8 @@ export const FieldsStep2: FC<{
 						{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_PIPELINE_TOOL },
 					]}>
 					<Select>
-						<Option value="JENKINS">Jenkins</Option>
+						<Option value={PipelineRequestType.JENKINS}>{PipelineRequestType.JENKINS}</Option>
+						<Option value={PipelineRequestType.BAMBOO}>{PipelineRequestType.BAMBOO}</Option>
 					</Select>
 				</Form.Item>
 			</Col>
@@ -66,14 +69,7 @@ export const FieldsStep2: FC<{
 			<Col span={16}>
 				<Form.Item
 					name="url"
-					label={
-						<HintIcon
-							text={"Pipeline URL"}
-							tooltip={
-								"URL of the pipeline. Please do ensure the URL is complete, including the folder/subfolder information if there’s any."
-							}
-						/>
-					}
+					label={<HintIcon text={"Pipeline URL"} tooltip={TOOLTIP_MAPPING[formValues.type].URL} />}
 					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_DOMAIN_NAME }]}>
 					<Input placeholder={"e.g: http://jenkins_domain_name/job/folder_name/job/job_name/"} />
 				</Form.Item>
@@ -81,24 +77,23 @@ export const FieldsStep2: FC<{
 		</Row>
 
 		<Row gutter={24} wrap={false} align={"bottom"}>
-			<Col span={8}>
-				<Form.Item
-					label="Jenkins Username"
-					name="username"
-					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
-					<Input />
-				</Form.Item>
-			</Col>
+			{formValues.type === PipelineRequestType.JENKINS && (
+				<Col span={8}>
+					<Form.Item
+						label={
+							<HintIcon text={"Username"} tooltip={TOOLTIP_MAPPING[formValues.type].USERNAME} />
+						}
+						name="username"
+						rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_USERNAME }]}>
+						<Input />
+					</Form.Item>
+				</Col>
+			)}
 			<Col span={8}>
 				<Form.Item
 					name="credential"
 					label={
-						<HintIcon
-							text={"Access Token"}
-							tooltip={
-								"The access token will be used to invoke Jenkins APIs to fetch pipeline execution status.The regular password for the Jenkins UI also works here, though not recommended."
-							}
-						/>
+						<HintIcon text={"Access Token"} tooltip={TOOLTIP_MAPPING[formValues.type].CREDENTIAL} />
 					}
 					rules={[{ required: true, whitespace: true, message: ERROR_MESSAGES.EMPTY_CREDENTIAL }]}>
 					<Input type={"password"} />
@@ -109,7 +104,10 @@ export const FieldsStep2: FC<{
 					<Button
 						onClick={onVerify}
 						disabled={
-							!formValues.type || !formValues.url || !formValues.credential || !formValues.username
+							!formValues.type ||
+							!formValues.url ||
+							!formValues.credential ||
+							(formValues.type === PipelineResponseType.JENKINS && !formValues.username)
 						}>
 						Verify
 					</Button>
@@ -138,8 +136,8 @@ export const FieldsStep2: FC<{
 						!formValues.name ||
 						!formValues.type ||
 						!formValues.url ||
-						!formValues.username ||
-						!formValues.credential
+						!formValues.credential ||
+						(formValues.type === PipelineResponseType.JENKINS && !formValues.username)
 					}
 					size={"large"}
 					loading={loading}>

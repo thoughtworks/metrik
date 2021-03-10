@@ -7,6 +7,7 @@ import ConfigSuccess from "./components/ConfigSuccess";
 import {
 	createProjectUsingPost,
 	PipelineResponse,
+	PipelineResponseType,
 	verifyPipelineUsingPost,
 } from "../shared/clients/apis";
 
@@ -24,6 +25,9 @@ export const PageConfig = () => {
 	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
 	const [projectId, setProjectId] = useState<string>();
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
+		if (pipeline.type === PipelineResponseType.BAMBOO) {
+			delete pipeline.username;
+		}
 		await verifyPipeline();
 		const { id } = await createProjectUsingPost({
 			requestBody: {
@@ -46,6 +50,10 @@ export const PageConfig = () => {
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { projectName, ...pipelineValues } = form.getFieldsValue();
+
+		if (pipelineValues.type === PipelineResponseType.BAMBOO) {
+			delete pipelineValues.username;
+		}
 		return verifyPipelineUsingPost({
 			requestBody: pipelineValues,
 		})
