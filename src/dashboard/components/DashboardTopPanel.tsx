@@ -101,14 +101,18 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 		pipelines: [],
 	} as FormValues;
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
-	const [, updateBuildsRequest, syncing] = useRequest(updateBuildsUsingPost);
+	const [, updateBuildsRequest, updateBuildsLoading] = useRequest(updateBuildsUsingPost);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
 	const [synchronization, getLastSynchronizationRequest, , setSynchronization] = useRequest(
 		getLastSynchronizationUsingGet
 	);
-	const [pipelineStagesResp, getPipelineStagesRequest, , setPipelineStages] = useRequest(
-		getPipelineStagesUsingGet
-	);
+	const [
+		pipelineStagesResp,
+		getPipelineStagesRequest,
+		pipelineLoading,
+		setPipelineStages,
+	] = useRequest(getPipelineStagesUsingGet);
+	const syncing = updateBuildsLoading || pipelineLoading;
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
 
 	const updateProjectName = async (name: string) => {
