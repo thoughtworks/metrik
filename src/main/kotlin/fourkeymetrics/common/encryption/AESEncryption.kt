@@ -25,8 +25,8 @@ data class AESEncryptionProperties(
 
 @Component
 class AESEncryptionService(@Autowired private var properties: AESEncryptionProperties) {
-    private var key: SecretKey = getSecretKeyFromString(properties.keyString)
-    private var iv: IvParameterSpec = IvParameterSpec(properties.ivString.toByteArray())
+    private val key: SecretKey = getSecretKeyFromString(properties.keyString)
+    private val iv: IvParameterSpec = IvParameterSpec(properties.ivString.toByteArray())
     private val algorithm = "AES/CBC/PKCS5Padding"
 
     fun encrypt(rawString: String?): String? {

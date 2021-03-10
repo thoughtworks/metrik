@@ -7,7 +7,9 @@ import fourkeymetrics.project.buildPipeline
 import fourkeymetrics.project.buildPipelineRequest
 import fourkeymetrics.project.buildJenkinsPipelineVerificationRequest
 import fourkeymetrics.project.controller.applicationservice.PipelineApplicationService
+import fourkeymetrics.project.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
+import fourkeymetrics.project.model.PipelineType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`

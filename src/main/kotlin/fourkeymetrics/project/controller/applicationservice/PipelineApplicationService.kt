@@ -1,14 +1,14 @@
 package fourkeymetrics.project.controller.applicationservice
 
+import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
 import fourkeymetrics.project.repository.BuildRepository
-import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
-import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
-import fourkeymetrics.exception.BadRequestException
+import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.bamboo.BambooPipelineService
+import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,11 +31,14 @@ class PipelineApplicationService {
     private lateinit var buildRepository: BuildRepository
 
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
-        when {
-            PipelineType.JENKINS == pipeline.type -> {
+        when (pipeline.type) {
+            PipelineType.JENKINS -> {
+                if (pipeline.username == null) {
+                    throw BadRequestException("Username is required for Jenkins")
+                }
                 jenkinsPipelineService.verifyPipelineConfiguration(pipeline)
             }
-            PipelineType.BAMBOO == pipeline.type -> {
+            PipelineType.BAMBOO -> {
                 bambooPipelineService.verifyPipelineConfiguration(pipeline)
             }
             else -> {
@@ -45,6 +48,7 @@ class PipelineApplicationService {
     }
 
     fun createPipeline(pipeline: Pipeline): Pipeline {
+        validateUsernameForJenkins(pipeline)
         verifyProjectExist(pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
         verifyPipelineConfiguration(pipeline)
@@ -62,6 +66,7 @@ class PipelineApplicationService {
     }
 
     fun updatePipeline(pipeline: Pipeline): Pipeline {
+        validateUsernameForJenkins(pipeline)
         verifyProjectExist(pipeline.projectId)
         verifyPipelineExist(pipeline.id, pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
@@ -97,4 +102,10 @@ class PipelineApplicationService {
 
     private fun verifyPipelineExist(pipelineId: String, projectId: String) =
         pipelineRepository.findByIdAndProjectId(pipelineId, projectId)
+
+    private fun validateUsernameForJenkins(pipeline: Pipeline) {
+        if (pipeline.type == PipelineType.JENKINS && pipeline.username == null) {
+            throw BadRequestException("Username is required for Jenkins")
+        }
+    }
 }
