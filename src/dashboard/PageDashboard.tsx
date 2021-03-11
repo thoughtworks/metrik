@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../shared/hooks/useQuery";
-import { getRangeTimeStamps } from "../shared/utils/timeFormats";
+import { getRangeTimeStamps } from "../shared/utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../shared/constants/styles";
 import { max, min } from "lodash";
 import { MetricTooltip } from "./components/MetricTooltip";
-import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio";
-import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils";
+import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
+import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils/metricsDataUtils";
 import {
 	getFourKeyMetricsUsingPost,
 	MetricsInfo,

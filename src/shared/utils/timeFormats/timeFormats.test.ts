@@ -4,7 +4,7 @@ import {
 	momentObjToEndTimeStamp,
 	durationFormatter,
 	getRangeTimeStamps,
-} from "../timeFormats";
+} from "./timeFormats";
 import moment from "moment";
 
 describe("time formats test", () => {

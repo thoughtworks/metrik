@@ -1,4 +1,4 @@
-import { required } from "../validates";
+import { required } from "./validates";
 
 describe("validates test", () => {
 	it("should return error message when given value is undefined", () => {

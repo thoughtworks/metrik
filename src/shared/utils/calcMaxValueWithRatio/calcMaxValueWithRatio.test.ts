@@ -1,4 +1,4 @@
-import { calcMaxValueWithRatio } from "../calcMaxValueWithRatio";
+import { calcMaxValueWithRatio } from "./calcMaxValueWithRatio";
 import { MetricsLevel } from "../../__types__/enum";
 
 describe("#calcMaxValueWithRatio", () => {

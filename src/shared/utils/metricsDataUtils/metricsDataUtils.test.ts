@@ -1,4 +1,4 @@
-import { cleanMetricsInfo } from "../metricsDataUtils";
+import { cleanMetricsInfo } from "./metricsDataUtils";
 import { MetricsInfo } from "../../clients/metricsApis";
 import { MetricsLevel } from "../../__types__/enum";
 

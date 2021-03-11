@@ -10,7 +10,7 @@ import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
 import { MultipleCascadeSelect } from "../../shared/components/MultipleCascadeSelect";
 import { isEmpty, isEqual } from "lodash";
-import { formatLastUpdateTime } from "../../shared/utils/timeFormats";
+import { formatLastUpdateTime } from "../../shared/utils/timeFormats/timeFormats";
 import { usePrevious } from "../../shared/hooks/usePrevious";
 import HintIcon from "../../shared/components/HintIcon";
 import { MetricsUnit } from "../../shared/clients/metricsApis";
