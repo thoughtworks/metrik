@@ -2,12 +2,8 @@ package fourkeymetrics.project.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fourkeymetrics.MockitoHelper.anyObject
-import fourkeymetrics.project.buildBambooPipelineVerificationRequest
-import fourkeymetrics.project.buildPipeline
-import fourkeymetrics.project.buildPipelineRequest
-import fourkeymetrics.project.buildJenkinsPipelineVerificationRequest
+import fourkeymetrics.project.*
 import fourkeymetrics.project.controller.applicationservice.PipelineApplicationService
-import fourkeymetrics.project.controller.vo.request.PipelineVerificationRequest
 import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.project.model.PipelineType
 import org.junit.jupiter.api.Test
@@ -58,8 +54,8 @@ internal class PipelineControllerTest {
 
 
     @Test
-    internal fun `should return 200 when create pipeline successfully`() {
-        val pipelineRequest = buildPipelineRequest()
+    internal fun `should return 200 when create Jenkins pipeline successfully`() {
+        val pipelineRequest = buildJenkinsPipelineRequest()
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
         `when`(pipelineApplicationService.createPipeline(anyObject())).thenReturn(pipeline)
@@ -72,8 +68,25 @@ internal class PipelineControllerTest {
             .andExpect(status().isCreated)
     }
 
+
     @Test
-    internal fun `should return 200 when update pipeline successfully`() {
+    internal fun `should return 200 when create Bamboo pipeline successfully`() {
+        val pipelineRequest = buildBambooPipelineRequest()
+        val pipeline = buildPipeline()
+        val projectId = pipeline.projectId
+        `when`(pipelineApplicationService.createPipeline(anyObject())).thenReturn(pipeline)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/project/$projectId/pipeline")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(pipelineRequest))
+        )
+            .andExpect(status().isCreated)
+    }
+
+
+    @Test
+    internal fun `should return 200 when update Jenkins pipeline successfully`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -82,7 +95,22 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(buildPipelineRequest()))
+                .content(ObjectMapper().writeValueAsString(buildJenkinsPipelineRequest()))
+        )
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    internal fun `should return 200 when update Bamboo pipeline successfully`() {
+        val pipeline = buildPipeline(type = PipelineType.BAMBOO)
+        val pipelineId = pipeline.id
+        val projectId = pipeline.projectId
+        `when`(pipelineApplicationService.updatePipeline(anyObject())).thenReturn(pipeline)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(buildJenkinsPipelineRequest()))
         )
             .andExpect(status().isOk)
     }

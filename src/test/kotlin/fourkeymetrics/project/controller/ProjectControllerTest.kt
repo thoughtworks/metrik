@@ -1,15 +1,15 @@
 package fourkeymetrics.project.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import fourkeymetrics.project.buildPipelineRequest
+import fourkeymetrics.MockitoHelper.anyObject
+import fourkeymetrics.project.buildJenkinsPipelineRequest
 import fourkeymetrics.project.controller.applicationservice.ProjectApplicationService
-import fourkeymetrics.project.controller.vo.request.PipelineRequest
 import fourkeymetrics.project.controller.vo.request.ProjectRequest
+import fourkeymetrics.project.controller.vo.request.BambooPipelineRequest
 import fourkeymetrics.project.controller.vo.response.PipelineResponse
 import fourkeymetrics.project.controller.vo.response.ProjectDetailResponse
 import fourkeymetrics.project.controller.vo.response.ProjectResponse
 import fourkeymetrics.project.controller.vo.response.ProjectSummaryResponse
-import fourkeymetrics.project.model.PipelineType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -83,8 +83,8 @@ class ProjectControllerTest {
 
     @Test
     internal fun `should create project and pipeline `() {
-        val projectRequest = ProjectRequest(projectName, buildPipelineRequest())
-        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
+        val projectRequest = ProjectRequest(projectName, buildJenkinsPipelineRequest())
+        `when`(projectApplicationService.createProject(anyObject())).thenReturn(
             ProjectSummaryResponse(
                 "fake-id",
                 "fake-name"
@@ -103,15 +103,13 @@ class ProjectControllerTest {
     @Test
     internal fun `should create project and bamboo pipeline`() {
         val projectRequest = ProjectRequest(
-            projectName, PipelineRequest(
+            projectName, BambooPipelineRequest(
                 name = "pipeline",
-                username = null,
                 credential = "credential",
-                url = "url",
-                type = PipelineType.BAMBOO.toString()
+                url = "url"
             )
         )
-        `when`(projectApplicationService.createProject(projectRequest)).thenReturn(
+        `when`(projectApplicationService.createProject(anyObject())).thenReturn(
             ProjectSummaryResponse(
                 "fake-id",
                 "fake-name"

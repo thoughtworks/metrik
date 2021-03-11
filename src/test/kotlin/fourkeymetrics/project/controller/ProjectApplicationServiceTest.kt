@@ -2,7 +2,7 @@ package fourkeymetrics.project.controller
 
 import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.MockitoHelper.argThat
-import fourkeymetrics.project.buildPipelineRequest
+import fourkeymetrics.project.buildJenkinsPipelineRequest
 import fourkeymetrics.project.controller.applicationservice.ProjectApplicationService
 import fourkeymetrics.project.controller.applicationservice.PipelineApplicationService
 import fourkeymetrics.project.controller.vo.request.ProjectRequest
@@ -63,7 +63,7 @@ class ProjectApplicationServiceTest {
         `when`(projectRepository.save(anyObject())).thenReturn(expectedProject)
         `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
 
-        val pipeline = buildPipelineRequest()
+        val pipeline = buildJenkinsPipelineRequest()
         val projectDetailResponse =
             projectApplicationService.createProject(ProjectRequest(projectName, pipeline))
 
@@ -81,7 +81,7 @@ class ProjectApplicationServiceTest {
         `when`(projectRepository.existWithGivenName(projectName)).thenReturn(true)
 
         val exception = assertThrows<ProjectNameDuplicateException> {
-            projectApplicationService.createProject(ProjectRequest(projectName, buildPipelineRequest()))
+            projectApplicationService.createProject(ProjectRequest(projectName, buildJenkinsPipelineRequest()))
         }
 
         assertEquals(exception.httpStatus, HttpStatus.BAD_REQUEST)

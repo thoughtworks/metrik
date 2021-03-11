@@ -1,34 +1,37 @@
 package fourkeymetrics.project
 
-import fourkeymetrics.project.controller.vo.request.PipelineRequest
-import fourkeymetrics.project.controller.vo.request.PipelineVerificationRequest
-import fourkeymetrics.project.controller.vo.response.PipelineResponse
+import fourkeymetrics.project.controller.vo.request.BambooPipelineRequest
+import fourkeymetrics.project.controller.vo.request.BambooVerificationRequest
+import fourkeymetrics.project.controller.vo.request.JenkinsPipelineRequest
+import fourkeymetrics.project.controller.vo.request.JenkinsVerificationRequest
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
 
-fun buildPipelineRequest() =
-    PipelineRequest(
+fun buildJenkinsPipelineRequest() =
+    JenkinsPipelineRequest(
         name = "pipeline",
         username = "username",
         credential = "credential",
-        url = "url",
-        PipelineType.JENKINS.toString()
-    ).copy()
+        url = "url"
+    )
 
+fun buildBambooPipelineRequest() =
+    BambooPipelineRequest(
+        name = "pipeline",
+        credential = "credential",
+        url = "url"
+    )
 
-fun buildJenkinsPipelineVerificationRequest() = PipelineVerificationRequest(
+fun buildJenkinsPipelineVerificationRequest() = JenkinsVerificationRequest(
     url = "url",
     username = "username",
-    credential = "credential",
-    type = PipelineType.JENKINS.toString()
-).copy()
+    credential = "credential"
+)
 
-fun buildBambooPipelineVerificationRequest() = PipelineVerificationRequest(
+fun buildBambooPipelineVerificationRequest() = BambooVerificationRequest(
     url = "url",
-    username = null,
     credential = "credential",
-    type = PipelineType.BAMBOO.toString()
-).copy()
+)
 
 fun buildPipeline(type: PipelineType = PipelineType.JENKINS): Pipeline {
     if (type == PipelineType.JENKINS) {
