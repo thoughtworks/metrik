@@ -1,7 +1,7 @@
 import React from "react";
 import FullscreenMetricsCard from "./components/FullscreenMetricsCard";
-import {MetricsLevel} from "../shared/clients/metricsApis";
-import {Metrics} from "../shared/__types__/enum";
+import { MetricsLevel } from "../shared/clients/metricsApis";
+import { Metrics } from "../shared/__types__/enum";
 
 export interface ChartData {
 	name: string;
