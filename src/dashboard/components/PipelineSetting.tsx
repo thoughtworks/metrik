@@ -166,7 +166,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 						projectId={dashboardId}
 						updateProject={getProjectDetails}
 						css={{ padding: 24, height: "100%" }}
-						defaultData={editPipeline}
+						defaultPipeline={editPipeline}
 						onSuccess={() => (triggerSyncBuild.current = true)}
 						onSubmit={
 							status === PipelineSettingStatus.ADD

@@ -125,7 +125,7 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 					projectId={projectId}
 					updateProject={getProjectDetails}
 					css={{ padding: 24, height: "100%" }}
-					defaultData={editPipeline}
+					defaultPipeline={editPipeline}
 					onSubmit={
 						status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut
 					}

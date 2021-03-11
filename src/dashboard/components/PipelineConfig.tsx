@@ -13,7 +13,7 @@ import {
 } from "../../shared/clients/pipelineApis";
 
 interface PipelineConfigProps {
-	defaultData?: Pipeline;
+	defaultPipeline?: Pipeline;
 	onBack: () => void;
 	onSubmit: typeof createPipelineUsingPost | typeof updatePipelineUsingPut;
 	onSuccess?: () => void;
@@ -23,7 +23,7 @@ interface PipelineConfigProps {
 }
 
 const PipelineConfig: FC<PipelineConfigProps> = ({
-	defaultData,
+	defaultPipeline,
 	onBack,
 	className,
 	projectId,
@@ -39,11 +39,11 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 		if (pipeline.type === PipelineTool.BAMBOO) {
 			delete pipeline.username;
 		}
-
+		console.log(defaultPipeline, pipeline);
 		await verifyPipeline();
 		handleSubmit({
 			projectId: projectId,
-			pipeline,
+			pipeline: { ...pipeline, id: defaultPipeline?.id as string },
 		}).then(() => {
 			updateProject();
 			onBack();
@@ -77,7 +77,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 				layout="vertical"
 				onFinish={onFinish}
 				form={form}
-				initialValues={{ type: "JENKINS", ...defaultData }}>
+				initialValues={{ type: PipelineTool.JENKINS, ...defaultPipeline }}>
 				{(formValues: ConfigFormValues) => (
 					<FieldsStep2
 						visible={true}
@@ -86,7 +86,7 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 						loading={loading}
 						verifyStatus={verifyStatus}
 						onVerify={verifyPipeline}
-						isUpdate={!!defaultData}
+						isUpdate={!!defaultPipeline}
 					/>
 				)}
 			</Form>
