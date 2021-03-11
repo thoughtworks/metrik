@@ -4,7 +4,7 @@ import { CurveType } from "recharts/types/shape/Curve";
 import { DataKey } from "recharts/types/util/types";
 import { AREA_GRADIENT_DEFAULT_COLOR } from "../../constants/styles";
 
-interface AreaChartProps {
+export interface AreaChartProps {
 	data: any[];
 	dataKey: DataKey<any>;
 	width?: number;
