@@ -1,7 +1,6 @@
 import React from "react";
 import FullscreenMetricsCard from "./components/FullscreenMetricsCard";
-import { MetricsLevel } from "../shared/clients/metricsApis";
-import { Metrics } from "../shared/__types__/enum";
+import { MetricsLevel, MetricsType } from "../shared/__types__/enum";
 
 export interface ChartData {
 	name: string;
@@ -35,7 +34,7 @@ const FullScreen = () => {
 			metricsData={32.31}
 			metricsDataLabel={"AVG/Times / Fortnight"}
 			metricsLevel={MetricsLevel.ELITE}
-			metricsText={Metrics.DEPLOYMENT_FREQUENCY}
+			metricsText={MetricsType.DEPLOYMENT_FREQUENCY}
 			areaChartProps={areaChartData}
 		/>
 	);

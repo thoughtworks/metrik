@@ -29,7 +29,8 @@ import { durationFormatter } from "../../shared/utils/timeFormats";
 import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
 import { find } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
-import { Metrics, MetricsLevel } from "../../shared/clients/metricsApis";
+import { Metrics } from "../../shared/clients/metricsApis";
+import { MetricsLevel } from "../../shared/__types__/enum";
 
 interface MetricsLevelConfigInterface {
 	color: string;

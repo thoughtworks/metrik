@@ -1,5 +1,6 @@
 import { cleanMetricsInfo } from "../metricsDataUtils";
-import { MetricsInfo, MetricsLevel } from "../../clients/metricsApis";
+import { MetricsInfo } from "../../clients/metricsApis";
+import { MetricsLevel } from "../../__types__/enum";
 
 describe("cleanMetricsInfo", () => {
 	it('should erase all "NaN" value from the Metrics data since it causes incorrect Tooltip value', () => {

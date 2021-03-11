@@ -1,10 +1,9 @@
 import React from "react";
-import { MetricsLevel } from "../../shared/clients/metricsApis";
-import { Metrics } from "../../shared/__types__/enum";
+import { MetricsType, MetricsLevel } from "../../shared/__types__/enum";
 import AreaChart, { AreaChartProps } from "../../shared/components/AreaChart/AreaChart";
 
 interface FullscreenMetricsCardOptions {
-	metricsText: Metrics;
+	metricsText: MetricsType;
 	metricsLevel: MetricsLevel;
 	metricsData: number;
 	metricsDataLabel: string;

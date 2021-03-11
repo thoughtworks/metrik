@@ -1,5 +1,5 @@
 import { calcMaxValueWithRatio } from "../calcMaxValueWithRatio";
-import { MetricsLevel } from "../../clients/metricsApis";
+import { MetricsLevel } from "../../__types__/enum";
 
 describe("#calcMaxValueWithRatio", () => {
 	it("should return default max value if metrics is empty", () => {

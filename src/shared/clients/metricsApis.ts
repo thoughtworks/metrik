@@ -1,4 +1,5 @@
 import { createRequest } from "./createRequest";
+import { MetricsLevel } from "../__types__/enum";
 
 export const getFourKeyMetricsUsingPost = createRequest<
 	{
@@ -50,12 +51,4 @@ export interface Metrics {
 
 export interface ValidMetric extends Metrics {
 	value: number;
-}
-
-export enum MetricsLevel {
-	ELITE = "ELITE",
-	HIGH = "HIGH",
-	INVALID = "INVALID",
-	LOW = "LOW",
-	MEDIUM = "MEDIUM",
 }

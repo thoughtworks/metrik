@@ -13,9 +13,9 @@ import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils";
 import {
 	getFourKeyMetricsUsingPost,
 	MetricsInfo,
-	MetricsLevel,
 	MetricsUnit,
 } from "../shared/clients/metricsApis";
+import { MetricsLevel } from "../shared/__types__/enum";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
