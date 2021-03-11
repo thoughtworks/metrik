@@ -17,6 +17,17 @@ const FullScreen = () => {
 		{ name: "Page B", uv: 200, pv: 2000 },
 		{ name: "Page C", uv: 300, pv: 3000 },
 	];
-	return <AreaChart data={data} />;
+	return (
+		<AreaChart
+			data={data}
+			dataKey={"pv"}
+			width={730}
+			height={250}
+			strokeColor={"#82ca9d"}
+			strokeWidth={3}
+			areaGradientColor={"#f1db42"}
+			curveType={"monotone"}
+		/>
+	);
 };
 export default FullScreen;
