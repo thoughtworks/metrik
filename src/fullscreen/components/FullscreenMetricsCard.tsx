@@ -1,6 +1,7 @@
 import React from "react";
 import { MetricsType, MetricsLevel } from "../../shared/__types__/enum";
 import AreaChart from "../../shared/components/AreaChart/AreaChart";
+import Word from "../../shared/components/Word/Word";
 
 export interface ChartData {
 	name: string;
@@ -25,10 +26,18 @@ const FullscreenMetricsCard = ({
 	return (
 		<>
 			<article>
-				<p>{metricsText}</p>
-				<p>{metricsLevel}</p>
-				<p>{metricsData}</p>
-				<p>{metricsDataLabel}</p>
+				<p>
+					<Word text={metricsText} type="large" />
+				</p>
+				<p>
+					<Word text={metricsLevel} type="medium" />
+				</p>
+				<p>
+					<Word text={metricsData} type="medium" />
+				</p>
+				<p>
+					<Word text={metricsDataLabel} type="small" />
+				</p>
 				<AreaChart
 					data={data}
 					dataKey={"pv"}
