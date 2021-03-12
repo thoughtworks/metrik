@@ -2,7 +2,6 @@ import { Button, Modal, Result, Spin } from "antd";
 import React, { FC, useEffect } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import ProjectConfig from "../../shared/components/ProjectConfig";
-import PipelineConfig from "../../dashboard/components/PipelineConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
@@ -12,6 +11,7 @@ import {
 	Pipeline,
 	updatePipelineUsingPut,
 } from "../../shared/clients/pipelineApis";
+import PipelineSetup, { FormValues } from "../../shared/components/PipelineSetup/PipelineSetup";
 
 const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
@@ -40,6 +40,17 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 		onAddPipeline();
 		handleToggleVisible();
 	}
+
+	const onSubmit = async (values: FormValues) => {
+		const handleFn =
+			status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut;
+		await handleFn({
+			projectId: projectId,
+			pipeline: { ...values, id: editPipeline?.id as string },
+		});
+		await getProjectDetails();
+		handleToggleVisible();
+	};
 
 	useEffect(() => {
 		getProjectDetails();
@@ -103,37 +114,34 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 				/>
 			) : (
 				project && (
-					<ProjectConfig
-						pipelines={project.pipelines}
-						updatePipeline={handleUpdatePipeline}
-						addPipeline={handleAddPipeline}
-					/>
+					<>
+						<ProjectConfig
+							pipelines={project.pipelines}
+							updatePipeline={handleUpdatePipeline}
+							addPipeline={handleAddPipeline}
+						/>
+						<Modal
+							maskClosable={false}
+							bodyStyle={{ padding: 0, height: 600, overflowY: "auto" }}
+							width={896}
+							centered={true}
+							destroyOnClose={true}
+							closable={false}
+							visible={visible}
+							onCancel={handleToggleVisible}
+							title={"Pipeline"}
+							footer={null}>
+							<PipelineSetup
+								onText={status === PipelineSettingStatus.ADD ? "Create" : "Update"}
+								pipeline={editPipeline}
+								onSubmit={onSubmit}
+								onBack={handleToggleVisible}
+							/>
+						</Modal>
+					</>
 				)
 			)}
-			<Modal
-				maskClosable={false}
-				bodyStyle={{ padding: 0, height: 600, overflowY: "auto" }}
-				width={896}
-				centered={true}
-				destroyOnClose={true}
-				closable={false}
-				visible={visible}
-				onCancel={handleToggleVisible}
-				title={"Pipeline"}
-				footer={null}>
-				<PipelineConfig
-					projectId={projectId}
-					updateProject={getProjectDetails}
-					css={{ padding: 24, height: "100%" }}
-					defaultPipeline={editPipeline}
-					onSubmit={
-						status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut
-					}
-					onBack={handleToggleVisible}
-				/>
-			</Modal>
 		</div>
 	);
 };
-
 export default ConfigSuccess;

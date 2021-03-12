@@ -4,8 +4,8 @@ import { ConfigStep } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import { Pipeline } from "../shared/clients/pipelineApis";
 import ProjectNameSetup from "./components/ProjectNameSetup";
-import PipelineSetup from "../shared/components/PipelineSetup/PipelineSetup";
-import { BaseProject } from "../shared/clients/projectApis";
+import PipelineSetup, { FormValues } from "../shared/components/PipelineSetup/PipelineSetup";
+import { BaseProject, createProjectUsingPost } from "../shared/clients/projectApis";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -25,6 +25,15 @@ export const PageConfig = () => {
 
 	const toPrevStep = () => {
 		setStep(step - 1);
+	};
+
+	const onCreateProject = async (values: FormValues) => {
+		const { id, name } = await createProjectUsingPost({
+			projectName: project.name,
+			pipeline: values,
+		});
+
+		toNextStep({ id, name });
 	};
 
 	return (
@@ -68,8 +77,7 @@ export const PageConfig = () => {
 							<ProjectNameSetup visible={step === ConfigStep.CREATE_PROJECT} onNext={toNextStep} />
 							<PipelineSetup
 								visible={step === ConfigStep.CONFIG_PIPELINE}
-								project={project}
-								onNext={toNextStep}
+								onSubmit={onCreateProject}
 								onBack={toPrevStep}
 							/>
 						</div>

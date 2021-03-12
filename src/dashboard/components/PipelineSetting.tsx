@@ -9,10 +9,10 @@ import {
 import { css } from "@emotion/react";
 import { Button, Modal, Result, Spin } from "antd";
 import ProjectConfig from "../../shared/components/ProjectConfig";
-import PipelineConfig from "./PipelineConfig";
 import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
 import { useModalVisible } from "../../shared/hooks/useModalVisible";
 import { createPipelineUsingPost, updatePipelineUsingPut } from "../../shared/clients/pipelineApis";
+import PipelineSetup, { FormValues } from "../../shared/components/PipelineSetup/PipelineSetup";
 
 const settingStyles = css({
 	fontSize: 16,
@@ -33,8 +33,8 @@ export enum PipelineSettingStatus {
 	UPDATE,
 }
 
-const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
-	dashboardId,
+const PipelineSetting: FC<{ projectId: string; syncBuild: () => void }> = ({
+	projectId,
 	syncBuild,
 }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
@@ -50,7 +50,7 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 		onUpdatePipeline,
 		onDeletePipeline,
 	} = usePipelineSetting({
-		defaultProjectId: dashboardId,
+		defaultProjectId: projectId,
 		shouldUpdateProject: visible,
 		shouldResetStatus: !visible,
 	});
@@ -63,6 +63,18 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 			syncBuild();
 		}
 	}
+
+	const onSubmit = async (values: FormValues) => {
+		const handleFn =
+			status === PipelineSettingStatus.ADD ? createPipelineUsingPost : updatePipelineUsingPut;
+		await handleFn({
+			projectId: projectId,
+			pipeline: { ...values, id: editPipeline?.id as string },
+		});
+		triggerSyncBuild.current = true;
+		await getProjectDetails();
+		handleToggleVisible();
+	};
 
 	return (
 		<>
@@ -162,17 +174,10 @@ const PipelineSetting: FC<{ dashboardId: string; syncBuild: () => void }> = ({
 						}}
 					/>
 				) : (
-					<PipelineConfig
-						projectId={dashboardId}
-						updateProject={getProjectDetails}
-						css={{ padding: 24, height: "100%" }}
-						defaultPipeline={editPipeline}
-						onSuccess={() => (triggerSyncBuild.current = true)}
-						onSubmit={
-							status === PipelineSettingStatus.ADD
-								? createPipelineUsingPost
-								: updatePipelineUsingPut
-						}
+					<PipelineSetup
+						onText={status === PipelineSettingStatus.ADD ? "Create" : "Update"}
+						pipeline={editPipeline}
+						onSubmit={onSubmit}
 						onBack={() => setStatus(PipelineSettingStatus.VIEW)}
 					/>
 				)}

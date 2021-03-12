@@ -5,7 +5,9 @@ import { ColProps, RowProps } from "antd/es/grid";
 import { FormItemProps } from "antd/es/form";
 
 interface PipelineConfig extends Pick<RowProps, "gutter"> {
-	children: Array<FormItemProps & Pick<ColProps, "span"> & { type?: "text" | "password" }>;
+	children: Array<
+		FormItemProps & Pick<ColProps, "span"> & { type?: "text" | "password"; placeholder?: string }
+	>;
 }
 
 export const JENKINS_PIPELINE_CONFIG: PipelineConfig[] = [
@@ -22,6 +24,7 @@ export const JENKINS_PIPELINE_CONFIG: PipelineConfig[] = [
 				span: 16,
 				name: "url",
 				label: "Pipeline URL",
+				placeholder: "e.g: http://jenkins_domain_name/job/folder_name/job/job_name/",
 				tooltip: {
 					icon: <InfoCircleOutlined />,
 					title:
@@ -72,6 +75,7 @@ export const BAMBOO_PIPELINE_CONFIG: PipelineConfig[] = [
 				span: 16,
 				name: "url",
 				label: "Deployment Project URL",
+				placeholder: "e.g: http://bamboo_domain_name/deploy/viewDeploymentProjectEnvironments",
 				tooltip: {
 					icon: <InfoCircleOutlined />,
 					title:

@@ -185,7 +185,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 				</div>
 				<div>
 					<div css={pipelineSettingStyles}>
-						<PipelineSetting dashboardId={projectId} syncBuild={syncBuilds} />
+						<PipelineSetting projectId={projectId} syncBuild={syncBuilds} />
 					</div>
 					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing" : "Sync Data"}
