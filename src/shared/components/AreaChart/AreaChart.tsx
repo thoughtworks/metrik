@@ -1,20 +1,9 @@
 import React from "react";
 import { Area, AreaChart as ReChartAreaChart, Tooltip } from "recharts";
 import { CurveType } from "recharts/types/shape/Curve";
-import { DataKey } from "recharts/types/util/types";
 import { AREA_GRADIENT_DEFAULT_COLOR } from "../../constants/styles";
 
-export interface AreaChartProps {
-	data: any[];
-	dataKey: DataKey<any>;
-	width?: number;
-	height?: number;
-	strokeColor?: string;
-	strokeWidth?: number;
-	areaGradientColor?: string;
-	curveType?: CurveType;
-}
-const AreaChart = ({
+const AreaChart = <T, K extends keyof T>({
 	data,
 	dataKey,
 	width = 700,
@@ -23,7 +12,16 @@ const AreaChart = ({
 	strokeWidth = 1,
 	areaGradientColor = AREA_GRADIENT_DEFAULT_COLOR,
 	curveType = "monotone",
-}: AreaChartProps) => {
+}: {
+	data: T[];
+	dataKey: Exclude<K, symbol>;
+	width: number;
+	height: number;
+	strokeColor: string;
+	strokeWidth: number;
+	areaGradientColor: string;
+	curveType: CurveType;
+}) => {
 	return (
 		<>
 			<ReChartAreaChart width={width} height={height} data={data}>
