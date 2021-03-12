@@ -2,17 +2,24 @@ import React from "react";
 import { MetricsType, MetricsLevel } from "../../shared/__types__/enum";
 import AreaChart from "../../shared/components/AreaChart/AreaChart";
 import Word from "../../shared/components/Word/Word";
-import { BLUE_5, GRAY_6, GREEN_DARK, ORANGE_DARK, RED_DARK } from "../../shared/constants/styles";
+import {
+	BLUE_5,
+	GRAY_11,
+	GRAY_6,
+	GREEN_DARK,
+	ORANGE_DARK,
+	RED_DARK,
+} from "../../shared/constants/styles";
 
 export interface ChartData {
 	name: string;
 	uv: number;
 	pv: number;
 }
-interface FullscreenMetricsCardOptions {
+export interface FullscreenMetricsCardOptions extends React.HTMLAttributes<HTMLDivElement> {
 	metricsText: MetricsType;
 	metricsLevel: MetricsLevel;
-	metricsData: number;
+	metricsData: number | string;
 	metricsDataLabel: string;
 	data: ChartData[];
 }
@@ -41,7 +48,12 @@ const MetricsLevelConfig: MetricsLevelBaseConfig = {
 		color: GRAY_6,
 	},
 };
-
+const cardStyle = {
+	width: "49%",
+	height: 500,
+	backgroundColor: GRAY_11,
+	color: "white",
+};
 const FullscreenMetricsCard = ({
 	metricsData,
 	metricsDataLabel,
@@ -52,7 +64,7 @@ const FullscreenMetricsCard = ({
 	const metricsLevelIndicationColor = MetricsLevelConfig[metricsLevel].color;
 	return (
 		<>
-			<article style={{ width: "30%", height: 600 }}>
+			<article css={cardStyle}>
 				<p>
 					<Word text={metricsText} type="large" />
 				</p>
@@ -86,7 +98,7 @@ const FullscreenMetricsCard = ({
 					height={"30%"}
 					strokeColor={metricsLevelIndicationColor}
 					strokeWidth={3}
-					areaGradientColor={"#f1db42"}
+					areaGradientColor={"#5A5A5A"}
 					curveType={"monotone"}
 				/>
 			</article>
