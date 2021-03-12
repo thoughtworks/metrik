@@ -52,7 +52,7 @@ const FullscreenMetricsCard = ({
 	const metricsLevelIndicationColor = MetricsLevelConfig[metricsLevel].color;
 	return (
 		<>
-			<article>
+			<article style={{ width: "30%", height: 600 }}>
 				<p>
 					<Word text={metricsText} type="large" />
 				</p>
@@ -62,7 +62,7 @@ const FullscreenMetricsCard = ({
 						type="medium"
 						style={{
 							fontFamily: "Futura",
-							background: metricsLevelIndicationColor,
+							backgroundColor: metricsLevelIndicationColor,
 							borderRadius: "4px",
 							color: "white",
 							width: "98px",
@@ -74,7 +74,7 @@ const FullscreenMetricsCard = ({
 					/>
 				</p>
 				<p>
-					<Word text={metricsData} type="medium" />
+					<Word text={metricsData} type="jumbo" />
 				</p>
 				<p>
 					<Word text={metricsDataLabel} type="small" />
@@ -82,8 +82,8 @@ const FullscreenMetricsCard = ({
 				<AreaChart
 					data={data}
 					dataKey={"pv"}
-					width={730}
-					height={250}
+					width={"100%"}
+					height={"30%"}
 					strokeColor={metricsLevelIndicationColor}
 					strokeWidth={3}
 					areaGradientColor={"#f1db42"}
