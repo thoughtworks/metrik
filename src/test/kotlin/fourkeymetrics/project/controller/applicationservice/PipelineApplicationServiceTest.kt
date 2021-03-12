@@ -55,22 +55,6 @@ internal class PipelineApplicationServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
     }
 
-    @Test
-    internal fun `should return 4xx when verify Jenkins pipeline given null username`() {
-        val exception = assertThrows<BadRequestException> {
-            pipelineApplicationService.verifyPipelineConfiguration(Pipeline(
-                id = "pipelineId",
-                projectId = "projectId",
-                name = "pipeline",
-                credential = "credential",
-                url = "url",
-                type = PipelineType.JENKINS
-            ))
-        }
-        assertEquals("Username is required for Jenkins", exception.message)
-        assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
-    }
-
 
     @Test
     internal fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
@@ -108,22 +92,6 @@ internal class PipelineApplicationServiceTest {
         verify(projectRepository).findById(projectId)
         verify(pipelineRepository, times(0)).save(anyObject())
         assertEquals("Pipeline name already exist", exception.message)
-        assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
-    }
-
-
-    @Test
-    internal fun `should throw BadRequestException when create Jenkins pipeline given no username`() {
-        val exception = assertThrows<BadRequestException> { pipelineApplicationService.createPipeline(Pipeline(
-            id = "pipelineId",
-            projectId = "projectId",
-            name = "pipeline",
-            credential = "credential",
-            url = "url",
-            type = PipelineType.JENKINS
-        )) }
-
-        assertEquals("Username is required for Jenkins", exception.message)
         assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
     }
 
@@ -186,21 +154,6 @@ internal class PipelineApplicationServiceTest {
         assertEquals(pipeline.username, result.username)
         assertEquals(pipeline.credential, result.credential)
         assertEquals(pipeline.type, result.type)
-    }
-
-    @Test
-    internal fun `should throw BadRequestException when update Jenkins pipeline given no username`() {
-        val exception = assertThrows<BadRequestException> { pipelineApplicationService.updatePipeline(Pipeline(
-            id = "pipelineId",
-            projectId = "projectId",
-            name = "pipeline",
-            credential = "credential",
-            url = "url",
-            type = PipelineType.JENKINS
-        )) }
-
-        assertEquals("Username is required for Jenkins", exception.message)
-        assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
     }
 
     @Test

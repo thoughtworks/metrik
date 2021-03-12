@@ -33,9 +33,6 @@ class PipelineApplicationService {
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
         when (pipeline.type) {
             PipelineType.JENKINS -> {
-                if (pipeline.username == null) {
-                    throw BadRequestException("Username is required for Jenkins")
-                }
                 jenkinsPipelineService.verifyPipelineConfiguration(pipeline)
             }
             PipelineType.BAMBOO -> {
@@ -48,7 +45,6 @@ class PipelineApplicationService {
     }
 
     fun createPipeline(pipeline: Pipeline): Pipeline {
-        validateUsernameForJenkins(pipeline)
         verifyProjectExist(pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
         verifyPipelineConfiguration(pipeline)
@@ -66,7 +62,6 @@ class PipelineApplicationService {
     }
 
     fun updatePipeline(pipeline: Pipeline): Pipeline {
-        validateUsernameForJenkins(pipeline)
         verifyProjectExist(pipeline.projectId)
         verifyPipelineExist(pipeline.id, pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
@@ -102,10 +97,4 @@ class PipelineApplicationService {
 
     private fun verifyPipelineExist(pipelineId: String, projectId: String) =
         pipelineRepository.findByIdAndProjectId(pipelineId, projectId)
-
-    private fun validateUsernameForJenkins(pipeline: Pipeline) {
-        if (pipeline.type == PipelineType.JENKINS && pipeline.username == null) {
-            throw BadRequestException("Username is required for Jenkins")
-        }
-    }
 }
