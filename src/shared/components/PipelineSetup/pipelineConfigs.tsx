@@ -1,0 +1,102 @@
+import React from "react";
+
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { ColProps, RowProps } from "antd/es/grid";
+import { FormItemProps } from "antd/es/form";
+
+interface PipelineConfig extends Pick<RowProps, "gutter"> {
+	children: Array<FormItemProps & Pick<ColProps, "span"> & { type?: "text" | "password" }>;
+}
+
+export const JENKINS_PIPELINE_CONFIG: PipelineConfig[] = [
+	{
+		gutter: 24,
+		children: [
+			{
+				span: 8,
+				name: "name",
+				label: "Pipeline Name",
+				rules: [{ required: true, whitespace: true, message: "Please input pipeline name." }],
+			},
+			{
+				span: 16,
+				name: "url",
+				label: "Pipeline URL",
+				tooltip: {
+					icon: <InfoCircleOutlined />,
+					title:
+						"URL of the pipeline. Please do ensure the URL is complete, including the folder/subfolder information if there’s any.",
+				},
+				rules: [{ required: true, whitespace: true, message: "Please input pipeline URL." }],
+			},
+		],
+	},
+	{
+		gutter: 24,
+		children: [
+			{
+				span: 8,
+				name: "username",
+				label: "Username",
+				tooltip: { icon: <InfoCircleOutlined />, title: "Username used to access Jenkins." },
+				rules: [{ required: true, whitespace: true, message: "Please input username." }],
+			},
+			{
+				span: 8,
+				name: "credential",
+				type: "password",
+				label: "Access Token",
+				tooltip: {
+					icon: <InfoCircleOutlined />,
+					title:
+						"The access token will be used to invoke Jenkins APIs to fetch pipeline execution status.The regular password for the Jenkins UI also works here, though not recommended.",
+				},
+
+				rules: [{ required: true, whitespace: true, message: "Please input access token." }],
+			},
+		],
+	},
+];
+
+export const BAMBOO_PIPELINE_CONFIG: PipelineConfig[] = [
+	{
+		gutter: 24,
+		children: [
+			{
+				span: 8,
+				name: "name",
+				label: "Deployment Project Name",
+				rules: [{ required: true, whitespace: true, message: "Please input pipeline name." }],
+			},
+			{
+				span: 16,
+				name: "url",
+				label: "Deployment Project URL",
+				tooltip: {
+					icon: <InfoCircleOutlined />,
+					title:
+						"URL of the deployment plan. Please do ensure the URL is complete, including all information, such as project, subproject, plan keys.",
+				},
+				rules: [{ required: true, whitespace: true, message: "Please input pipeline URL." }],
+			},
+		],
+	},
+	{
+		gutter: 24,
+		children: [
+			{
+				span: 8,
+				name: "credential",
+				type: "password",
+				label: "Access Token",
+				tooltip: {
+					icon: <InfoCircleOutlined />,
+					title:
+						"The access token will be used to invoke BambooPipeline REST APIs to fetch pipeline execution status. You can manage your tokens via BambooPipeline profile management page. Note the console password do not work here.",
+				},
+
+				rules: [{ required: true, whitespace: true, message: "Please input access token." }],
+			},
+		],
+	},
+];

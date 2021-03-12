@@ -36,9 +36,6 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const [, handleSubmit, loading] = useRequest(onSubmit);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
-		if (pipeline.type === PipelineTool.BAMBOO) {
-			delete pipeline.username;
-		}
 		console.log(defaultPipeline, pipeline);
 		await verifyPipeline();
 		handleSubmit({
@@ -53,10 +50,6 @@ const PipelineConfig: FC<PipelineConfigProps> = ({
 	const verifyPipeline = () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { projectName, ...pipelineValues } = form.getFieldsValue();
-
-		if (pipelineValues.type === PipelineTool.BAMBOO) {
-			delete pipelineValues.username;
-		}
 
 		return verifyPipelineUsingPost({
 			verification: pipelineValues,

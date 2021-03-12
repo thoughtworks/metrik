@@ -47,16 +47,28 @@ export const getPipelineStagesUsingGet = createRequest<
 	method: "GET",
 }));
 
-export interface Pipeline {
+interface BasePipeline {
 	id: string;
 	type: PipelineTool;
 	url: string;
 	name: string;
-	username?: string;
 	credential: string;
 }
 
-export type PipelineVerification = Omit<Pipeline, "id" | "name">;
+export interface JenkinsPipeline extends BasePipeline {
+	type: PipelineTool.JENKINS;
+	username: string;
+}
+
+export interface BambooPipeline extends BasePipeline {
+	type: PipelineTool.BAMBOO;
+}
+
+export type Pipeline = JenkinsPipeline | BambooPipeline;
+
+export type PipelineVerification =
+	| Omit<JenkinsPipeline, "id" | "name">
+	| Omit<BambooPipeline, "id" | "name">;
 
 export enum PipelineTool {
 	BAMBOO = "BAMBOO",

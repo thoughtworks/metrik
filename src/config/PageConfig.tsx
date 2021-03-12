@@ -1,63 +1,30 @@
 import React, { useState } from "react";
-import { Form, Layout, Steps, Typography } from "antd";
-import { FieldsStep1 } from "./components/FieldsStep1";
-import { FieldsStep2 } from "./components/FieldsStep2";
-import { ConfigStep, VerifyStatus } from "../shared/__types__/base";
+import { Layout, Steps, Typography } from "antd";
+import { ConfigStep } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { Pipeline, PipelineTool, verifyPipelineUsingPost } from "../shared/clients/pipelineApis";
-import { createProjectUsingPost } from "../shared/clients/projectApis";
+import { Pipeline } from "../shared/clients/pipelineApis";
+import ProjectNameSetup from "./components/ProjectNameSetup";
+import PipelineSetup from "../shared/components/PipelineSetup/PipelineSetup";
+import { BaseProject } from "../shared/clients/projectApis";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
 
-export interface ConfigFormValues extends Pipeline {
+export type ConfigFormValues = Pipeline & {
 	projectName: string;
-}
+};
 
 export const PageConfig = () => {
-	const [form] = Form.useForm<ConfigFormValues>();
+	const [project, setProject] = useState<BaseProject>({ id: "", name: "" });
+	const [step, setStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
 
-	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-	const [currentStep, setCurrentStep] = useState<ConfigStep>(ConfigStep.CREATE_PROJECT);
-	const [projectId, setProjectId] = useState<string>();
-	const onFinish = async ({ projectName, ...pipeline }: ConfigFormValues) => {
-		if (pipeline.type === PipelineTool.BAMBOO) {
-			delete pipeline.username;
-		}
-		await verifyPipeline();
-		const { id } = await createProjectUsingPost({
-			projectName,
-			pipeline,
-		});
-		setProjectId(id);
-		toNextStep();
-	};
-
-	const toNextStep = () => {
-		setCurrentStep(currentStep + 1);
+	const toNextStep = (updated: Partial<BaseProject>) => {
+		setProject({ ...project, ...updated });
+		setStep(step + 1);
 	};
 
 	const toPrevStep = () => {
-		setCurrentStep(currentStep - 1);
-	};
-
-	const verifyPipeline = () => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { projectName, ...pipelineValues } = form.getFieldsValue();
-
-		if (pipelineValues.type === PipelineTool.BAMBOO) {
-			delete pipelineValues.username;
-		}
-		return verifyPipelineUsingPost({
-			verification: pipelineValues,
-		})
-			.then(() => {
-				setVerifyStatus(VerifyStatus.SUCCESS);
-			})
-			.catch(error => {
-				setVerifyStatus(VerifyStatus.Fail);
-				throw new Error(error);
-			});
+		setStep(step - 1);
 	};
 
 	return (
@@ -71,15 +38,15 @@ export const PageConfig = () => {
 						padding: 24,
 						background: "#fff",
 					}}>
-					{currentStep !== ConfigStep.CONFIG_SUCCESS ? (
+					{step !== ConfigStep.CONFIG_SUCCESS ? (
 						<div>
-							<Steps current={currentStep} css={{ margin: "44px 0" }}>
+							<Steps current={step} css={{ margin: "44px 0" }}>
 								<Step title="Create Project" />
 								<Step title="Config Pipeline" />
 								<Step title="Success" />
 							</Steps>
 							<div css={{ width: 620, marginBottom: 56 }}>
-								{currentStep === ConfigStep.CREATE_PROJECT && (
+								{step === ConfigStep.CREATE_PROJECT && (
 									<Paragraph
 										type={"secondary"}
 										css={{ "&.ant-typography-secondary": { color: "black" } }}>
@@ -87,7 +54,7 @@ export const PageConfig = () => {
 										dashboard title.
 									</Paragraph>
 								)}
-								{currentStep === ConfigStep.CONFIG_PIPELINE && (
+								{step === ConfigStep.CONFIG_PIPELINE && (
 									<Paragraph
 										type={"secondary"}
 										css={{ "&.ant-typography-secondary": { color: "black" } }}>
@@ -98,32 +65,16 @@ export const PageConfig = () => {
 								)}
 							</div>
 
-							<Form
-								layout="vertical"
-								onFinish={onFinish}
-								form={form}
-								initialValues={{ type: "JENKINS" }}>
-								{(formValues: ConfigFormValues) => (
-									<>
-										<FieldsStep1
-											onNext={toNextStep}
-											visible={currentStep === ConfigStep.CREATE_PROJECT}
-											formValues={formValues}
-										/>
-										<FieldsStep2
-											onBack={toPrevStep}
-											formValues={formValues}
-											visible={currentStep === ConfigStep.CONFIG_PIPELINE}
-											verifyStatus={verifyStatus}
-											onVerify={verifyPipeline}
-										/>
-									</>
-								)}
-							</Form>
+							<ProjectNameSetup visible={step === ConfigStep.CREATE_PROJECT} onNext={toNextStep} />
+							<PipelineSetup
+								visible={step === ConfigStep.CONFIG_PIPELINE}
+								project={project}
+								onNext={toNextStep}
+								onBack={toPrevStep}
+							/>
 						</div>
 					) : (
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						<ConfigSuccess projectId={projectId!} />
+						<ConfigSuccess projectId={project.id} />
 					)}
 				</div>
 			</Layout.Content>

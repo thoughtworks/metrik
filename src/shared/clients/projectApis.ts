@@ -16,7 +16,7 @@ export const createProjectUsingPost = createRequest<
 		projectName: string;
 		pipeline: Omit<Pipeline, "id">;
 	},
-	Pick<Project, "id" | "name">
+	BaseProject
 >(project => ({
 	url: `/api/project`,
 	method: "POST",
@@ -66,3 +66,5 @@ export interface Project {
 	synchronizationTimestamp: number;
 	pipelines: Pipeline[];
 }
+
+export type BaseProject = Pick<Project, "id" | "name">;
