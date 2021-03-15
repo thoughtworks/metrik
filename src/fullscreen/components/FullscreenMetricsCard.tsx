@@ -74,7 +74,7 @@ const FullscreenMetricsCard = ({
 					<p>
 						<Word text={metricsText} type="xxLarge" />
 					</p>
-					<p css={{ margin: "0.5rem 0" }}>
+					<p css={{ margin: "0.3rem 0" }}>
 						<Word
 							text={metricsLevel}
 							type="xLarge"

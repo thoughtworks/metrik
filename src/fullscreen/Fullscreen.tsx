@@ -50,7 +50,6 @@ const FullScreen = () => {
 		height: "90vh",
 		display: "flex",
 		justifyContent: "space-between",
-		border: "1px solid green",
 	};
 	const chartSectionStyle = {
 		width: "70%",
@@ -58,7 +57,7 @@ const FullScreen = () => {
 		display: "flex",
 		flexWrap: "wrap" as const,
 		justifyContent: "space-between",
-		border: "1px solid yellow",
+		alignContent: "space-between",
 	};
 	const metricsCardStyle = {
 		height: "0.42vh",
@@ -73,7 +72,7 @@ const FullScreen = () => {
 		alignItems: "center",
 	};
 	const dataPropsSectionStyle = {
-		width: "25%",
+		width: "26%",
 		height: "100%",
 		border: "1px solid pink",
 	};
