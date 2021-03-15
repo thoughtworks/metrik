@@ -76,17 +76,21 @@ class BambooPipelineService(
                         "http://${url.host}:${port}/rest/api/latest/result/${planKey}-${i}.json?expand=changes.change,stages.stage.results", HttpMethod.GET, entity
                 ).body!!
 
+                val buildTimestamp =
+                        if (mapDateToTimeStamp(buildDetailResponse.buildStartedTime) == null)
+                            mapDateToTimeStamp(buildDetailResponse.buildCompletedTime)!!
+                        else mapDateToTimeStamp(buildDetailResponse.buildStartedTime)!!
                 Build(
                         pipelineId,
                         buildDetailResponse.buildNumber,
                         mapBuildStatus(buildDetailResponse.buildState),
                         buildDetailResponse.buildDuration,
-                        mapDateToTimeStamp(buildDetailResponse.buildStartedTime)!!,
+                        buildTimestamp,
                         buildDetailResponse.link.href,
                         buildDetailResponse.stages.stage.map {
                             val startTimeMillis = it.results.result.mapNotNull { result -> mapDateToTimeStamp(result.buildStartedTime) }.minOrNull()
                             val completedTimeMillis = it.results.result.mapNotNull { result -> mapDateToTimeStamp(result.buildCompletedTime) }.maxOrNull()
-                            val durationMillis: Long? = if(startTimeMillis != null && completedTimeMillis != null) completedTimeMillis - startTimeMillis else null
+                            val durationMillis: Long? = if (startTimeMillis != null && completedTimeMillis != null) completedTimeMillis - startTimeMillis else null
                             Stage(
                                     it.name,
                                     mapStageStatus(it.state),
@@ -115,41 +119,39 @@ class BambooPipelineService(
         } catch (ex: HttpClientErrorException) {
             throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
-
-        return emptyList()
-
     }
 
     override fun mapStageStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            "Successful" -> {
-                Status.SUCCESS
+            when (statusInPipeline) {
+                "Successful" -> {
+                    Status.SUCCESS
+                }
+                "Failed" -> {
+                    Status.FAILED
+                }
+                "Unknown" -> {
+                    Status.IN_PROGRESS
+                }
+                else -> {
+                    Status.OTHER
+                }
             }
-            "Failed" -> {
-                Status.FAILED
-            }
-            "Unknown" -> {
-                Status.IN_PROGRESS
-            }
-            else -> {
-                Status.OTHER
-            }
-    }
+
     override fun mapBuildStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            "Successful" -> {
-                Status.SUCCESS
+            when (statusInPipeline) {
+                "Successful" -> {
+                    Status.SUCCESS
+                }
+                "Failed" -> {
+                    Status.FAILED
+                }
+                "Unknown" -> {
+                    Status.IN_PROGRESS
+                }
+                else -> {
+                    Status.OTHER
+                }
             }
-            "Failed" -> {
-                Status.FAILED
-            }
-            "Unknown" -> {
-                Status.IN_PROGRESS
-            }
-            else -> {
-                Status.OTHER
-            }
-    }
 
     fun mapDateToTimeStamp(date: ZonedDateTime?): Long? {
         if (date == null) {

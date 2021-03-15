@@ -18,10 +18,11 @@ data class BuildDetailDTO(
         var number: Int,
         var buildNumber: Int,
         var buildDuration: Long,
-        var buildStartedTime: ZonedDateTime,
+        var buildStartedTime: ZonedDateTime?,
         var link: Link,
         var stages: Stage,
-        var changes: ChangeSetDTO)
+        var changes: ChangeSetDTO,
+        var buildCompletedTime: ZonedDateTime)
 
 data class Stage(val stage: List<StageDTO>)
 

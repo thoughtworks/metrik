@@ -116,4 +116,46 @@ internal class BambooPipelineServiceTest {
 
         verify(buildRepository, times(1)).save(builds)
     }
+
+    @Test
+    internal fun `should sync builds given build has no stages`() {
+        val pipelineId = "1"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost:80"
+        val planKey = "fake-plan-key"
+        val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
+        val getBuildDetailsUrl = "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
+        val mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        `when`(pipelineRepository.findById(pipelineId))
+                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+                .andRespond(
+                        MockRestResponseCreators.withSuccess(
+                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
+                                MediaType.APPLICATION_JSON
+                        )
+                )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
+                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+                .andRespond(
+                        MockRestResponseCreators.withSuccess(
+                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
+                                MediaType.APPLICATION_JSON
+                        )
+                )
+
+        bambooPipelineService.syncBuilds(pipelineId)
+
+        val builds = listOf(Build(
+                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
+                url = "$baseUrl/rest/api/latest/result/$planKey-1",
+                stages = emptyList(),
+                changeSets = emptyList()))
+
+        verify(buildRepository, times(1)).save(builds)
+    }
 }
