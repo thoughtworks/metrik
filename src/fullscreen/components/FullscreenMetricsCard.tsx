@@ -10,7 +10,6 @@ import {
 	ORANGE_DARK,
 	RED_DARK,
 } from "../../shared/constants/styles";
-import { constants } from "fs";
 
 export interface ChartData {
 	name: string;
