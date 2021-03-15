@@ -9,7 +9,11 @@ import React, { FC, useState } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
 import { VerifyStatus } from "../../__types__/base";
-import { BAMBOO_PIPELINE_CONFIG, JENKINS_PIPELINE_CONFIG } from "./pipelineConfigs";
+import {
+	BAMBOO_PIPELINE_CONFIG,
+	JENKINS_PIPELINE_CONFIG,
+	PIPELINE_TYPE_NOTE,
+} from "./pipelineConfigs";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -109,6 +113,12 @@ const PipelineSetup: FC<{
 								</Item>
 							</Col>
 						</Row>
+
+						{PIPELINE_TYPE_NOTE[formValues.type] && (
+							<Row wrap={false} align={"bottom"}>
+								<Col span={24}>{PIPELINE_TYPE_NOTE[formValues.type]}</Col>
+							</Row>
+						)}
 						{config.map((row, rowIdx) => (
 							<Row key={rowIdx} gutter={row.gutter} wrap={false}>
 								{row.children.map(({ span, type, placeholder, ...props }, colIdx) => (

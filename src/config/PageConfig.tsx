@@ -2,17 +2,12 @@ import React, { useState } from "react";
 import { Layout, Steps, Typography } from "antd";
 import { ConfigStep } from "../shared/__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
-import { Pipeline } from "../shared/clients/pipelineApis";
 import ProjectNameSetup from "./components/ProjectNameSetup";
 import PipelineSetup, { FormValues } from "../shared/components/PipelineSetup/PipelineSetup";
 import { BaseProject, createProjectUsingPost } from "../shared/clients/projectApis";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
-
-export type ConfigFormValues = Pipeline & {
-	projectName: string;
-};
 
 export const PageConfig = () => {
 	const [project, setProject] = useState<BaseProject>({ id: "", name: "" });

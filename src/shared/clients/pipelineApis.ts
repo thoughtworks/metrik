@@ -47,6 +47,12 @@ export const getPipelineStagesUsingGet = createRequest<
 	method: "GET",
 }));
 
+export interface PipelineStages {
+	pipelineId: string;
+	pipelineName: string;
+	stages: string[];
+}
+
 interface BasePipeline {
 	id: string;
 	type: PipelineTool;
@@ -73,10 +79,4 @@ export type PipelineVerification =
 export enum PipelineTool {
 	BAMBOO = "BAMBOO",
 	JENKINS = "JENKINS",
-}
-
-export interface PipelineStages {
-	pipelineId: string;
-	pipelineName: string;
-	stages: string[];
 }
