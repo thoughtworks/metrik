@@ -4,4 +4,9 @@ const setBaseFontSize = () => {
 	const ratio = (viewPortWidth / baseScreenWidth) * 100;
 	document.documentElement.style.fontSize = `${ratio}px`;
 };
-export { setBaseFontSize };
+
+const setResponsive = () => {
+	setBaseFontSize();
+	window.onresize = setBaseFontSize;
+};
+export { setResponsive };

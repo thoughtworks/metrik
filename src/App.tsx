@@ -6,14 +6,14 @@ import Header from "./shared/components/Header";
 import { useRequest } from "./shared/hooks/useRequest";
 import { Global } from "@emotion/react";
 import { getProjectsUsingGet } from "./shared/clients/projectApis";
-import { setBaseFontSize } from "./shared/utils/responseive/responseive";
+import { setResponsive } from "./shared/utils/responseive/responseive";
 
 const globalStyles = {
 	".metric-info-overlay div.ant-tooltip-inner": {
 		width: "300px !important",
 	},
 };
-setBaseFontSize();
+setResponsive();
 export const App: FC = () => {
 	const [projects, getProjectsRequest] = useRequest(getProjectsUsingGet);
 
