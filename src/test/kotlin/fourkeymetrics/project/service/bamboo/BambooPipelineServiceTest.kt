@@ -158,4 +158,48 @@ internal class BambooPipelineServiceTest {
 
         verify(buildRepository, times(1)).save(builds)
     }
+
+    @Test
+    internal fun `should sync all builds when stage contains job that haven't been triggered`() {
+        val pipelineId = "1"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost:80"
+        val planKey = "fake-plan-key"
+        val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
+        val getBuildDetailsUrl = "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
+        val mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        `when`(pipelineRepository.findById(pipelineId))
+                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+                .andRespond(
+                        MockRestResponseCreators.withSuccess(
+                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
+                                MediaType.APPLICATION_JSON
+                        )
+                )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
+                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+                .andRespond(
+                        MockRestResponseCreators.withSuccess(
+                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
+                                MediaType.APPLICATION_JSON
+                        )
+                )
+
+        bambooPipelineService.syncBuilds(pipelineId)
+
+        val builds = listOf(Build(
+                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 4020, timestamp = 1594089286351,
+                url = "$baseUrl/rest/api/latest/result/$planKey-1",
+                stages = listOf(Stage("Stage 1", Status.SUCCESS, 1594089288199, 880, 0, 1594089289079),
+                Stage("Deploy to SIT", Status.IN_PROGRESS, null, null, 0, null),
+                Stage("Deploy to Prod", Status.IN_PROGRESS, null, null, 0, null)),
+                changeSets = emptyList()))
+
+        verify(buildRepository, times(1)).save(builds)
+    }
 }

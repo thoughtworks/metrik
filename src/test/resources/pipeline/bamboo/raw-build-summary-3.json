@@ -1,0 +1,52 @@
+{
+  "results": {
+    "size": 1,
+    "expand": "result",
+    "start-index": 0,
+    "max-result": 1,
+    "result": [
+      {
+        "link": {
+          "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "plan1",
+          "shortKey": "PLAN1",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8002/rest/api/latest/plan/fake-plan-key1",
+            "rel": "self"
+          },
+          "key": "fake-plan-key1",
+          "name": "MULTI_REPO - plan1",
+          "planKey": {
+            "key": "fake-plan-key1"
+          }
+        },
+        "buildResultKey": "fake-plan-key1-1",
+        "lifeCycleState": "Finished",
+        "id": 3473612,
+        "specsResult": false,
+        "key": "fake-plan-key1-1",
+        "planResultKey": {
+          "key": "fake-plan-key1-1",
+          "entityKey": {
+            "key": "fake-plan-key1"
+          },
+          "resultNumber": 1
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 1,
+        "buildNumber": 1
+      }
+    ]
+  },
+  "expand": "results",
+  "link": {
+    "href": "http://localhost:8002/rest/api/latest/result/fake-plan-key1",
+    "rel": "self"
+  }
+}

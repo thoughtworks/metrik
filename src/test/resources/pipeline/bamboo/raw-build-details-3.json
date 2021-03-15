@@ -1,0 +1,472 @@
+{
+  "expand": "changes,metadata,plan,vcsRevisions,artifacts,comments,labels,jiraIssues,variables,stages",
+  "link": {
+    "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+    "rel": "self"
+  },
+  "plan": {
+    "shortName": "plan1",
+    "shortKey": "PLAN1",
+    "type": "chain",
+    "enabled": true,
+    "link": {
+      "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key",
+      "rel": "self"
+    },
+    "key": "fake-plan-key",
+    "name": "MULTI_REPO - plan1",
+    "planKey": {
+      "key": "fake-plan-key"
+    }
+  },
+  "planName": "plan1",
+  "projectName": "MULTI_REPO",
+  "buildResultKey": "fake-plan-key-1",
+  "lifeCycleState": "Finished",
+  "id": 3473409,
+  "buildStartedTime": "2020-07-07T02:34:46.351Z",
+  "prettyBuildStartedTime": "Tue, 7 Jul, 02:34 AM",
+  "buildCompletedTime": "2020-07-07T02:34:50.371Z",
+  "buildCompletedDate": "2020-07-07T02:34:50.371Z",
+  "prettyBuildCompletedTime": "Tue, 7 Jul, 02:34 AM",
+  "buildDurationInSeconds": 4,
+  "buildDuration": 4020,
+  "buildDurationDescription": "4 seconds",
+  "buildRelativeTime": "8 months ago",
+  "vcsRevisionKey": "8b3d775a5a1c65611ffb69f9be69430081a9b195",
+  "vcsRevisions": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "buildTestSummary": "No tests found",
+  "successfulTestCount": 0,
+  "failedTestCount": 0,
+  "quarantinedTestCount": 0,
+  "skippedTestCount": 0,
+  "continuable": true,
+  "onceOff": false,
+  "restartable": false,
+  "notRunYet": false,
+  "finished": true,
+  "successful": true,
+  "buildReason": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+  "reasonSummary": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+  "specsResult": false,
+  "artifacts": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "comments": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "labels": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "jiraIssues": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "variables": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "stages": {
+    "size": 3,
+    "expand": "stage",
+    "start-index": 0,
+    "max-result": 3,
+    "stage": [
+      {
+        "expand": "results",
+        "name": "Stage 1",
+        "description": "",
+        "id": 3506177,
+        "lifeCycleState": "Finished",
+        "state": "Successful",
+        "displayClass": "Successful",
+        "displayMessage": "1 job passed",
+        "collapsedByDefault": true,
+        "manual": false,
+        "restartable": false,
+        "runnable": false,
+        "results": {
+          "size": 1,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 1,
+          "result": [
+            {
+              "link": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-BUILD-1",
+                "rel": "self"
+              },
+              "plan": {
+                "shortName": "Build",
+                "shortKey": "PLAN1-BUILD",
+                "type": "job",
+                "enabled": true,
+                "link": {
+                  "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key-BUILD",
+                  "rel": "self"
+                },
+                "key": "fake-plan-key-BUILD",
+                "name": "MULTI_REPO - plan1 - Build",
+                "planKey": {
+                  "key": "fake-plan-key-BUILD"
+                }
+              },
+              "planName": "Build",
+              "projectName": "MULTI_REPO",
+              "stage": "Stage 1",
+              "buildResultKey": "fake-plan-key-BUILD-1",
+              "lifeCycleState": "Finished",
+              "id": 3473410,
+              "buildStartedTime": "2020-07-07T02:34:48.199Z",
+              "prettyBuildStartedTime": "Tue, 7 Jul, 02:34 AM",
+              "buildCompletedTime": "2020-07-07T02:34:49.079Z",
+              "buildCompletedDate": "2020-07-07T02:34:49.079Z",
+              "prettyBuildCompletedTime": "Tue, 7 Jul, 02:34 AM",
+              "buildDurationInSeconds": 0,
+              "buildDuration": 880,
+              "buildDurationDescription": "< 1 second",
+              "buildRelativeTime": "8 months ago",
+              "queueStartedTime": "2020-07-07T02:34:44.896Z",
+              "prettyQueueStartedTime": "Tue, 7 Jul, 02:34 AM",
+              "queueTimeInSeconds": 1,
+              "queueDuration": 1415,
+              "prettyQueueDuration": "1 sec",
+              "vcsUpdateStartedTime": "2020-07-07T02:34:46.311Z",
+              "prettyVcsUpdateStartedTime": "Tue, 7 Jul, 02:34 AM",
+              "vcsUpdateInSeconds": 1,
+              "vcsUpdateDuration": 1888,
+              "prettyVcsUpdateDuration": "1 sec",
+              "vcsRevisionKey": "8b3d775a5a1c65611ffb69f9be69430081a9b195",
+              "vcsRevisions": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "buildTestSummary": "No tests found",
+              "successfulTestCount": 0,
+              "failedTestCount": 0,
+              "quarantinedTestCount": 0,
+              "skippedTestCount": 0,
+              "onceOff": false,
+              "buildReason": "Manual build",
+              "reasonSummary": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+              "specsResult": false,
+              "artifacts": {
+                "size": 2,
+                "start-index": 0,
+                "max-result": 2
+              },
+              "comments": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "labels": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "jiraIssues": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "variables": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "changes": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "testResults": {
+                "all": 0,
+                "successful": 0,
+                "failed": 0,
+                "newFailed": 0,
+                "existingFailed": 0,
+                "fixed": 0,
+                "quarantined": 0,
+                "skipped": 0
+              },
+              "metadata": {
+                "size": 43,
+                "start-index": 0,
+                "max-result": 43
+              },
+              "logEntries": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "parent": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+                "rel": "parent"
+              },
+              "key": "fake-plan-key-BUILD-1",
+              "planResultKey": {
+                "key": "fake-plan-key-BUILD-1",
+                "entityKey": {
+                  "key": "fake-plan-key-BUILD"
+                },
+                "resultNumber": 1
+              },
+              "state": "Successful",
+              "buildState": "Successful",
+              "number": 1,
+              "buildNumber": 1
+            }
+          ]
+        }
+      },
+      {
+        "expand": "results",
+        "name": "Deploy to SIT",
+        "description": "",
+        "id": 3506178,
+        "lifeCycleState": "NotBuilt",
+        "state": "Unknown",
+        "displayClass": "NotBuilt",
+        "displayMessage": "1 of 1 job not executed",
+        "collapsedByDefault": true,
+        "manual": true,
+        "restartable": false,
+        "runnable": true,
+        "results": {
+          "size": 1,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 1,
+          "result": [
+            {
+              "link": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-CHEC-1",
+                "rel": "self"
+              },
+              "plan": {
+                "shortName": "check",
+                "shortKey": "PLAN1-CHEC",
+                "type": "job",
+                "enabled": true,
+                "link": {
+                  "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key-CHEC",
+                  "rel": "self"
+                },
+                "key": "fake-plan-key-CHEC",
+                "name": "MULTI_REPO - plan1 - check",
+                "planKey": {
+                  "key": "fake-plan-key-CHEC"
+                }
+              },
+              "planName": "check",
+              "projectName": "MULTI_REPO",
+              "stage": "Deploy to SIT",
+              "buildResultKey": "fake-plan-key-CHEC-1",
+              "lifeCycleState": "NotBuilt",
+              "id": 3473411,
+              "buildDurationInSeconds": 0,
+              "buildDuration": 0,
+              "buildDurationDescription": "global.unknown",
+              "buildRelativeTime": "",
+              "queueTimeInSeconds": 0,
+              "queueDuration": 0,
+              "prettyQueueDuration": "< 1 sec",
+              "vcsUpdateInSeconds": 0,
+              "vcsUpdateDuration": 0,
+              "prettyVcsUpdateDuration": "< 1 sec",
+              "onceOff": false,
+              "buildReason": "Manual build",
+              "reasonSummary": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+              "hasExecutableAgents": true,
+              "specsResult": false,
+              "jiraIssues": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "variables": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "changes": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "metadata": {
+                "size": 2,
+                "start-index": 0,
+                "max-result": 2
+              },
+              "logEntries": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "parent": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+                "rel": "parent"
+              },
+              "key": "fake-plan-key-CHEC-1",
+              "planResultKey": {
+                "key": "fake-plan-key-CHEC-1",
+                "entityKey": {
+                  "key": "fake-plan-key-CHEC"
+                },
+                "resultNumber": 1
+              },
+              "state": "Unknown",
+              "buildState": "Unknown",
+              "number": 1,
+              "buildNumber": 1
+            }
+          ]
+        }
+      },
+      {
+        "expand": "results",
+        "name": "Deploy to Prod",
+        "description": "",
+        "id": 3506179,
+        "lifeCycleState": "NotBuilt",
+        "state": "Unknown",
+        "displayClass": "NotBuilt",
+        "displayMessage": "1 of 1 job not executed",
+        "collapsedByDefault": true,
+        "manual": true,
+        "restartable": false,
+        "runnable": false,
+        "results": {
+          "size": 1,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 1,
+          "result": [
+            {
+              "link": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-PROD-1",
+                "rel": "self"
+              },
+              "plan": {
+                "shortName": "PROD",
+                "shortKey": "PLAN1-PROD",
+                "type": "job",
+                "enabled": true,
+                "link": {
+                  "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key-PROD",
+                  "rel": "self"
+                },
+                "key": "fake-plan-key-PROD",
+                "name": "MULTI_REPO - plan1 - PROD",
+                "planKey": {
+                  "key": "fake-plan-key-PROD"
+                }
+              },
+              "planName": "PROD",
+              "projectName": "MULTI_REPO",
+              "stage": "Deploy to Prod",
+              "buildResultKey": "fake-plan-key-PROD-1",
+              "lifeCycleState": "NotBuilt",
+              "id": 3473412,
+              "buildDurationInSeconds": 0,
+              "buildDuration": 0,
+              "buildDurationDescription": "global.unknown",
+              "buildRelativeTime": "",
+              "queueTimeInSeconds": 0,
+              "queueDuration": 0,
+              "prettyQueueDuration": "< 1 sec",
+              "vcsUpdateInSeconds": 0,
+              "vcsUpdateDuration": 0,
+              "prettyVcsUpdateDuration": "< 1 sec",
+              "onceOff": false,
+              "buildReason": "Manual build",
+              "reasonSummary": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+              "hasExecutableAgents": true,
+              "specsResult": false,
+              "jiraIssues": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "variables": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "changes": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "metadata": {
+                "size": 2,
+                "start-index": 0,
+                "max-result": 2
+              },
+              "logEntries": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "parent": {
+                "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+                "rel": "parent"
+              },
+              "key": "fake-plan-key-PROD-1",
+              "planResultKey": {
+                "key": "fake-plan-key-PROD-1",
+                "entityKey": {
+                  "key": "fake-plan-key-PROD"
+                },
+                "resultNumber": 1
+              },
+              "state": "Unknown",
+              "buildState": "Unknown",
+              "number": 1,
+              "buildNumber": 1
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "changes": {
+    "size": 0,
+    "expand": "change",
+    "change": [],
+    "start-index": 0,
+    "max-result": 0
+  },
+  "metadata": {
+    "size": 3,
+    "start-index": 0,
+    "max-result": 3
+  },
+  "key": "fake-plan-key-1",
+  "planResultKey": {
+    "key": "fake-plan-key-1",
+    "entityKey": {
+      "key": "fake-plan-key"
+    },
+    "resultNumber": 1
+  },
+  "state": "Successful",
+  "buildState": "Successful",
+  "number": 1,
+  "buildNumber": 1
+}
