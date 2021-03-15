@@ -4,8 +4,10 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.model.PipelineType
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
@@ -14,7 +16,12 @@ class SynchronizationApplicationService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     @Autowired
-    private lateinit var pipelineService: PipelineService
+    @Qualifier("jenkinsPipelineService")
+    private lateinit var jenkinsPipelineService: PipelineService
+
+    @Autowired
+    @Qualifier("bambooPipelineService")
+    private lateinit var bambooPipelineService: PipelineService
 
     @Autowired
     private lateinit var projectRepository: ProjectRepository
@@ -31,7 +38,11 @@ class SynchronizationApplicationService {
 
         pipelines.parallelStream().forEach {
             try {
-                pipelineService.syncBuilds(it.id)
+                if(it.type == PipelineType.JENKINS) {
+                    jenkinsPipelineService.syncBuilds(it.id)
+                } else if(it.type == PipelineType.BAMBOO) {
+                    bambooPipelineService.syncBuilds(it.id)
+                }
             } catch (e: RuntimeException) {
                 logger.error("Synchronize failed for pipeline [${it.id}], error message: [${e.message}]")
                 throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronize failed")

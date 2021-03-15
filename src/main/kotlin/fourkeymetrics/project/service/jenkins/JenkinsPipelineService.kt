@@ -13,7 +13,6 @@ import fourkeymetrics.project.service.jenkins.dto.BuildSummaryDTO
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Primary
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -24,8 +23,7 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.streams.toList
 
-@Service
-@Primary
+@Service("jenkinsPipelineService")
 class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var pipelineRepository: PipelineRepository,

@@ -9,15 +9,16 @@ enum class Status {
     OTHER
 }
 
-class Stage(
+data class Stage(
         var name: String = Strings.EMPTY,
         var status: Status = Status.FAILED,
-        var startTimeMillis: Long = 0,
-        var durationMillis: Long = 0,
-        var pauseDurationMillis: Long = 0
+        var startTimeMillis: Long? = 0,
+        var durationMillis: Long? = 0,
+        var pauseDurationMillis: Long? = 0,
+        var completedTimeMillis: Long? = 0,
 ) {
     fun getStageDoneTime(): Long {
-        return this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
+        return this.startTimeMillis!! + this.durationMillis!! + this.pauseDurationMillis!!
     }
 }
 
@@ -28,7 +29,7 @@ data class Commit(
     var msg: String = Strings.EMPTY
 )
 
-class Build(
+data class Build(
         var pipelineId: String = Strings.EMPTY, var number: Int = 0,
         var result: Status? = null, var duration: Long = 0,
         var timestamp: Long = 0, var url: String = Strings.EMPTY,

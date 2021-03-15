@@ -10,15 +10,18 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PipelineApplicationService {
     @Autowired
+    @Qualifier("jenkinsPipelineService")
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @Autowired
+    @Qualifier("bambooPipelineService")
     private lateinit var bambooPipelineService: BambooPipelineService
 
     @Autowired
