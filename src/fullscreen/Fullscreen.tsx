@@ -45,34 +45,57 @@ const FullScreen = () => {
 			data: data,
 		},
 	];
+	const pageContentStyle = {
+		width: "94vw",
+		height: "90vh",
+		display: "flex",
+		justifyContent: "space-between",
+		border: "1px solid green",
+	};
 	const chartSectionStyle = {
 		width: "70%",
+		height: "100%",
 		display: "flex",
 		flexWrap: "wrap" as const,
 		justifyContent: "space-between",
+		border: "1px solid yellow",
 	};
 	const metricsCardStyle = {
-		height: "48%",
+		height: "0.42vh",
+		border: "1px solid red",
 	};
 	const pageStyle = {
 		width: "100%",
-		height: "100%",
+		height: "100vh",
 		backgroundColor: "#000",
+		display: "flex",
+		justifyContent: "space-around",
+		alignItems: "center",
+	};
+	const dataPropsSectionStyle = {
+		width: "25%",
+		height: "100%",
+		border: "1px solid pink",
 	};
 	return (
 		<section css={pageStyle}>
-			<section css={chartSectionStyle}>
-				{metricsList.map((metrics, index) => (
-					<FullscreenMetricsCard
-						css={metricsCardStyle}
-						key={index}
-						metricsData={metrics.metricsData}
-						metricsDataLabel={metrics.metricsDataLabel}
-						metricsLevel={metrics.metricsLevel}
-						metricsText={metrics.metricsText}
-						data={data}
-					/>
-				))}
+			<section css={pageContentStyle}>
+				<section css={dataPropsSectionStyle}>
+					<div>NANA</div>
+				</section>
+				<section css={chartSectionStyle}>
+					{metricsList.map((metrics, index) => (
+						<FullscreenMetricsCard
+							css={metricsCardStyle}
+							key={index}
+							metricsData={metrics.metricsData}
+							metricsDataLabel={metrics.metricsDataLabel}
+							metricsLevel={metrics.metricsLevel}
+							metricsText={metrics.metricsText}
+							data={data}
+						/>
+					))}
+				</section>
 			</section>
 		</section>
 	);

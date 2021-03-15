@@ -1,24 +1,40 @@
 import React from "react";
 interface WordProps extends React.HTMLAttributes<HTMLSpanElement> {
 	text: string | number;
-	type: "jumbo" | "large" | "medium" | "small";
+	type: "jumbo" | "xxxLarge" | "xxLarge" | "xLarge" | "large" | "medium" | "small";
 }
 
 const styleMap = {
 	jumbo: {
-		fontSize: "48px",
+		fontSize: "0.8rem",
+		fontWeight: 700,
+		lineHeight: "0.8rem",
+	},
+	xxxLarge: {
+		fontSize: "0.64rem",
 		fontWeight: 700,
 	},
+	xxLarge: {
+		fontSize: "0.48rem",
+		fontWeight: 300,
+		lineHeight: "0.48rem",
+	},
+	xLarge: {
+		fontSize: "0.4rem",
+		fontWeight: 400,
+		lineHeight: "0.22rem",
+	},
 	large: {
-		fontSize: "24px",
+		fontSize: "0.32rem",
 		fontWeight: 400,
 	},
 	medium: {
-		fontSize: "16px",
+		fontSize: "0.24rem",
 		fontWeight: 400,
+		lineHeight: "0.22rem",
 	},
 	small: {
-		fontSize: "12px",
+		fontSize: "0.14rem",
 		fontWeight: 400,
 	},
 };

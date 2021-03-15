@@ -3,7 +3,7 @@ import { Area, AreaChart as ReChartAreaChart, ResponsiveContainer, Tooltip } fro
 import { CurveType } from "recharts/types/shape/Curve";
 import { AREA_GRADIENT_DEFAULT_COLOR } from "../../constants/styles";
 
-interface AreaChartProps<T, K> {
+interface AreaChartProps<T, K> extends React.HTMLAttributes<HTMLDivElement> {
 	data: T[];
 	dataKey: Exclude<K, symbol>;
 	width: number | string;
@@ -22,15 +22,16 @@ const AreaChart = <T, K extends keyof T>({
 	strokeWidth = 1,
 	areaGradientColor = AREA_GRADIENT_DEFAULT_COLOR,
 	curveType = "monotone",
+	...restProps
 }: AreaChartProps<T, K>) => {
 	return (
 		<>
-			<ResponsiveContainer width={width} height={height}>
+			<ResponsiveContainer width={width} height={height} {...restProps}>
 				<ReChartAreaChart data={data}>
 					<defs>
 						<linearGradient id="areaColor" x1="0" y1="0%" x2="0" y2="100%">
 							<stop offset="5%" stopColor={areaGradientColor} stopOpacity={1} />
-							<stop offset="95%" stopColor={areaGradientColor} stopOpacity={0} />
+							<stop offset="95%" stopColor={areaGradientColor} stopOpacity={0.1} />
 						</linearGradient>
 					</defs>
 					<Tooltip />

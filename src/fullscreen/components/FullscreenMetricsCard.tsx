@@ -10,6 +10,7 @@ import {
 	ORANGE_DARK,
 	RED_DARK,
 } from "../../shared/constants/styles";
+import { constants } from "fs";
 
 export interface ChartData {
 	name: string;
@@ -50,9 +51,13 @@ const MetricsLevelConfig: MetricsLevelBaseConfig = {
 };
 const cardStyle = {
 	width: "49%",
-	height: 500,
+	height: "42.5vh",
 	backgroundColor: GRAY_11,
 	color: "white",
+	position: "relative" as const,
+};
+const dataDisplayStyle = {
+	padding: "0.48rem",
 };
 const FullscreenMetricsCard = ({
 	metricsData,
@@ -65,39 +70,42 @@ const FullscreenMetricsCard = ({
 	return (
 		<>
 			<article css={cardStyle}>
-				<p>
-					<Word text={metricsText} type="large" />
-				</p>
-				<p>
-					<Word
-						text={metricsLevel}
-						type="medium"
-						style={{
-							fontFamily: "Futura",
-							backgroundColor: metricsLevelIndicationColor,
-							borderRadius: "4px",
-							color: "white",
-							width: "98px",
-							height: "30px",
-							display: "inline-flex",
-							justifyContent: "center",
-							alignItems: "center",
-						}}
-					/>
-				</p>
-				<p>
-					<Word text={metricsData} type="jumbo" />
-				</p>
-				<p>
-					<Word text={metricsDataLabel} type="small" />
-				</p>
+				<section css={dataDisplayStyle}>
+					<p>
+						<Word text={metricsText} type="xxLarge" />
+					</p>
+					<p css={{ margin: "0.5rem 0" }}>
+						<Word
+							text={metricsLevel}
+							type="xLarge"
+							style={{
+								fontFamily: "Futura",
+								backgroundColor: metricsLevelIndicationColor,
+								borderRadius: "4px",
+								color: "white",
+								width: "2rem",
+								height: "0.56rem",
+								display: "inline-flex",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						/>
+					</p>
+					<p css={{ marginBottom: "0.1rem" }}>
+						<Word text={metricsData} type="jumbo" />
+					</p>
+					<p css={{ marginBottom: "0" }}>
+						<Word text={metricsDataLabel} type="medium" />
+					</p>
+				</section>
 				<AreaChart
+					css={{ position: "absolute" as const, bottom: 0 }}
 					data={data}
 					dataKey={"pv"}
 					width={"100%"}
-					height={"30%"}
+					height={"17%"}
 					strokeColor={metricsLevelIndicationColor}
-					strokeWidth={3}
+					strokeWidth={5}
 					areaGradientColor={"#5A5A5A"}
 					curveType={"monotone"}
 				/>
