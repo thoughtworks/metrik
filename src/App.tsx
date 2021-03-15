@@ -6,7 +6,7 @@ import Header from "./shared/components/Header";
 import { useRequest } from "./shared/hooks/useRequest";
 import { Global } from "@emotion/react";
 import { getProjectsUsingGet } from "./shared/clients/projectApis";
-import { setResponsive } from "./shared/utils/responseive/responseive";
+import { setResponsive } from "./shared/utils/responsive/responsive";
 
 const globalStyles = {
 	".metric-info-overlay div.ant-tooltip-inner": {

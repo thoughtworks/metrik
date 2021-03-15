@@ -26,7 +26,7 @@ module.exports = {
 		},
 	},
 
-	setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
+	setupFilesAfterEnv: ["<rootDir>/test/setup.ts", "<rootDir>/test/jsdomHelper.ts"],
 	moduleNameMapper: {
 		"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$": "<rootDir>/test/mocks/fileMock.ts",
 		"\\.(css|less)$": "<rootDir>/test/mocks/styleMock.ts",
