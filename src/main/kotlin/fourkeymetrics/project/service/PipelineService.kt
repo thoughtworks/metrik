@@ -20,22 +20,6 @@ abstract class PipelineService {
 
     protected abstract fun mapBuildStatus(statusInPipeline: String?): Status
 
-    fun hasStageInTimeRange(
-        pipelineId: String,
-        targetStage: String,
-        startTimestamp: Long,
-        endTimestamp: Long
-    ): Boolean {
-        val allBuilds = buildRepository.getAllBuilds(pipelineId)
-
-        return allBuilds
-            .flatMap { it.stages }
-            .filter {
-                (it.startTimeMillis + it.durationMillis + it.pauseDurationMillis) in startTimestamp..endTimestamp
-            }
-            .any { it.name == targetStage }
-    }
-
     fun getStagesSortedByName(pipelineId: String): List<String> {
         return buildRepository.getAllBuilds(pipelineId)
             .flatMap { it.stages }

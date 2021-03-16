@@ -30,7 +30,8 @@ data class StageDTO(val name: String, val state: String?, val results : StageRes
 
 data class StageResult(val result : List<StageDetailResult>)
 
-data class StageDetailResult(val buildStartedTime: ZonedDateTime?, var buildCompletedTime: ZonedDateTime?, var buildDuration: Long)
+data class StageDetailResult(val buildStartedTime: ZonedDateTime?, var buildCompletedTime: ZonedDateTime?,
+                             var buildDuration: Long)
 
 data class ChangeSetDTO(val change: List<CommitDTO> = emptyList())
 
