@@ -37,8 +37,8 @@
           },
           "resultNumber": 1
         },
-        "state": "Failed",
-        "buildState": "Failed",
+        "state": "Successful",
+        "buildState": "Successful",
         "number": 1,
         "buildNumber": 1
       }

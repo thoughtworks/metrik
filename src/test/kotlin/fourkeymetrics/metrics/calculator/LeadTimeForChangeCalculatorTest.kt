@@ -89,7 +89,7 @@ internal class LeadTimeForChangeCalculatorTest {
 
 
     /**
-     * test file: builds-for-MLT-case-4.json
+     * test file: builds-for-MLT-case-raw-build-summary-4.json
      * pipeline 1
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      * pipeline 2

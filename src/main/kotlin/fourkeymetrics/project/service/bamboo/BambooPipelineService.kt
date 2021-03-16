@@ -4,6 +4,9 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.common.utlils.RequestUtil.buildBearerHeader
+import fourkeymetrics.common.utlils.RequestUtil.getDomain
+import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
@@ -11,17 +14,18 @@ import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.bamboo.dto.BuildDetailDTO
 import fourkeymetrics.project.service.bamboo.dto.BuildSummaryDTO
+import fourkeymetrics.project.service.bamboo.dto.StageDTO
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.net.URL
-import java.time.ZonedDateTime
 
-private const val HTTP_DEFAULT_PORT = 80
 
 @Service("bambooPipelineService")
 class BambooPipelineService(
@@ -31,18 +35,12 @@ class BambooPipelineService(
 ) : PipelineService() {
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
-        val headers = setAuthHeader(pipeline.credential)
+        val headers = buildBearerHeader(pipeline.credential)
         val entity = HttpEntity<String>(headers)
+
         try {
-            val url = URL(pipeline.url)
-            val port = if (url.port == -1) {
-                HTTP_DEFAULT_PORT
-            } else {
-                url.port
-            }
             restTemplate.exchange<String>(
-                    "http://${url.host}:${port}/rest/api/latest/project/", HttpMethod.GET, entity
-            )
+                    "${getDomain(pipeline.url)}/rest/api/latest/project/", HttpMethod.GET, entity)
         } catch (ex: HttpServerErrorException) {
             throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -53,62 +51,16 @@ class BambooPipelineService(
     override fun syncBuilds(pipelineId: String): List<Build> {
         val pipeline = pipelineRepository.findById(pipelineId)
         val credential = pipeline.credential
-        val headers = setAuthHeader(credential)
+        val headers = buildBearerHeader(credential)
         val entity = HttpEntity<String>(headers)
 
         try {
-            val url = URL(pipeline.url)
-            val planKey = url.path.split("/").last()
-            val port = if (url.port == -1) {
-                HTTP_DEFAULT_PORT
-            } else {
-                url.port
-            }
-            val response = restTemplate.exchange<BuildSummaryDTO>(
-                    "http://${url.host}:${port}/rest/api/latest/result/${planKey}.json", HttpMethod.GET, entity
-            )
-            val buildSummaryDTO = response.body!!
-            val maxBuildNumber = buildSummaryDTO.results.result.first().buildNumber
-
+            val planKey = URL(pipeline.url).path.split("/").last()
+            val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
 
             val builds = (1..maxBuildNumber).map { i ->
-                val buildDetailResponse = restTemplate.exchange<BuildDetailDTO>(
-                        "http://${url.host}:${port}/rest/api/latest/result/${planKey}-${i}.json?expand=changes.change,stages.stage.results", HttpMethod.GET, entity
-                ).body!!
-
-                val buildTimestamp =
-                        if (mapDateToTimeStamp(buildDetailResponse.buildStartedTime) == null)
-                            mapDateToTimeStamp(buildDetailResponse.buildCompletedTime)!!
-                        else mapDateToTimeStamp(buildDetailResponse.buildStartedTime)!!
-                Build(
-                        pipelineId,
-                        buildDetailResponse.buildNumber,
-                        mapBuildStatus(buildDetailResponse.buildState),
-                        buildDetailResponse.buildDuration,
-                        buildTimestamp,
-                        buildDetailResponse.link.href,
-                        buildDetailResponse.stages.stage.map {
-                            val startTimeMillis = it.results.result.mapNotNull { result -> mapDateToTimeStamp(result.buildStartedTime) }.minOrNull()
-                            val completedTimeMillis = it.results.result.mapNotNull { result -> mapDateToTimeStamp(result.buildCompletedTime) }.maxOrNull()
-                            val durationMillis: Long? = if (startTimeMillis != null && completedTimeMillis != null) completedTimeMillis - startTimeMillis else null
-                            Stage(
-                                    it.name,
-                                    mapStageStatus(it.state),
-                                    startTimeMillis,
-                                    durationMillis,
-                                    0,
-                                    completedTimeMillis
-                            )
-                        },
-                        buildDetailResponse.changes.change.map {
-                            Commit(
-                                    it.changesetId,
-                                    mapDateToTimeStamp(it.date)!!,
-                                    it.date.toString(),
-                                    it.comment
-                            )
-                        }
-                )
+                val buildDetailResponse = getBuildDetails(pipeline, planKey, i, entity)
+                convertToBuild(buildDetailResponse, pipelineId)
             }
 
             buildRepository.save(builds)
@@ -145,24 +97,79 @@ class BambooPipelineService(
                 "Failed" -> {
                     Status.FAILED
                 }
-                "Unknown" -> {
-                    Status.IN_PROGRESS
-                }
                 else -> {
                     Status.OTHER
                 }
             }
 
-    fun mapDateToTimeStamp(date: ZonedDateTime?): Long? {
-        if (date == null) {
-            return null
-        }
-        return date.toInstant().toEpochMilli()
+
+    private fun mapBuildStatus(statusInPipeline: String?, stages: List<Stage>): Status {
+        return if (stages.any { it.status == Status.IN_PROGRESS }) Status.IN_PROGRESS
+            else mapBuildStatus(statusInPipeline)
     }
 
-    private fun setAuthHeader(credential: String): HttpHeaders {
-        val headers = HttpHeaders()
-        headers.setBearerAuth(credential)
-        return headers
+
+    private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
+        val buildTimestamp = getBuildTimestamp(buildDetailResponse)
+        val stages = buildDetailResponse.stages.stage.map {
+            convertToBuildStage(it)
+        }
+
+        return Build(
+                pipelineId,
+                buildDetailResponse.buildNumber,
+                mapBuildStatus(buildDetailResponse.buildState, stages),
+                buildDetailResponse.buildDuration,
+                buildTimestamp,
+                buildDetailResponse.link.href,
+                stages,
+                buildDetailResponse.changes.change.map {
+                    Commit(it.changesetId, mapDateToTimeStamp(it.date)!!, it.date.toString(), it.comment)
+                }
+        )
+    }
+
+    private fun getBuildDetails(pipeline: Pipeline, planKey: String, buildNumber: Int,
+                                entity: HttpEntity<String>): BuildDetailDTO {
+        return restTemplate.exchange<BuildDetailDTO>(
+                "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}-${buildNumber}.json?" +
+                        "expand=changes.change,stages.stage.results",
+                HttpMethod.GET, entity
+        ).body!!
+    }
+
+    private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, entity: HttpEntity<String>): Int {
+        val response = restTemplate.exchange<BuildSummaryDTO>(
+                "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}.json", HttpMethod.GET, entity
+        )
+        val buildSummaryDTO = response.body!!
+        return buildSummaryDTO.results.result.first().buildNumber
+    }
+
+    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO) =
+            if (mapDateToTimeStamp(buildDetailResponse.buildStartedTime) == null)
+                mapDateToTimeStamp(buildDetailResponse.buildCompletedTime)!!
+            else mapDateToTimeStamp(buildDetailResponse.buildStartedTime)!!
+
+    private fun convertToBuildStage(stageDTO: StageDTO): Stage {
+        val startTimeMillis = stageDTO.results.result
+                .mapNotNull { result -> mapDateToTimeStamp(result.buildStartedTime) }
+                .minOrNull()
+        val completedTimeMillis = stageDTO.results.result
+                .mapNotNull { result -> mapDateToTimeStamp(result.buildCompletedTime) }
+                .maxOrNull()
+        val durationMillis: Long? =
+                if (startTimeMillis != null && completedTimeMillis != null)
+                    completedTimeMillis - startTimeMillis
+                else
+                    null
+        return Stage(
+                stageDTO.name,
+                mapStageStatus(stageDTO.state),
+                startTimeMillis,
+                durationMillis,
+                0,
+                completedTimeMillis
+        )
     }
 }

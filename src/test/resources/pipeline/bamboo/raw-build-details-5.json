@@ -90,8 +90,8 @@
         "description": "",
         "id": 2195476,
         "lifeCycleState": "Finished",
-        "state": "Failed",
-        "displayClass": "Failed",
+        "state": "Strange State",
+        "displayClass": "Strange State",
         "displayMessage": "1 job passed",
         "collapsedByDefault": false,
         "manual": false,
@@ -225,8 +225,8 @@
                 },
                 "resultNumber": 1
               },
-              "state": "Failed",
-              "buildState": "Failed",
+              "state": "Strange State",
+              "buildState": "Strange State",
               "number": 1,
               "buildNumber": 1
             }
@@ -255,8 +255,8 @@
     },
     "resultNumber": 1
   },
-  "state": "Failed",
-  "buildState": "Failed",
+  "state": "Strange State",
+  "buildState": "Strange State",
   "number": 1,
   "buildNumber": 1
 }

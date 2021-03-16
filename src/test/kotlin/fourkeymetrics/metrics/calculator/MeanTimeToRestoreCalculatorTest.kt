@@ -98,7 +98,7 @@ internal class MeanTimeToRestoreCalculatorTest {
     }
 
     /**
-     * test file: builds-for-MTTR-case-4.json
+     * test file: builds-for-MTTR-case-raw-build-summary-4.json
      * build 1, pipeline 1 : deploy to prod, FAILED, end at 2020-12-29
      * build 2, pipeline 1 : deploy to prod, FAILED, end at 2020-12-30
      * build 3, pipeline 1 : deploy to prod, FAILED, end at 2020-12-31

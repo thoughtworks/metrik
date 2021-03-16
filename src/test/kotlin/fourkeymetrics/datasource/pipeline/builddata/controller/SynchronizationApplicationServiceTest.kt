@@ -8,6 +8,7 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -34,8 +35,11 @@ internal class SynchronizationApplicationServiceTest {
     @MockBean
     private lateinit var pipelineRepository: PipelineRepository
 
-    @MockBean
+    @MockBean(name = "jenkinsPipelineService")
     private lateinit var jenkins: JenkinsPipelineService
+
+    @MockBean(name = "bambooPipelineService")
+    private lateinit var bamboo: BambooPipelineService
 
     @Test
     internal fun `should sync builds when there is no previous update`() {
