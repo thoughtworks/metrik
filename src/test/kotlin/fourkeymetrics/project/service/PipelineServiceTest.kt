@@ -44,59 +44,6 @@ internal class PipelineServiceTest {
     private val pipelineId = "pipelineId"
 
     @Test
-    internal fun `should return true when hasStageInTimeRange() called given stage exists in builds filtered by time range`() {
-        val targetStage = "deploy to dev"
-        val startTimestamp = 100000L
-        val endTimestamp = 200000L
-        val lastBuild = Build(
-            stages = listOf(
-                Stage(name = targetStage, startTimeMillis = 100000L),
-                Stage(name = "another stage", startTimeMillis = 100000L)
-            )
-        )
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
-
-        assertTrue(pipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp))
-    }
-
-    @Test
-    internal fun `should return false when hasStageInTimeRange() called given stage not exists in builds filtered by time range`() {
-        val targetStage = "deploy to dev"
-        val startTimestamp = 100000L
-        val endTimestamp = 200000L
-        val lastBuild = Build(
-            stages = listOf(
-                Stage(name = "clone"), Stage(name = "build"),
-                Stage(
-                    name = targetStage,
-                    startTimeMillis = 150000L,
-                    durationMillis = 30000L,
-                    pauseDurationMillis = 50000L
-                )
-            )
-        )
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
-
-        assertFalse(pipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp))
-    }
-
-    @Test
-    internal fun `should return false when hasStageInTimeRange() called given stage not exists in builds filtered by target stage name`() {
-        val targetStage = "deploy to dev"
-        val startTimestamp = 100000L
-        val endTimestamp = 200000L
-        val lastBuild = Build(
-            stages = listOf(
-                Stage(name = "another stage1", startTimeMillis = 100000L),
-                Stage(name = "another stage2", startTimeMillis = 100000L)
-            )
-        )
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(listOf(lastBuild))
-
-        assertFalse(pipelineService.hasStageInTimeRange(pipelineId, targetStage, startTimestamp, endTimestamp))
-    }
-
-    @Test
     internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
         val builds = listOf(
             Build(

@@ -8,6 +8,7 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.model.PipelineType
 import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -103,5 +104,23 @@ internal class SynchronizationApplicationServiceTest {
         val updatedTimestamp = synchronizationApplicationService.getLastSyncTimestamp(projectId)
 
         assertThat(updatedTimestamp).isEqualTo(lastSyncTimestamp)
+    }
+
+    @Test
+    internal fun `should sync builds for Bamboo when there is no previous update`() {
+        val projectId = "fake-project-id"
+        val pipelineId = "fake-pipeline-id"
+        val builds = listOf(Build())
+
+        `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId, type = PipelineType.BAMBOO)))
+        `when`(bamboo.syncBuilds(pipelineId)).thenReturn(builds)
+
+        val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
+
+        verify(bamboo, times(1)).syncBuilds(pipelineId)
+        verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
+
+        assertThat(updatedTimestamp).isNotNull
     }
 }
