@@ -59,4 +59,22 @@ internal class DeploymentFrequencyServiceTest {
 
         assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
     }
+
+    /**
+     * test file: builds-for-build-repo-3.json
+     * build 1 : 2021-01-01, [build: SUCCESS, deploy to prod: SUCCESS, start time: null]
+     */
+    @Test
+    internal fun `should get deployment count as 0 when all stages don't have start time`() {
+        val pipelineId = "test pipeline - master"
+        val targetStage = "deploy to prod"
+        val startTimestamp = 1609286400000L  // 2020-12-30
+        val endTimestamp = 1612137600000L   // 2021-02-01
+
+        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-4.json").readText())
+
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
+
+        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(0)
+    }
 }
