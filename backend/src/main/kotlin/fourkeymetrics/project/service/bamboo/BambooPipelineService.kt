@@ -60,7 +60,7 @@ class BambooPipelineService(
 
             val buildsToSync = (1..maxBuildNumber).filter {
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
-                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
+                buildInDB == null || buildInDB.stages.any { stage -> stage.status == Status.IN_PROGRESS }
             }
 
             val builds = buildsToSync.map { i ->
@@ -107,13 +107,6 @@ class BambooPipelineService(
                 }
             }
 
-
-    private fun mapBuildStatus(statusInPipeline: String?, stages: List<Stage>): Status {
-        return if (stages.any { it.status == Status.IN_PROGRESS }) Status.IN_PROGRESS
-            else mapBuildStatus(statusInPipeline)
-    }
-
-
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
         val buildTimestamp = getBuildTimestamp(buildDetailResponse)
         val stages = buildDetailResponse.stages.stage.map {
@@ -123,7 +116,7 @@ class BambooPipelineService(
         return Build(
                 pipelineId,
                 buildDetailResponse.buildNumber,
-                mapBuildStatus(buildDetailResponse.buildState, stages),
+                mapBuildStatus(buildDetailResponse.buildState),
                 buildDetailResponse.buildDuration,
                 buildTimestamp,
                 buildDetailResponse.link.href,

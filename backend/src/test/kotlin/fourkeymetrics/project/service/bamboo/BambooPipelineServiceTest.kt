@@ -251,7 +251,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should set build status to in progress when sync build given build contains stages which status is unknown`() {
+    internal fun `should sync build given build contains stages which status is unknown`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
@@ -276,7 +276,7 @@ internal class BambooPipelineServiceTest {
         bambooPipelineService.syncBuilds(pipelineId)
 
         val builds = listOf(Build(
-                pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS, duration = 4020, timestamp = 1594089286351,
+                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 4020, timestamp = 1594089286351,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.SUCCESS, 1594089288199, 880, 0, 1594089289079),
                         Stage("Deploy to SIT", Status.IN_PROGRESS, null, null, 0, null),
@@ -287,7 +287,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given both build and stage status are unknown`() {
+    internal fun `should sync builds given both build and stage status are non-supported status`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
@@ -321,12 +321,14 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given build status is in progress or not exists in DB`() {
+    internal fun `should sync builds given stage state is in progress or not exists in DB`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
-                Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
+                Build(pipelineId = pipelineId, number = 1, result = Status.SUCCESS,
+                        stages = listOf(Stage("Stage 1", Status.IN_PROGRESS, 1593398522566,
+                                38, 0, 1593398522604)))
         )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 2)).thenReturn(null)

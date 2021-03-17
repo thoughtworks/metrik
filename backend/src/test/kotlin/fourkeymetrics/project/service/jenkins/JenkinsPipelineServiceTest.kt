@@ -3,6 +3,7 @@ package fourkeymetrics.project.service.jenkins
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Status
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
@@ -226,7 +227,7 @@ internal class JenkinsPipelineServiceTest {
         )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
-            Build(pipelineId = pipelineId, number = 1, result = null)
+            Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
         )
 
         mockServer.expect(requestTo(getBuildSummariesUrl))
