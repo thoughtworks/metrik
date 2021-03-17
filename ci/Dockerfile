@@ -19,8 +19,12 @@ RUN apt-get install -y --no-install-recommends software-properties-common wget a
     && apt-get install -y --no-install-recommends supervisor adoptopenjdk-11-hotspot-jre nginx \
     && rm -rf /var/lib/apt/lists/*
 
-# Create artifacts storaging
+# Create logs storaging
 RUN mkdir -p /app/logs
+
+# Nginx config
+RUN mkdir -p /etc/nginx/
+COPY config/nginx_release.conf /etc/nginx/nginx.conf
 
 # Suporvisord config
 RUN mkdir -p /etc/supervisor/conf.d/
@@ -43,12 +47,11 @@ ENV MONGO_INITDB_ROOT_PASSWORD root
 # Copy BACKEND artifact
 ENV APP_ENV local
 
-COPY artifacts/run.sh /app/4km-service.sh
-COPY artifacts/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
+COPY artifacts/backend/run.sh /app/4km-service.sh
+COPY artifacts/backend/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
 
-# FRONTEND and Nginx
-COPY artifacts/dist /usr/share/nginx/html
-COPY artifacts/nginx.conf /etc/nginx/
+# Copy FRONTEND artifact
+COPY artifacts/frontend/dist /usr/share/nginx/html
 
 RUN find /app -name "*.sh" -exec chmod +x {} \;
 

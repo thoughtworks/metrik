@@ -1,0 +1,12 @@
+### IntelliJ IDEA ###
+.idea
+.ideaDataSources
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### macOS Temporary Files ###
+.DS_Store
