@@ -1,0 +1,13 @@
+{
+ "extends": [
+	"stylelint-config-standard",
+	"stylelint-config-rational-order"
+ ],
+ "plugins": [
+	"stylelint-declaration-block-no-ignored-properties"
+ ],
+ "rules": {
+	"indentation": "tab",
+	"plugin/declaration-block-no-ignored-properties": true
+ }
+}

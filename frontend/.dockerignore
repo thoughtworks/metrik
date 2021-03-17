@@ -1,0 +1,15 @@
+node_modules
+
+coverage
+
+test
+jest.config.js
+
+README.md
+
+.editorconfig
+.*rc
+.*ignore
+.git
+
+.idea
