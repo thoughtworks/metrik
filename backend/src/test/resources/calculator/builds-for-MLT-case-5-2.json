@@ -1,0 +1,78 @@
+[
+  {
+    "pipelineId": "1",
+    "number": 1,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 8,
+    "url": "http://localhost:8001/job/4km-backend/1/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 4,
+        "durationMillis": 1,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 6,
+        "durationMillis": 1,
+        "pauseDurationMillis": 1
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 8,
+        "date": "2021-01-01 00:00:00 +0800"
+      },
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 8,
+        "date": "2021-01-01 00:00:00 +0800"
+      }
+    ]
+  },
+  {
+    "pipelineId": "2",
+    "number": 1,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 8,
+    "url": "http://localhost:8001/job/4km-backend/1/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 4,
+        "durationMillis": 1,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 6,
+        "durationMillis": 1,
+        "pauseDurationMillis": 1
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 8,
+        "date": "2021-01-01 00:00:00 +0800"
+      },
+      {
+        "commitId": "b9b775059d120a0dbf09fd40d2becea69a112345",
+        "msg": "this is a message",
+        "timestamp": 8,
+        "date": "2021-01-01 00:00:00 +0800"
+      }
+    ]
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "pipelineId": "1",
+    "number": 5,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609516600000,
+    "url": "http://localhost:8001/job/4km-backend/5/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609516700000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609516800000,
+        "durationMillis": 8000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "1",
+    "number": 6,
+    "duration": 60420,
+    "result": "FAILED",
+    "timestamp": 1609603100000,
+    "url": "http://localhost:8001/job/4km-backend/6/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609603150000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609603200000,
+        "durationMillis": 10000,
+        "pauseDurationMillis": 1080
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "2",
+    "number": 5,
+    "duration": 60420,
+    "result": "SUCCESS",
+    "timestamp": 1609516600000,
+    "url": "http://localhost:8001/job/4km-backend/5/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609516700000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "SUCCESS",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609516800000,
+        "durationMillis": 8000,
+        "pauseDurationMillis": 10
+      }
+    ],
+    "changeSets": []
+  },
+  {
+    "pipelineId": "2",
+    "number": 6,
+    "duration": 60420,
+    "result": "FAILED",
+    "timestamp": 1609603100000,
+    "url": "http://localhost:8001/job/4km-backend/6/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "build",
+        "startTimeMillis": 1609603150000,
+        "durationMillis": 1000,
+        "pauseDurationMillis": 20
+      },
+      {
+        "status": "FAILED",
+        "name": "deploy to prod",
+        "startTimeMillis": 1609603200000,
+        "durationMillis": 10000,
+        "pauseDurationMillis": 1080
+      }
+    ],
+    "changeSets": []
+  }
+]

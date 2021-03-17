@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+  mongodb-for-apitest:
+    image: mongo:4.4.4-bionic
+    container_name: mongodb-for-apitest
+    hostname: mongodb-for-apitest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: 4-key-metrics
+      MONGO_REPLICA_SET_NAME: rs0
+    volumes:
+      - ../config/:/app/mongo/:ro
+      - ./mongo-db-data/:/data/db/
+    ports:
+      - "27018:27017"
+    restart: unless-stopped
+    entrypoint: /app/mongo/startup.sh
+

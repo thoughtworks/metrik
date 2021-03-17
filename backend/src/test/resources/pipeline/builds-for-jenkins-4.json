@@ -1,0 +1,54 @@
+[
+  {
+    "pipelineId": "fake pipeline",
+    "number": 82,
+    "duration": 60420,
+    "timestamp": 1610949317906,
+    "url": "http://localhost:8001/job/4km-backend/82/",
+    "stages": [
+      {
+        "status": "SUCCESS",
+        "name": "Declarative: Checkout SCM",
+        "startTimeMillis": 1610949320066,
+        "durationMillis": 3720,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "OTHER",
+        "name": "Build Docker image",
+        "startTimeMillis": 1610949324441,
+        "durationMillis": 53584,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "OTHER",
+        "name": "Push Docker image",
+        "startTimeMillis": 1610949378045,
+        "durationMillis": 36,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "OTHER",
+        "name": "Deploy to DEV",
+        "startTimeMillis": 1610949378101,
+        "durationMillis": 30,
+        "pauseDurationMillis": 0
+      },
+      {
+        "status": "OTHER",
+        "name": "Deploy to UAT",
+        "startTimeMillis": 1610949378152,
+        "durationMillis": 29,
+        "pauseDurationMillis": 0
+      }
+    ],
+    "changeSets": [
+      {
+        "commitId": "d3de1d66161a3badee06471594a2b9b9e3a129fa",
+        "timestamp": 1610944812000,
+        "date": "2021-01-18 12:40:12 +0800",
+        "msg": "[Fireman] add check status when deploy to dev"
+      }
+    ]
+  }
+]

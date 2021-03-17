@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "name": "4km",
+    "username": "username",
+    "credential": "fake-credential",
+    "url": "test.com",
+    "type": "JENKINS"
+  },
+  {
+    "id": "2",
+    "name": "5km",
+    "username": "username",
+    "credential": "fake-credential",
+    "url": "test.com",
+    "type": "JENKINS"
+  }
+]

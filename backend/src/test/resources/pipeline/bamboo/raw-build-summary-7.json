@@ -1,0 +1,89 @@
+{
+  "results": {
+    "size": 2,
+    "expand": "result",
+    "start-index": 0,
+    "max-result": 25,
+    "result": [
+      {
+        "link": {
+          "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-2",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "test",
+          "shortKey": "TEST",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key",
+            "rel": "self"
+          },
+          "key": "fake-plan-key",
+          "name": "Four-Key-Metrics - test",
+          "planKey": {
+            "key": "fake-plan-key"
+          }
+        },
+        "buildResultKey": "fake-plan-key-2",
+        "lifeCycleState": "Finished",
+        "id": 6619139,
+        "specsResult": false,
+        "key": "fake-plan-key-2",
+        "planResultKey": {
+          "key": "fake-plan-key-2",
+          "entityKey": {
+            "key": "fake-plan-key"
+          },
+          "resultNumber": 2
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 2,
+        "buildNumber": 2
+      },
+      {
+        "link": {
+          "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "test",
+          "shortKey": "TEST",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key",
+            "rel": "self"
+          },
+          "key": "fake-plan-key",
+          "name": "Four-Key-Metrics - test",
+          "planKey": {
+            "key": "fake-plan-key"
+          }
+        },
+        "buildResultKey": "fake-plan-key-1",
+        "lifeCycleState": "Finished",
+        "id": 6619139,
+        "specsResult": false,
+        "key": "fake-plan-key-1",
+        "planResultKey": {
+          "key": "fake-plan-key-1",
+          "entityKey": {
+            "key": "fake-plan-key"
+          },
+          "resultNumber": 1
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 1,
+        "buildNumber": 1
+      }
+    ]
+  },
+  "expand": "results",
+  "link": {
+    "href": "http://localhost:80/rest/api/latest/result/fake-plan-key",
+    "rel": "self"
+  }
+}

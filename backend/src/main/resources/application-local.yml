@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://4km:4000km@localhost:27017/4-key-metrics
+
+logging:
+  config: classpath:log4j2-console.xml
+
+# Use length 16 for both key and IV
+aes:
+  key: "&E)H@MbQeThWmZq4"
+  iv: "D(G+KbPeShVkYp3s"

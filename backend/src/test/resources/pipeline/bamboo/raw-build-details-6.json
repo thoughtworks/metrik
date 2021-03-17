@@ -1,0 +1,132 @@
+{
+  "expand": "changes,metadata,plan,vcsRevisions,artifacts,comments,labels,jiraIssues,variables,stages",
+  "link": {
+    "href": "http://localhost:80/rest/api/latest/result/fake-plan-key-1",
+    "rel": "self"
+  },
+  "plan": {
+    "shortName": "test",
+    "shortKey": "TEST",
+    "type": "chain",
+    "enabled": true,
+    "link": {
+      "href": "http://localhost:80/rest/api/latest/plan/fake-plan-key",
+      "rel": "self"
+    },
+    "key": "fake-plan-key",
+    "name": "Four-Key-Metrics - test",
+    "planKey": {
+      "key": "fake-plan-key"
+    }
+  },
+  "planName": "test",
+  "projectName": "Four-Key-Metrics",
+  "buildResultKey": "fake-plan-key-1",
+  "lifeCycleState": "Finished",
+  "id": 6619139,
+  "buildCompletedTime": "2021-03-16T08:23:07.191Z",
+  "buildCompletedDate": "2021-03-16T08:23:07.191Z",
+  "prettyBuildCompletedTime": "Tue, 16 Mar, 08:23 AM",
+  "buildDurationInSeconds": 0,
+  "buildDuration": 0,
+  "buildDurationDescription": "global.unknown",
+  "buildRelativeTime": "5 seconds ago",
+  "vcsRevisionKey": "f7cf9c7eeb69186c53104d5803091c735140132b",
+  "vcsRevisions": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "buildTestSummary": "No tests found",
+  "successfulTestCount": 0,
+  "failedTestCount": 0,
+  "quarantinedTestCount": 0,
+  "skippedTestCount": 0,
+  "continuable": false,
+  "onceOff": false,
+  "restartable": false,
+  "notRunYet": false,
+  "finished": true,
+  "successful": true,
+  "buildReason": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+  "reasonSummary": "Manual run by <a href=\"http://52.77.210.87:8085/browse/user/4km\">4km</a>",
+  "specsResult": false,
+  "artifacts": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "comments": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "labels": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "jiraIssues": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "variables": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "stages": {
+    "size": 1,
+    "expand": "stage",
+    "start-index": 0,
+    "max-result": 1,
+    "stage": [
+      {
+        "expand": "results",
+        "name": "Stage 1",
+        "description": "",
+        "id": 6815745,
+        "lifeCycleState": "Finished",
+        "state": "Successful",
+        "displayClass": "Successful",
+        "displayMessage": "This stage has no jobs.",
+        "collapsedByDefault": false,
+        "manual": false,
+        "restartable": false,
+        "runnable": false,
+        "results": {
+          "size": 0,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 0,
+          "result": []
+        }
+      }
+    ]
+  },
+  "changes": {
+    "size": 0,
+    "expand": "change",
+    "change": [],
+    "start-index": 0,
+    "max-result": 0
+  },
+  "metadata": {
+    "size": 3,
+    "start-index": 0,
+    "max-result": 3
+  },
+  "key": "fake-plan-key-1",
+  "planResultKey": {
+    "key": "fake-plan-key-1",
+    "entityKey": {
+      "key": "fake-plan-key"
+    },
+    "resultNumber": 1
+  },
+  "state": "Successful",
+  "buildState": "Successful",
+  "number": 1,
+  "buildNumber": 1
+}

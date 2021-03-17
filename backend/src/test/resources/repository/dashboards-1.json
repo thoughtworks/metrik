@@ -1,0 +1,15 @@
+[
+  {
+    "id": "projectId",
+    "name": "4-key",
+    "pipelines": [
+      {
+        "id": "pipelineId",
+        "username": "username",
+        "credential": "fake-credential",
+        "url": "test.com",
+        "type": "JENKINS"
+      }
+    ]
+  }
+]

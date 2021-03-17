@@ -1,0 +1,106 @@
+{
+  "_links": {
+    "self": {
+      "href": "/job/4km-backend/82/wfapi/describe"
+    },
+    "changesets": {
+      "href": "/job/4km-backend/82/wfapi/changesets"
+    }
+  },
+  "id": "82",
+  "name": "#82",
+  "status": "ABORTED",
+  "startTimeMillis": 1610949317914,
+  "endTimeMillis": 1610949378334,
+  "durationMillis": 60420,
+  "queueDurationMillis": 8,
+  "pauseDurationMillis": 0,
+  "stages": [
+    {
+      "_links": {
+        "self": {
+          "href": "/job/4km-backend/82/execution/node/6/wfapi/describe"
+        }
+      },
+      "id": "6",
+      "name": "Declarative: Checkout SCM",
+      "execNode": "",
+      "status": "SUCCESS",
+      "startTimeMillis": 1610949320066,
+      "durationMillis": 3720,
+      "pauseDurationMillis": 0
+    },
+    {
+      "_links": {
+        "self": {
+          "href": "/job/4km-backend/82/execution/node/21/wfapi/describe"
+        }
+      },
+      "id": "21",
+      "name": "Build Docker image",
+      "execNode": "",
+      "status": "FAILED",
+      "error": {
+        "message": null,
+        "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"
+      },
+      "startTimeMillis": 1610949324441,
+      "durationMillis": 53584,
+      "pauseDurationMillis": 0
+    },
+    {
+      "_links": {
+        "self": {
+          "href": "/job/4km-backend/82/execution/node/27/wfapi/describe"
+        }
+      },
+      "id": "27",
+      "name": "Push Docker image",
+      "execNode": "",
+      "status": "null",
+      "error": {
+        "message": null,
+        "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"
+      },
+      "startTimeMillis": 1610949378045,
+      "durationMillis": 36,
+      "pauseDurationMillis": 0
+    },
+    {
+      "_links": {
+        "self": {
+          "href": "/job/4km-backend/82/execution/node/31/wfapi/describe"
+        }
+      },
+      "id": "31",
+      "name": "Deploy to DEV",
+      "execNode": "",
+      "status": "NOT_EXECUTED",
+      "error": {
+        "message": null,
+        "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"
+      },
+      "startTimeMillis": 1610949378101,
+      "durationMillis": 30,
+      "pauseDurationMillis": 0
+    },
+    {
+      "_links": {
+        "self": {
+          "href": "/job/4km-backend/82/execution/node/35/wfapi/describe"
+        }
+      },
+      "id": "35",
+      "name": "Deploy to UAT",
+      "execNode": "",
+      "status": "IN_PROGRESS",
+      "error": {
+        "message": null,
+        "type": "org.jenkinsci.plugins.workflow.steps.FlowInterruptedException"
+      },
+      "startTimeMillis": 1610949378152,
+      "durationMillis": 29,
+      "pauseDurationMillis": 0
+    }
+  ]
+}

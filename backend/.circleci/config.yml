@@ -1,0 +1,149 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15.2
+  aws-cli: circleci/aws-cli@1.3.2
+
+jobs:
+  test_build_push:
+    docker:
+      - image: circleci/openjdk:11.0.8-jdk
+        environment:
+          TZ: "Asia/Shanghai"
+      - image: circleci/mongo:4.4.3-bionic
+    resource_class: medium
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
+
+      - run:
+          name: Install MongoDB on primary docker instance
+          command: sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()' || ./install-mongo-from-tarball.sh
+
+      - save_cache:
+          paths:
+            - ./mongodb-linux-x86_64-debian10-4.4.4
+          key: v1-mongo-{{ .Branch }}-{{ checksum "install-mongo-from-tarball.sh" }}
+
+
+      - restore_cache:
+          keys:
+            - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - restore_cache:
+          keys:
+            - v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Run tests and build artifact
+          command: ./gradlew build
+
+      - run:
+          name: Configure MongoDB
+          command: |
+            mongo 4-key-metrics --eval "db.createUser({ user: '$MONGO_USER', pwd: '$MONGO_PASSWORD', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
+            for file in `find $PWD/src/api-test/resources/ -type f -name '*.js'`
+            do
+              mongo 4-key-metrics < $file
+            done
+
+      - run:
+          name: Start Service and Run Api Test
+          command: ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest
+
+      - store_test_results:
+          path: build/test-results/apiTest/
+
+      - store_artifacts:
+          path: build/surefire-reports/
+
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ .Branch }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Assemble JAR
+          command: |
+            # Skip this for other nodes
+            if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
+              ./gradlew assemble
+            fi
+
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+
+      - run:
+          name: Build and tag Docker image
+          command: |
+            TAG=v<< pipeline.number >>-$(date '+%Y%m%d')-$(echo $CIRCLE_SHA1 | cut -c -7)
+            docker build -f ./Dockerfile-CircleCI -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:${TAG} -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
+
+      - aws-cli/install
+
+      - aws-cli/setup
+
+      - run:
+          name: Docker login with AWS CLI
+          command: aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+
+      - aws-ecr/push-image:
+          repo: ${AWS_ECR_REPO}
+          tag: latest,v<< pipeline.number >>-$(date '+%Y%m%d')-$(echo $CIRCLE_SHA1 | cut -c -7)
+
+  deploy_to_dev:
+    docker:
+      - image: cimg/base:2021.01
+    resource_class: small
+
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a4:34:c2:35:1d:e6:ec:e5:4a:38:34:b1:4d:14:d7:b6"
+      - run:
+          name: Add remote host to trust-host
+          command: |
+            ssh-keyscan -H -p ${SSH_PORT_DEV} ${SSH_HOST_DEV} >> ~/.ssh/known_hosts
+
+      - run:
+          name: Login and deploy artifacts to DEV
+          command: |
+            ssh ${SSH_USER}@${SSH_HOST_DEV} -p${SSH_PORT_DEV} "
+              CONTAINER_NAME=4km-service
+              CURRENT_CONTAINER_ID=\$(docker ps -aqf name=\$CONTAINER_NAME)
+
+              if [ ! -z \$CURRENT_CONTAINER_ID ]; then
+                echo \"Killing existing docker container...\"
+                docker container stop \$CURRENT_CONTAINER_ID
+                docker container rm \$CURRENT_CONTAINER_ID
+              fi
+
+              echo \"Untag old image...\"
+              docker rmi -f ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
+
+              echo \"Deploying with the latest image...\"
+              aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+              docker run --name \$CONTAINER_NAME -d -p 9000:9000 -e DB_USER=${MONGO_USER} -e DB_PASSWORD=${MONGO_PASSWORD} -e AES_KEY=${PROVIDED_AES_KEY} -e AES_IV=${PROVIDED_AES_IV} --net=4km-docker_default --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
+
+              echo \"Cleaning up...\"
+              docker system prune -f
+            "
+
+workflows:
+  version: 2
+  test_build_push_and_deploy:
+    jobs:
+      - test_build_push
+      - deploy_to_dev:
+          requires:
+            - test_build_push

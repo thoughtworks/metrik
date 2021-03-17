@@ -1,0 +1,7 @@
+aes:
+  key: "JaNdRgUkXp2s5v8y"
+  iv: "KbPeShVmYq3s6v9y"
+spring:
+  data:
+    mongodb:
+      uri: mongodb://4km:fake@localhost:27017/fake-db
