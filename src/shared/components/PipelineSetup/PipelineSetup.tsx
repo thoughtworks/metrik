@@ -9,11 +9,7 @@ import React, { FC, useState } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
 import { VerifyStatus } from "../../__types__/base";
-import {
-	BAMBOO_PIPELINE_CONFIG,
-	JENKINS_PIPELINE_CONFIG,
-	PIPELINE_TYPE_NOTE,
-} from "./pipelineConfigs";
+import { PIPELINE_CONFIG, PIPELINE_TYPE_NOTE } from "../../utils/pipelineConfig/pipelineConfig";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -80,10 +76,7 @@ const PipelineSetup: FC<{
 			form={form}
 			onFinish={onFinish}>
 			{(formValues: FormValues) => {
-				const config =
-					formValues.type === PipelineTool.JENKINS
-						? JENKINS_PIPELINE_CONFIG
-						: BAMBOO_PIPELINE_CONFIG;
+				const config = PIPELINE_CONFIG[formValues.type];
 
 				return (
 					<div
@@ -128,7 +121,7 @@ const PipelineSetup: FC<{
 										</Item>
 									</Col>
 								))}
-								{rowIdx === JENKINS_PIPELINE_CONFIG.length - 1 && (
+								{rowIdx === config.length - 1 && (
 									<Col span={2}>
 										<Item label={" "}>
 											<Button disabled={shouldDisabledVerifyButton(formValues)} onClick={onVerify}>
