@@ -19,7 +19,7 @@ export interface ChartData {
 export interface FullscreenMetricsCardOptions extends React.HTMLAttributes<HTMLDivElement> {
 	metricsText: MetricsType;
 	metricsLevel: MetricsLevel;
-	metricsData: number | string;
+	metricsSummaryData: number | string;
 	metricsDataLabel: string;
 	data: ChartData[];
 }
@@ -59,7 +59,7 @@ const dataDisplayStyle = {
 	padding: "0.48rem",
 };
 const FullscreenMetricsCard = ({
-	metricsData,
+	metricsSummaryData,
 	metricsDataLabel,
 	metricsLevel,
 	metricsText,
@@ -91,7 +91,7 @@ const FullscreenMetricsCard = ({
 						/>
 					</p>
 					<p css={{ marginBottom: "0.1rem" }}>
-						<Word text={metricsData} type="jumbo" />
+						<Word text={metricsSummaryData} type="jumbo" />
 					</p>
 					<p css={{ marginBottom: "0" }}>
 						<Word text={metricsDataLabel} type="medium" />
