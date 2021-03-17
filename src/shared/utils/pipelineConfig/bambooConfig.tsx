@@ -10,18 +10,18 @@ export const BAMBOO_PIPELINE_CONFIG: PipelineConfig[] = [
 			{
 				span: 8,
 				name: "name",
-				label: "Deployment Project Name",
-				rules: [{ required: true, whitespace: true, message: "Please input pipeline name." }],
+				label: "Build Plan Name",
+				rules: [{ required: true, whitespace: true, message: "Please input name of Build Plan." }],
 			},
 			{
 				span: 16,
 				name: "url",
-				label: "Deployment Project URL",
-				placeholder: "e.g: http://bamboo_domain_name/deploy/viewDeploymentProjectEnvironments",
+				label: "Build Plan URL",
+				placeholder: "e.g: http://bamboo_domain_name/browse/PROJECT-PLAN",
 				tooltip: {
 					icon: <InfoCircleOutlined />,
 					title:
-						"URL of the deployment plan. Please do ensure the URL is complete, including all information, such as project, subproject, plan keys.",
+						"URL of the build plan. Please do ensure the URL is complete, including all information, such as project, subproject, plan keys.",
 				},
 				rules: [{ required: true, whitespace: true, message: "Please input pipeline URL." }],
 			},
