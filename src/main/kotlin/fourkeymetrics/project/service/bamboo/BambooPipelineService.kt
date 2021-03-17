@@ -58,7 +58,12 @@ class BambooPipelineService(
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
 
-            val builds = (1..maxBuildNumber).map { i ->
+            val buildsToSync = (1..maxBuildNumber).filter {
+                val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
+                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
+            }
+
+            val builds = buildsToSync.map { i ->
                 val buildDetailResponse = getBuildDetails(pipeline, planKey, i, entity)
                 convertToBuild(buildDetailResponse, pipelineId)
             }
