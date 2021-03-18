@@ -18,7 +18,11 @@ export const PIPELINE_TYPE_NOTE = {
 			Struggle with the terms? More details please refer to:{" "}
 			<a
 				href={"https://confluence.atlassian.com/bamboo0700/deployment-projects-1014682237.html"}
-				css={{ color: "rgba(0,0,0,0.25)" }}>
+				css={{
+					color: "rgba(0,0,0,0.25)",
+					textDecoration: "underline",
+					"&:hover": { textDecoration: "underline" },
+				}}>
 				https://confluence.atlassian.com/bamboo0700/deployment-projects-1014682237.html
 			</a>
 		</div>

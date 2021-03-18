@@ -122,7 +122,7 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 						/>
 						<Modal
 							maskClosable={false}
-							bodyStyle={{ padding: 0, height: 600, overflowY: "auto" }}
+							bodyStyle={{ padding: 24, height: 600, overflowY: "auto" }}
 							width={896}
 							centered={true}
 							destroyOnClose={true}

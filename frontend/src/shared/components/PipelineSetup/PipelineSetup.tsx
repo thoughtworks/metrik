@@ -87,7 +87,6 @@ const PipelineSetup: FC<{
 							display: visible ? "flex" : "none",
 							height: "100%",
 							flexDirection: "column",
-							padding: 24,
 						}}>
 						<Text css={groupTitleStyles}>Pipeline Details</Text>
 						<Row gutter={24} wrap={false} align={"bottom"}>
