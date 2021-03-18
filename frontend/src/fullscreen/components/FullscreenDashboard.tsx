@@ -5,6 +5,7 @@ import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
 import { SwapRightOutlined } from "@ant-design/icons";
 import PipelineList from "./PipelineList";
+import MetricsLegend from "./MetricsLegend";
 
 interface FullscreenDashboardProps {
 	projectName: string;
@@ -76,7 +77,7 @@ const FullscreenDashboard = ({
 							</p>
 							<PipelineList pipelineList={pipelineList} />
 						</div>
-						<div>NANANNANAAN</div>
+						<MetricsLegend />
 					</div>
 				</section>
 				<section css={chartSectionStyle}>

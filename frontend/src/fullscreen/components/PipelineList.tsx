@@ -17,6 +17,7 @@ const restPipelineListStyle = {
 	borderRadius: "20px",
 	alignContent: "flex-start",
 	position: "absolute" as const,
+	zIndex: 10,
 };
 
 const pipelineStyle = {

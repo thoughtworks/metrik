@@ -1,10 +1,7 @@
-import React, { FC } from "react";
-import { GREEN_LIGHT, BLUE_5, ORANGE_DARK, RED_DARK, GRAY_1 } from "../constants/styles";
-import { Typography } from "antd";
-
-const { Text } = Typography;
-
-enum Colour {
+import React from "react";
+import { GREEN_LIGHT, BLUE_5, ORANGE_DARK, RED_DARK } from "../constants/styles";
+import Word, { WordType } from "./Word/Word";
+export enum Colour {
 	green = "green",
 	blue = "blue",
 	orange = "orange",
@@ -19,24 +16,35 @@ const colors = {
 };
 
 const levelTextStyle = {
-	color: GRAY_1,
-	opacity: 0.75,
+	color: "#FFF",
 	marginLeft: 8,
-	fontSize: 12,
 	verticalAlign: "middle",
 };
-
-export const LegendRect: FC<{ color: keyof typeof Colour; text?: string }> = ({ color, text }) => (
-	<>
+interface LegendRectProps extends React.HTMLAttributes<HTMLSpanElement> {
+	color: Colour;
+	text?: string;
+	rectangleWidth?: number | string;
+	rectangleHeight?: number | string;
+	wordType?: WordType;
+}
+export const LegendRect = ({
+	color,
+	text,
+	rectangleWidth = 24,
+	rectangleHeight = 12,
+	wordType = "small",
+	...restPorps
+}: LegendRectProps) => (
+	<span {...restPorps}>
 		<span
 			css={{
 				display: "inline-block",
-				width: 24,
-				height: 12,
+				width: rectangleWidth,
+				height: rectangleHeight,
 				backgroundColor: colors[color],
 				verticalAlign: "middle",
 			}}
 		/>
-		{text && <Text style={levelTextStyle}>{text}</Text>}
-	</>
+		{text && <Word css={levelTextStyle} type={wordType} text={text} />}
+	</span>
 );

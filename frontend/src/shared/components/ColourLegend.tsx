@@ -1,8 +1,7 @@
 import React, { FC } from "react";
-import { LegendRect } from "./LegendRect";
-import { Typography } from "antd";
+import { Colour, LegendRect } from "./LegendRect";
+import { Col, Row, Typography } from "antd";
 import { GRAY_1 } from "../constants/styles";
-import { Row, Col } from "antd";
 
 const { Text, Title } = Typography;
 
@@ -22,7 +21,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Title>
 		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
-				<LegendRect color={"green"} text={"ELITE"} />
+				<LegendRect color={Colour.green} text={"ELITE"} />
 			</Col>
 			<Col>
 				<Text style={textStyle}>{elite}</Text>
@@ -30,7 +29,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
-				<LegendRect color={"blue"} text={"HIGH"} />
+				<LegendRect color={Colour.blue} text={"HIGH"} />
 			</Col>
 			<Col>
 				<Text style={textStyle}>{high}</Text>
@@ -38,7 +37,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"} css={{ marginBottom: 8 }}>
 			<Col>
-				<LegendRect color={"orange"} text={"MEDIUM"} />
+				<LegendRect color={Colour.orange} text={"MEDIUM"} />
 			</Col>
 			<Col>
 				<Text style={textStyle}>{medium}</Text>
@@ -46,7 +45,7 @@ export const ColourLegend: FC<ColourLegendProps> = ({ elite, high, medium, low }
 		</Row>
 		<Row align={"middle"} justify={"space-between"}>
 			<Col>
-				<LegendRect color={"red"} text={"LOW"} />
+				<LegendRect color={Colour.red} text={"LOW"} />
 			</Col>
 			<Col>
 				<Text style={textStyle}>{low}</Text>

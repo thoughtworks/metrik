@@ -1,7 +1,16 @@
 import React from "react";
+export type WordType =
+	| "jumbo"
+	| "xxxLarge"
+	| "xxLarge"
+	| "xLarge"
+	| "large"
+	| "medium"
+	| "small"
+	| "xSmall";
 interface WordProps extends React.HTMLAttributes<HTMLSpanElement> {
 	text: string | number;
-	type: "jumbo" | "xxxLarge" | "xxLarge" | "xLarge" | "large" | "medium" | "small";
+	type: WordType;
 }
 
 const styleMap = {
@@ -36,6 +45,10 @@ const styleMap = {
 	small: {
 		fontSize: "0.14rem",
 		fontWeight: 400,
+	},
+	xSmall: {
+		fontSize: "0.12rem",
+		fontWeight: 700,
 	},
 };
 
