@@ -63,9 +63,12 @@ const PipelineSetup: FC<{
 
 	const onFinish = async (values: FormValues) => {
 		setLoading(true);
-		await onVerify();
-		await onSubmit(values);
-		setLoading(false);
+		try {
+			await onVerify();
+			await onSubmit(values);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
