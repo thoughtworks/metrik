@@ -91,7 +91,7 @@ const PipelineSetting: FC<{ projectId: string; syncBuild: () => void }> = ({
 				closable={false}
 				maskClosable={false}
 				bodyStyle={{
-					padding: 0,
+					padding: 24,
 					height: status === PipelineSettingStatus.VIEW ? 511 : 600,
 					overflowY: "auto",
 				}}
