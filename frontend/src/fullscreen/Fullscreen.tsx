@@ -45,6 +45,24 @@ const FullScreen = () => {
 	];
 
 	const projectName = "My Project";
-	return <FullscreenDashboard projectName={projectName} metricsList={metricsList} />;
+	const pipelineList = [
+		"2km: 0km-dev",
+		"2km: 1km-12324324355656-dev-mengqiu-hehe",
+		"2km: 2km-dev",
+		"2km: 3km-dev-rheuerrrrr",
+		"2km: 4km",
+		"2km: 5km",
+		"2km: 6km",
+		"2km: 7km",
+	];
+	return (
+		<FullscreenDashboard
+			projectName={projectName}
+			metricsList={metricsList}
+			startTimestamp={1615974249118}
+			endTimestamp={1615974249118}
+			pipelineList={pipelineList}
+		/>
+	);
 };
 export default FullScreen;

@@ -1,9 +1,17 @@
 import FullscreenMetricsCard, { FullscreenMetricsCardOptions } from "./FullscreenMetricsCard";
 import React from "react";
+import Word from "../../shared/components/Word/Word";
+import moment from "moment";
+import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
+import { SwapRightOutlined } from "@ant-design/icons";
+import PipelineList from "./PipelineList";
 
 interface FullscreenDashboardProps {
 	projectName: string;
 	metricsList: FullscreenMetricsCardOptions[];
+	startTimestamp: number;
+	endTimestamp: number;
+	pipelineList: string[];
 }
 const pageContentStyle = {
 	width: "94vw",
@@ -35,15 +43,40 @@ const dataPropsSectionStyle = {
 	width: "26%",
 	height: "100%",
 	border: "1px solid pink",
+	color: "white",
 };
 
-const FullscreenDashboard = ({ projectName, metricsList }: FullscreenDashboardProps) => {
+const FullscreenDashboard = ({
+	projectName,
+	metricsList,
+	startTimestamp,
+	endTimestamp,
+	pipelineList,
+}: FullscreenDashboardProps) => {
 	return (
 		<section css={pageStyle}>
 			<section css={pageContentStyle}>
 				<section css={dataPropsSectionStyle}>
 					<div>Logo</div>
-					<p>{projectName}</p>
+					<p>
+						<Word text={projectName} type={"xxxLarge"} />
+					</p>
+					<div>
+						<p css={{ marginBottom: 0 }}>
+							<Word text={"Duration"} type={"large"} />
+						</p>
+						<p>
+							<Word text={moment(startTimestamp).format(dateFormatYYYYMMDD)} type={"large"} />
+							<SwapRightOutlined css={{ fontSize: "0.3rem", margin: "0 0.1rem" }} />
+							<Word text={moment(endTimestamp).format(dateFormatYYYYMMDD)} type={"large"} />
+						</p>
+						<div>
+							<p css={{ marginBottom: 0 }}>
+								<Word type={"large"} text={`Pipelines(${pipelineList.length})`} />
+							</p>
+							<PipelineList pipelineList={pipelineList} />
+						</div>
+					</div>
 				</section>
 				<section css={chartSectionStyle}>
 					{metricsList.map((metrics, index) => (
