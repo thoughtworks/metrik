@@ -12,7 +12,7 @@ class JenkinsPipelineRequest(
     @field:NotBlank(message = "Credential cannot be empty")
     val credential: String,
     url: String
-) : PipelineRequest(url, PipelineType.BAMBOO.toString()) {
+) : PipelineRequest(url, PipelineType.JENKINS.toString()) {
     override fun toPipeline(projectId: String, pipelineId: String): Pipeline {
         return with(this) {
             Pipeline(

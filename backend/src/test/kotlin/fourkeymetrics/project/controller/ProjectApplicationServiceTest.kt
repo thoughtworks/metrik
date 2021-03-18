@@ -72,6 +72,7 @@ class ProjectApplicationServiceTest {
             assertEquals(pipeline.url, it.url)
             assertEquals(pipeline.username, it.username)
             assertEquals(pipeline.credential, it.credential)
+            assertEquals(PipelineType.JENKINS, it.type)
             true
         })
     }
