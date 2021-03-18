@@ -6,6 +6,7 @@ import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
 import { SwapRightOutlined } from "@ant-design/icons";
 import PipelineList from "./PipelineList";
 import MetricsLegend from "./MetricsLegend";
+import { GRAY_1 } from "../../shared/constants/styles";
 
 interface FullscreenDashboardProps {
 	projectName: string;
@@ -43,7 +44,6 @@ const pageStyle = {
 const dataPropsSectionStyle = {
 	width: "26%",
 	height: "100%",
-	border: "1px solid pink",
 	color: "white",
 };
 
@@ -59,11 +59,11 @@ const FullscreenDashboard = ({
 			<section css={pageContentStyle}>
 				<section css={dataPropsSectionStyle}>
 					<div>Logo</div>
-					<p>
+					<p css={{ margin: "0.3rem 0 0.5rem" }}>
 						<Word text={projectName} type={"xxxLarge"} />
 					</p>
 					<div>
-						<p css={{ marginBottom: 0 }}>
+						<p css={{ marginBottom: 0, color: GRAY_1, opacity: 0.5 }}>
 							<Word text={"Duration"} type={"large"} />
 						</p>
 						<p>
@@ -72,7 +72,7 @@ const FullscreenDashboard = ({
 							<Word text={moment(endTimestamp).format(dateFormatYYYYMMDD)} type={"large"} />
 						</p>
 						<div>
-							<p css={{ marginBottom: 0 }}>
+							<p css={{ marginBottom: 0, color: GRAY_1, opacity: 0.5 }}>
 								<Word type={"large"} text={`Pipelines(${pipelineList.length})`} />
 							</p>
 							<PipelineList pipelineList={pipelineList} />

@@ -2,6 +2,7 @@ import React from "react";
 import { Colour, LegendRect } from "../../shared/components/LegendRect";
 import { MetricsLevel } from "../../shared/__types__/enum";
 import Word from "../../shared/components/Word/Word";
+import { GRAY_1 } from "../../shared/constants/styles";
 
 interface Legend {
 	text: MetricsLevel;
@@ -33,7 +34,7 @@ const MetricsLegend = () => {
 	};
 	return (
 		<div>
-			<p css={{ marginTop: "0.2rem" }}>
+			<p css={{ marginTop: "0.2rem", color: GRAY_1, opacity: 0.5 }}>
 				<Word type="large" text={"Metrics Legend"} />
 			</p>
 			{legendList.map(({ color, text }, index) => (
