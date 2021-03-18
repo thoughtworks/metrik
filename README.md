@@ -30,8 +30,8 @@
   <ul>
     <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#license">License</a></li>
   </ul>
 </details>
@@ -39,7 +39,25 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About the Project
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+For development teams who wants to measure their software delivery and operational (SDO) performance, this is a tool that helps them collect data from CD pipelines and visualize the key metrics in a friendly format.
+
+**The key differentiators:**
+* One page configuration, quick and easy.
+* The ability to work across different CD platforms.
+* User can select the environment in which the analysis runs via a environment filter (Yes, production env is not the only one that matters)
+
+[Don't know what are those four key metrics?](https://www.thoughtworks.com/radar/techniques/four-key-metrics)
+
+
+### Integration roadmap
+List of CD tools the product supports now/plan to support
+- [x] Jenkins
+- [x] Bamboo
+- [ ] Github Actions
+- [ ] CircleCI
+
+  ...and more on the way
+
 <!-- END OF ABOUT THE PROJECT -->
 
 
@@ -62,13 +80,13 @@ docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.0
 After the container is running on your machine. Go to your favourate browser and open the app. If running in local that would be `http://localhost:80/`.
 
 1. Start the configuration:
-<div><img src="https://i.loli.net/2021/03/18/qS12tGAP6J3BO7s.png" height=60% width=60%></div>
+  <div><img src="https://i.loli.net/2021/03/18/qS12tGAP6J3BO7s.png" height=70% width=70%></div>
 
-2. And the charts will be available at the main page:
-<div><img src="https://i.loli.net/2021/03/18/5UVLrShvBGpwtkI.png" height=60% width=60%></div>
+2. And the charts for each key metric will be available at the main page:
+  <div><img src="https://i.loli.net/2021/03/18/5UVLrShvBGpwtkI.png" height=70% width=70%></div>
 
 3. Also the full screen view if you want to put it on big screens:
-<div><img src="https://i.loli.net/2021/03/18/HntUEbz2cD4kNBu.png" height=60% width=60%></div>
+  <div><img src="https://i.loli.net/2021/03/18/HntUEbz2cD4kNBu.png" height=70% width=70%></div>
 
 ### Advanced usage
 
