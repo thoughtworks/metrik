@@ -61,6 +61,14 @@ const PipelineSetup: FC<{
 			});
 	};
 
+	const onValuesChange = (changedValues: Partial<FormValues>, values: FormValues) => {
+		if (changedValues.type) {
+			const result = Object.keys(values).reduce((sum, key) => ({ ...sum, [key]: undefined }), {});
+			form.setFieldsValue({ ...result, type: changedValues.type });
+			setVerifyStatus(VerifyStatus.DEFAULT);
+		}
+	};
+
 	const onFinish = async (values: FormValues) => {
 		setLoading(true);
 		try {
@@ -77,6 +85,7 @@ const PipelineSetup: FC<{
 			layout={"vertical"}
 			initialValues={{ type: PipelineTool.JENKINS, ...pipeline }}
 			form={form}
+			onValuesChange={onValuesChange}
 			onFinish={onFinish}>
 			{(formValues: FormValues) => {
 				const config = PIPELINE_CONFIG[formValues.type];
