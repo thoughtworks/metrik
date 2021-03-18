@@ -10,30 +10,30 @@ enum class Status {
 }
 
 data class Stage(
-        var name: String = Strings.EMPTY,
-        var status: Status = Status.FAILED,
-        var startTimeMillis: Long = 0,
-        var durationMillis: Long = 0,
-        var pauseDurationMillis: Long = 0,
-        var completedTimeMillis: Long = 0,
+        val name: String = Strings.EMPTY,
+        val status: Status = Status.FAILED,
+        val startTimeMillis: Long = 0,
+        val durationMillis: Long = 0,
+        val pauseDurationMillis: Long = 0,
+        val completedTimeMillis: Long? = null,
 ) {
     fun getStageDoneTime(): Long {
-        return this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
+        return this.completedTimeMillis ?: this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
     }
 }
 
 data class Commit(
-    var commitId: String = Strings.EMPTY,
-    var timestamp: Long = 0,
-    var date: String = Strings.EMPTY,
-    var msg: String = Strings.EMPTY
+    val commitId: String = Strings.EMPTY,
+    val timestamp: Long = 0,
+    val date: String = Strings.EMPTY,
+    val msg: String = Strings.EMPTY
 )
 
 data class Build(
-        var pipelineId: String = Strings.EMPTY, var number: Int = 0,
-        var result: Status? = null, var duration: Long = 0,
-        var timestamp: Long = 0, var url: String = Strings.EMPTY,
-        var stages: List<Stage> = emptyList(), var changeSets: List<Commit> = emptyList()
+        val pipelineId: String = Strings.EMPTY, val number: Int = 0,
+        val result: Status? = null, val duration: Long = 0,
+        val timestamp: Long = 0, val url: String = Strings.EMPTY,
+        val stages: List<Stage> = emptyList(), val changeSets: List<Commit> = emptyList()
 ) {
 
     fun containsGivenDeploymentInGivenTimeRange(

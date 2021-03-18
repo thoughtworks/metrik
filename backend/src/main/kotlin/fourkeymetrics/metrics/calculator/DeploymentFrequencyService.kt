@@ -30,9 +30,7 @@ class DeploymentFrequencyService {
     private fun isTargetStageWithinTimeRange(build: Build, startTimestamp: Long,
                                              endTimestamp: Long, targetStage: String): Boolean {
         val stage = build.stages.find { it.name == targetStage }
-        val deploymentFinishTimestamp = stage?.startTimeMillis
-                ?.plus(stage.durationMillis)
-                ?.plus(stage.pauseDurationMillis)
+        val deploymentFinishTimestamp = stage?.getStageDoneTime()
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp
     }
