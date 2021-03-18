@@ -12,11 +12,5 @@ internal class TimeFormatUtilTest {
         val date: ZonedDateTime = ZonedDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC"))
         assertEquals(1514764800000, mapDateToTimeStamp(date))
     }
-
-    @Test
-    internal fun `should return null when zonedDateTime is null`() {
-        val date : ZonedDateTime? = null
-        assertNull(mapDateToTimeStamp(date))
-    }
 }
 

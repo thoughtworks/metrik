@@ -26,9 +26,6 @@
   "id": 2097191,
   "buildStartedTime": "2020-06-29T02:42:01.665Z",
   "prettyBuildStartedTime": "Mon, 29 Jun, 02:42 AM",
-  "buildCompletedTime": "2020-06-29T02:42:02.798Z",
-  "buildCompletedDate": "2020-06-29T02:42:02.798Z",
-  "prettyBuildCompletedTime": "Mon, 29 Jun, 02:42 AM",
   "buildDurationInSeconds": 1,
   "buildDuration": 1133,
   "buildDurationDescription": "1 second",
@@ -255,8 +252,8 @@
     },
     "resultNumber": 1
   },
-  "state": "Strange State",
-  "buildState": "Strange State",
+  "state": "Unknown",
+  "buildState": "Unknown",
   "number": 1,
   "buildNumber": 1
 }

@@ -3,10 +3,7 @@ package fourkeymetrics.common.utlils
 import java.time.ZonedDateTime
 
 object TimeFormatUtil {
-    fun mapDateToTimeStamp(date: ZonedDateTime?): Long? {
-        if (date == null) {
-            return null
-        }
+    fun mapDateToTimeStamp(date: ZonedDateTime): Long {
         return date.toInstant().toEpochMilli()
     }
 }

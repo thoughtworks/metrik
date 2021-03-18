@@ -58,13 +58,13 @@ class BambooPipelineService(
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
 
-            val buildsToSync = (1..maxBuildNumber).filter {
+            val buildNumbersToSync = (1..maxBuildNumber).filter {
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
-                buildInDB == null || buildInDB.stages.any { stage -> stage.status == Status.IN_PROGRESS }
+                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
 
-            val builds = buildsToSync.map { i ->
-                val buildDetailResponse = getBuildDetails(pipeline, planKey, i, entity)
+            val builds = buildNumbersToSync.map { buildNumber ->
+                val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
                 convertToBuild(buildDetailResponse, pipelineId)
             }
 
@@ -86,9 +86,6 @@ class BambooPipelineService(
                 "Failed" -> {
                     Status.FAILED
                 }
-                "Unknown" -> {
-                    Status.IN_PROGRESS
-                }
                 else -> {
                     Status.OTHER
                 }
@@ -109,22 +106,26 @@ class BambooPipelineService(
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
         val buildTimestamp = getBuildTimestamp(buildDetailResponse)
-        val stages = buildDetailResponse.stages.stage.map {
+        val stages = buildDetailResponse.stages.stage.mapNotNull {
             convertToBuildStage(it)
         }
 
         return Build(
                 pipelineId,
                 buildDetailResponse.buildNumber,
-                mapBuildStatus(buildDetailResponse.buildState),
+                mapBuildStatus(buildDetailResponse.buildState, buildDetailResponse.stages.stage),
                 buildDetailResponse.buildDuration,
                 buildTimestamp,
                 buildDetailResponse.link.href,
                 stages,
                 buildDetailResponse.changes.change.map {
-                    Commit(it.changesetId, mapDateToTimeStamp(it.date)!!, it.date.toString(), it.comment)
+                    Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
                 }
         )
+    }
+
+    private fun mapBuildStatus(statusInPipeline: String, stageDTOs: List<StageDTO>): Status {
+        return if (stageDTOs.any { it.state == "Unknown" }) Status.IN_PROGRESS else mapBuildStatus(statusInPipeline)
     }
 
     private fun getBuildDetails(pipeline: Pipeline, planKey: String, buildNumber: Int,
@@ -144,23 +145,30 @@ class BambooPipelineService(
         return buildSummaryDTO.results.result.first().buildNumber
     }
 
-    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO) =
-            if (mapDateToTimeStamp(buildDetailResponse.buildStartedTime) == null)
-                mapDateToTimeStamp(buildDetailResponse.buildCompletedTime)!!
-            else mapDateToTimeStamp(buildDetailResponse.buildStartedTime)!!
+    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO): Long {
+        if(buildDetailResponse.buildStartedTime != null) {
+            return mapDateToTimeStamp(buildDetailResponse.buildStartedTime!!)
+        }
+        return mapDateToTimeStamp(buildDetailResponse.buildCompletedTime!!)
+    }
 
-    private fun convertToBuildStage(stageDTO: StageDTO): Stage {
+    private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
+        val isInProgress = stageDTO.state == "Unknown" ||
+                stageDTO.results.result.any {
+                    it.buildStartedTime == null || it.buildCompletedTime == null || it.buildDuration == null
+                }
+        val shouldSkip = stageDTO.results.result.isEmpty() || isInProgress
+        if (shouldSkip) {
+            return null
+        }
+
         val startTimeMillis = stageDTO.results.result
-                .mapNotNull { result -> mapDateToTimeStamp(result.buildStartedTime) }
-                .minOrNull()
+                .map { result -> mapDateToTimeStamp(result.buildStartedTime!!) }
+                .minOrNull()!!
         val completedTimeMillis = stageDTO.results.result
-                .mapNotNull { result -> mapDateToTimeStamp(result.buildCompletedTime) }
-                .maxOrNull()
-        val durationMillis: Long? =
-                if (startTimeMillis != null && completedTimeMillis != null)
-                    completedTimeMillis - startTimeMillis
-                else
-                    null
+                .map { result -> mapDateToTimeStamp(result.buildCompletedTime!!) }
+                .maxOrNull()!!
+        val durationMillis: Long = completedTimeMillis - startTimeMillis
         return Stage(
                 stageDTO.name,
                 mapStageStatus(stageDTO.state),

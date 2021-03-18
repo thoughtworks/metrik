@@ -12,13 +12,13 @@ enum class Status {
 data class Stage(
         var name: String = Strings.EMPTY,
         var status: Status = Status.FAILED,
-        var startTimeMillis: Long? = 0,
-        var durationMillis: Long? = 0,
-        var pauseDurationMillis: Long? = 0,
-        var completedTimeMillis: Long? = 0,
+        var startTimeMillis: Long = 0,
+        var durationMillis: Long = 0,
+        var pauseDurationMillis: Long = 0,
+        var completedTimeMillis: Long = 0,
 ) {
     fun getStageDoneTime(): Long {
-        return this.startTimeMillis!! + this.durationMillis!! + this.pauseDurationMillis!!
+        return this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
     }
 }
 
