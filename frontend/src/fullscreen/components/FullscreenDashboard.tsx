@@ -76,6 +76,7 @@ const FullscreenDashboard = ({
 							</p>
 							<PipelineList pipelineList={pipelineList} />
 						</div>
+						<div>NANANNANAAN</div>
 					</div>
 				</section>
 				<section css={chartSectionStyle}>

@@ -1,14 +1,24 @@
 import Word from "../../shared/components/Word/Word";
-import React from "react";
+import React, { useState } from "react";
 import { GRAY_8 } from "../../shared/constants/styles";
 interface PipelineListProps {
 	pipelineList: string[];
 }
 const pipelineListStyle = {
-	display: "flex",
 	flexWrap: "wrap" as const,
 	justifyContent: "space-between",
 };
+const restPipelineListStyle = {
+	width: "100%",
+	maxHeight: "20vh",
+	overflow: "scroll",
+	padding: "0 10px 10px 10px",
+	backgroundColor: "#9B9B9B",
+	borderRadius: "20px",
+	alignContent: "flex-start",
+	position: "absolute" as const,
+};
+
 const pipelineStyle = {
 	padding: "10px 19px",
 	borderRadius: "19px",
@@ -20,18 +30,36 @@ const pipelineStyle = {
 	textOverflow: "ellipsis",
 	maxWidth: "100%",
 };
+const showMoreStyle = {
+	width: "1.8rem",
+	textAlign: "center" as const,
+	backgroundColor: "#9B9B9B",
+};
 const PipelineList = ({ pipelineList }: PipelineListProps) => {
 	const DEFAULT_SHOWN_NUMBER = 3;
 	const defaultShownList = pipelineList.slice(0, DEFAULT_SHOWN_NUMBER);
 	const defaultHiddenList = pipelineList.slice(DEFAULT_SHOWN_NUMBER, pipelineList.length);
+	const [isRestListShown, setIsRestLitShown] = useState(false);
+	const showRestList = () => setIsRestLitShown(!isRestListShown);
 	return (
-		<section>
+		<section css={{ position: "relative" }}>
 			<div>
 				{defaultShownList.map((pipeline, index) => (
 					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
 				))}
+				<Word
+					css={{ ...pipelineStyle, ...showMoreStyle }}
+					text={isRestListShown ? "Show Less" : "Show More"}
+					type={"medium"}
+					onClick={showRestList}
+				/>
 			</div>
-			<div css={pipelineListStyle}>
+			<div
+				css={{
+					display: isRestListShown ? "flex" : "none",
+					...pipelineListStyle,
+					...restPipelineListStyle,
+				}}>
 				{defaultHiddenList.map((pipeline, index) => (
 					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
 				))}

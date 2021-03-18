@@ -51,9 +51,6 @@ const FullScreen = () => {
 		"2km: 2km-dev",
 		"2km: 3km-dev-rheuerrrrr",
 		"2km: 4km",
-		"2km: 5km",
-		"2km: 6km",
-		"2km: 7km",
 	];
 	return (
 		<FullscreenDashboard
