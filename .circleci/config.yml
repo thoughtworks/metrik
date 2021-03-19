@@ -191,7 +191,10 @@ workflows:
     jobs:
       - frontend-test-and-build
       - backend-test-and-build
-      - build-publish-latest-version
+      - build-publish-latest-version:
+          requires:
+            - frontend-test-and-build
+            - backend-test-and-build
 
   build-release-image:
     when:
@@ -200,4 +203,7 @@ workflows:
     jobs:
       - frontend-test-and-build
       - backend-test-and-build
-      - build-publish-release-version
+      - build-publish-release-version:
+          requires:
+            - frontend-test-and-build
+            - backend-test-and-build
