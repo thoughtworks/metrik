@@ -28,3 +28,5 @@ export const BACKGROUND_COLOR = "#F0F2F5";
 export const HINT_ICON_COLOR = "rgba(0, 0,0, 0.45)";
 export const OVERLAY_COLOR = "rgba(0,0,0,0.85)";
 export const AREA_GRADIENT_DEFAULT_COLOR = "#f1db42";
+export const BG_GRAY_LIGHT = "rgba(155, 155, 155, 0.8)";
+export const BG_GRAY_DARK = "rgba(85, 85, 85, 0.9)";
