@@ -149,7 +149,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given status has no jobs`() {
+    internal fun `should sync builds given stage has no jobs`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
@@ -251,7 +251,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should set build state to in progress when sync build given build contains stages which status is unknown`() {
+    internal fun `should set build state to in progress when sync build given build contains stages of which status is unknown`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
