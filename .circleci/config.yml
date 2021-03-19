@@ -5,7 +5,17 @@ orbs:
   aws-cli: circleci/aws-cli@1.3.2
 
 jobs:
-  backend-service-test-build:
+  a-test-job:
+    docker:
+      - image: circleci/openjdk:11.0.8-jdk
+        environment:
+          TZ: "Asia/Shanghai"
+    resource_class: medium
+
+    steps:
+      - checkout
+
+  backend-test-and-build:
     docker:
       - image: circleci/openjdk:11.0.8-jdk
         environment:
@@ -53,7 +63,7 @@ jobs:
             - backend/run.sh
             - backend/build/libs/sea-4-key-metrics-service-*.jar
 
-  frontend-dashboard-test-build:
+  frontend-test-and-build:
     docker:
       - image: circleci/node:14.15.4
         environment:
@@ -92,7 +102,7 @@ jobs:
           paths:
             - frontend/dist
 
-  build-public-release-image:
+  build-publish-latest-version:
     docker:
       - image: cimg/base:2021.01
         environment:
@@ -116,7 +126,7 @@ jobs:
 
       - run:
           name: Build and tag Docker image
-          command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:<< pipeline.git.tag >> -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
+          command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
           working_directory: ci
 
       - aws-cli/install
@@ -129,38 +139,65 @@ jobs:
 
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
-          tag: latest,<< pipeline.git.tag >>
+          tag: latest
 
-main_branch_only: &main_branch_only
-  filters:
-    branches:
-      only: main
+  build-publish-release-version:
+    docker:
+      - image: cimg/base:2021.01
+        environment:
+          TZ: "Asia/Shanghai"
+    resource_class: small
 
-release_version_tag_only: &release_version_tag_only
-  filters:
-    tags:
-      only: /^(\d+\.)?(\d+\.)?(\*|\d+)/
-    branches:
-      ignore: /.*/
+    steps:
+      - checkout
+
+      - run:
+          name: Create attached workspace folder
+          command: mkdir ./artifacts
+          working_directory: ci
+
+      - attach_workspace:
+          at: ./ci/artifacts
+
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: false
+
+      - run:
+          name: Build and tag Docker image
+          command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:<< pipeline.git.tag >> .
+          working_directory: ci
+
+      - aws-cli/install
+
+      - aws-cli/setup
+
+      - run:
+          name: Docker login with AWS CLI
+          command: aws ecr-public get-login-password --region ${AWS_PUBLIC_REPO_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+
+      - aws-ecr/push-image:
+          repo: ${AWS_ECR_REPO}
+          tag: << pipeline.git.tag >>
+
 
 workflows:
   version: 2
 
-  build-main:
+  build-image-and-deploy-sandbox:
+    when:
+      or:
+        - not: << pipeline.git.tag >>
     jobs:
-      - frontend-dashboard-test-build:
-          <<: *main_branch_only
-      - backend-service-test-build:
-          <<: *main_branch_only
+      - frontend-test-and-build
+      - backend-test-and-build
+      - build-publish-latest-version
 
-  build-release-package:
+  build-release-image:
+    when:
+      or:
+        - << pipeline.git.tag >>
     jobs:
-      - frontend-dashboard-test-build:
-          <<: *release_version_tag_only
-      - backend-service-test-build:
-          <<: *release_version_tag_only
-      - build-public-release-image:
-          <<: *release_version_tag_only
-          requires:
-            - frontend-dashboard-test-build
-            - backend-service-test-build
+      - frontend-test-and-build
+      - backend-test-and-build
+      - build-publish-release-version
