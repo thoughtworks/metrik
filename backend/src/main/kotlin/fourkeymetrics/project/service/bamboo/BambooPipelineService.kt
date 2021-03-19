@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.net.URL
+import kotlin.streams.toList
 
 
 @Service("bambooPipelineService")
@@ -63,10 +64,10 @@ class BambooPipelineService(
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
 
-            val builds = buildNumbersToSync.map { buildNumber ->
+            val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
                 val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
                 convertToBuild(buildDetailResponse, pipelineId)
-            }
+            }.toList()
 
             buildRepository.save(builds)
 

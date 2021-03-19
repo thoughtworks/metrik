@@ -319,15 +319,13 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given build state is in progress or not exists in DB`() {
+    internal fun `should sync builds given build state is in progress`() {
         `when`(pipelineRepository.findById(pipelineId))
                 .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
                 Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
         )
-
-        `when`(buildRepository.findByBuildNumber(pipelineId, 2)).thenReturn(null)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
                 .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -347,15 +345,6 @@ internal class BambooPipelineServiceTest {
                         )
                 )
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(getBuild2DetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-7.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
-                )
-
         bambooPipelineService.syncBuilds(pipelineId)
 
         val builds = listOf(
@@ -363,13 +352,44 @@ internal class BambooPipelineServiceTest {
                     pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
                     url = "$baseUrl/rest/api/latest/result/$planKey-1",
                     stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                    changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))),
-                Build(
-                    pipelineId = pipelineId, number = 2, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
-                    url = "$baseUrl/rest/api/latest/result/$planKey-2",
-                    stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                    changeSets = emptyList())
+                    changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))),)
+
+        verify(buildRepository, times(1)).save(builds)
+    }
+
+    @Test
+    internal fun `should sync builds given build state is not exists in DB`() {
+        `when`(pipelineRepository.findById(pipelineId))
+            .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+
+        `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(null)
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        bambooPipelineService.syncBuilds(pipelineId)
+
+        val builds = listOf(
+            Build(
+                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
+                url = "$baseUrl/rest/api/latest/result/$planKey-1",
+                stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
+                changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))),)
 
         verify(buildRepository, times(1)).save(builds)
     }
