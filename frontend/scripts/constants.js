@@ -1,6 +1,6 @@
 const path = require("path");
 
-const ENTRY_PATH = path.resolve(__dirname, "../src/App.tsx");
+const ENTRY_PATH = path.resolve(__dirname, "../src/App/App.tsx");
 const OUTPUT_PATH = path.resolve(__dirname, "../dist");
 
 const PUBLIC_HTML_PATH = path.resolve(__dirname, "../public/index.html");

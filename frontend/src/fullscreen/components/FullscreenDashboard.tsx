@@ -1,5 +1,5 @@
 import FullscreenMetricsCard, { FullscreenMetricsCardOptions } from "./FullscreenMetricsCard";
-import React from "react";
+import React, { KeyboardEvent } from "react";
 import Word from "../../shared/components/Word/Word";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
@@ -8,6 +8,7 @@ import PipelineList from "./PipelineList";
 import MetricsLegend from "./MetricsLegend";
 import { GRAY_1 } from "../../shared/constants/styles";
 import Logo from "../../shared/components/Logo/Logo";
+import { Modal, Popover } from "antd";
 
 interface FullscreenDashboardProps {
 	projectName: string;
@@ -15,6 +16,7 @@ interface FullscreenDashboardProps {
 	startTimestamp: number;
 	endTimestamp: number;
 	pipelineList: string[];
+	isFullscreenVisible: boolean;
 }
 const pageContentStyle = {
 	width: "94vw",
@@ -54,8 +56,9 @@ const FullscreenDashboard = ({
 	startTimestamp,
 	endTimestamp,
 	pipelineList,
+	isFullscreenVisible,
 }: FullscreenDashboardProps) => {
-	return (
+	const content = (
 		<section css={pageStyle}>
 			<section css={pageContentStyle}>
 				<section css={dataPropsSectionStyle}>
@@ -96,6 +99,16 @@ const FullscreenDashboard = ({
 				</section>
 			</section>
 		</section>
+	);
+	return (
+		<Modal
+			wrapClassName={"fullscreenDashboardModal"}
+			centered
+			visible={isFullscreenVisible}
+			width={"100vw"}
+			keyboard={true}
+			footer={null}
+			modalRender={() => content}></Modal>
 	);
 };
 

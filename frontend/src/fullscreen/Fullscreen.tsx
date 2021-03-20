@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChartData, FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
 import { MetricsLevel, MetricsType } from "../shared/__types__/enum";
 import FullscreenDashboard from "./components/FullscreenDashboard";
 
 const FullScreen = () => {
+	const [isFullscreenVisible, setIsPopoverVisible] = useState(false);
 	const data: ChartData[] = [
 		{ name: "Page A", uv: 400, pv: 0 },
 		{ name: "Page A", uv: 100, pv: 0 },
@@ -52,14 +53,21 @@ const FullScreen = () => {
 		"2km: 3km-dev-rheuerrrrr",
 		"2km: 4km",
 	];
+	const showFullscreen = () => {
+		setIsPopoverVisible(true);
+	};
 	return (
-		<FullscreenDashboard
-			projectName={projectName}
-			metricsList={metricsList}
-			startTimestamp={1615974249118}
-			endTimestamp={1615974249118}
-			pipelineList={pipelineList}
-		/>
+		<section>
+			<button onClick={showFullscreen}>click me</button>
+			<FullscreenDashboard
+				projectName={projectName}
+				metricsList={metricsList}
+				startTimestamp={1615974249118}
+				endTimestamp={1615974249118}
+				pipelineList={pipelineList}
+				isFullscreenVisible={isFullscreenVisible}
+			/>
+		</section>
 	);
 };
 export default FullScreen;
