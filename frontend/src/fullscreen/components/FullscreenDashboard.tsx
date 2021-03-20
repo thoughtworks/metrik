@@ -7,6 +7,7 @@ import { SwapRightOutlined } from "@ant-design/icons";
 import PipelineList from "./PipelineList";
 import MetricsLegend from "./MetricsLegend";
 import { GRAY_1 } from "../../shared/constants/styles";
+import Logo from "../../shared/components/Logo/Logo";
 
 interface FullscreenDashboardProps {
 	projectName: string;
@@ -58,7 +59,7 @@ const FullscreenDashboard = ({
 		<section css={pageStyle}>
 			<section css={pageContentStyle}>
 				<section css={dataPropsSectionStyle}>
-					<div>Logo</div>
+					<Logo />
 					<p css={{ margin: "0.3rem 0 0.5rem" }}>
 						<Word text={projectName} type={"xxxLarge"} />
 					</p>

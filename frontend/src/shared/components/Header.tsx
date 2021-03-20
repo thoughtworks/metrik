@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import React, { FC } from "react";
 import Title from "../assets/icons/Title";
-import Logo from "../assets/icons/Logo";
+import OldLogo from "../assets/icons/OldLogo";
 import { Link } from "react-router-dom";
 
 const headerStyles = css({
@@ -16,7 +16,7 @@ const Header: FC = () => {
 	return (
 		<Link to={"/"}>
 			<div css={headerStyles}>
-				<Logo />
+				<OldLogo />
 				<Title css={{ marginLeft: 8 }} />
 			</div>
 		</Link>
