@@ -213,9 +213,18 @@ workflows:
   build-release-image:
     when: << pipeline.git.tag >>
     jobs:
-      - frontend-test-and-build
-      - backend-test-and-build
+      - frontend-test-and-build:
+          filters: &release_version_tag_only
+            tags:
+              only: /^(\d+\.)?(\d+\.)?(\*|\d+)/
+            branches:
+              ignore: /.*/
+      - backend-test-and-build:
+          filters:
+            <<: *release_version_tag_only
       - build-publish-release-version:
+          filters:
+            <<: *release_version_tag_only
           requires:
             - frontend-test-and-build
             - backend-test-and-build
