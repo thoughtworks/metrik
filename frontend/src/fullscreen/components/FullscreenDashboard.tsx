@@ -6,9 +6,9 @@ import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
 import { SwapRightOutlined } from "@ant-design/icons";
 import PipelineList from "./PipelineList";
 import MetricsLegend from "./MetricsLegend";
-import { GRAY_1 } from "../../shared/constants/styles";
+import { GRAY_1, GRAY_9 } from "../../shared/constants/styles";
 import Logo from "../../shared/components/Logo/Logo";
-import { Modal, Popover } from "antd";
+import { Modal } from "antd";
 
 interface FullscreenDashboardProps {
 	projectName: string;
@@ -48,8 +48,22 @@ const dataPropsSectionStyle = {
 	width: "26%",
 	height: "100%",
 	color: "white",
+	position: "relative" as const,
 };
 
+const escButtonStyle = {
+	display: "inline-block",
+	margin: "0 10px",
+	padding: "4px 10px",
+	backgroundColor: GRAY_9,
+	borderRadius: "8px",
+	opacity: 1,
+};
+const escHintStyle = {
+	color: GRAY_1,
+	position: "absolute" as const,
+	bottom: 0,
+};
 const FullscreenDashboard = ({
 	projectName,
 	metricsList,
@@ -83,6 +97,11 @@ const FullscreenDashboard = ({
 						</div>
 						<MetricsLegend />
 					</div>
+					<p css={escHintStyle}>
+						<Word text={"Press"} type={"medium"} css={{ opacity: 0.5 }} />
+						<Word text={"esc"} type={"medium"} css={escButtonStyle} />
+						<Word text={"to exit full screen"} type={"medium"} css={{ opacity: 0.5 }} />
+					</p>
 				</section>
 				<section css={chartSectionStyle}>
 					{metricsList.map((metrics, index) => (
@@ -106,7 +125,6 @@ const FullscreenDashboard = ({
 			centered
 			visible={isFullscreenVisible}
 			width={"100vw"}
-			keyboard={true}
 			footer={null}
 			modalRender={() => content}></Modal>
 	);

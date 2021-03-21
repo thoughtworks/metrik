@@ -40,7 +40,7 @@ const styleMap = {
 	medium: {
 		fontSize: "0.24rem",
 		fontWeight: 400,
-		lineHeight: "0.22rem",
+		lineHeight: "0.24rem",
 	},
 	small: {
 		fontSize: "0.14rem",

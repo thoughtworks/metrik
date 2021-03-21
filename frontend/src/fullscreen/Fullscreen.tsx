@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, KeyboardEvent } from "react";
 import { ChartData, FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
 import { MetricsLevel, MetricsType } from "../shared/__types__/enum";
 import FullscreenDashboard from "./components/FullscreenDashboard";
@@ -56,8 +56,13 @@ const FullScreen = () => {
 	const showFullscreen = () => {
 		setIsPopoverVisible(true);
 	};
+	const hideFullscreen = (event: KeyboardEvent<HTMLElement>) => {
+		if (event.key === "Escape") {
+			setIsPopoverVisible(false);
+		}
+	};
 	return (
-		<section>
+		<section onKeyUp={event => hideFullscreen(event)}>
 			<button onClick={showFullscreen}>click me</button>
 			<FullscreenDashboard
 				projectName={projectName}
