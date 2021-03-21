@@ -141,6 +141,19 @@ jobs:
           repo: ${AWS_ECR_REPO}
           tag: latest
 
+  deploy-latest-version-to-sandbox:
+    docker:
+      - image: cimg/base:2021.01
+        environment:
+          TZ: "Asia/Shanghai"
+    resource_class: small
+
+    steps:
+      - checkout
+      - run:
+          name: Deploy to sandbox
+          command: echo "Deploy to sandbox to be implemented."
+
   build-publish-release-version:
     docker:
       - image: cimg/base:2021.01
@@ -185,9 +198,7 @@ workflows:
   version: 2
 
   build-image-and-deploy-sandbox:
-    when:
-      or:
-        - not: << pipeline.git.tag >>
+    unless: << pipeline.git.tag >>
     jobs:
       - frontend-test-and-build
       - backend-test-and-build
@@ -195,11 +206,12 @@ workflows:
           requires:
             - frontend-test-and-build
             - backend-test-and-build
+      - deploy-latest-version-to-sandbox:
+          requires:
+            - build-publish-latest-version
 
   build-release-image:
-    when:
-      or:
-        - << pipeline.git.tag >>
+    when: << pipeline.git.tag >>
     jobs:
       - frontend-test-and-build
       - backend-test-and-build
