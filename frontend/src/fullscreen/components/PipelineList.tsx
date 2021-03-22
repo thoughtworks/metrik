@@ -18,6 +18,7 @@ const restPipelineListStyle = {
 	alignContent: "flex-start",
 	position: "absolute" as const,
 	zIndex: 10,
+	marginTop: "10px",
 };
 
 const pipelineStyle = {
@@ -44,12 +45,20 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 	const showRestList = () => setIsRestLitShown(!isRestListShown);
 	return (
 		<section css={{ position: "relative" }}>
-			<div>
+			<div
+				css={{
+					display: "flex",
+					...pipelineListStyle,
+				}}>
 				{defaultShownList.map((pipeline, index) => (
 					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
 				))}
 				<Word
-					css={{ ...pipelineStyle, ...showMoreStyle }}
+					css={{
+						...pipelineStyle,
+						...showMoreStyle,
+						display: pipelineList.length > DEFAULT_SHOWN_NUMBER ? "inline-block" : "none",
+					}}
 					text={isRestListShown ? "Show Less" : "Show More"}
 					type={"medium"}
 					onClick={showRestList}

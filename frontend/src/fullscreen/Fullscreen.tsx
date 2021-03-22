@@ -67,9 +67,12 @@ const FullScreen = () => {
 	const projectName = "My Project";
 	const pipelineList = [
 		"2km: 0km-dev",
-		"2km: 1km-12324324355656-dev-mengqiu-hehe",
+		"2km: 1km-cdfdf",
 		"2km: 2km-dev",
 		"2km: 3km-dev-rheuerrrrr",
+		"2km: 4km",
+		"2km: 4km",
+		"2km: 4km",
 		"2km: 4km",
 	];
 	const showFullscreen = () => {
