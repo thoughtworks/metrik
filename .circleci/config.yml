@@ -5,49 +5,32 @@ orbs:
   aws-cli: circleci/aws-cli@1.3.2
 
 jobs:
-  a-test-job:
-    docker:
-      - image: circleci/openjdk:11.0.8-jdk
-        environment:
-          TZ: "Asia/Shanghai"
-    resource_class: medium
-
-    steps:
-      - checkout
-
   backend-test-and-build:
     docker:
       - image: circleci/openjdk:11.0.8-jdk
         environment:
           TZ: "Asia/Shanghai"
     resource_class: medium
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
-
       - restore_cache:
           keys:
             - v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
-
       - run:
           name: Run tests and build artifact
           command: ./gradlew build
           working_directory: backend
-
       - save_cache:
           paths:
             - ~/.gradle/wrapper
           key: v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
-
       - save_cache:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
-
       - run:
           name: Assemble JAR
           command: |
@@ -56,7 +39,6 @@ jobs:
               ./gradlew assemble
             fi
           working_directory: backend
-
       - persist_to_workspace:
           root: ./
           paths:
@@ -69,34 +51,27 @@ jobs:
         environment:
           TZ: "Asia/Shanghai"
     resource_class: medium
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - node-v1-{{ .Branch }}-{{ checksum "frontend/package-lock.json" }}
-
       - run:
           name: Install dependencies
           command: npm ci
           working_directory: frontend
-
       - save_cache:
           paths:
             - node_modules
           key: node-v1-{{ .Branch }}-{{ checksum "frontend/package-lock.json" }}
-
       - run:
           name: Run tests
           command: npm run test
           working_directory: frontend
-
       - run:
           name: Build artifacts
           command: npm run build:prod
           working_directory: frontend
-
       - persist_to_workspace:
           root: ./
           paths:
@@ -108,35 +83,26 @@ jobs:
         environment:
           TZ: "Asia/Shanghai"
     resource_class: small
-
     steps:
       - checkout
-
       - run:
           name: Create attached workspace folder
           command: mkdir ./artifacts
           working_directory: ci
-
       - attach_workspace:
           at: ./ci/artifacts
-
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: false
-
       - run:
           name: Build and tag Docker image
           command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
           working_directory: ci
-
       - aws-cli/install
-
       - aws-cli/setup
-
       - run:
           name: Docker login with AWS CLI
           command: aws ecr-public get-login-password --region ${AWS_PUBLIC_REPO_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
-
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
           tag: latest
@@ -149,7 +115,6 @@ jobs:
     resource_class: small
 
     steps:
-      - checkout
       - run:
           name: Deploy to sandbox
           command: echo "Deploy to sandbox to be implemented."
@@ -160,35 +125,26 @@ jobs:
         environment:
           TZ: "Asia/Shanghai"
     resource_class: small
-
     steps:
       - checkout
-
       - run:
           name: Create attached workspace folder
           command: mkdir ./artifacts
           working_directory: ci
-
       - attach_workspace:
           at: ./ci/artifacts
-
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: false
-
       - run:
           name: Build and tag Docker image
           command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:<< pipeline.git.tag >> .
           working_directory: ci
-
       - aws-cli/install
-
       - aws-cli/setup
-
       - run:
           name: Docker login with AWS CLI
           command: aws ecr-public get-login-password --region ${AWS_PUBLIC_REPO_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
-
       - aws-ecr/push-image:
           repo: ${AWS_ECR_REPO}
           tag: << pipeline.git.tag >>

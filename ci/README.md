@@ -47,7 +47,7 @@ The two workflows `build-image-and-deploy-sandbox` `build-release-image` serve t
 branch fires a test build in CircleCI, and produces a Docker image with `latest` tag. Team can view, test and verify the image validity. 
 
 Unlike test build, the release build can only be triggered by a three-part release version tag like `1.2.1`. The release Docker image
-which in turn will be tagged by the provided git version tag `1.2.1` and made public accessible in the image repository.
+which in turn will be tagged by the provided git version tag `1.2.1` and made publicly accessible in the image repository.
  
 
 

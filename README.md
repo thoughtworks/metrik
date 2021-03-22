@@ -74,6 +74,7 @@ You can run the container locally via the following command:
 ``` bash
 docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.0
 ```
+⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.
 
 ### Configure your projects
 
