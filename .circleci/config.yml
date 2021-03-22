@@ -115,9 +115,36 @@ jobs:
     resource_class: small
 
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "00:bb:8f:34:ae:be:33:3f:66:81:fc:ee:f5:96:96:5e"
       - run:
-          name: Deploy to sandbox
-          command: echo "Deploy to sandbox to be implemented."
+          name: Add remote sandbox host to trust-host
+          command: |
+              ssh-keyscan -H -p ${SANDBOX_SSH_PORT} ${SANDBOX_SSH_HOST} >> ~/.ssh/known_hosts
+      - run:
+          name: Login and deploy the latest version to Sandbox
+          command: |
+              ssh ${SANDBOX_SSH_USER}@${SANDBOX_SSH_HOST} -p${SANDBOX_SSH_PORT} "
+                CONTAINER_NAME=4km
+                CURRENT_CONTAINER_ID=\$(docker ps -aqf name=\$CONTAINER_NAME)
+
+                if [ ! -z \$CURRENT_CONTAINER_ID ]; then
+                  echo \"Killing existing docker container...\"
+                  docker container stop \$CURRENT_CONTAINER_ID
+                  docker container rm \$CURRENT_CONTAINER_ID
+                fi
+
+                echo \"Untag old image...\"
+                docker rmi -f ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
+
+                echo \"Deploying with the latest image...\"
+                docker run --name \$CONTAINER_NAME -d -p 80:80 -p 9000:9000 -p 27017:27017 -v "/root/app/data/db:/data/db" -v "/root/app/logs:/app/logs" --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest
+
+                echo \"Cleaning up...\"
+                docker system prune -f
+              "
+      - run: echo "Deploymend to sandbox DONE."
 
   build-publish-release-version:
     docker:
