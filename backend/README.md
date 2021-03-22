@@ -1,4 +1,13 @@
-[toc]
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ul>
+    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#configuration">Configuration</a></li>
+  </ul>
+</details>
+<!-- END OF PROJECT TITLE -->
 
 This is the backend API layer of the 4-key-metrics measurement tool.
 
