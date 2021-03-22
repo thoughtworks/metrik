@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../shared/hooks/useQuery";
-import { getRangeTimeStamps } from "../shared/utils/timeFormats/timeFormats";
+import { getDurationTimeStamps } from "../shared/utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
+import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../shared/constants/styles";
-import { max, min } from "lodash";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
 import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils/metricsDataUtils";
 import {
+	FourKeyMetrics,
 	getFourKeyMetricsUsingPost,
 	MetricsInfo,
 	MetricsUnit,
@@ -44,16 +44,37 @@ export const PageDashboard = () => {
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsInfo>(initialMetricsState);
 	const [meanTimeToRestore, setMeanTimeToRestore] = useState<MetricsInfo>(initialMetricsState);
 	const [loadingChart, setLoadingChart] = useState(false);
+	const defaultMetricsData = {
+		summary: {
+			value: undefined,
+			level: MetricsLevel.INVALID,
+			endTimestamp: 0,
+			startTimestamp: 0,
+		},
+		details: [
+			{
+				value: undefined,
+				endTimestamp: 0,
+				startTimestamp: 0,
+			},
+		],
+	};
+	const [metricsResponse, setMetricsResponse] = useState<FourKeyMetrics>({
+		changeFailureRate: defaultMetricsData,
+		deploymentFrequency: defaultMetricsData,
+		leadTimeForChange: defaultMetricsData,
+		meanTimeToRestore: defaultMetricsData,
+	});
 
 	const getFourKeyMetrics = (formValues: FormValues) => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 
-		const durationTimestamps = getRangeTimeStamps(formValues.duration);
+		const durationTimestamps = getDurationTimeStamps(formValues.duration);
 		getFourKeyMetricsUsingPost({
 			metricsQuery: {
-				startTime: min(durationTimestamps)!,
-				endTime: max(durationTimestamps)!,
+				startTime: durationTimestamps.startTimestamp!,
+				endTime: durationTimestamps.endTimestamp!,
 				pipelineStages: (formValues.pipelines || []).map(i => ({
 					pipelineId: i.value,
 					stage: i.childValue,
@@ -62,6 +83,7 @@ export const PageDashboard = () => {
 			},
 		})
 			.then(response => {
+				setMetricsResponse(response);
 				setChangeFailureRate(cleanMetricsInfo(response.changeFailureRate));
 				setDeploymentFrequency(cleanMetricsInfo(response.deploymentFrequency));
 				setLeadTimeForChange(cleanMetricsInfo(response.leadTimeForChange));
@@ -78,7 +100,11 @@ export const PageDashboard = () => {
 
 	return (
 		<>
-			<DashboardTopPanel onApply={getFourKeyMetrics} projectId={projectId} />
+			<DashboardTopPanel
+				onApply={getFourKeyMetrics}
+				projectId={projectId}
+				metricsResponse={metricsResponse}
+			/>
 			<div css={metricsContainerStyles}>
 				<Row gutter={28}>
 					<Col xs={24} sm={24} md={24} lg={12}>

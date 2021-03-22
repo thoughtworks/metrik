@@ -1,5 +1,5 @@
 import FullscreenMetricsCard, { FullscreenMetricsCardOptions } from "./FullscreenMetricsCard";
-import React, { KeyboardEvent } from "react";
+import React from "react";
 import Word from "../../shared/components/Word/Word";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
@@ -121,12 +121,13 @@ const FullscreenDashboard = ({
 	);
 	return (
 		<Modal
-			wrapClassName={"fullscreenDashboardModal"}
+			wrapClassName={"fullscreen-dashboard-modal"}
 			centered
 			visible={isFullscreenVisible}
 			width={"100vw"}
-			footer={null}
-			modalRender={() => content}></Modal>
+			footer={null}>
+			{content}
+		</Modal>
 	);
 };
 

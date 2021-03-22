@@ -2,18 +2,37 @@ import React, { useState, KeyboardEvent } from "react";
 import { ChartData, FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
 import { MetricsLevel, MetricsType } from "../shared/__types__/enum";
 import FullscreenDashboard from "./components/FullscreenDashboard";
+import { Metrics } from "../shared/clients/metricsApis";
 
 const FullScreen = () => {
 	const [isFullscreenVisible, setIsPopoverVisible] = useState(false);
-	const data: ChartData[] = [
-		{ name: "Page A", uv: 400, pv: 0 },
-		{ name: "Page A", uv: 100, pv: 0 },
-		{ name: "Page B", uv: 200, pv: 0 },
-		{ name: "Page C", uv: 300, pv: 31 },
-		{ name: "Page C", uv: 300, pv: 10 },
-		{ name: "Page C", uv: 300, pv: 0 },
+	const data: Metrics[] = [
+		{
+			value: undefined,
+			startTimestamp: 1605974400000,
+			endTimestamp: 1606751999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1606752000000,
+			endTimestamp: 1607961599999,
+		},
+		{ value: undefined, startTimestamp: 1607961600000, endTimestamp: 1609171199999 },
+		{ value: undefined, startTimestamp: 1609171200000, endTimestamp: 1610380799999 },
+		{ value: 62.73, startTimestamp: 1610380800000, endTimestamp: 1611590399999 },
+		{
+			value: 100.0,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{ value: 100.0, startTimestamp: 1612800000000, endTimestamp: 1614009599999 },
+		{
+			value: 15.79,
+			startTimestamp: 1614009600000,
+			endTimestamp: 1615219199999,
+		},
+		{ value: 0.0, startTimestamp: 1615219200000, endTimestamp: 1616428799000 },
 	];
-
 	const metricsList: FullscreenMetricsCardOptions[] = [
 		{
 			metricsSummaryData: 32.31,
@@ -37,7 +56,7 @@ const FullScreen = () => {
 			data: data,
 		},
 		{
-			metricsSummaryData: "41.31%",
+			metricsSummaryData: 0.43,
 			metricsLevel: MetricsLevel.MEDIUM,
 			metricsDataLabel: "AVG%",
 			metricsText: MetricsType.CHANGE_FAILURE_RATE,

@@ -1,4 +1,5 @@
 import moment, { Moment } from "moment";
+import { max, min } from "lodash";
 
 export const formatLastUpdateTime = (timestamp?: number): string =>
 	timestamp ? moment(timestamp).format("hh:mm a, D MMM, YYYY") : "";
@@ -27,4 +28,11 @@ export const momentObjToEndTimeStamp = (momentObj: moment.Moment): number => {
 export const getRangeTimeStamps = (duration: [Moment, Moment]) => {
 	const [start, end] = duration[0].isBefore(duration[1]) ? duration : [...duration].reverse();
 	return [momentObjToStartTimeStamp(start), momentObjToEndTimeStamp(end)];
+};
+export const getDurationTimeStamps = (duration: [Moment, Moment]) => {
+	const durationTimestamps = getRangeTimeStamps(duration);
+	return {
+		startTimestamp: min(durationTimestamps),
+		endTimestamp: max(durationTimestamps),
+	};
 };

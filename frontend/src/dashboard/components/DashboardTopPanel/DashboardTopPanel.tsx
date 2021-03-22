@@ -1,26 +1,32 @@
-import { EditableText } from "../../shared/components/EditableText";
+import { EditableText } from "../../../shared/components/EditableText";
 import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
 import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import PipelineSetting from "./PipelineSetting";
-import React, { FC, useEffect, useState } from "react";
+import PipelineSetting from "../PipelineSetting";
+import React, { FC, KeyboardEvent, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../shared/constants/styles";
-import { useRequest } from "../../shared/hooks/useRequest";
-import moment from "moment";
-import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
-import { MultipleCascadeSelect } from "../../shared/components/MultipleCascadeSelect";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../../shared/constants/styles";
+import { useRequest } from "../../../shared/hooks/useRequest";
+import moment, { min } from "moment";
+import { dateFormatYYYYMMDD } from "../../../shared/constants/date-format";
+import { MultipleCascadeSelect } from "../../../shared/components/MultipleCascadeSelect";
 import { isEmpty, isEqual } from "lodash";
-import { formatLastUpdateTime } from "../../shared/utils/timeFormats/timeFormats";
-import { usePrevious } from "../../shared/hooks/usePrevious";
-import HintIcon from "../../shared/components/HintIcon";
-import { MetricsUnit } from "../../shared/clients/metricsApis";
-import { getPipelineStagesUsingGet, PipelineStages } from "../../shared/clients/pipelineApis";
+import {
+	formatLastUpdateTime,
+	getDurationTimeStamps,
+	getRangeTimeStamps,
+} from "../../../shared/utils/timeFormats/timeFormats";
+import { usePrevious } from "../../../shared/hooks/usePrevious";
+import HintIcon from "../../../shared/components/HintIcon";
+import { FourKeyMetrics, MetricsUnit } from "../../../shared/clients/metricsApis";
+import { getPipelineStagesUsingGet, PipelineStages } from "../../../shared/clients/pipelineApis";
 import {
 	getLastSynchronizationUsingGet,
 	getProjectDetailsUsingGet,
 	updateBuildsUsingPost,
 	updateProjectNameUsingPut,
-} from "../../shared/clients/projectApis";
+} from "../../../shared/clients/projectApis";
+import FullscreenDashboard from "../../../fullscreen/components/FullscreenDashboard";
+import { mapMetricsList, mapPipelines } from "./dataProcess/fullScreenDataProcess";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -64,16 +70,20 @@ const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = 
 			value: stageName,
 		})),
 	}));
-
+export interface Pipeline {
+	value: string;
+	childValue: string;
+}
 export interface FormValues {
 	duration: [moment.Moment, moment.Moment];
-	pipelines: Array<{ value: string; childValue: string }>;
+	pipelines: Pipeline[];
 	unit: MetricsUnit;
 }
 
 interface DashboardTopPanelProps {
 	projectId: string;
 	onApply: (formValues: FormValues) => void;
+	metricsResponse: FourKeyMetrics;
 }
 
 const INPUT_FIELD_EXPLANATIONS = {
@@ -90,7 +100,12 @@ const INPUT_FIELD_LABELS = {
 	PIPELINE_STAGE: "Pipeline/Stage",
 };
 
-export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApply }) => {
+export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
+	projectId,
+	onApply,
+	metricsResponse,
+}) => {
+	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
 	const defaultValues = {
 		duration: [
 			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
@@ -169,9 +184,17 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 	}, [formValues.pipelines, options]);
 
 	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
-
+	const hideFullscreen = (event: KeyboardEvent<HTMLElement>) => {
+		if (event.key === "Escape") {
+			setIsFullscreenVisible(false);
+		}
+	};
+	const showFullscreen = () => {
+		setIsFullscreenVisible(true);
+	};
+	const durationTimestamps = getDurationTimeStamps(formValues.duration);
 	return (
-		<div css={containerStyles}>
+		<section css={containerStyles} onKeyUp={event => hideFullscreen(event)}>
 			<div css={headerStyles}>
 				<div>
 					{project?.name && (
@@ -190,7 +213,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing" : "Sync Data"}
 					</Button>
-					<span css={fullScreenStyles}>
+					<span css={fullScreenStyles} onClick={showFullscreen}>
 						<FullscreenOutlined css={fullScreenIconStyles} />
 						<Text css={fullScreenTextStyles}>Full Screen</Text>
 					</span>
@@ -273,6 +296,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId, onApp
 					</Row>
 				</Form>
 			</div>
-		</div>
+			<FullscreenDashboard
+				projectName={project?.name}
+				metricsList={mapMetricsList(metricsResponse, formValues.unit)}
+				startTimestamp={durationTimestamps.startTimestamp!}
+				endTimestamp={durationTimestamps.endTimestamp!}
+				pipelineList={mapPipelines(formValues.pipelines)}
+				isFullscreenVisible={isFullscreenVisible}
+			/>
+		</section>
 	);
 };

@@ -3,9 +3,10 @@ import { Metrics, MetricsInfo } from "../../clients/metricsApis";
 export const cleanMetricsInfo = (metricsInfo: MetricsInfo) => {
 	const eraseNaNValue = (metrics: Metrics) =>
 		(metrics.value = metrics.value === "NaN" ? undefined : metrics.value);
-
-	eraseNaNValue(metricsInfo.summary);
-	metricsInfo.details.forEach(item => eraseNaNValue(item));
-
-	return metricsInfo;
+	return {
+		summary: { ...metricsInfo.summary, ...{ value: eraseNaNValue(metricsInfo.summary) } },
+		details: metricsInfo.details.map(item => {
+			return { ...item, ...{ value: eraseNaNValue(item) } };
+		}),
+	};
 };

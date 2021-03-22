@@ -1,5 +1,4 @@
 import { calcMaxValueWithRatio } from "./calcMaxValueWithRatio";
-import { MetricsLevel } from "../../__types__/enum";
 
 describe("#calcMaxValueWithRatio", () => {
 	it("should return default max value if metrics is empty", () => {
@@ -14,13 +13,11 @@ describe("#calcMaxValueWithRatio", () => {
 						value: "NaN",
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: "NaN",
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 				],
 				100,
@@ -36,13 +33,11 @@ describe("#calcMaxValueWithRatio", () => {
 					value: "NaN",
 					startTimestamp: 1610726400000,
 					endTimestamp: 1611935999999,
-					level: MetricsLevel.ELITE,
 				},
 				{
 					value: "NaN",
 					startTimestamp: 1610726400000,
 					endTimestamp: 1611935999999,
-					level: MetricsLevel.ELITE,
 				},
 			])
 		).toEqual(1);
@@ -56,13 +51,11 @@ describe("#calcMaxValueWithRatio", () => {
 						value: 0,
 						startTimestamp: 1603727999000,
 						endTimestamp: 1604678399999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: "NaN",
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 				],
 				1,
@@ -79,19 +72,16 @@ describe("#calcMaxValueWithRatio", () => {
 						value: "NaN",
 						startTimestamp: 1603727999000,
 						endTimestamp: 1604678399999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: 100.0,
 						startTimestamp: 1609516800000,
 						endTimestamp: 1610726399999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: "NaN",
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 				],
 				100,
@@ -106,13 +96,11 @@ describe("#calcMaxValueWithRatio", () => {
 						value: 0,
 						startTimestamp: 1603727999000,
 						endTimestamp: 1604678399999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: "NaN",
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 				],
 				1,
@@ -127,13 +115,11 @@ describe("#calcMaxValueWithRatio", () => {
 						value: 899,
 						startTimestamp: 1603727999000,
 						endTimestamp: 1604678399999,
-						level: MetricsLevel.ELITE,
 					},
 					{
 						value: 100,
 						startTimestamp: 1610726400000,
 						endTimestamp: 1611935999999,
-						level: MetricsLevel.ELITE,
 					},
 				],
 				1,
@@ -149,13 +135,11 @@ describe("#calcMaxValueWithRatio", () => {
 					value: 899,
 					startTimestamp: 1603727999000,
 					endTimestamp: 1604678399999,
-					level: MetricsLevel.ELITE,
 				},
 				{
 					value: 100,
 					startTimestamp: 1610726400000,
 					endTimestamp: 1611935999999,
-					level: MetricsLevel.ELITE,
 				},
 			])
 		).toEqual(990);

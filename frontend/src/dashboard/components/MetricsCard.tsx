@@ -29,7 +29,7 @@ import { durationFormatter } from "../../shared/utils/timeFormats/timeFormats";
 import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
 import { find } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
-import { Metrics } from "../../shared/clients/metricsApis";
+import { Metrics, MetricsSummary } from "../../shared/clients/metricsApis";
 import { MetricsLevel } from "../../shared/__types__/enum";
 
 interface MetricsLevelConfigInterface {
@@ -145,7 +145,7 @@ const CustomizeTick: FC<CustomizeTickProps> = ({ x, y, textAnchor, data, payload
 
 interface MetricsCardProps {
 	title: string;
-	summary: Metrics;
+	summary: MetricsSummary;
 	data: Metrics[];
 	yaxisFormatter: (value: string) => string;
 	yAxisLabel: string;

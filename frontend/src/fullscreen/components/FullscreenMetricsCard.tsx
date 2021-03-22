@@ -10,6 +10,7 @@ import {
 	ORANGE_DARK,
 	RED_DARK,
 } from "../../shared/constants/styles";
+import { Metrics } from "../../shared/clients/metricsApis";
 
 export interface ChartData {
 	name: string;
@@ -19,9 +20,9 @@ export interface ChartData {
 export interface FullscreenMetricsCardOptions extends React.HTMLAttributes<HTMLDivElement> {
 	metricsText: MetricsType;
 	metricsLevel: MetricsLevel;
-	metricsSummaryData: number | string;
+	metricsSummaryData: number | undefined;
 	metricsDataLabel: string;
-	data: ChartData[];
+	data: Metrics[];
 }
 interface MetricsLevelBaseData {
 	color: string;
@@ -100,7 +101,7 @@ const FullscreenMetricsCard = ({
 				<AreaChart
 					css={{ position: "absolute" as const, bottom: 0 }}
 					data={data}
-					dataKey={"pv"}
+					dataKey={"value"}
 					width={"100%"}
 					height={"17%"}
 					strokeColor={metricsLevelIndicationColor}

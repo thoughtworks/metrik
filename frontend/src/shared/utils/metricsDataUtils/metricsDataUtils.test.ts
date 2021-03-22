@@ -15,19 +15,18 @@ describe("cleanMetricsInfo", () => {
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: MetricsLevel.ELITE,
 					value: 9,
 				},
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: MetricsLevel.ELITE,
 					value: "NaN",
 				},
 			],
 		};
 		const expectedResult: MetricsInfo = {
 			summary: {
+				value: undefined,
 				startTimestamp: 1289318400000,
 				endTimestamp: 1289318500000,
 				level: MetricsLevel.ELITE,
@@ -36,13 +35,12 @@ describe("cleanMetricsInfo", () => {
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: MetricsLevel.ELITE,
 					value: 9,
 				},
 				{
 					startTimestamp: 1289318400000,
 					endTimestamp: 1289318500000,
-					level: MetricsLevel.ELITE,
+					value: undefined,
 				},
 			],
 		};

@@ -9,7 +9,7 @@ export type WordType =
 	| "small"
 	| "xSmall";
 interface WordProps extends React.HTMLAttributes<HTMLSpanElement> {
-	text: string | number;
+	text: string | number | undefined;
 	type: WordType;
 }
 

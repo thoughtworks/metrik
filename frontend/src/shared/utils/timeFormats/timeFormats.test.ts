@@ -4,6 +4,7 @@ import {
 	momentObjToEndTimeStamp,
 	durationFormatter,
 	getRangeTimeStamps,
+	getDurationTimeStamps,
 } from "./timeFormats";
 import moment from "moment";
 
@@ -54,5 +55,12 @@ describe("#getRangeTimeStamps test", () => {
 		expect(
 			getRangeTimeStamps([moment("2010-12-10T12:59:59"), moment("2010-11-10T12:59:59")])
 		).toEqual([1289318400000, 1291996799000]);
+	});
+});
+describe("#getDurationTimeStamps test", () => {
+	it("should get startTimestamp and endTimestamp given a time duration", () => {
+		expect(
+			getDurationTimeStamps([moment("2010-11-10T12:59:59"), moment("2010-12-10T12:59:59")])
+		).toEqual({ startTimestamp: 1289318400000, endTimestamp: 1291996799000 });
 	});
 });

@@ -39,16 +39,17 @@ export interface FourKeyMetrics {
 
 export interface MetricsInfo {
 	details: Metrics[];
-	summary: Metrics;
+	summary: MetricsSummary;
 }
 
 export interface Metrics {
-	level: MetricsLevel;
-	value?: number | "NaN";
+	value: number | "NaN" | undefined;
 	endTimestamp: number;
 	startTimestamp: number;
 }
-
+export interface MetricsSummary extends Metrics {
+	level: MetricsLevel;
+}
 export interface ValidMetric extends Metrics {
 	value: number;
 }
