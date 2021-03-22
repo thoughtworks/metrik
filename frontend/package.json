@@ -1,7 +1,7 @@
 {
-	"name": "SEA-4-Key-Metrics-frontend",
+	"name": "4-key-metrics-frontend",
 	"version": "0.0.1",
-	"description": "ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend",
+	"description": "The frontend React SPA for the 4-key-metrics visualization",
 	"main": "index.js",
 	"scripts": {
 		"start": "npm run start:dev-api",

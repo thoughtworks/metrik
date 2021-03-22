@@ -1,32 +1,34 @@
-#   
+[![CircleCI](https://circleci.com/gh/four-keys/four-key-metrics.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/four-keys/four-key-metrics)
 
-<a rel="license" href="https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-image"><img align="right" alt="CircleCI status" style="border-width:0" src="https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-image.svg?style=svg&circle-token=bef0167b698070df83f9d2a59af5930fb25a98ff" /></a>
+
+<!-- PROJECT TITLE -->
 <h1 align="center">
-<sub>
-<img  src="https://i.loli.net/2021/02/10/r4ZClmDFd5OEfAY.png"
-      height=10%
-      width=10%>
-</sub>
-4 Key Metrics image
+  <sub>
+  <img  src="https://i.loli.net/2021/02/10/r4ZClmDFd5OEfAY.png"
+        height=5%
+        width=5%>
+  </sub>
+  Four Key Metrics
 </h1>
 <p align="center">
 <sup>
-     <i> Developed by SEA MU, ThoughtWorks Inc.</i>
+     <i> Maintained by SEA team, ThoughtWorks Inc.</i>
 </sup>
 <br>
 </p>
 
 
-Pack `4-Key-Metrics` production Docker image and publish to AWS ECR public repository with CircleCI.
+Pack `4-key-metrics` production Docker image and publish to AWS ECR public repository with CircleCI.
 
 Docker image repository: https://gallery.ecr.aws/j2s5d3z8/4-key-metrics
 
-## About image
+## About image build & publish process
 
-After manually trigger the CircleCI workflow, the pipeline will wrap the following environments and
-services in a Docker image.
+We use [CircleCI](https://circleci.com/) as the project CI/CD tool. As can be seen from the CircleCI config file under project home `$PROJECT_HOME/.circleci/config.yml`, 
+the CI/CD process is comprised of two workflows, both of which wraps the following services
+and tools in a Docker image:
 
-* Basic System
+* Basic OS
     * Ubuntu 18.04 (bionic)
 
 * Environments
@@ -35,69 +37,45 @@ services in a Docker image.
     * [Nginx](https://www.nginx.com)
 
 * Artifacts
-    * [4-Key-Metrics-service](https://github.com/twlabs/SEA-4-Key-Metrics-service)
-    * [4-Key-Metrics-dashboard](https://github.com/twlabs/SEA-4-Key-Metrics-dashboard)
+    * Frontend SPA resources
+    * Backend API jar
 
-The services above are managed by [Supervisord](http://supervisord.org).
+* Process management
+  * [Supervisord](http://supervisord.org)
 
-## Build a Docker image
+The two workflows `build-image-and-deploy-sandbox` `build-release-image` serve the test build and release build respectively. Each code commit/merge in `main`
+branch fires a test build in CircleCI, and produces a Docker image with `latest` tag. Team can view, test and verify the image validity. 
 
-Before manually trigger the CircleCI workflow to create Docker image, the following conditions must
-be met:
+Unlike test build, the release build can only be triggered by a three-part release version tag like `1.2.1`. The release Docker image
+which in turn will be tagged by the provided git version tag `1.2.1` and made public accessible in the image repository.
+ 
 
-* You are an employee of ThoughtWorks Inc.
-* You have the permission to access
-  the [SEA-4-Key-Metrics-image](https://github.com/twlabs/SEA-4-Key-Metrics-image) GitHub
-  repository.
-* You have the permission to access
-  the [CircleCI board for `SEA-4-Key-Metrics-image`](https://app.circleci.com/pipelines/github/twlabs/SEA-4-Key-Metrics-image)
-  .
-
-If you are a ThoughtWorks employee but don't have accessing permissions, please apply as the
-following steps:
-
-1. ThoughtWorks Okta > Labs on the cloud > Other Labs Applications > SEA 4 Key Metrics
-2. Click `I WANT TO` button, fill in the **GitHub username** and **application reason** then submit.
-3. You will receive an email about being invited to TWLabs soon.
-
-When all conditions are met, and you would like to build a new Docker image based on the latest
-codes for production, please do as the following steps:
-
-1. Access
-   the [CircleCI board for `SEA-4-Key-Metrics-image`](https://app.circleci.com/pipelines/github/twlabs/SEA-4-Key-Metrics-image)
-2. Find the latest pipeline build, click the
-   button <img src="https://i.loli.net/2021/02/10/GwXkCLqJKUWD3HI.png" width=18px height=18px> (the
-   first button in ACTIONS column) to manually trigger the workflow.
-3. The pipeline status will turn into green and show **Success** if CircleCI successfully creates
-   and publishes a new 4-Key-Metrics production Docker image to AWS ECR.
-
-![image.png](https://i.loli.net/2021/02/10/c3i5GKspjoPdaD8.png)
 
 ## Usage
 
 Please make sure that [Docker](https://www.docker.com) has already installed on your OS.
 
-You can pull the latest version of 4-Key-Metrics docker image by run the following command:
+You can pull the latest version of 4-key-metrics docker image by run the following command:
 
 ``` bash
 docker pull public.ecr.aws/j2s5d3z8/4-key-metrics:latest
 ```
 
-You can run the 4-Key-Metrics docker container by run the following command.
-
-⚠️ It is necessary to publish 80 port to access the dashboard. 
+You can run the 4-key-metrics docker container by via the following command:
 
 ``` bash
 docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:latest
 ```
+⚠️ *We use port 80 to access the frontend resources.
+You may switch to any other port in case port 80 is occupied by other apps running on your machine.*
 
-If you would like to stop the 4-Key-Metrics container, run the following command:
+If you would like to stop the 4-key-metrics container, run the following command:
 
 ``` bash
 docker stop 4km
 ```
 
-If you would like to remove the 4-Key-Metrics container and **all data inside**, run the following
+If you would like to remove the 4-key-metrics container and **all data inside**, run the following
 command:
 
 ``` bash
@@ -106,7 +84,7 @@ docker rm 4km
 
 ### Advanced usage
 
-If you would like to keep the 4-Key-Metrics data to avoid losing any data when remove container, you
+If you would like to keep the 4-key-metrics data to avoid losing any data when remove container, you
 can mount the MongoDB data folder `/data/db` out:
 
 ``` bash
@@ -116,7 +94,7 @@ docker run -d -p 80:80 --name 4km -v "/path/to/local/directory:/data/db" public.
 If you find any service doesn't work as expected, you can use the same way as above to mount the log
 folder `/app/logs` out to debug.
 
-If you would like test backend API with Swagger UI (port `9000`) or connect to database with a
+If you would like to view the Swagger doc of the backend API (port `9000`), or, connect to database with a
 MongoDB client (port `27017`), you can publish those ports when run docker container.
 
 ``` bash

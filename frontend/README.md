@@ -1,8 +1,6 @@
-# SEA-4-Key-Metrics-dashboard
+# 4-key-metrics frontend SPA
 
-ThoughtWorks SEA MU beach project - 4 Key Metrics - Frontend 
-
-[![CircleCI](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-dashboard.svg?style=svg&circle-token=a24dd401b150eb6be14792c72f9d522fe945eb4c)](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-dashboard)
+This is the frontend SPA of the 4-key-metrics measurement tool.
 
 # Requirement
 Node Version >= 10

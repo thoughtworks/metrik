@@ -10,7 +10,7 @@ plugins {
     kotlin("plugin.spring") version "1.4.21"
 }
 
-group = "sea-4-key-metrics-service"
+group = "4-key-metrics-backend"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -30,8 +30,8 @@ dependencyManagement {
 }
 
 sourceSets {
-    create("apiTest") { 
-        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output 
+    create("apiTest") {
+        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
         runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
         java.srcDir("src/api-test/kotlin")
         resources.srcDir("src/api-test/kotlin")

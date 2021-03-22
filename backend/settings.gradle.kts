@@ -1,1 +1,1 @@
-rootProject.name = "sea-4-key-metrics-service"
+rootProject.name = "4-key-metrics-backend"

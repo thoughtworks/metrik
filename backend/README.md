@@ -1,7 +1,6 @@
-# SEA-4-Key-Metrics-service
-This is the backend implementation about [4 key metric](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance). 
+# 4-key-metrics backend API
 
-[![CircleCI](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-service.svg?style=svg&circle-token=7f6ed8d0a1d7cb129e27853b3c38b9bc62cc1575)](https://circleci.com/gh/twlabs/SEA-4-Key-Metrics-service)
+This is the backend API layer of the 4-key-metrics measurement tool. 
 
 # Getting Started
 
@@ -15,7 +14,7 @@ This is the backend implementation about [4 key metric](https://cloud.google.com
 
 
 ### Run locally
-Checkout the repo to local and go to the project folder: /**/sea-4-key-metrics-service
+Checkout the repo to local and go to the project folder: `${REPO_FOLDER}/backend`
 * Build: 
 ```aidl
 ./gradlew clean build 

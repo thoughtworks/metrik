@@ -48,7 +48,7 @@ ENV MONGO_INITDB_ROOT_PASSWORD root
 ENV APP_ENV local
 
 COPY artifacts/backend/run.sh /app/4km-service.sh
-COPY artifacts/backend/build/libs/sea-4-key-metrics-service-*.jar /app/sea-4-key-metrics-service.jar
+COPY artifacts/backend/build/libs/4-key-metrics-backend-*.jar /app/4-key-metrics-backend.jar
 
 # Copy FRONTEND artifact
 COPY artifacts/frontend/dist /usr/share/nginx/html

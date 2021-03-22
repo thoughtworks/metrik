@@ -18,7 +18,7 @@
 </h1>
 <p align="center">
 <sup>
-     <i> Developed by SEA team, ThoughtWorks Inc.</i>
+     <i> Maintained by SEA team, ThoughtWorks Inc.</i>
 </sup>
 <br>
 </p>

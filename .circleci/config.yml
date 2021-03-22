@@ -61,7 +61,7 @@ jobs:
           root: ./
           paths:
             - backend/run.sh
-            - backend/build/libs/sea-4-key-metrics-service-*.jar
+            - backend/build/libs/4-key-metrics-backend-*.jar
 
   frontend-test-and-build:
     docker:

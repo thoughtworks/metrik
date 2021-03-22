@@ -2,7 +2,7 @@
 
 set -e
 
-JAR=/app/sea-4-key-metrics-service.jar
+JAR=/app/4-key-metrics-backend.jar
 
 java ${JAVA_OPTS} -jar -Dspring.profiles.active=$APP_ENV \
                   -Duser.timezone=Asia/Shanghai \
