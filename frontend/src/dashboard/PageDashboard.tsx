@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../shared/hooks/useQuery";
-import { getDurationTimeStamps } from "../shared/utils/timeFormats/timeFormats";
+import { getDurationTimestamps } from "../shared/utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
 import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../shared/constants/styles";
@@ -70,7 +70,7 @@ export const PageDashboard = () => {
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 
-		const durationTimestamps = getDurationTimeStamps(formValues.duration);
+		const durationTimestamps = getDurationTimestamps(formValues.duration);
 		getFourKeyMetricsUsingPost({
 			metricsQuery: {
 				startTime: durationTimestamps.startTimestamp!,

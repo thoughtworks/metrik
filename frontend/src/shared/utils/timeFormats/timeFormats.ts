@@ -29,7 +29,7 @@ export const getRangeTimeStamps = (duration: [Moment, Moment]) => {
 	const [start, end] = duration[0].isBefore(duration[1]) ? duration : [...duration].reverse();
 	return [momentObjToStartTimeStamp(start), momentObjToEndTimeStamp(end)];
 };
-export const getDurationTimeStamps = (duration: [Moment, Moment]) => {
+export const getDurationTimestamps = (duration: [Moment, Moment]) => {
 	const durationTimestamps = getRangeTimeStamps(duration);
 	return {
 		startTimestamp: min(durationTimestamps),
