@@ -45,7 +45,7 @@ describe("#fullscreenDataProcess #mapMetricsList", () => {
 			{
 				metricsSummaryData: 30,
 				metricsLevel: MetricsLevel.LOW,
-				metricsDataLabel: "AVG/Times / Fortnightly",
+				metricsDataLabel: "AVG Times / Fortnightly",
 				metricsText: "Deployment Frequency",
 				data: expectedData,
 			},
@@ -66,7 +66,7 @@ describe("#fullscreenDataProcess #mapMetricsList", () => {
 			{
 				metricsSummaryData: 30,
 				metricsLevel: MetricsLevel.LOW,
-				metricsDataLabel: "AVG%",
+				metricsDataLabel: "AVG %",
 				metricsText: "Change Failure Rate",
 				data: expectedData,
 			},
