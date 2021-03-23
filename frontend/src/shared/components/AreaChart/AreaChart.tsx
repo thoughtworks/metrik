@@ -36,6 +36,7 @@ const AreaChart = <T, K extends keyof T>({
 					</defs>
 					<Tooltip />
 					<Area
+						connectNulls
 						type={curveType}
 						dataKey={dataKey}
 						stroke={strokeColor}

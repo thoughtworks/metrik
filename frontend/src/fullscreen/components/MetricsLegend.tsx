@@ -44,7 +44,7 @@ const MetricsLegend = () => {
 					key={index}
 					rectangleWidth={"0.3rem"}
 					rectangleHeight={"0.3rem"}
-					wordType={"medium"}
+					wordType={"small"}
 					css={legendRectStyle}
 				/>
 			))}

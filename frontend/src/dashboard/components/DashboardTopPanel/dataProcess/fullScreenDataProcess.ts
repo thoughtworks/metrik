@@ -10,11 +10,11 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 	const leadTimeForChange = cleanMetricsInfo(metricsResponse.leadTimeForChange);
 	const meanTimeToRestore = cleanMetricsInfo(metricsResponse.meanTimeToRestore);
 	const changeFailureRate = cleanMetricsInfo(metricsResponse.changeFailureRate);
-	return [
+	const result = [
 		{
 			metricsSummaryData: deploymentFrequency.summary.value,
 			metricsLevel: deploymentFrequency.summary.level,
-			metricsDataLabel: `AVG/Times / ${samplingInterval}`,
+			metricsDataLabel: `AVG Times / ${samplingInterval}`,
 			metricsText: MetricsType.DEPLOYMENT_FREQUENCY,
 			data: deploymentFrequency.details,
 		},
@@ -35,11 +35,12 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 		{
 			metricsSummaryData: changeFailureRate.summary.value,
 			metricsLevel: changeFailureRate.summary.level,
-			metricsDataLabel: "AVG%",
+			metricsDataLabel: "AVG %",
 			metricsText: MetricsType.CHANGE_FAILURE_RATE,
 			data: changeFailureRate.details,
 		},
 	];
+	return result;
 };
 
 export const mapPipelines = (pipelineOptions: Option[], selectedStageList: Pipeline[]) => {

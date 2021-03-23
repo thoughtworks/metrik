@@ -33,6 +33,62 @@ const FullScreen = () => {
 		},
 		{ value: 0.0, startTimestamp: 1615219200000, endTimestamp: 1616428799000 },
 	];
+	const changeFailureData = [
+		{
+			value: undefined,
+			startTimestamp: 1605974400000,
+			endTimestamp: 1606751999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1606752000000,
+			endTimestamp: 1607961599999,
+		},
+		{ value: undefined, startTimestamp: 1607961600000, endTimestamp: 1609171199999 },
+		{ value: undefined, startTimestamp: 1609171200000, endTimestamp: 1610380799999 },
+		{
+			value: 0.4,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 23.27,
+			startTimestamp: 1612800000000,
+			endTimestamp: 1614009599999,
+		},
+	];
+	const leadTimeForChangeData = [
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 0.4,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 24.38,
+			startTimestamp: 1612800000000,
+			endTimestamp: 1614009599999,
+		},
+	];
 	const metricsList: FullscreenMetricsCardOptions[] = [
 		{
 			metricsSummaryData: 32.31,
@@ -46,7 +102,7 @@ const FullScreen = () => {
 			metricsLevel: MetricsLevel.LOW,
 			metricsDataLabel: "AVG Days",
 			metricsText: MetricsType.LEAD_TIME_FOR_CHANGE,
-			data: data,
+			data: leadTimeForChangeData,
 		},
 		{
 			metricsSummaryData: 3.31,
@@ -60,7 +116,7 @@ const FullScreen = () => {
 			metricsLevel: MetricsLevel.MEDIUM,
 			metricsDataLabel: "AVG%",
 			metricsText: MetricsType.CHANGE_FAILURE_RATE,
-			data: data,
+			data: changeFailureData,
 		},
 	];
 

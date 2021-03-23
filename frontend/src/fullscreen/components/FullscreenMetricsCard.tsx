@@ -6,6 +6,7 @@ import {
 	BLUE_5,
 	GRAY_11,
 	GRAY_6,
+	GRAY_7,
 	GREEN_DARK,
 	ORANGE_DARK,
 	RED_DARK,
@@ -94,7 +95,7 @@ const FullscreenMetricsCard = ({
 					<p css={{ marginBottom: "0.1rem" }}>
 						<Word text={metricsSummaryData} type="jumbo" />
 					</p>
-					<p css={{ marginBottom: "0" }}>
+					<p css={{ marginBottom: "0", color: GRAY_7 }}>
 						<Word text={metricsDataLabel} type="medium" />
 					</p>
 				</section>

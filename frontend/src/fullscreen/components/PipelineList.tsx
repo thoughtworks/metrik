@@ -4,10 +4,6 @@ import { BG_GRAY_DARK, BG_GRAY_LIGHT, GRAY_8 } from "../../shared/constants/styl
 interface PipelineListProps {
 	pipelineList: string[];
 }
-const pipelineListStyle = {
-	flexWrap: "wrap" as const,
-	justifyContent: "space-between",
-};
 const restPipelineListStyle = {
 	width: "100%",
 	maxHeight: "20vh",
@@ -15,7 +11,6 @@ const restPipelineListStyle = {
 	padding: "0 10px 10px 10px",
 	backgroundColor: BG_GRAY_LIGHT,
 	borderRadius: "20px",
-	alignContent: "flex-start",
 	position: "absolute" as const,
 	zIndex: 10,
 	marginTop: "10px",
@@ -27,6 +22,7 @@ const pipelineStyle = {
 	backgroundColor: BG_GRAY_DARK,
 	display: "inline-block",
 	marginTop: "10px",
+	marginRight: "10px",
 	whiteSpace: "nowrap" as const,
 	overflow: "hidden",
 	textOverflow: "ellipsis",
@@ -45,14 +41,12 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 	const showRestList = () => setIsRestLitShown(!isRestListShown);
 	return (
 		<section css={{ position: "relative" }}>
-			<div
-				css={{
-					display: "flex",
-					...pipelineListStyle,
-				}}>
+			<div>
 				{defaultShownList.map((pipeline, index) => (
 					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
 				))}
+			</div>
+			<div>
 				<Word
 					css={{
 						...pipelineStyle,
@@ -66,8 +60,7 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 			</div>
 			<div
 				css={{
-					display: isRestListShown ? "flex" : "none",
-					...pipelineListStyle,
+					display: isRestListShown ? "block" : "none",
 					...restPipelineListStyle,
 				}}>
 				{defaultHiddenList.map((pipeline, index) => (
