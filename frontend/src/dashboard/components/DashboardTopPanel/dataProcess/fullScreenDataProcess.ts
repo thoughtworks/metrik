@@ -16,28 +16,28 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 			metricsLevel: deploymentFrequency.summary.level,
 			metricsDataLabel: `AVG Times / ${samplingInterval}`,
 			metricsText: MetricsType.DEPLOYMENT_FREQUENCY,
-			data: deploymentFrequency.details,
+			data: addBaseValueToDetailData(deploymentFrequency.details),
 		},
 		{
 			metricsSummaryData: leadTimeForChange.summary.value,
 			metricsLevel: leadTimeForChange.summary.level,
 			metricsDataLabel: "AVG Days",
 			metricsText: MetricsType.LEAD_TIME_FOR_CHANGE,
-			data: leadTimeForChange.details,
+			data: addBaseValueToDetailData(leadTimeForChange.details),
 		},
 		{
 			metricsSummaryData: meanTimeToRestore.summary.value,
 			metricsLevel: meanTimeToRestore.summary.level,
 			metricsDataLabel: "AVG Hours",
 			metricsText: MetricsType.MEAN_TIME_TO_RESTORE,
-			data: meanTimeToRestore.details,
+			data: addBaseValueToDetailData(meanTimeToRestore.details),
 		},
 		{
 			metricsSummaryData: changeFailureRate.summary.value,
 			metricsLevel: changeFailureRate.summary.level,
 			metricsDataLabel: "AVG %",
 			metricsText: MetricsType.CHANGE_FAILURE_RATE,
-			data: changeFailureRate.details,
+			data: addBaseValueToDetailData(changeFailureRate.details),
 		},
 	];
 };
