@@ -12,10 +12,17 @@ internal class RequestUtilTest {
     }
 
     @Test
-    internal fun `should get domain with default port`() {
+    internal fun `should get domain with HTTP port`() {
         val domain = RequestUtil.getDomain("http://www.test.com")
 
         assertThat(domain).isEqualTo("http://www.test.com:80")
+    }
+
+    @Test
+    internal fun `should get domain with HTTPS port`() {
+        val domain = RequestUtil.getDomain("https://www.test.com")
+
+        assertThat(domain).isEqualTo("https://www.test.com:443")
     }
 
     @Test
@@ -26,9 +33,9 @@ internal class RequestUtilTest {
     }
 
     @Test
-    internal fun `should get domain with https protocol`() {
+    internal fun `should get domain with HTTPS protocol`() {
         val domain = RequestUtil.getDomain("https://www.test.com")
 
-        assertThat(domain).isEqualTo("https://www.test.com:80")
+        assertThat(domain).isEqualTo("https://www.test.com:443")
     }
 }
