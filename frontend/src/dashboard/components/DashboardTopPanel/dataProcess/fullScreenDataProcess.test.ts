@@ -77,18 +77,33 @@ describe("#fullscreenDataProcess #mapMetricsList", () => {
 });
 describe("#fullscreenDataProcess #mapPipelines", () => {
 	test("should map out correct pipelines type given pipelines from form data", () => {
-		const originalPipelines = [
+		const backendServicePipelineValue = "60594b5c9d70cd32a2798012";
+		const frontendServicdePipelineValue = "60594b849d70cd32a279813c";
+		const pipelineOptions = [
 			{
-				value: "PA",
-				childValue: "2km: a",
+				label: "backend-service",
+				value: backendServicePipelineValue,
+				children: [
+					{ label: "Deploy to DEV", value: "Deploy to DEV" },
+					{ label: "Deploy to UAT", value: "Deploy to UAT" },
+				],
 			},
 			{
-				value: "PB",
-				childValue: "2km: b",
+				label: "frontend-service",
+				value: frontendServicdePipelineValue,
+				children: [
+					{ label: "Deploy to DEV", value: "Deploy to DEV" },
+					{ label: "Deploy to UAT", value: "Deploy to UAT" },
+				],
 			},
 		];
-		const result = mapPipelines(originalPipelines);
-		const expectedPipelines = ["2km: a", "2km: b"];
-		expect(expectedPipelines).toEqual(result);
+
+		const selectedStageList = [
+			{ value: backendServicePipelineValue, childValue: "Deploy to DEV" },
+			{ value: frontendServicdePipelineValue, childValue: "Deploy to UAT" },
+		];
+		const result = mapPipelines(pipelineOptions, selectedStageList);
+		const expectedPipelines = ["backend-service:Deploy to DEV", "frontend-service:Deploy to UAT"];
+		expect(result).toEqual(expectedPipelines);
 	});
 });

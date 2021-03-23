@@ -300,7 +300,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				metricsList={mapMetricsList(metricsResponse, formValues.unit)}
 				startTimestamp={durationTimestamps.startTimestamp!}
 				endTimestamp={durationTimestamps.endTimestamp!}
-				pipelineList={mapPipelines(formValues.pipelines)}
+				pipelineList={mapPipelines(options, formValues.pipelines)}
 				isFullscreenVisible={isFullscreenVisible}
 			/>
 		</section>

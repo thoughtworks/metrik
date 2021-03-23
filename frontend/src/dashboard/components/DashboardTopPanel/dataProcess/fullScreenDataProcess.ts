@@ -2,6 +2,8 @@ import { MetricsType } from "../../../../shared/__types__/enum";
 import { cleanMetricsInfo } from "../../../../shared/utils/metricsDataUtils/metricsDataUtils";
 import { FourKeyMetrics, MetricsUnit } from "../../../../shared/clients/metricsApis";
 import { Pipeline } from "../DashboardTopPanel";
+import { Option } from "../../../../shared/components/MultipleCascadeSelect";
+import { generateTagLabel } from "../../../../shared/utils/dataTransform/dataTransform";
 
 export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval: MetricsUnit) => {
 	const deploymentFrequency = cleanMetricsInfo(metricsResponse.deploymentFrequency);
@@ -40,6 +42,8 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 	];
 };
 
-export const mapPipelines = (pipelines: Pipeline[]) => {
-	return pipelines.map(pipeline => pipeline.childValue);
+export const mapPipelines = (pipelineOptions: Option[], selectedStageList: Pipeline[]) => {
+	return selectedStageList.map(selectedStage => {
+		return generateTagLabel(pipelineOptions, selectedStage);
+	});
 };

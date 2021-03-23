@@ -6,8 +6,9 @@ import Trigger from "rc-trigger";
 import { css } from "@emotion/react";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import Overflow from "rc-overflow";
-import { first, omit, compact, isEqual, isEmpty } from "lodash";
+import { first, omit, isEqual, isEmpty } from "lodash";
 import { usePrevious } from "../hooks/usePrevious";
+import { findOptionByValue, generateTagLabel } from "../utils/dataTransform/dataTransform";
 
 const { Text } = Typography;
 
@@ -28,7 +29,7 @@ interface CascadeValue {
 	[key: string]: CascadeValueItem;
 }
 
-interface CascadeValueItem {
+export interface CascadeValueItem {
 	value: string;
 	childValue: string | undefined;
 }
@@ -70,8 +71,6 @@ const generateTriggerStyle = (disabled: boolean) => {
 		  `
 		: {};
 };
-const findOptionByValue = (options: Option[], value?: string): Option | undefined =>
-	options.find(o => o.value === value);
 
 const valuesToCascadeValue = (values: CascadeValueItem[]) => {
 	return values.reduce((res, item) => {
@@ -83,14 +82,6 @@ const valuesToCascadeValue = (values: CascadeValueItem[]) => {
 			},
 		};
 	}, {});
-};
-
-const generateTagLabel = (options: Option[], tag: CascadeValueItem) => {
-	const option = findOptionByValue(options, tag.value) || ({} as Option);
-	return compact([
-		option?.label,
-		findOptionByValue(option?.children ?? [], tag.childValue)?.label,
-	]).join(":");
 };
 
 const findExistsTags = (options: Option[], tags: CascadeValueItem[]) =>
