@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
         <Property name="LOG_PATTERN">
-            %d{yyyy-MM-dd HH:mm:ss.SSS} traceId:%X{traceId} ${hostName} --- [%t] %c{1.}:%m%n%ex
+            %p %d{yyyy-MM-dd HH:mm:ss.SSS} traceId:%X{traceId} ${hostName} --- [%t] %c{1.}:%m%n%ex
         </Property>
     </Properties>
 

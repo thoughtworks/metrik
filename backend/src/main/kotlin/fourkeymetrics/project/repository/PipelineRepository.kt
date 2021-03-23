@@ -2,6 +2,7 @@ package fourkeymetrics.project.repository
 
 import fourkeymetrics.project.exception.PipelineNotFoundException
 import fourkeymetrics.project.model.Pipeline
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -14,33 +15,45 @@ class PipelineRepository {
 
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     fun findById(pipelineId: String): Pipeline {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId)
         )
 
-        return mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
+        val result = mongoTemplate.findOne(query, Pipeline::class.java)
+        logger.info("Query result for pipeline with ID [$pipelineId] is [$result]")
+
+        return result ?: throw PipelineNotFoundException()
     }
 
     fun findByIdAndProjectId(pipelineId: String, projectId: String): Pipeline {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId).and("projectId").isEqualTo(projectId)
         )
+        val result = mongoTemplate.findOne(query, Pipeline::class.java)
 
-        return mongoTemplate.findOne(query, Pipeline::class.java) ?: throw PipelineNotFoundException()
+        logger.info("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is [$result]")
+        return result ?: throw PipelineNotFoundException()
     }
 
     fun findByNameAndProjectId(name: String, projectId: String): Pipeline? {
         val query = Query().addCriteria(Criteria.where("name").`is`(name).and("projectId").`is`(projectId))
 
-        return mongoTemplate.findOne(query, Pipeline::class.java)
+        val result = mongoTemplate.findOne(query, Pipeline::class.java)
+
+        logger.info("Query result for pipeline with name [$name] and project ID [$projectId] is [$result]")
+        return result
     }
 
     fun findByProjectId(projectId: String): List<Pipeline> {
         val query = Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId))
 
-        return mongoTemplate.find(query, Pipeline::class.java)
+        val result = mongoTemplate.find(query, Pipeline::class.java)
+
+        logger.info("Query result size for pipeline with project ID [$projectId] is [${result.size}]")
+        return result
     }
 
     fun deleteById(pipelineId: String) {
