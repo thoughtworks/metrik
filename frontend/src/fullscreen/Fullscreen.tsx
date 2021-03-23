@@ -6,6 +6,10 @@ import { Metrics } from "../shared/clients/metricsApis";
 
 const FullScreen = () => {
 	const [isFullscreenVisible, setIsPopoverVisible] = useState(false);
+	const BASE_VALUE = 10;
+	const VAlUE_TWO = 10;
+	const VAlUE_THREE = 0.2;
+
 	const data: Metrics[] = [
 		{
 			value: undefined,
@@ -19,19 +23,23 @@ const FullScreen = () => {
 		},
 		{ value: undefined, startTimestamp: 1607961600000, endTimestamp: 1609171199999 },
 		{ value: undefined, startTimestamp: 1609171200000, endTimestamp: 1610380799999 },
-		{ value: 62.73, startTimestamp: 1610380800000, endTimestamp: 1611590399999 },
 		{
-			value: 100.0,
+			value: 62.73 + VAlUE_TWO,
+			startTimestamp: 1610380800000,
+			endTimestamp: 1611590399999,
+		},
+		{
+			value: 100.0 + VAlUE_TWO,
 			startTimestamp: 1611590400000,
 			endTimestamp: 1612799999999,
 		},
-		{ value: 100.0, startTimestamp: 1612800000000, endTimestamp: 1614009599999 },
+		{ value: 100.0 + VAlUE_TWO, startTimestamp: 1612800000000, endTimestamp: 1614009599999 },
 		{
-			value: 15.79,
+			value: 15.79 + VAlUE_TWO,
 			startTimestamp: 1614009600000,
 			endTimestamp: 1615219199999,
 		},
-		{ value: 0.0, startTimestamp: 1615219200000, endTimestamp: 1616428799000 },
+		{ value: 0.1 + VAlUE_TWO, startTimestamp: 1615219200000, endTimestamp: 1616428799000 },
 	];
 	const changeFailureData = [
 		{
@@ -47,12 +55,12 @@ const FullScreen = () => {
 		{ value: undefined, startTimestamp: 1607961600000, endTimestamp: 1609171199999 },
 		{ value: undefined, startTimestamp: 1609171200000, endTimestamp: 1610380799999 },
 		{
-			value: 0.4,
+			value: 0.4 + BASE_VALUE,
 			startTimestamp: 1611590400000,
 			endTimestamp: 1612799999999,
 		},
 		{
-			value: 23.27,
+			value: 23.27 + BASE_VALUE,
 			startTimestamp: 1612800000000,
 			endTimestamp: 1614009599999,
 		},
@@ -69,7 +77,7 @@ const FullScreen = () => {
 			endTimestamp: 1612799999999,
 		},
 		{
-			value: 0.4,
+			value: 0.4 + VAlUE_THREE,
 			startTimestamp: 1611590400000,
 			endTimestamp: 1612799999999,
 		},
@@ -84,7 +92,39 @@ const FullScreen = () => {
 			endTimestamp: 1612799999999,
 		},
 		{
-			value: 24.38,
+			value: 0.2 + VAlUE_THREE,
+			startTimestamp: 1612800000000,
+			endTimestamp: 1614009599999,
+		},
+	];
+	const deploymentFrequencyData = [
+		{
+			value: 10,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 0.1,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: undefined,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 0.1,
+			startTimestamp: 1611590400000,
+			endTimestamp: 1612799999999,
+		},
+		{
+			value: 0.1,
 			startTimestamp: 1612800000000,
 			endTimestamp: 1614009599999,
 		},
@@ -95,7 +135,7 @@ const FullScreen = () => {
 			metricsLevel: MetricsLevel.ELITE,
 			metricsDataLabel: "AVG/Times / Fortnight",
 			metricsText: MetricsType.DEPLOYMENT_FREQUENCY,
-			data: data,
+			data: deploymentFrequencyData,
 		},
 		{
 			metricsSummaryData: 31.1,

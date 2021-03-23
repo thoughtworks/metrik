@@ -1,4 +1,9 @@
-import { mapMetricsList, mapPipelines } from "./fullScreenDataProcess";
+import {
+	addBaseValueToDetailData,
+	isNumber,
+	mapMetricsList,
+	mapPipelines,
+} from "./fullScreenDataProcess";
 import { MetricsLevel } from "../../../../shared/__types__/enum";
 import { MetricsUnit } from "../../../../shared/clients/metricsApis";
 
@@ -105,5 +110,113 @@ describe("#fullscreenDataProcess #mapPipelines", () => {
 		const result = mapPipelines(pipelineOptions, selectedStageList);
 		const expectedPipelines = ["backend-service:Deploy to DEV", "frontend-service:Deploy to UAT"];
 		expect(result).toEqual(expectedPipelines);
+	});
+});
+
+describe("#fullscreenDataProcess #isNumber", () => {
+	test("should detect whether number when given various type of data", () => {
+		expect(isNumber(undefined)).toBe(false);
+		expect(isNumber("nana")).toBe(false);
+		expect(isNumber(10)).toBe(true);
+		expect(isNumber(-10)).toBe(true);
+		expect(isNumber(0.1)).toBe(true);
+	});
+});
+
+describe("#fullscreenDataProcess #addBaseValueToDetailData", () => {
+	test("should not add base value to details data when contains none items with number value", () => {
+		const originalDetailsData = [
+			{
+				value: undefined,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: undefined,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+		];
+		const expectedResult = [...originalDetailsData];
+		const result = addBaseValueToDetailData(originalDetailsData);
+		expect(expectedResult).toEqual(result);
+	});
+	test("should add base value to details data when contains only one items with number value", () => {
+		const originalDetailsData = [
+			{
+				value: undefined,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: 15.79,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+		];
+		const expectedResult = [...originalDetailsData];
+		const result = addBaseValueToDetailData(originalDetailsData);
+		expect(expectedResult).toEqual(result);
+	});
+
+	test("should add base value to details data when contains item of max value and min value are equal", () => {
+		const originalDetailsData = [
+			{
+				value: 10,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: undefined,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+			{
+				value: 10,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+		];
+		const expectedResult = [...originalDetailsData];
+		const result = addBaseValueToDetailData(originalDetailsData);
+		expect(expectedResult).toEqual(result);
+	});
+	test("should add base value to details data when contains item of max value and min value are not equal", () => {
+		const originalDetailsData = [
+			{
+				value: 0.1,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: undefined,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: 1.1,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+		];
+		const expectedResult = [
+			{
+				value: 0.1 + 0.5,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: undefined,
+				endTimestamp: 1607961599999,
+				startTimestamp: 1606752000000,
+			},
+			{
+				value: 1.1 + 0.5,
+				endTimestamp: 1615219199999,
+				startTimestamp: 1614009600000,
+			},
+		];
+		const result = addBaseValueToDetailData(originalDetailsData);
+		expect(expectedResult).toEqual(result);
 	});
 });

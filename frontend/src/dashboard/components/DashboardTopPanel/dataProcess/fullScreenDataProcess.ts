@@ -1,6 +1,6 @@
 import { MetricsType } from "../../../../shared/__types__/enum";
 import { cleanMetricsInfo } from "../../../../shared/utils/metricsDataUtils/metricsDataUtils";
-import { FourKeyMetrics, MetricsUnit } from "../../../../shared/clients/metricsApis";
+import { FourKeyMetrics, Metrics, MetricsUnit } from "../../../../shared/clients/metricsApis";
 import { Pipeline } from "../DashboardTopPanel";
 import { Option } from "../../../../shared/components/MultipleCascadeSelect";
 import { generateTagLabel } from "../../../../shared/utils/dataTransform/dataTransform";
@@ -10,7 +10,7 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 	const leadTimeForChange = cleanMetricsInfo(metricsResponse.leadTimeForChange);
 	const meanTimeToRestore = cleanMetricsInfo(metricsResponse.meanTimeToRestore);
 	const changeFailureRate = cleanMetricsInfo(metricsResponse.changeFailureRate);
-	const result = [
+	return [
 		{
 			metricsSummaryData: deploymentFrequency.summary.value,
 			metricsLevel: deploymentFrequency.summary.level,
@@ -40,11 +40,33 @@ export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval
 			data: changeFailureRate.details,
 		},
 	];
-	return result;
 };
 
 export const mapPipelines = (pipelineOptions: Option[], selectedStageList: Pipeline[]) => {
 	return selectedStageList.map(selectedStage => {
 		return generateTagLabel(pipelineOptions, selectedStage);
+	});
+};
+export const isNumber = (value: any) => {
+	return Number(value) === value;
+};
+
+export const addBaseValueToDetailData = (details: Metrics[]) => {
+	const detailsDataArray: number[] = details
+		.map(({ value }) => value)
+		.filter(value => isNumber(value)) as number[];
+	if (detailsDataArray.length < 2) return [...details];
+
+	const minValue = Math.min(...detailsDataArray);
+	const maxValue = Math.max(...detailsDataArray);
+	const baseValue = Math.abs(maxValue - minValue);
+	if (baseValue === 0) return [...details];
+
+	return details.map(item => {
+		if (isNumber(item.value)) {
+			return { ...item, ...{ value: (item.value as number) + baseValue / 2 } };
+		} else {
+			return { ...item };
+		}
 	});
 };
