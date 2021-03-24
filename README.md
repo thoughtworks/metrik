@@ -10,11 +10,10 @@
 <!-- PROJECT TITLE -->
 <h1 align="center">
   <sub>
-  <img  src="https://i.loli.net/2021/02/10/r4ZClmDFd5OEfAY.png"
-        height=5%
-        width=5%>
+  <img  src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/frontend/src/shared/assets/source/logo.svg"
+        height=20%
+        width=20%>
   </sub>
-  Four Key Metrics
 </h1>
 <p align="center">
 <sup>
@@ -72,7 +71,7 @@ The product is released to Docker repository `public.ecr.aws/j2s5d3z8/4-key-metr
 You can run the container locally via the following command:
 
 ``` bash
-docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.0
+docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 ⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.
 
@@ -81,13 +80,13 @@ docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.0
 After the container is running on your machine. Go to your favourate browser and open the app. If running in local that would be `http://localhost:80/`.
 
 1. Start the configuration:
-  <div><img src="https://i.loli.net/2021/03/18/qS12tGAP6J3BO7s.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step1.png" height=70% width=70%></div>
 
 2. And the charts for each key metric will be available at the main page:
-  <div><img src="https://i.loli.net/2021/03/18/5UVLrShvBGpwtkI.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step2.png" height=70% width=70%></div>
 
 3. Also the full screen view if you want to put it on big screens:
-  <div><img src="https://i.loli.net/2021/03/18/HntUEbz2cD4kNBu.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step3.png" height=70% width=70%></div>
 
 ### Advanced usage
 
