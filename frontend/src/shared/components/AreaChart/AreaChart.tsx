@@ -30,8 +30,8 @@ const AreaChart = <T, K extends keyof T>({
 				<ReChartAreaChart data={data}>
 					<defs>
 						<linearGradient id="areaColor" x1="0" y1="0%" x2="0" y2="100%">
-							<stop offset="5%" stopColor={areaGradientColor} stopOpacity={1} />
-							<stop offset="95%" stopColor={areaGradientColor} stopOpacity={0.1} />
+							<stop offset="0%" stopColor={areaGradientColor} stopOpacity={1} />
+							<stop offset="100%" stopColor={"RGBA(90, 90, 90, 1)"} stopOpacity={0} />
 						</linearGradient>
 					</defs>
 					<Tooltip />

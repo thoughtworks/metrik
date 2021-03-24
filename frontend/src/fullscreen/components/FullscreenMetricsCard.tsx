@@ -52,7 +52,7 @@ const MetricsLevelConfig: MetricsLevelBaseConfig = {
 };
 const cardStyle = {
 	width: "49%",
-	height: "42.5vh",
+	height: "46.5vh",
 	backgroundColor: GRAY_11,
 	color: "white",
 	position: "relative" as const,
@@ -73,7 +73,7 @@ const FullscreenMetricsCard = ({
 			<article css={cardStyle}>
 				<section css={dataDisplayStyle}>
 					<p>
-						<Word text={metricsText} type="xxLargeLight" />
+						<Word text={metricsText} type="largeSuperLight" />
 					</p>
 					<p css={{ margin: "0.3rem 0" }}>
 						<Word
@@ -107,7 +107,7 @@ const FullscreenMetricsCard = ({
 					height={"17%"}
 					strokeColor={metricsLevelIndicationColor}
 					strokeWidth={5}
-					areaGradientColor={"#5A5A5A"}
+					areaGradientColor={"RGBA(155, 155, 155, 1)"}
 					curveType={"monotone"}
 				/>
 			</article>

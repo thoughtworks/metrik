@@ -16,7 +16,7 @@ const restPipelineListStyle = {
 };
 
 const pipelineStyle = {
-	padding: "10px 19px",
+	padding: "7px 19px",
 	borderRadius: "19px",
 	backgroundColor: BG_GRAY_DARK,
 	display: "inline-block",
@@ -42,7 +42,7 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 		<section css={{ position: "relative" }}>
 			<div>
 				{defaultShownList.map((pipeline, index) => (
-					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
+					<Word css={pipelineStyle} text={pipeline} type={"mediumSuperLight"} key={index} />
 				))}
 			</div>
 			<div>
@@ -53,7 +53,7 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 						display: pipelineList.length > DEFAULT_SHOWN_NUMBER ? "inline-block" : "none",
 					}}
 					text={isRestListShown ? "Show Less" : "Show More"}
-					type={"medium"}
+					type={"mediumSuperLight"}
 					onClick={showRestList}
 				/>
 			</div>

@@ -19,8 +19,8 @@ interface FullscreenDashboardProps {
 	isFullscreenVisible: boolean;
 }
 const pageContentStyle = {
-	width: "94vw",
-	height: "90vh",
+	width: "95vw",
+	height: "95vh",
 	display: "flex",
 	justifyContent: "space-between",
 };
@@ -86,9 +86,15 @@ const FullscreenDashboard = ({
 							<Word text={"Duration"} type={"large"} />
 						</p>
 						<p>
-							<Word text={moment(startTimestamp).format(dateFormatYYYYMMDD)} type={"large"} />
+							<Word
+								text={moment(startTimestamp).format(dateFormatYYYYMMDD)}
+								type={"mediumSuperLight"}
+							/>
 							<SwapRightOutlined css={{ fontSize: "0.3rem", margin: "0 0.1rem" }} />
-							<Word text={moment(endTimestamp).format(dateFormatYYYYMMDD)} type={"large"} />
+							<Word
+								text={moment(endTimestamp).format(dateFormatYYYYMMDD)}
+								type={"mediumSuperLight"}
+							/>
 						</p>
 						<div>
 							<p css={{ marginBottom: 0, color: GRAY_1, opacity: 0.5 }}>

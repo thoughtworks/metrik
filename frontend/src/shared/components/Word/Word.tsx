@@ -6,7 +6,9 @@ export type WordType =
 	| "xxLargeLight"
 	| "xLarge"
 	| "large"
+	| "largeSuperLight"
 	| "medium"
+	| "mediumSuperLight"
 	| "small"
 	| "xSmall";
 interface WordProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -43,10 +45,18 @@ const styleMap = {
 		fontSize: "0.32rem",
 		fontWeight: 400,
 	},
+	largeSuperLight: {
+		fontSize: "0.32rem",
+		fontWeight: 200,
+	},
 	medium: {
 		fontSize: "0.24rem",
 		fontWeight: 400,
 		lineHeight: "0.24rem",
+	},
+	mediumSuperLight: {
+		fontSize: "0.24rem",
+		fontWeight: 200,
 	},
 	small: {
 		fontSize: "0.14rem",
