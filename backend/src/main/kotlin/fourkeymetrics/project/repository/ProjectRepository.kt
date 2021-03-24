@@ -2,6 +2,7 @@ package fourkeymetrics.project.repository
 
 import fourkeymetrics.project.exception.ProjectNotFoundException
 import fourkeymetrics.project.model.Project
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.find
@@ -13,9 +14,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class ProjectRepository {
-
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     fun existWithGivenName(name: String): Boolean {
         val query = Query().addCriteria(Criteria.where("name").`is`(name))
@@ -23,7 +24,9 @@ class ProjectRepository {
     }
 
     fun findById(id: String): Project {
-        return mongoTemplate.findById(id, Project::class.java) ?: throw ProjectNotFoundException()
+        val result = mongoTemplate.findById(id, Project::class.java)
+        logger.debug("Query result project ID [$id] is [${result}]")
+        return result ?: throw ProjectNotFoundException()
     }
 
     fun save(project: Project): Project {
@@ -31,7 +34,9 @@ class ProjectRepository {
     }
 
     fun findAll(): List<Project> {
-        return mongoTemplate.findAll(Project::class.java)
+        val result = mongoTemplate.findAll(Project::class.java)
+        logger.debug("Query result size for all projects is [${result.size}]")
+        return result
     }
 
     fun deleteById(projectId: String) {

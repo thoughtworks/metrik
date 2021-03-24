@@ -60,10 +60,10 @@ class BambooPipelineService(
     }
 
     override fun syncBuilds(pipelineId: String): List<Build> {
-        logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
+        logger.info("For Bamboo pipeline $pipelineId: Started data sync")
         val pipeline = pipelineRepository.findById(pipelineId)
         val credential = pipeline.credential
-        val headers = buildHeaders(mapOf(Pair("Authentication", "Bearer $credential")))
+        val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
         val entity = HttpEntity<String>(headers)
 
         try {
@@ -74,14 +74,15 @@ class BambooPipelineService(
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
-            logger.info("Total build number: [$maxBuildNumber], [${buildNumbersToSync.size}] of them need to be synced")
+            logger.info("For Bamboo pipeline $pipelineId: total build number: [$maxBuildNumber], " +
+                    "[${buildNumbersToSync.size}] of them need to be synced")
 
             val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
                 val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
                 convertToBuild(buildDetailResponse, pipelineId)
             }.toList()
 
-            logger.info("Successfully synced [${builds.size}] builds")
+            logger.info("For Bamboo pipeline $pipelineId: Successfully synced [${builds.size}] builds")
             buildRepository.save(builds)
 
             return builds

@@ -31,11 +31,13 @@ class SynchronizationApplicationService {
 
 
     fun synchronize(projectId: String): Long? {
+        logger.info("Started synchronization for project [$projectId]")
         val project = projectRepository.findById(projectId)
 
         val currentTimeMillis = System.currentTimeMillis()
         val pipelines = pipelineRepository.findByProjectId(project.id)
 
+        logger.info("Synchronizing [${pipelines.size}] pipelines under project [$projectId]")
         pipelines.parallelStream().forEach {
             try {
                 if(it.type == PipelineType.JENKINS) {
