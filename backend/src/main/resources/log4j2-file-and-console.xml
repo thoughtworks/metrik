@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
         <Property name="LOG_PATTERN">
-            %p %d{yyyy-MM-dd HH:mm:ss.SSS} traceId:%X{traceId} ${hostName} --- [%t] %c{1.}:%m%n%ex
+            %p %d{yyyy-MM-dd HH:mm:ss.SSS} traceId:%X{traceId} --- [%t] %c{1.}:%m%n%ex
         </Property>
         <Property name="baseDir">/app/logs</Property>
     </Properties>
@@ -21,7 +21,7 @@
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="50M"/>
+                <SizeBasedTriggeringPolicy size="200M"/>
             </Policies>
             <DefaultRolloverStrategy max="2">
                 <Delete basePath="${baseDir}" maxDepth="1">
