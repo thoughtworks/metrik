@@ -30,7 +30,7 @@ const MetricsLegend = () => {
 	];
 	const legendRectStyle = {
 		display: "block",
-		marginBottom: "10px",
+		marginBottom: "2px",
 	};
 	return (
 		<div>

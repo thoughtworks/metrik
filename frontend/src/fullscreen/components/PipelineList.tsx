@@ -21,7 +21,7 @@ const pipelineStyle = {
 	borderRadius: "19px",
 	backgroundColor: BG_GRAY_DARK,
 	display: "inline-block",
-	marginTop: "10px",
+	marginTop: "2px",
 	marginRight: "10px",
 	whiteSpace: "nowrap" as const,
 	overflow: "hidden",

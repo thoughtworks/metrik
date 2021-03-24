@@ -1,5 +1,5 @@
 import React, { useState, KeyboardEvent } from "react";
-import { ChartData, FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
+import { FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
 import { MetricsLevel, MetricsType } from "../shared/__types__/enum";
 import FullscreenDashboard from "./components/FullscreenDashboard";
 import { Metrics } from "../shared/clients/metricsApis";

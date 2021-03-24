@@ -80,11 +80,11 @@ const FullscreenMetricsCard = ({
 							text={metricsLevel}
 							type="xLarge"
 							style={{
-								fontFamily: "Futura",
+								fontFamily: "Futura-CondensedMedium",
 								backgroundColor: metricsLevelIndicationColor,
 								borderRadius: "4px",
 								color: "white",
-								width: "2rem",
+								width: "1.5rem",
 								height: "0.56rem",
 								display: "inline-flex",
 								justifyContent: "center",
