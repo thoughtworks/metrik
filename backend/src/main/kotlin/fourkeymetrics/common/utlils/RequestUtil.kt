@@ -8,10 +8,10 @@ object RequestUtil {
     private const val HTTPS_PORT = 443
     private const val UNDEFINED_PORT = -1
 
-    fun buildBearerHeader(credential: String): HttpHeaders {
-        val headers = HttpHeaders()
-        headers.setBearerAuth(credential)
-        return headers
+    fun buildHeaders(headers: Map<String, String>): HttpHeaders {
+        val result = HttpHeaders()
+        result.setAll(headers)
+        return result
     }
 
     fun getDomain(pipelineURL: String): String {

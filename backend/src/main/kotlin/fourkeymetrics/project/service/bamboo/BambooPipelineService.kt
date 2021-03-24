@@ -4,7 +4,7 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.Status
-import fourkeymetrics.common.utlils.RequestUtil.buildBearerHeader
+import fourkeymetrics.common.utlils.RequestUtil.buildHeaders
 import fourkeymetrics.common.utlils.RequestUtil.getDomain
 import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
 import fourkeymetrics.exception.ApplicationException
@@ -39,7 +39,12 @@ class BambooPipelineService(
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for pipeline [$pipeline]")
-        val headers = buildBearerHeader(pipeline.credential)
+        val headers = buildHeaders(
+            mapOf(
+                Pair("Authorization", "Bearer ${pipeline.credential}"),
+                Pair("Connection", "close")
+            )
+        )
         val entity = HttpEntity<String>(headers)
 
         try {
@@ -58,7 +63,7 @@ class BambooPipelineService(
         logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
         val pipeline = pipelineRepository.findById(pipelineId)
         val credential = pipeline.credential
-        val headers = buildBearerHeader(credential)
+        val headers = buildHeaders(mapOf(Pair("Authentication", "Bearer $credential")))
         val entity = HttpEntity<String>(headers)
 
         try {

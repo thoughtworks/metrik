@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 internal class RequestUtilTest {
     @Test
     internal fun `should build a bearer header`() {
-        val header = RequestUtil.buildBearerHeader("test")
+        val header = RequestUtil.buildHeaders(mapOf(Pair("Authorization", "Bearer test")))
 
         assertThat(header["Authorization"]!![0]).isEqualTo("Bearer test")
     }
