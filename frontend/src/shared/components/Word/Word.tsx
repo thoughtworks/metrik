@@ -2,7 +2,8 @@ import React from "react";
 export type WordType =
 	| "jumbo"
 	| "xxxLarge"
-	| "xxLarge"
+	| "xxLargeBold"
+	| "xxLargeLight"
 	| "xLarge"
 	| "large"
 	| "medium"
@@ -23,7 +24,12 @@ const styleMap = {
 		fontSize: "0.64rem",
 		fontWeight: 700,
 	},
-	xxLarge: {
+	xxLargeBold: {
+		fontSize: "0.48rem",
+		fontWeight: 700,
+		lineHeight: "0.48rem",
+	},
+	xxLargeLight: {
 		fontSize: "0.48rem",
 		fontWeight: 300,
 		lineHeight: "0.48rem",

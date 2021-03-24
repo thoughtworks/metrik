@@ -179,6 +179,11 @@ const FullScreen = () => {
 		"2km: 4km",
 		"2km: 4km",
 		"2km: 4km",
+		"2km: 4km",
+		"2km: 4km",
+		"2km: 4km",
+		"2km: 4km",
+		"2km: 4km",
 	];
 	const showFullscreen = () => {
 		setIsPopoverVisible(true);

@@ -1,6 +1,6 @@
 import Word from "../../shared/components/Word/Word";
 import React, { useState } from "react";
-import { BG_GRAY_DARK, BG_GRAY_LIGHT, GRAY_8 } from "../../shared/constants/styles";
+import { BG_GRAY_DARK, BG_GRAY_LIGHT } from "../../shared/constants/styles";
 interface PipelineListProps {
 	pipelineList: string[];
 }
@@ -8,12 +8,11 @@ const restPipelineListStyle = {
 	width: "100%",
 	maxHeight: "20vh",
 	overflow: "scroll",
-	padding: "0 10px 10px 10px",
+	padding: "10px 10px 6px 10px",
 	backgroundColor: BG_GRAY_LIGHT,
 	borderRadius: "20px",
 	position: "absolute" as const,
 	zIndex: 10,
-	marginTop: "10px",
 };
 
 const pipelineStyle = {

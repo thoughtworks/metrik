@@ -73,14 +73,14 @@ const FullscreenMetricsCard = ({
 			<article css={cardStyle}>
 				<section css={dataDisplayStyle}>
 					<p>
-						<Word text={metricsText} type="xxLarge" />
+						<Word text={metricsText} type="xxLargeLight" />
 					</p>
 					<p css={{ margin: "0.3rem 0" }}>
 						<Word
 							text={metricsLevel}
 							type="xLarge"
 							style={{
-								fontFamily: "Futura-CondensedMedium",
+								fontFamily: "Oswald",
 								backgroundColor: metricsLevelIndicationColor,
 								borderRadius: "4px",
 								color: "white",

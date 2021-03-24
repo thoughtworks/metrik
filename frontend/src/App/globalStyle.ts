@@ -9,4 +9,7 @@ export const globalStyles = {
 	".fullscreen-dashboard-modal .ant-modal-body": {
 		padding: 0,
 	},
+	".fullscreen-dashboard-modal.ant-modal-wrap": {
+		overflow: "hidden",
+	},
 };

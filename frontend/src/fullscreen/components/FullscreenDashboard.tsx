@@ -78,7 +78,7 @@ const FullscreenDashboard = ({
 				<section css={dataPropsSectionStyle}>
 					<Logo />
 					<p css={{ margin: "0.3rem 0 0.5rem" }}>
-						<Word text={projectName} type={"xxxLarge"} />
+						<Word text={projectName} type={"xxLargeBold"} />
 					</p>
 					<div>
 						<p css={{ marginBottom: 0, color: GRAY_1, opacity: 0.5 }}>
