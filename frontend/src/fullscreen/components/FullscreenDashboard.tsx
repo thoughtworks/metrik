@@ -63,6 +63,7 @@ const escHintStyle = {
 	color: GRAY_1,
 	position: "absolute" as const,
 	bottom: 0,
+	marginBottom: 0,
 };
 const FullscreenDashboard = ({
 	projectName,
