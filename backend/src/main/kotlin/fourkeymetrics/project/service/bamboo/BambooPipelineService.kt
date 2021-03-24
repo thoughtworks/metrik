@@ -38,7 +38,7 @@ class BambooPipelineService(
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
-        logger.info("Started verification for pipeline [$pipeline]")
+        logger.info("Started verification for Bamboo pipeline [$pipeline]")
         val headers = buildHeaders(
             mapOf(
                 Pair("Authorization", "Bearer ${pipeline.credential}"),
@@ -49,9 +49,9 @@ class BambooPipelineService(
 
         try {
             val url = "${getDomain(pipeline.url)}/rest/api/latest/project/"
-            logger.info("Sending request to [$url] with entity [$entity]")
+            logger.info("Bamboo verification - Sending request to [$url] with entity [$entity]")
             val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
-            logger.info("Response from [$url]: $responseEntity")
+            logger.info("Bamboo verification - Response from [$url]: $responseEntity")
         } catch (ex: HttpServerErrorException) {
             throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -60,7 +60,7 @@ class BambooPipelineService(
     }
 
     override fun syncBuilds(pipelineId: String): List<Build> {
-        logger.info("For Bamboo pipeline $pipelineId: Started data sync")
+        logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
         val pipeline = pipelineRepository.findById(pipelineId)
         val credential = pipeline.credential
         val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
@@ -74,7 +74,7 @@ class BambooPipelineService(
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
-            logger.info("For Bamboo pipeline $pipelineId: total build number: [$maxBuildNumber], " +
+            logger.info("For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
                     "[${buildNumbersToSync.size}] of them need to be synced")
 
             val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
@@ -82,7 +82,7 @@ class BambooPipelineService(
                 convertToBuild(buildDetailResponse, pipelineId)
             }.toList()
 
-            logger.info("For Bamboo pipeline $pipelineId: Successfully synced [${builds.size}] builds")
+            logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${builds.size}] builds")
             buildRepository.save(builds)
 
             return builds
@@ -120,7 +120,8 @@ class BambooPipelineService(
         }
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
-        logger.debug("Started converting BuildDetailDTO [$buildDetailResponse] for pipeline [$pipelineId]")
+        logger.debug("Bamboo converting: Started converting BuildDetailDTO " +
+                "[$buildDetailResponse] for pipeline [$pipelineId]")
         val buildTimestamp = getBuildTimestamp(buildDetailResponse)
         val stages = buildDetailResponse.stages.stage.mapNotNull {
             convertToBuildStage(it)
@@ -138,7 +139,7 @@ class BambooPipelineService(
                 Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
             }
         )
-        logger.debug("Build converted result: [$build]")
+        logger.debug("Bamboo converting: Build converted result: [$build]")
         return build
     }
 
@@ -152,17 +153,17 @@ class BambooPipelineService(
     ): BuildDetailDTO {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}-${buildNumber}.json?" +
                 "expand=changes.change,stages.stage.results"
-        logger.info("Sending request to [$url] with entity [$entity]")
+        logger.info("Get build details - Sending request to [$url] with entity [$entity]")
         val responseEntity = restTemplate.exchange<BuildDetailDTO>(url, HttpMethod.GET, entity)
-        logger.info("Response from [$url]: $responseEntity")
+        logger.info("Get build details - Response from [$url]: $responseEntity")
         return responseEntity.body!!
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, entity: HttpEntity<String>): Int {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}.json"
-        logger.info("Sending request to [$url] with entity [$entity]")
+        logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
-        logger.info("Response from [$url]: $response")
+        logger.info("Get max build number - Response from [$url]: $response")
         val buildSummaryDTO = response.body!!
         return buildSummaryDTO.results.result.first().buildNumber
     }
@@ -175,7 +176,7 @@ class BambooPipelineService(
     }
 
     private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
-        logger.debug("Started converting StageDTO [$stageDTO]")
+        logger.debug("Bamboo converting: Started converting StageDTO [$stageDTO]")
         val isInProgress = stageDTO.state == "Unknown" ||
                 stageDTO.results.result.any {
                     it.buildStartedTime == null || it.buildCompletedTime == null || it.buildDuration == null
@@ -200,7 +201,7 @@ class BambooPipelineService(
             0,
             completedTimeMillis
         )
-        logger.debug("Stage converted result: [$stage]")
+        logger.debug("Bamboo converting: Stage converted result: [$stage]")
         return stage
     }
 }

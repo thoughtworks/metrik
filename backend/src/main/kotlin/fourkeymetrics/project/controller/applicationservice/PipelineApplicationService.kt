@@ -9,6 +9,7 @@ import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.bamboo.BambooPipelineService
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -33,7 +34,10 @@ class PipelineApplicationService {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
+        logger.info("Started verification for pipeline [$pipeline]")
         when (pipeline.type) {
             PipelineType.JENKINS -> {
                 jenkinsPipelineService.verifyPipelineConfiguration(pipeline)
