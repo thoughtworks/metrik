@@ -12,4 +12,12 @@ export const globalStyles = {
 	".fullscreen-dashboard-modal.ant-modal-wrap": {
 		overflow: "hidden",
 	},
+	"::-webkit-scrollbar-track-piece": {
+		backgroundColor: "transparent",
+	},
+	"::-webkit-scrollbar-color": {
+		"&:corner-present": {
+			display: "none",
+		},
+	},
 };
