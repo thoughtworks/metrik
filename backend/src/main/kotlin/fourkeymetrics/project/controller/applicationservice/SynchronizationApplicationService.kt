@@ -46,7 +46,7 @@ class SynchronizationApplicationService {
                     bambooPipelineService.syncBuilds(it.id)
                 }
             } catch (e: RuntimeException) {
-                logger.error("Synchronize failed for pipeline [${it.id}], error message: [${e.message}]")
+                logger.error("Synchronize failed for pipeline [${it.id}], error: [$e]")
                 throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronize failed")
             }
         }

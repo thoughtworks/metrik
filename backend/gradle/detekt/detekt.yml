@@ -210,7 +210,7 @@ exceptions:
     active: false
   TooGenericExceptionCaught:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**', '**SynchronizationApplicationService**']
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**', '**SynchronizationApplicationService**', '**BambooPipelineService**']
     exceptionNames:
      - ArrayIndexOutOfBoundsException
      - Error

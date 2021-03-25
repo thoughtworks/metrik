@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
@@ -120,27 +121,34 @@ class BambooPipelineService(
         }
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
-        logger.debug("Bamboo converting: Started converting BuildDetailDTO " +
-                "[$buildDetailResponse] for pipeline [$pipelineId]")
-        val buildTimestamp = getBuildTimestamp(buildDetailResponse)
-        val stages = buildDetailResponse.stages.stage.mapNotNull {
-            convertToBuildStage(it)
-        }
-
-        val build = Build(
-            pipelineId,
-            buildDetailResponse.buildNumber,
-            mapBuildStatus(buildDetailResponse.buildState, buildDetailResponse.stages.stage),
-            buildDetailResponse.buildDuration,
-            buildTimestamp,
-            buildDetailResponse.link.href,
-            stages,
-            buildDetailResponse.changes.change.map {
-                Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
-            }
+        logger.debug(
+            "Bamboo converting: Started converting BuildDetailDTO " +
+                    "[$buildDetailResponse] for pipeline [$pipelineId]"
         )
-        logger.debug("Bamboo converting: Build converted result: [$build]")
-        return build
+        try {
+            val buildTimestamp = getBuildTimestamp(buildDetailResponse)
+            val stages = buildDetailResponse.stages.stage.mapNotNull {
+                convertToBuildStage(it)
+            }
+
+            val build = Build(
+                pipelineId,
+                buildDetailResponse.buildNumber,
+                mapBuildStatus(buildDetailResponse.buildState, buildDetailResponse.stages.stage),
+                buildDetailResponse.buildDuration,
+                buildTimestamp,
+                buildDetailResponse.link.href,
+                stages,
+                buildDetailResponse.changes.change.map {
+                    Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
+                }
+            )
+            logger.debug("Bamboo converting: Build converted result: [$build]")
+            return build
+        } catch (e: Exception) {
+            logger.error("Converting Bamboo DTO failed, DTO: [$buildDetailResponse], exception: [$e]")
+            throw e
+        }
     }
 
     private fun mapBuildStatus(statusInPipeline: String, stageDTOs: List<StageDTO>): Status {
@@ -154,7 +162,14 @@ class BambooPipelineService(
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}-${buildNumber}.json?" +
                 "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url] with entity [$entity]")
-        val responseEntity = restTemplate.exchange<BuildDetailDTO>(url, HttpMethod.GET, entity)
+        val responseEntity: ResponseEntity<BuildDetailDTO>
+        try {
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
+        } catch (e: Exception) {
+            logger.error("Getting Bamboo build details failed, URL: [$url], exception: [$e]")
+            throw e
+        }
+
         logger.info("Get build details - Response from [$url]: $responseEntity")
         return responseEntity.body!!
     }
