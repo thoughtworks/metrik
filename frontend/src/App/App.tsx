@@ -7,6 +7,7 @@ import { useRequest } from "../shared/hooks/useRequest";
 import { Global } from "@emotion/react";
 import { getProjectsUsingGet } from "../shared/clients/projectApis";
 import { setResponsive } from "../shared/utils/responsive/responsive";
+import "../shared/assets/fonts/fonts.less";
 import { globalStyles } from "./globalStyle";
 
 setResponsive();

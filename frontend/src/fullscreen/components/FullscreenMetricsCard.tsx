@@ -80,7 +80,7 @@ const FullscreenMetricsCard = ({
 							text={metricsLevel}
 							type="xLarge"
 							style={{
-								fontFamily: "Oswald",
+								fontFamily: "Oswald-Regular",
 								backgroundColor: metricsLevelIndicationColor,
 								borderRadius: "4px",
 								color: "white",
