@@ -34,7 +34,6 @@ const AreaChart = <T, K extends keyof T>({
 							<stop offset="100%" stopColor={"RGBA(90, 90, 90, 1)"} stopOpacity={0} />
 						</linearGradient>
 					</defs>
-					<Tooltip />
 					<Area
 						connectNulls
 						type={curveType}

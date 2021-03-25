@@ -54,7 +54,7 @@ const dataPropsSectionStyle = {
 const escButtonStyle = {
 	display: "inline-block",
 	margin: "0 10px",
-	padding: "4px 10px",
+	padding: "4px 10px 6px 10px",
 	backgroundColor: GRAY_9,
 	borderRadius: "8px",
 	opacity: 1,
