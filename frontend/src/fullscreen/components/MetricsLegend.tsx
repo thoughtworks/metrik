@@ -34,7 +34,7 @@ const MetricsLegend = () => {
 	};
 	return (
 		<div>
-			<p css={{ marginTop: "0.2rem", color: GRAY_1, opacity: 0.5 }}>
+			<p css={{ margin: "0.2rem 0 0 0", color: GRAY_1, opacity: 0.5 }}>
 				<Word type="large" text={"Metrics Legend"} />
 			</p>
 			{legendList.map(({ color, text }, index) => (

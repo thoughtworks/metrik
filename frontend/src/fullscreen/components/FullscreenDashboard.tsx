@@ -20,7 +20,7 @@ interface FullscreenDashboardProps {
 }
 const pageContentStyle = {
 	width: "95vw",
-	height: "95vh",
+	height: "91vh",
 	display: "flex",
 	justifyContent: "space-between",
 };
@@ -77,15 +77,15 @@ const FullscreenDashboard = ({
 		<section css={pageStyle}>
 			<section css={pageContentStyle}>
 				<section css={dataPropsSectionStyle}>
-					<Logo />
-					<p css={{ margin: "0.3rem 0 0.5rem" }}>
-						<Word text={projectName} type={"xxLargeBold"} />
+					<Logo width={138} height={38} />
+					<p css={{ margin: "4vh 0" }}>
+						<Word text={projectName} type={"xxxLargeRegular"} />
 					</p>
 					<div>
 						<p css={{ marginBottom: 0, color: GRAY_1, opacity: 0.5 }}>
 							<Word text={"Duration"} type={"large"} />
 						</p>
-						<p>
+						<p css={{ marginBottom: "2vh" }}>
 							<Word
 								text={moment(startTimestamp).format(dateFormatYYYYMMDD)}
 								type={"mediumSuperLight"}

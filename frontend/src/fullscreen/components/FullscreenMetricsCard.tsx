@@ -52,13 +52,13 @@ const MetricsLevelConfig: MetricsLevelBaseConfig = {
 };
 const cardStyle = {
 	width: "49%",
-	height: "46.5vh",
+	height: "44vh",
 	backgroundColor: GRAY_11,
 	color: "white",
 	position: "relative" as const,
 };
 const dataDisplayStyle = {
-	padding: "0.48rem",
+	padding: "0.2rem 0.48rem",
 };
 const FullscreenMetricsCard = ({
 	metricsSummaryData,
@@ -75,7 +75,7 @@ const FullscreenMetricsCard = ({
 					<p>
 						<Word text={metricsText} type="largeSuperLight" />
 					</p>
-					<p css={{ margin: "0.3rem 0" }}>
+					<p css={{ margin: "0.3rem 0 0.2rem 0" }}>
 						<Word
 							text={metricsLevel}
 							type="xLarge"

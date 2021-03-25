@@ -16,7 +16,7 @@ const restPipelineListStyle = {
 };
 
 const pipelineStyle = {
-	padding: "7px 19px",
+	padding: "2px 19px",
 	borderRadius: "19px",
 	backgroundColor: BG_GRAY_DARK,
 	display: "inline-block",
@@ -63,7 +63,7 @@ const PipelineList = ({ pipelineList }: PipelineListProps) => {
 					...restPipelineListStyle,
 				}}>
 				{defaultHiddenList.map((pipeline, index) => (
-					<Word css={pipelineStyle} text={pipeline} type={"medium"} key={index} />
+					<Word css={pipelineStyle} text={pipeline} type={"mediumSuperLight"} key={index} />
 				))}
 			</div>
 		</section>
