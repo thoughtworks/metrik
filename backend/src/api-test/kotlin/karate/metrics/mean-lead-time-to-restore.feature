@@ -1,4 +1,4 @@
-Feature: Single pipeline MTTR and Unit conversion. Card #52 and Card#123
+Feature: Single pipeline MTTR and Unit conversion. Card #52 & Card#123
 // refer to https://docs.google.com/presentation/d/12dQD9Zhkj4NXEa7Xdecb4wAr_fXIq8fJ7nW_4IZ2O_c/edit#slide=id.gb9d0735675_0_384 for manual testing result
     Background: 
         Given url baseUrl
