@@ -121,7 +121,7 @@ class BambooPipelineService(
         }
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
-        logger.debug(
+        logger.info(
             "Bamboo converting: Started converting BuildDetailDTO " +
                     "[$buildDetailResponse] for pipeline [$pipelineId]"
         )
@@ -143,7 +143,7 @@ class BambooPipelineService(
                     Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
                 }
             )
-            logger.debug("Bamboo converting: Build converted result: [$build]")
+            logger.info("Bamboo converting: Build converted result: [$build]")
             return build
         } catch (e: Exception) {
             logger.error("Converting Bamboo DTO failed, DTO: [$buildDetailResponse], exception: [$e]")
@@ -191,7 +191,7 @@ class BambooPipelineService(
     }
 
     private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
-        logger.debug("Bamboo converting: Started converting StageDTO [$stageDTO]")
+        logger.info("Bamboo converting: Started converting StageDTO [$stageDTO]")
         val isInProgress = stageDTO.state == "Unknown" ||
                 stageDTO.results.result.any {
                     it.buildStartedTime == null || it.buildCompletedTime == null || it.buildDuration == null
@@ -216,7 +216,7 @@ class BambooPipelineService(
             0,
             completedTimeMillis
         )
-        logger.debug("Bamboo converting: Stage converted result: [$stage]")
+        logger.info("Bamboo converting: Stage converted result: [$stage]")
         return stage
     }
 }

@@ -25,7 +25,7 @@ class ProjectRepository {
 
     fun findById(id: String): Project {
         val result = mongoTemplate.findById(id, Project::class.java)
-        logger.debug("Query result project ID [$id] is [${result}]")
+        logger.info("Query result project ID [$id] is [${result}]")
         return result ?: throw ProjectNotFoundException()
     }
 
@@ -35,7 +35,7 @@ class ProjectRepository {
 
     fun findAll(): List<Project> {
         val result = mongoTemplate.findAll(Project::class.java)
-        logger.debug("Query result size for all projects is [${result.size}]")
+        logger.info("Query result size for all projects is [${result.size}]")
         return result
     }
 

@@ -21,19 +21,19 @@ class BuildRepository {
     fun getAllBuilds(pipelineId: String): List<Build> {
         val query = Query.query(Criteria.where("pipelineId").isEqualTo(pipelineId))
         val result = mongoTemplate.find<Build>(query, collectionName)
-        logger.debug("Query result size for builds in pipeline [$pipelineId] is [${result.size}]")
+        logger.info("Query result size for builds in pipeline [$pipelineId] is [${result.size}]")
         return result
     }
 
     fun getAllBuilds(pipelineIds: Collection<String>): List<Build> {
         val query = Query.query(Criteria.where("pipelineId").`in`(pipelineIds))
         val result = mongoTemplate.find<Build>(query, collectionName)
-        logger.debug("Query result size for builds in pipelines [$pipelineIds] is [${result.size}]")
+        logger.info("Query result size for builds in pipelines [$pipelineIds] is [${result.size}]")
         return result
     }
 
     fun save(builds: List<Build>) {
-        logger.debug("Saving [${builds.size}] builds into DB")
+        logger.info("Saving [${builds.size}] builds into DB")
         builds.parallelStream().forEach {
             val query = Query()
             query.addCriteria(
@@ -55,12 +55,12 @@ class BuildRepository {
     fun findByBuildNumber(pipelineId: String, number: Int): Build? {
         val query = Query.query(Criteria.where("pipelineId").isEqualTo(pipelineId).and("number").`is`(number))
         val result = mongoTemplate.findOne(query, Build::class.java, collectionName)
-        logger.debug("Query result for build number [$number] in pipeline [$pipelineId] is [${result}]")
+        logger.info("Query result for build number [$number] in pipeline [$pipelineId] is [${result}]")
         return result
     }
 
     fun clear(pipelineId: String) {
-        logger.debug("Removing all build records under pipeline [$pipelineId]")
+        logger.info("Removing all build records under pipeline [$pipelineId]")
         val query = Query.query(Criteria.where("pipelineId").isEqualTo(pipelineId))
         mongoTemplate.remove(query, collectionName)
     }

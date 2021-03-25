@@ -23,7 +23,7 @@ class PipelineRepository {
         )
 
         val result = mongoTemplate.findOne(query, Pipeline::class.java)
-        logger.debug("Query result for pipeline with ID [$pipelineId] is [$result]")
+        logger.info("Query result for pipeline with ID [$pipelineId] is [$result]")
 
         return result ?: throw PipelineNotFoundException()
     }
@@ -34,7 +34,7 @@ class PipelineRepository {
         )
         val result = mongoTemplate.findOne(query, Pipeline::class.java)
 
-        logger.debug("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is [$result]")
+        logger.info("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is [$result]")
         return result ?: throw PipelineNotFoundException()
     }
 
@@ -43,7 +43,7 @@ class PipelineRepository {
 
         val result = mongoTemplate.findOne(query, Pipeline::class.java)
 
-        logger.debug("Query result for pipeline with name [$name] and project ID [$projectId] is [$result]")
+        logger.info("Query result for pipeline with name [$name] and project ID [$projectId] is [$result]")
         return result
     }
 
@@ -52,7 +52,7 @@ class PipelineRepository {
 
         val result = mongoTemplate.find(query, Pipeline::class.java)
 
-        logger.debug("Query result size for pipeline with project ID [$projectId] is [${result.size}]")
+        logger.info("Query result size for pipeline with project ID [$projectId] is [${result.size}]")
         return result
     }
 
