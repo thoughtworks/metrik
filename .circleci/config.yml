@@ -127,7 +127,7 @@ jobs:
           command: |
               ssh ${SANDBOX_SSH_USER}@${SANDBOX_SSH_HOST} -p ${SANDBOX_SSH_PORT} "
                 CONTAINER_NAME=4km
-                CURRENT_CONTAINER_ID=\$(docker ps -aqf name=\$CONTAINER_NAME)
+                CURRENT_CONTAINER_ID=\$(sudo docker ps -aqf name=\$CONTAINER_NAME)
 
                 if [ ! -z \$CURRENT_CONTAINER_ID ]; then
                   echo \"Killing existing docker container...\"
