@@ -33,9 +33,9 @@ export const LegendRect = ({
 	rectangleWidth = 24,
 	rectangleHeight = 12,
 	wordType = "small",
-	...restPorps
+	...restProps
 }: LegendRectProps) => (
-	<span {...restPorps}>
+	<span {...restProps}>
 		<span
 			css={{
 				display: "inline-block",

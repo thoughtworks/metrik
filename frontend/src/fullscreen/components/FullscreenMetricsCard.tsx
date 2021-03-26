@@ -33,7 +33,7 @@ type MetricsLevelBaseConfig = {
 	[key in MetricsLevel]: MetricsLevelBaseData;
 };
 
-const MetricsLevelConfig: MetricsLevelBaseConfig = {
+export const MetricsLevelConfig: MetricsLevelBaseConfig = {
 	[MetricsLevel.ELITE]: {
 		color: GREEN_DARK,
 	},
