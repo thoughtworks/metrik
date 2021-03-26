@@ -1,33 +1,39 @@
 import React from "react";
 import { PageDashboard } from "./dashboard/PageDashboard";
 import { PageConfig } from "./config/PageConfig";
-import { Redirect, Route } from "react-router-dom";
-import Fullscreen from "./fullscreen/Fullscreen";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { renderRoutes, RouteConfig } from "react-router-config";
+import { useQuery } from "./shared/hooks/useQuery";
 
-export const Routes = ({ projectId }: { projectId: string | undefined }) => (
-	<>
-		<Route path={"/"} exact>
-			{projectId ? (
-				<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
-			) : (
-				<Redirect to={{ pathname: "/config" }} />
-			)}
-		</Route>
+const INITIAL_ROUTES: RouteConfig[] = [
+	{
+		path: "/config",
+		exact: true,
+		component: PageConfig,
+	},
+	{
+		render: () => <Redirect to={"/config"} />,
+	},
+];
 
-		<Route path={"/project"} exact>
-			{projectId ? <PageDashboard /> : <Redirect to={{ pathname: "/config" }} />}
-		</Route>
+export const Routes = ({ projectId }: { projectId: string | undefined }) => {
+	const query = useQuery();
+	const queryId = query.get("projectId");
 
-		<Route path={"/config"} exact>
-			{projectId ? (
-				<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
-			) : (
-				<PageConfig />
-			)}
-		</Route>
+	if (!projectId) {
+		return renderRoutes(INITIAL_ROUTES);
+	}
 
-		<Route path={"/fullscreen"} exact>
-			<Fullscreen />
-		</Route>
-	</>
-);
+	return (
+		<Switch>
+			<Route path={"/project"} exact>
+				{queryId === projectId ? (
+					<PageDashboard />
+				) : (
+					<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
+				)}
+			</Route>
+			<Redirect to={{ pathname: "/project", search: `?projectId=${projectId}` }} />
+		</Switch>
+	);
+};

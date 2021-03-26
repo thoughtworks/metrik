@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from "react";
 import ReactDom from "react-dom";
 import { Routes } from "../Routes";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import Header from "../shared/components/Header";
 import { useRequest } from "../shared/hooks/useRequest";
 import { Global } from "@emotion/react";
@@ -23,9 +23,7 @@ export const App: FC = () => {
 			<Global styles={globalStyles} />
 			<Router>
 				<Header />
-				<Switch>
-					<Routes projectId={projects[0]?.id} />
-				</Switch>
+				<Routes projectId={projects[0]?.id} />
 			</Router>
 		</>
 	) : null;
