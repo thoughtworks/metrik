@@ -132,7 +132,8 @@ const FullscreenDashboard = ({
 			centered
 			visible={isFullscreenVisible}
 			width={"100vw"}
-			footer={null}>
+			footer={null}
+			destroyOnClose={true}>
 			{content}
 		</Modal>
 	);
