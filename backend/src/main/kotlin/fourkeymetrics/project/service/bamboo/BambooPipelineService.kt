@@ -75,13 +75,15 @@ class BambooPipelineService(
                 val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
-            logger.info("For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
-                    "[${buildNumbersToSync.size}] of them need to be synced")
+            logger.info(
+                "For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
+                        "[${buildNumbersToSync.size}] of them need to be synced"
+            )
 
             val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
                 val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
                 convertToBuild(buildDetailResponse, pipelineId)
-            }.toList()
+            }.toList().mapNotNull { it }
 
             logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${builds.size}] builds")
             buildRepository.save(builds)
@@ -120,13 +122,13 @@ class BambooPipelineService(
             }
         }
 
-    private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build {
+    private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build? {
         logger.info(
             "Bamboo converting: Started converting BuildDetailDTO " +
                     "[$buildDetailResponse] for pipeline [$pipelineId]"
         )
         try {
-            val buildTimestamp = getBuildTimestamp(buildDetailResponse)
+            val buildTimestamp = getBuildTimestamp(buildDetailResponse) ?: return null
             val stages = buildDetailResponse.stages.stage.mapNotNull {
                 convertToBuildStage(it)
             }
@@ -183,11 +185,13 @@ class BambooPipelineService(
         return buildSummaryDTO.results.result.first().buildNumber
     }
 
-    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO): Long {
+    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO): Long? {
         if (buildDetailResponse.buildStartedTime != null) {
             return mapDateToTimeStamp(buildDetailResponse.buildStartedTime!!)
+        } else if (buildDetailResponse.buildCompletedTime != null) {
+            return mapDateToTimeStamp(buildDetailResponse.buildCompletedTime!!)
         }
-        return mapDateToTimeStamp(buildDetailResponse.buildCompletedTime!!)
+        return null
     }
 
     private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
