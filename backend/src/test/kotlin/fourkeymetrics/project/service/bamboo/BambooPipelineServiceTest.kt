@@ -47,8 +47,10 @@ internal class BambooPipelineServiceTest {
     private val baseUrl = "http://localhost:80"
     private val planKey = "fake-plan-key"
     private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
-    private val getBuildDetailsUrl = "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
-    private val getBuild2DetailsUrl = "$baseUrl/rest/api/latest/result/${planKey}-2.json?expand=changes.change,stages.stage.results"
+    private val getBuildDetailsUrl =
+        "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
+    private val getBuild2DetailsUrl =
+        "$baseUrl/rest/api/latest/result/${planKey}-2.json?expand=changes.change,stages.stage.results"
     private lateinit var mockServer: MockRestServiceServer
     private val userInputURL = "http://localhost:80/browse/FKM-FKMS"
 
@@ -60,9 +62,9 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should throw exception when verify pipeline given response is 500`() {
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
-                .andRespond(
-                        MockRestResponseCreators.withServerError()
-                )
+            .andRespond(
+                MockRestResponseCreators.withServerError()
+            )
 
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
@@ -73,9 +75,9 @@ internal class BambooPipelineServiceTest {
     internal fun `should throw exception when verify pipeline given response is 400`() {
 
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
-                .andRespond(
-                        MockRestResponseCreators.withBadRequest()
-                )
+            .andRespond(
+                MockRestResponseCreators.withBadRequest()
+            )
 
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
@@ -85,12 +87,19 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should throw exception when sync pipeline given response is 500`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
-                .andRespond(
-                        MockRestResponseCreators.withServerError()
-                )
+            .andRespond(
+                MockRestResponseCreators.withServerError()
+            )
 
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooPipelineService.syncBuilds(pipelineId)
@@ -100,12 +109,19 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should throw exception when sync pipeline given response is 400`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
-                .andRespond(
-                        MockRestResponseCreators.withBadRequest()
-                )
+            .andRespond(
+                MockRestResponseCreators.withBadRequest()
+            )
 
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooPipelineService.syncBuilds(pipelineId)
@@ -117,33 +133,43 @@ internal class BambooPipelineServiceTest {
         val mockServer = MockRestServiceServer.createServer(restTemplate)
 
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
+        val builds = listOf(
+            Build(
                 pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = emptyList(),
-                changeSets = emptyList()))
+                changeSets = emptyList()
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -151,33 +177,43 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given stage has no jobs`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
+        val builds = listOf(
+            Build(
                 pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1615882987191,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = emptyList(),
-                changeSets = emptyList()))
+                changeSets = emptyList()
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -185,33 +221,54 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given both build and stage status are success`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
-                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
+        val builds = listOf(
+            Build(
+                pipelineId = pipelineId,
+                number = 1,
+                result = Status.SUCCESS,
+                duration = 1133,
+                timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))))
+                changeSets = listOf(
+                    Commit(
+                        commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
+                        date = "2020-06-29T02:41:31Z[UTC]",
+                        msg = "Create dc.txt",
+                        timestamp = 1593398491000
+                    )
+                )
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -219,33 +276,43 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given both build and stage status are failed`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
+        val builds = listOf(
+            Build(
                 pipelineId = pipelineId, number = 1, result = Status.FAILED, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.FAILED, 1593398522566, 38, 0, 1593398522604)),
-                changeSets = listOf()))
+                changeSets = listOf()
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -253,33 +320,47 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should set build state to in progress when sync build given build contains stages of which status is unknown`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
-                pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS, duration = 4020, timestamp = 1594089286351,
+        val builds = listOf(
+            Build(
+                pipelineId = pipelineId,
+                number = 1,
+                result = Status.IN_PROGRESS,
+                duration = 4020,
+                timestamp = 1594089286351,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.SUCCESS, 1594089288199, 880, 0, 1594089289079)),
-                changeSets = emptyList()))
+                changeSets = emptyList()
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -287,33 +368,43 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given both build and stage status are non-supported status`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(Build(
+        val builds = listOf(
+            Build(
                 pipelineId = pipelineId, number = 1, result = Status.OTHER, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.OTHER, 1593398522566, 38, 0, 1593398522604)),
-                changeSets = listOf()))
+                changeSets = listOf()
+            )
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -321,38 +412,58 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given build state is in progress`() {
         `when`(pipelineRepository.findById(pipelineId))
-                .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
-                Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
+            Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
         )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-                .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-                .andRespond(
-                        MockRestResponseCreators.withSuccess(
-                                this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
-                                MediaType.APPLICATION_JSON
-                        )
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    MediaType.APPLICATION_JSON
                 )
+            )
 
         bambooPipelineService.syncBuilds(pipelineId)
 
         val builds = listOf(
-                Build(
-                    pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
-                    url = "$baseUrl/rest/api/latest/result/$planKey-1",
-                    stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                    changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))),)
+            Build(
+                pipelineId = pipelineId,
+                number = 1,
+                result = Status.SUCCESS,
+                duration = 1133,
+                timestamp = 1593398521665,
+                url = "$baseUrl/rest/api/latest/result/$planKey-1",
+                stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
+                changeSets = listOf(
+                    Commit(
+                        commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
+                        date = "2020-06-29T02:41:31Z[UTC]",
+                        msg = "Create dc.txt",
+                        timestamp = 1593398491000
+                    )
+                )
+            ),
+        )
 
         verify(buildRepository, times(1)).save(builds)
     }
@@ -360,7 +471,14 @@ internal class BambooPipelineServiceTest {
     @Test
     internal fun `should sync builds given build state is not exists in DB`() {
         `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(Pipeline(pipelineId, credential = credential, url = "$baseUrl/browse/$planKey", type = PipelineType.BAMBOO))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(null)
 
@@ -386,11 +504,59 @@ internal class BambooPipelineServiceTest {
 
         val builds = listOf(
             Build(
-                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 1133, timestamp = 1593398521665,
+                pipelineId = pipelineId,
+                number = 1,
+                result = Status.SUCCESS,
+                duration = 1133,
+                timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                changeSets = listOf(Commit(commitId = "7cba897038ca321dac1c7e87855879194d3d6307", date = "2020-06-29T02:41:31Z[UTC]", msg = "Create dc.txt", timestamp = 1593398491000))),)
+                changeSets = listOf(
+                    Commit(
+                        commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
+                        date = "2020-06-29T02:41:31Z[UTC]",
+                        msg = "Create dc.txt",
+                        timestamp = 1593398491000
+                    )
+                )
+            ),
+        )
 
         verify(buildRepository, times(1)).save(builds)
+    }
+
+    @Test
+    internal fun `should be able to convert not started build which has no start time and complete time`() {
+        `when`(pipelineRepository.findById(pipelineId))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-8.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        bambooPipelineService.syncBuilds(pipelineId)
+
+        verify(buildRepository, times(1)).save(emptyList())
     }
 }
