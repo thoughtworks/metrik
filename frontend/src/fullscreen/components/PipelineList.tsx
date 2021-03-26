@@ -13,6 +13,7 @@ const restPipelineListStyle = {
 	borderRadius: "20px",
 	position: "absolute" as const,
 	zIndex: 10,
+	overflowX: "hidden" as const,
 };
 
 const pipelineStyle = {

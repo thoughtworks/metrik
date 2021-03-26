@@ -1,3 +1,5 @@
+import { BG_GRAY_DARK } from "../shared/constants/styles";
+
 export const globalStyles = {
 	".metric-info-overlay div.ant-tooltip-inner": {
 		width: "300px !important",
@@ -12,12 +14,17 @@ export const globalStyles = {
 	".fullscreen-dashboard-modal.ant-modal-wrap": {
 		overflow: "hidden",
 	},
-	"::-webkit-scrollbar-track-piece": {
+	"::-webkit-scrollbar": {
 		backgroundColor: "transparent",
+		width: "thin",
 	},
-	"::-webkit-scrollbar-color": {
-		"&:corner-present": {
-			display: "none",
-		},
+	"::-webkit-scrollbar-thumb": {
+		backgroundColor: BG_GRAY_DARK,
+		borderRadius: 10,
+		border: "3px solid transparent",
+		backgroundClip: "content-box",
+	},
+	"::-webkit-scrollbar-corner": {
+		backgroundColor: "transparent",
 	},
 };
