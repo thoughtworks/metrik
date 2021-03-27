@@ -1,1 +1,1 @@
-rootProject.name = "4-key-metrics-backend"
+rootProject.name = "metrik-backend"

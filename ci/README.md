@@ -54,40 +54,40 @@ which in turn will be tagged by the provided git version tag `1.2.1` and made pu
 
 Please make sure that [Docker](https://www.docker.com) has already installed on your OS.
 
-You can pull the latest version of 4-key-metrics docker image by run the following command:
+You can pull the latest version of *Metrik* docker image by run the following command:
 
 ``` bash
-docker pull public.ecr.aws/j2s5d3z8/4-key-metrics:latest
+docker pull public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 
-You can run the 4-key-metrics docker container by via the following command:
+You can run the *Metrik* docker container by via the following command:
 
 ``` bash
-docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:latest
+docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 ⚠️ *We use port 80 to access the frontend resources.
 You may switch to any other port in case port 80 is occupied by other apps running on your machine.*
 
-If you would like to stop the 4-key-metrics container, run the following command:
+If you would like to stop the *Metrik* container, run the following command:
 
 ``` bash
-docker stop 4km
+docker stop metrik
 ```
 
-If you would like to remove the 4-key-metrics container and **all data inside**, run the following
+If you would like to remove the *Metrik* container and **all data inside**, run the following
 command:
 
 ``` bash
-docker rm 4km
+docker rm metrik
 ```
 
 ### Advanced usage
 
-If you would like to keep the 4-key-metrics data to avoid losing any data when remove container, you
+If you would like to retain your database to avoid losing any data after removing the container, you
 can mount the MongoDB data folder `/data/db` out:
 
 ``` bash
-docker run -d -p 80:80 --name 4km -v "/path/to/local/directory:/data/db" public.ecr.aws/j2s5d3z8/4-key-metrics:latest
+docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 
 If you find any service doesn't work as expected, you can use the same way as above to mount the log
@@ -97,5 +97,5 @@ If you would like to view the Swagger doc of the backend API (port `9000`), or, 
 MongoDB client (port `27017`), you can publish those ports when run docker container.
 
 ``` bash
-docker run -d -p 80:80 -p 9000:9000 -p 27017:27017 --name 4km -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:latest
+docker run -d -p 80:80 -p 9000:9000 -p 27017:27017 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```

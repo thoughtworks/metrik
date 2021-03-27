@@ -71,7 +71,7 @@ The product is released to Docker repository `public.ecr.aws/j2s5d3z8/4-key-metr
 You can run the container locally via the following command:
 
 ``` bash
-docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 ⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.
 
@@ -94,7 +94,7 @@ If you would like to keep the 4-key-metrics data to avoid losing any data when r
 can mount the database folder `/data/db` out. And logs are also availalbe if you mount the log folder `/app/logs`. As shown in the example below:
 
 ``` bash
-docker run -d -p 80:80 --name 4km -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 <!-- END OF USAGE -->
 

@@ -10,7 +10,7 @@
 </details>
 <!-- END OF PROJECT TITLE -->
 
-This is the frontend API layer of the 4-key-metrics measurement tool.
+This is the frontend SPA layer of *Metrik*, the 4-key-metrics measurement tool.
 
 # Tech Stack
 * React

@@ -10,7 +10,7 @@ plugins {
     kotlin("plugin.spring") version "1.4.21"
 }
 
-group = "4-key-metrics-backend"
+group = "metrik-backend"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 

@@ -1,5 +1,5 @@
 {
-	"name": "4-key-metrics-frontend",
+	"name": "metrik-frontend",
 	"version": "0.0.1",
 	"description": "The frontend React SPA for the 4-key-metrics visualization",
 	"main": "index.js",
@@ -39,14 +39,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend.git"
+		"url": "git+https://github.com/thoughtworks/metrik.git"
 	},
 	"keywords": [],
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend/issues"
+		"url": "https://github.com/thoughtworks/metrik/issues"
 	},
-	"homepage": "https://github.com/Hackl0us/SEA-4-Key-Metrics-frontend#readme",
+	"homepage": "https://github.com/thoughtworks/metrik",
 	"browserslist": [
 		"last 2 versions"
 	],

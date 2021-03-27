@@ -9,7 +9,7 @@
 </details>
 <!-- END OF PROJECT TITLE -->
 
-This is the backend API layer of the 4-key-metrics measurement tool.
+This is the backend API layer of *Metrik*, the 4-key-metrics measurement tool.
 
 # Tech Stack
 * Java 11

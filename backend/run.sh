@@ -2,7 +2,7 @@
 
 set -e
 
-JAR=/app/4-key-metrics-backend.jar
+JAR=/app/metrik-backend.jar
 
 java ${JAVA_OPTS} -jar -Dspring.profiles.active=$APP_ENV \
                   -Duser.timezone=Asia/Shanghai \

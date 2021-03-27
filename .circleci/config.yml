@@ -43,7 +43,7 @@ jobs:
           root: ./
           paths:
             - backend/run.sh
-            - backend/build/libs/4-key-metrics-backend-*.jar
+            - backend/build/libs/metrik-backend-*.jar
 
   frontend-test-and-build:
     docker:

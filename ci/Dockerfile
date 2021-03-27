@@ -47,8 +47,8 @@ ENV MONGO_INITDB_ROOT_PASSWORD root
 # Copy BACKEND artifact
 ENV APP_ENV local
 
-COPY artifacts/backend/run.sh /app/4km-service.sh
-COPY artifacts/backend/build/libs/4-key-metrics-backend-*.jar /app/4-key-metrics-backend.jar
+COPY artifacts/backend/run.sh /app/metrik-service.sh
+COPY artifacts/backend/build/libs/metrik-backend-*.jar /app/metrik-backend.jar
 
 # Copy FRONTEND artifact
 COPY artifacts/frontend/dist /usr/share/nginx/html
