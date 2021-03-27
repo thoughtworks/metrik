@@ -93,7 +93,7 @@ jobs:
           at: ./ci/artifacts
       - setup_remote_docker:
           version: 19.03.13
-          docker_layer_caching: false
+          docker_layer_caching: true
       - run:
           name: Build and tag Docker image
           command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest .
@@ -162,7 +162,7 @@ jobs:
           at: ./ci/artifacts
       - setup_remote_docker:
           version: 19.03.13
-          docker_layer_caching: false
+          docker_layer_caching: true
       - run:
           name: Build and tag Docker image
           command: docker build -f ./Dockerfile -t ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:<< pipeline.git.tag >> .
