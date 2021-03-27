@@ -1,16 +1,16 @@
 <!-- PROJECT SHIELDS -->
-[![Tag](https://img.shields.io/github/v/tag/four-keys/four-key-metrics.svg?style=flat)](https://github.com/four-keys/four-key-metrics/tags)
-[![Contributors](https://img.shields.io/github/contributors/four-keys/four-key-metrics.svg?style=flat)](https://github.com/four-keys/four-key-metrics/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues-raw/four-keys/four-key-metrics.svg?style=flat)](https://github.com/four-keys/four-key-metrics/issues)
-[![Licnece](https://img.shields.io/github/license/four-keys/four-key-metrics.svg?style=flat)](https://github.com/four-keys/four-key-metrics/blob/main/LICENSE.txt)
+[![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
+[![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues-raw/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/issues)
+[![Licnece](https://img.shields.io/github/license/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt)
 
-[![CircleCI](https://circleci.com/gh/four-keys/four-key-metrics.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/four-keys/four-key-metrics)
+[![CircleCI](https://circleci.com/gh/thoughtworks/metrik.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/thoughtworks/metrik)
 
 
 <!-- PROJECT TITLE -->
 <h1 align="center">
   <sub>
-  <img  src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/frontend/src/shared/assets/source/logo.svg"
+  <img  src="https://raw.githubusercontent.com/thoughtworks/metrik/main/frontend/src/shared/assets/source/logo.svg"
         height=20%
         width=20%>
   </sub>
@@ -80,13 +80,13 @@ docker run -d -p 80:80 --name 4km public.ecr.aws/j2s5d3z8/4-key-metrics:${releas
 After the container is running on your machine. Go to your favourate browser and open the app. If running in local that would be `http://localhost:80/`.
 
 1. Start the configuration:
-  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step1.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step1.png" height=70% width=70%></div>
 
 2. And the charts for each key metric will be available at the main page:
-  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step2.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step2.png" height=70% width=70%></div>
 
 3. Also the full screen view if you want to put it on big screens:
-  <div><img src="https://raw.githubusercontent.com/four-keys/four-key-metrics/main/.doc/img/step3.png" height=70% width=70%></div>
+  <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step3.png" height=70% width=70%></div>
 
 ### Advanced usage
 
@@ -119,20 +119,20 @@ The codebase comprises of three major components `frontend`, `backend`, `ci`.
   * ReactJS
   * ReCharts
 
-  Go to [frontend folder](https://github.com/four-keys/four-key-metrics/tree/main/frontend) to find more details.
+  Go to [frontend folder](https://github.com/thoughtworks/metrik/tree/main/frontend) to find more details.
 
 * Backend app is built with:
   * Kotlin
   * Spring Boot Web
   * MongoDB
 
-  Go to [backend folder](https://github.com/four-keys/four-key-metrics/tree/main/backend) to find more details.
+  Go to [backend folder](https://github.com/thoughtworks/metrik/tree/main/backend) to find more details.
   
-* Build/Package scripts lives in [ci folder](https://github.com/four-keys/four-key-metrics/tree/main/ci)
+* Build/Package scripts lives in [ci folder](https://github.com/thoughtworks/metrik/tree/main/ci)
 <!-- END OF GETTING STARTED -->
 
 
 <!-- LICENSE -->
 ## License
-Distributed under the MIT License. See [LICENSE](https://github.com/four-keys/four-key-metrics/blob/main/LICENSE.txt) for more information
+Distributed under the MIT License. See [LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt) for more information
 <!-- END OF LICENSE -->

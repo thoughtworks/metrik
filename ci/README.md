@@ -1,14 +1,13 @@
-[![CircleCI](https://circleci.com/gh/four-keys/four-key-metrics.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/four-keys/four-key-metrics)
+[![CircleCI](https://circleci.com/gh/thoughtworks/metrik.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/thoughtworks/metrik)
 
 
 <!-- PROJECT TITLE -->
 <h1 align="center">
   <sub>
-  <img  src="https://i.loli.net/2021/02/10/r4ZClmDFd5OEfAY.png"
-        height=5%
-        width=5%>
+  <img  src="https://raw.githubusercontent.com/thoughtworks/metrik/main/frontend/src/shared/assets/source/logo.svg"
+        height=20%
+        width=20%>
   </sub>
-  Four Key Metrics
 </h1>
 <p align="center">
 <sup>
@@ -18,7 +17,7 @@
 </p>
 
 
-Pack `4-key-metrics` production Docker image and publish to AWS ECR public repository with CircleCI.
+Pack `Metrik` production Docker image and publish to AWS ECR public repository with CircleCI.
 
 Docker image repository: https://gallery.ecr.aws/j2s5d3z8/4-key-metrics
 
