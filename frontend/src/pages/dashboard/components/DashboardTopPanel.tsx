@@ -16,7 +16,7 @@ import {
 } from "../../../utils/timeFormats/timeFormats";
 import { usePrevious } from "../../../hooks/usePrevious";
 import HintIcon from "../../../components/HintIcon";
-import { FourKeyMetrics, MetricsUnit } from "../../../clients/metricsApis";
+import { FourKeyMetrics} from "../../../clients/metricsApis";
 import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipelineApis";
 import {
 	getLastSynchronizationUsingGet,
@@ -26,6 +26,7 @@ import {
 } from "../../../clients/projectApis";
 import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
 import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
+import { MetricsUnit } from "../../../models/metrics";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;

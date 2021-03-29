@@ -1,5 +1,5 @@
 import { isNumber, isEmpty, map } from "lodash";
-import { Metrics, ValidMetric } from "../../clients/metricsApis";
+import { Metrics, ValidMetric } from "../../models/metrics";
 
 const domainMaximizeRatio = 1.1;
 

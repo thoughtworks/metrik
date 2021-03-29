@@ -13,7 +13,7 @@ import { css } from "@emotion/react";
 import { find, throttle } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
 import { durationFormatter } from "../utils/timeFormats/timeFormats";
-import { Metrics } from "../clients/metricsApis";
+import { Metrics } from "../models/metrics";
 
 export interface CustomizeTickProps {
 	x?: number;

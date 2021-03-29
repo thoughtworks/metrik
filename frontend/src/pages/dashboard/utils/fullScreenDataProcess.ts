@@ -1,9 +1,9 @@
-import { MetricsType } from "../../../__types__/enum";
 import { cleanMetricsInfo } from "../../../utils/metricsDataUtils/metricsDataUtils";
-import { FourKeyMetrics, Metrics, MetricsUnit } from "../../../clients/metricsApis";
+import { FourKeyMetrics} from "../../../clients/metricsApis";
 import { Pipeline } from "../components/DashboardTopPanel";
 import { Option } from "../../../components/MultipleCascadeSelect";
 import { generateTagLabel } from "../../../utils/dataTransform/dataTransform";
+import { Metrics, MetricsType, MetricsUnit } from "../../../models/metrics";
 
 export const mapMetricsList = (metricsResponse: FourKeyMetrics, samplingInterval: MetricsUnit) => {
 	const deploymentFrequency = cleanMetricsInfo(metricsResponse.deploymentFrequency);
