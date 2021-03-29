@@ -1,7 +1,7 @@
 import React from "react";
-import { PipelineTool } from "../../clients/pipelineApis";
 import { JENKINS_PIPELINE_CONFIG } from "./jenkinsConfig";
 import { BAMBOO_PIPELINE_CONFIG } from "./bambooConfig";
+import { PipelineTool } from "../../models/pipeline";
 
 export const PIPELINE_CONFIG = {
 	[PipelineTool.JENKINS]: JENKINS_PIPELINE_CONFIG,

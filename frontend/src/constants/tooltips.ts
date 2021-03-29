@@ -1,4 +1,4 @@
-import { PipelineTool } from "../clients/pipelineApis";
+import { PipelineTool } from "../models/pipeline";
 
 export const TOOLTIP_MAPPING = {
 	[PipelineTool.JENKINS]: {
