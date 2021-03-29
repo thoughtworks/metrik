@@ -1,17 +1,17 @@
 import { Button, Modal, Result, Spin } from "antd";
 import React, { FC, useEffect } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
-import ProjectConfig from "../../shared/components/ProjectConfig";
+import ProjectConfig from "../../../shared/components/ProjectConfig";
 import { PipelineSettingStatus } from "../../dashboard/components/PipelineSetting";
-import { useModalVisible } from "../../shared/hooks/useModalVisible";
-import { usePipelineSetting } from "../../shared/hooks/usePipelineSetting";
-import { GREEN_LIGHT } from "../../shared/constants/styles";
+import { useModalVisible } from "../../../shared/hooks/useModalVisible";
+import { usePipelineSetting } from "../../../shared/hooks/usePipelineSetting";
+import { GREEN_LIGHT } from "../../../shared/constants/styles";
 import {
 	createPipelineUsingPost,
 	Pipeline,
 	updatePipelineUsingPut,
-} from "../../shared/clients/pipelineApis";
-import PipelineSetup, { FormValues } from "../../shared/components/PipelineSetup/PipelineSetup";
+} from "../../../shared/clients/pipelineApis";
+import PipelineSetup, { FormValues } from "../../../shared/components/PipelineSetup/PipelineSetup";
 
 const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 	const { visible, handleToggleVisible } = useModalVisible();

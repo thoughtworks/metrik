@@ -1,13 +1,13 @@
 import FullscreenMetricsCard, { FullscreenMetricsCardOptions } from "./FullscreenMetricsCard";
 import React from "react";
-import Word from "../../shared/components/Word/Word";
+import Word from "../../../../../shared/components/Word/Word";
 import moment from "moment";
-import { dateFormatYYYYMMDD } from "../../shared/constants/date-format";
+import { dateFormatYYYYMMDD } from "../../../../../shared/constants/date-format";
 import { SwapRightOutlined } from "@ant-design/icons";
 import PipelineList from "./PipelineList";
 import MetricsLegend from "./MetricsLegend";
-import { GRAY_1, GRAY_9 } from "../../shared/constants/styles";
-import Logo from "../../shared/components/Logo/Logo";
+import { GRAY_1, GRAY_9 } from "../../../../../shared/constants/styles";
+import Logo from "../../../../../shared/components/Logo/Logo";
 import { Modal } from "antd";
 
 interface FullscreenDashboardProps {

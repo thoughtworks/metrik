@@ -1,7 +1,7 @@
 import { EditableText } from "../../../shared/components/EditableText";
 import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
 import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
-import PipelineSetting from "../PipelineSetting";
+import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../../shared/constants/styles";
@@ -24,8 +24,8 @@ import {
 	updateBuildsUsingPost,
 	updateProjectNameUsingPut,
 } from "../../../shared/clients/projectApis";
-import FullscreenDashboard from "../../../fullscreen/components/FullscreenDashboard";
-import { mapMetricsList, mapPipelines } from "./dataProcess/fullScreenDataProcess";
+import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
+import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;

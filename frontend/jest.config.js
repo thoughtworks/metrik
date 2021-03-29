@@ -15,7 +15,7 @@ module.exports = {
 		"!**/*.d.ts",
 		"!./src/shared/constants/*",
 		"!./src/shared/hooks/*",
-		"!./src/App/globalStyle.ts",
+		"!./src/globalStyle.ts",
 	],
 	coverageReporters: ["html", "text", "cobertura"],
 	coverageThreshold: {

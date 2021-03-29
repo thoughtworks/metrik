@@ -4,8 +4,8 @@ import {
 	mapMetricsList,
 	mapPipelines,
 } from "./fullScreenDataProcess";
-import { MetricsLevel } from "../../../../shared/__types__/enum";
-import { MetricsUnit } from "../../../../shared/clients/metricsApis";
+import { MetricsLevel } from "../../../shared/__types__/enum";
+import { MetricsUnit } from "../../../shared/clients/metricsApis";
 
 describe("#fullscreenDataProcess #mapMetricsList", () => {
 	test("should map out correct data type given metrics response", () => {

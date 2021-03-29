@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
-import { useQuery } from "../shared/hooks/useQuery";
-import { getDurationTimestamps } from "../shared/utils/timeFormats/timeFormats";
+import { useQuery } from "../../shared/hooks/useQuery";
+import { getDurationTimestamps } from "../../shared/utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel/DashboardTopPanel";
-import { BACKGROUND_COLOR } from "../shared/constants/styles";
+import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
+import { BACKGROUND_COLOR } from "../../shared/constants/styles";
 import { MetricTooltip } from "./components/MetricTooltip";
-import { calcMaxValueWithRatio } from "../shared/utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
-import { cleanMetricsInfo } from "../shared/utils/metricsDataUtils/metricsDataUtils";
+import { calcMaxValueWithRatio } from "../../shared/utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
+import { cleanMetricsInfo } from "../../shared/utils/metricsDataUtils/metricsDataUtils";
 import {
 	FourKeyMetrics,
 	getFourKeyMetricsUsingPost,
 	MetricsInfo,
 	MetricsUnit,
-} from "../shared/clients/metricsApis";
-import { MetricsLevel } from "../shared/__types__/enum";
+} from "../../shared/clients/metricsApis";
+import { MetricsLevel } from "../../shared/__types__/enum";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",

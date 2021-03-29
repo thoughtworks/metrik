@@ -1,8 +1,8 @@
 import React from "react";
-import { Colour, LegendRect } from "../../shared/components/LegendRect";
-import { MetricsLevel } from "../../shared/__types__/enum";
-import Word from "../../shared/components/Word/Word";
-import { GRAY_1 } from "../../shared/constants/styles";
+import { Colour, LegendRect } from "../../../../../shared/components/LegendRect";
+import { MetricsLevel } from "../../../../../shared/__types__/enum";
+import Word from "../../../../../shared/components/Word/Word";
+import { GRAY_1 } from "../../../../../shared/constants/styles";
 
 interface Legend {
 	text: MetricsLevel;
