@@ -1,8 +1,8 @@
 import React, { useState, KeyboardEvent } from "react";
 import { FullscreenMetricsCardOptions } from "./components/FullscreenMetricsCard";
-import { MetricsLevel, MetricsType } from "../../../../shared/__types__/enum";
+import { MetricsLevel, MetricsType } from "../../../../__types__/enum";
 import FullscreenDashboard from "./components/FullscreenDashboard";
-import { Metrics } from "../../../../shared/clients/metricsApis";
+import { Metrics } from "../../../../clients/metricsApis";
 
 const FullScreen = () => {
 	const [isFullscreenVisible, setIsPopoverVisible] = useState(false);

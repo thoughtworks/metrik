@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Button, Col, Divider, Form, Input, Row, Typography } from "antd";
 import { css } from "@emotion/react";
-import { BaseProject } from "../../../shared/clients/projectApis";
+import { BaseProject } from "../../../clients/projectApis";
 
 const { Text } = Typography;
 

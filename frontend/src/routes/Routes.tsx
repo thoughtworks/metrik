@@ -3,7 +3,7 @@ import { PageDashboard } from "../pages/dashboard/PageDashboard";
 import { PageConfig } from "../pages/config/PageConfig";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { renderRoutes, RouteConfig } from "react-router-config";
-import { useQuery } from "../shared/hooks/useQuery";
+import { useQuery } from "../hooks/useQuery";
 
 const INITIAL_ROUTES: RouteConfig[] = [
 	{

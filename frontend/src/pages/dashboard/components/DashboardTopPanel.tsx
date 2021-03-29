@@ -1,29 +1,29 @@
-import { EditableText } from "../../../shared/components/EditableText";
+import { EditableText } from "../../../components/EditableText";
 import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
 import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../../shared/constants/styles";
-import { useRequest } from "../../../shared/hooks/useRequest";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../../constants/styles";
+import { useRequest } from "../../../hooks/useRequest";
 import moment from "moment";
-import { dateFormatYYYYMMDD } from "../../../shared/constants/date-format";
-import { MultipleCascadeSelect } from "../../../shared/components/MultipleCascadeSelect";
+import { dateFormatYYYYMMDD } from "../../../constants/date-format";
+import { MultipleCascadeSelect } from "../../../components/MultipleCascadeSelect";
 import { isEmpty, isEqual } from "lodash";
 import {
 	formatLastUpdateTime,
 	getDurationTimestamps,
-} from "../../../shared/utils/timeFormats/timeFormats";
-import { usePrevious } from "../../../shared/hooks/usePrevious";
-import HintIcon from "../../../shared/components/HintIcon";
-import { FourKeyMetrics, MetricsUnit } from "../../../shared/clients/metricsApis";
-import { getPipelineStagesUsingGet, PipelineStages } from "../../../shared/clients/pipelineApis";
+} from "../../../utils/timeFormats/timeFormats";
+import { usePrevious } from "../../../hooks/usePrevious";
+import HintIcon from "../../../components/HintIcon";
+import { FourKeyMetrics, MetricsUnit } from "../../../clients/metricsApis";
+import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipelineApis";
 import {
 	getLastSynchronizationUsingGet,
 	getProjectDetailsUsingGet,
 	updateBuildsUsingPost,
 	updateProjectNameUsingPut,
-} from "../../../shared/clients/projectApis";
+} from "../../../clients/projectApis";
 import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
 import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 
