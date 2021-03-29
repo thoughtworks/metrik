@@ -8,8 +8,8 @@ import {
 import React, { FC, useState } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
-import { VerifyStatus } from "../../__types__/base";
 import { PIPELINE_CONFIG, PIPELINE_TYPE_NOTE } from "../../utils/pipelineConfig/pipelineConfig";
+import { VerifyStatus } from "../../models/common";
 
 const { Option } = Select;
 const { Text } = Typography;

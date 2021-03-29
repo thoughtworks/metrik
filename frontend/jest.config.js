@@ -10,7 +10,7 @@ module.exports = {
 	coverageDirectory: "coverage",
 	collectCoverageFrom: [
 		"./src/**/*.ts",
-		"!./src/__types__/*",
+		"!./src/models/*",
 		"!./src/clients/*",
 		"!**/*.d.ts",
 		"!./src/constants/*",

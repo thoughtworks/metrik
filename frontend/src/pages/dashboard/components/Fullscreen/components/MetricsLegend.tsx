@@ -1,8 +1,8 @@
 import React from "react";
 import { Colour, LegendRect } from "../../../../../components/LegendRect";
-import { MetricsLevel } from "../../../../../__types__/enum";
 import Word from "../../../../../components/Word/Word";
 import { GRAY_1 } from "../../../../../constants/styles";
+import { MetricsLevel } from "../../../../../models/metrics";
 
 interface Legend {
 	text: MetricsLevel;

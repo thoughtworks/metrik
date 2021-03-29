@@ -7,10 +7,9 @@ import { durationFormatter } from "../../../utils/timeFormats/timeFormats";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
 import { find } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
-import { Metrics, MetricsSummary } from "../../../clients/metricsApis";
-import { MetricsLevel } from "../../../__types__/enum";
 import Word from "../../../components/Word/Word";
 import { MetricsLevelConfig } from "./Fullscreen/components/FullscreenMetricsCard";
+import { Metrics, MetricsLevel, MetricsSummary } from "../../../models/metrics";
 
 const containerStyles = css({
 	backgroundColor: GRAY_1,

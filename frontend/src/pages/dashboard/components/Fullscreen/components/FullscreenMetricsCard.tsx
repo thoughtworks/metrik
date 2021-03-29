@@ -1,5 +1,4 @@
 import React from "react";
-import { MetricsType, MetricsLevel } from "../../../../../__types__/enum";
 import AreaChart from "../../../../../components/AreaChart/AreaChart";
 import Word from "../../../../../components/Word/Word";
 import {
@@ -11,7 +10,7 @@ import {
 	ORANGE_DARK,
 	RED_DARK,
 } from "../../../../../constants/styles";
-import { Metrics } from "../../../../../clients/metricsApis";
+import { Metrics, MetricsLevel, MetricsType } from "../../../../../models/metrics";
 
 export interface ChartData {
 	name: string;

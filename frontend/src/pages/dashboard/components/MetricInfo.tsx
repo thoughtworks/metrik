@@ -3,8 +3,7 @@ import { ColourLegend } from "../../../components/ColourLegend";
 import { metricsStanderMapping, metricsExplanations } from "../../../constants/metrics";
 import { Typography } from "antd";
 import { GRAY_1 } from "../../../constants/styles";
-import { MetricType } from "../../../__types__/base";
-import { MetricsUnit } from "../../../clients/metricsApis";
+import { MetricsUnit, MetricType } from "../../../models/metrics";
 
 const { Title, Paragraph } = Typography;
 

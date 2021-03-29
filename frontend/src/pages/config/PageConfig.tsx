@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Layout, Steps, Typography } from "antd";
-import { ConfigStep } from "../../__types__/base";
 import ConfigSuccess from "./components/ConfigSuccess";
 import ProjectNameSetup from "./components/ProjectNameSetup";
 import PipelineSetup, { FormValues } from "../../components/PipelineSetup/PipelineSetup";
 import { BaseProject, createProjectUsingPost } from "../../clients/projectApis";
+import { ConfigStep } from "../../models/common";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;

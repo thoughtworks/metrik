@@ -9,13 +9,8 @@ import { BACKGROUND_COLOR } from "../../constants/styles";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../../utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
 import { cleanMetricsInfo } from "../../utils/metricsDataUtils/metricsDataUtils";
-import {
-	FourKeyMetrics,
-	getFourKeyMetricsUsingPost,
-	MetricsInfo,
-	MetricsUnit,
-} from "../../clients/metricsApis";
-import { MetricsLevel } from "../../__types__/enum";
+import { FourKeyMetrics, getFourKeyMetricsUsingPost } from "../../clients/metricsApis";
+import { MetricsInfo, MetricsLevel, MetricsUnit } from "../../models/metrics";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",

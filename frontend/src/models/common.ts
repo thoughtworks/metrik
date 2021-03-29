@@ -9,5 +9,3 @@ export enum ConfigStep {
 	CONFIG_PIPELINE,
 	CONFIG_SUCCESS,
 }
-
-export type MetricType = "df" | "lt" | "mttr" | "cfr";
