@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://${DB_USER}:${DB_PASSWORD}@mongodb:27017/4-key-metrics
+      uri: mongodb://${DB_USER}:${DB_PASSWORD}@localhost:27017/4-key-metrics
 
 logging:
   config: classpath:log4j2-file-and-console.xml
