@@ -4,7 +4,7 @@ spring:
       uri: mongodb://4km:4000km@localhost:27017/4-key-metrics
 
 logging:
-  config: classpath:log4j2-file-and-console.xml
+  config: classpath:log4j2-console.xml
 
 # Use length 16 for both key and IV
 aes:

@@ -10,6 +10,7 @@ jobs:
       - image: circleci/openjdk:11.0.8-jdk
         environment:
           TZ: "Asia/Shanghai"
+      - image: circleci/mongo:4.4.3-bionic
     resource_class: medium
     steps:
       - checkout
@@ -23,14 +24,26 @@ jobs:
           name: Run tests and build artifact
           command: ./gradlew build
           working_directory: backend
-      - save_cache:
-          paths:
-            - ~/.gradle/wrapper
-          key: v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
+      - run:
+          name: Install MongoDB on primary docker instance
+          command: ./install-mongo-from-tarball.sh
+          working_directory: backend
+      - run:
+          name: Link mongo cli executable
+          command: sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()'
+      - run:
+          name: Configure MongoDB for API test
+          command: |
+            mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
+            for file in `find $PWD/src/api-test/resources/ -type f -name '*.js'`
+            do
+              mongo 4-key-metrics < $file
+            done
+      - run:
+          name: Start Service and Run Api Test
+          command: |
+            ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest
+          working_directory: backend
       - run:
           name: Assemble JAR
           command: |
@@ -39,6 +52,18 @@ jobs:
               ./gradlew assemble
             fi
           working_directory: backend
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
+      - store_test_results:
+          path: backend/build/test-results/apiTest/
+      - store_artifacts:
+          path: backend/build/surefire-reports/
       - persist_to_workspace:
           root: ./
           paths:
