@@ -42,7 +42,7 @@ and tools in a Docker image:
 * Process management
   * [Supervisord](http://supervisord.org)
 
-The two workflows `build-image-and-deploy-sandbox` `build-release-image` serve the test build and release build respectively. Each code commit/merge in `main`
+The two workflows `build_image_and_deploy_sandbox` `build_release_image` serve the test build and release build respectively. Each code commit/merge in `main`
 branch fires a test build in CircleCI, and produces a Docker image with `latest` tag. Team can view, test and verify the image validity. 
 
 Unlike test build, the release build can only be triggered by a three-part release version tag like `1.2.1`. The release Docker image
