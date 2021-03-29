@@ -2,12 +2,12 @@ import React, { FC, useEffect } from "react";
 import ReactDom from "react-dom";
 import { Routes } from "./routes/Routes";
 import { BrowserRouter as Router } from "react-router-dom";
-import Header from "./shared/components/Header";
-import { useRequest } from "./shared/hooks/useRequest";
+import Header from "./components/Header";
+import { useRequest } from "./hooks/useRequest";
 import { Global } from "@emotion/react";
-import { getProjectsUsingGet } from "./shared/clients/projectApis";
-import { setResponsive } from "./shared/utils/responsive/responsive";
-import "./shared/assets/fonts/fonts.less";
+import { getProjectsUsingGet } from "./clients/projectApis";
+import { setResponsive } from "./utils/responsive/responsive";
+import "./assets/fonts/fonts.less";
 import { globalStyles } from "./globalStyle";
 
 setResponsive();

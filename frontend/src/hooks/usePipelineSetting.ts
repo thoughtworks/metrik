@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PipelineSettingStatus } from "../../pages/dashboard/components/PipelineSetting";
+import { PipelineSettingStatus } from "../pages/dashboard/components/PipelineSetting";
 import { useRequest } from "./useRequest";
 import { deletePipelineUsingDelete, Pipeline } from "../clients/pipelineApis";
 import { getProjectDetailsUsingGet, Project } from "../clients/projectApis";

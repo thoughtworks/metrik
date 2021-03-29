@@ -1,4 +1,4 @@
-import { BG_GRAY_DARK } from "./shared/constants/styles";
+import { BG_GRAY_DARK } from "./constants/styles";
 
 export const globalStyles = {
 	".metric-info-overlay div.ant-tooltip-inner": {

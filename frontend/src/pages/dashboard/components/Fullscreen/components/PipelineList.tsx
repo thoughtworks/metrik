@@ -1,6 +1,6 @@
-import Word from "../../../../../shared/components/Word/Word";
+import Word from "../../../../../components/Word/Word";
 import React, { useState } from "react";
-import { BG_GRAY_DARK, BG_GRAY_LIGHT } from "../../../../../shared/constants/styles";
+import { BG_GRAY_DARK, BG_GRAY_LIGHT } from "../../../../../constants/styles";
 interface PipelineListProps {
 	pipelineList: string[];
 }

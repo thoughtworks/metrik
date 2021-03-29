@@ -1,10 +1,10 @@
 import React, { FC } from "react";
-import { ColourLegend } from "../../../shared/components/ColourLegend";
-import { metricsStanderMapping, metricsExplanations } from "../../../shared/constants/metrics";
+import { ColourLegend } from "../../../components/ColourLegend";
+import { metricsStanderMapping, metricsExplanations } from "../../../constants/metrics";
 import { Typography } from "antd";
-import { GRAY_1 } from "../../../shared/constants/styles";
-import { MetricType } from "../../../shared/__types__/base";
-import { MetricsUnit } from "../../../shared/clients/metricsApis";
+import { GRAY_1 } from "../../../constants/styles";
+import { MetricType } from "../../../__types__/base";
+import { MetricsUnit } from "../../../clients/metricsApis";
 
 const { Title, Paragraph } = Typography;
 

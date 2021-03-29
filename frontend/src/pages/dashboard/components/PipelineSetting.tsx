@@ -8,11 +8,11 @@ import {
 } from "@ant-design/icons";
 import { css } from "@emotion/react";
 import { Button, Modal, Result, Spin } from "antd";
-import ProjectConfig from "../../../shared/components/ProjectConfig";
-import { usePipelineSetting } from "../../../shared/hooks/usePipelineSetting";
-import { useModalVisible } from "../../../shared/hooks/useModalVisible";
-import { createPipelineUsingPost, updatePipelineUsingPut } from "../../../shared/clients/pipelineApis";
-import PipelineSetup, { FormValues } from "../../../shared/components/PipelineSetup/PipelineSetup";
+import ProjectConfig from "../../../components/ProjectConfig";
+import { usePipelineSetting } from "../../../hooks/usePipelineSetting";
+import { useModalVisible } from "../../../hooks/useModalVisible";
+import { createPipelineUsingPost, updatePipelineUsingPut } from "../../../clients/pipelineApis";
+import PipelineSetup, { FormValues } from "../../../components/PipelineSetup/PipelineSetup";
 
 const settingStyles = css({
 	fontSize: 16,
