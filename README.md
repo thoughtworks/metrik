@@ -10,7 +10,7 @@
 <!-- PROJECT TITLE -->
 <h1 align="center">
   <sub>
-  <img  src="https://raw.githubusercontent.com/thoughtworks/metrik/main/frontend/src/shared/assets/source/logo.svg"
+  <img  src="https://raw.githubusercontent.com/thoughtworks/metrik/main/frontend/src/assets/source/logo.svg"
         height=20%
         width=20%>
   </sub>
