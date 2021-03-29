@@ -45,7 +45,11 @@ ENV MONGO_INITDB_ROOT_USERNAME admin
 ENV MONGO_INITDB_ROOT_PASSWORD root
 
 # Copy BACKEND artifact
-ENV APP_ENV local
+ENV APP_ENV release
+ENV DB_USER 4km
+ENV DB_PASSWORD 4000km
+ENV AES_KEY "&E)H@MbQeThWmZq4"
+ENV AES_IV "D(G+KbPeShVkYp3s"
 
 COPY artifacts/backend/run.sh /app/metrik-service.sh
 COPY artifacts/backend/build/libs/metrik-backend-*.jar /app/metrik-backend.jar
