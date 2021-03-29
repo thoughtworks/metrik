@@ -1,16 +1,16 @@
 import React, { FC, ReactNode } from "react";
 import { css } from "@emotion/react";
-import { CustomizeTickProps, LineChart } from "../../shared/components/LineChart";
+import { CustomizeTickProps, LineChart } from "../../../shared/components/LineChart";
 
-import { GRAY_1, GRAY_4 } from "../../shared/constants/styles";
-import { durationFormatter } from "../../shared/utils/timeFormats/timeFormats";
-import { LoadingSpinner } from "../../shared/components/LoadingSpinner";
+import { GRAY_1, GRAY_4 } from "../../../shared/constants/styles";
+import { durationFormatter } from "../../../shared/utils/timeFormats/timeFormats";
+import { LoadingSpinner } from "../../../shared/components/LoadingSpinner";
 import { find } from "lodash";
 import { AxisDomain } from "recharts/types/util/types";
-import { Metrics, MetricsSummary } from "../../shared/clients/metricsApis";
-import { MetricsLevel } from "../../shared/__types__/enum";
-import Word from "../../shared/components/Word/Word";
-import { MetricsLevelConfig } from "../../fullscreen/components/FullscreenMetricsCard";
+import { Metrics, MetricsSummary } from "../../../shared/clients/metricsApis";
+import { MetricsLevel } from "../../../shared/__types__/enum";
+import Word from "../../../shared/components/Word/Word";
+import { MetricsLevelConfig } from "./Fullscreen/components/FullscreenMetricsCard";
 
 const containerStyles = css({
 	backgroundColor: GRAY_1,
