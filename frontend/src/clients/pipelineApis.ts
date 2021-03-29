@@ -1,4 +1,5 @@
 import { createRequest } from "./createRequest";
+import { PipelineTool } from "../models/pipeline";
 
 export const createPipelineUsingPost = createRequest<{
 	projectId: string;
@@ -75,8 +76,3 @@ export type Pipeline = JenkinsPipeline | BambooPipeline;
 export type PipelineVerification =
 	| Omit<JenkinsPipeline, "id" | "name">
 	| Omit<BambooPipeline, "id" | "name">;
-
-export enum PipelineTool {
-	BAMBOO = "BAMBOO",
-	JENKINS = "JENKINS",
-}

@@ -2,7 +2,6 @@ import {
 	BambooPipeline,
 	JenkinsPipeline,
 	Pipeline,
-	PipelineTool,
 	verifyPipelineUsingPost,
 } from "../../clients/pipelineApis";
 import React, { FC, useState } from "react";
@@ -10,6 +9,7 @@ import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } fro
 import { css } from "@emotion/react";
 import { PIPELINE_CONFIG, PIPELINE_TYPE_NOTE } from "../../utils/pipelineConfig/pipelineConfig";
 import { VerifyStatus } from "../../models/common";
+import { PipelineTool } from "../../models/pipeline";
 
 const { Option } = Select;
 const { Text } = Typography;
