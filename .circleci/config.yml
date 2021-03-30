@@ -31,6 +31,7 @@ jobs:
       - run:
           name: Link mongo cli executable
           command: sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()'
+          working_directory: backend
       - run:
           name: Configure MongoDB for API test
           command: |
@@ -39,6 +40,7 @@ jobs:
             do
               mongo 4-key-metrics < $file
             done
+          working_directory: backend
       - run:
           name: Start Service and Run Api Test
           command: |
