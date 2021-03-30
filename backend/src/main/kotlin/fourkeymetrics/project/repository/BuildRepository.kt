@@ -35,20 +35,24 @@ class BuildRepository {
     fun save(builds: List<Build>) {
         logger.info("Saving [${builds.size}] builds into DB")
         builds.parallelStream().forEach {
-            val query = Query()
-            query.addCriteria(
-                Criteria
-                    .where("pipelineId").`is`(it.pipelineId)
-                    .and("number").`is`(it.number)
-            )
-            val found = mongoTemplate.findAndReplace(
-                query,
-                it,
-                collectionName
-            )
-            if (found == null) {
-                mongoTemplate.save(it, collectionName)
-            }
+            save(it)
+        }
+    }
+
+    fun save(build: Build) {
+        val query = Query()
+        query.addCriteria(
+            Criteria
+                .where("pipelineId").`is`(build.pipelineId)
+                .and("number").`is`(build.number)
+        )
+        val found = mongoTemplate.findAndReplace(
+            query,
+            build,
+            collectionName
+        )
+        if (found == null) {
+            mongoTemplate.save(build, collectionName)
         }
     }
 

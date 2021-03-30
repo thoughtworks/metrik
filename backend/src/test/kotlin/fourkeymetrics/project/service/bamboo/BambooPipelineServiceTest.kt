@@ -1,5 +1,6 @@
 package fourkeymetrics.project.service.bamboo
 
+import fourkeymetrics.MockitoHelper
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
@@ -162,16 +163,14 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
-            Build(
-                pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
-                url = "$baseUrl/rest/api/latest/result/$planKey-1",
-                stages = emptyList(),
-                changeSets = emptyList()
-            )
+        val build = Build(
+            pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
+            url = "$baseUrl/rest/api/latest/result/$planKey-1",
+            stages = emptyList(),
+            changeSets = emptyList()
         )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -206,16 +205,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1615882987191,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = emptyList(),
                 changeSets = emptyList()
             )
-        )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -250,7 +248,7 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId,
                 number = 1,
@@ -268,9 +266,8 @@ internal class BambooPipelineServiceTest {
                     )
                 )
             )
-        )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -305,16 +302,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId, number = 1, result = Status.FAILED, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.FAILED, 1593398522566, 38, 0, 1593398522604)),
                 changeSets = listOf()
             )
-        )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -349,7 +345,7 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId,
                 number = 1,
@@ -360,9 +356,8 @@ internal class BambooPipelineServiceTest {
                 stages = listOf(Stage("Stage 1", Status.SUCCESS, 1594089288199, 880, 0, 1594089289079)),
                 changeSets = emptyList()
             )
-        )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -397,16 +392,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId, number = 1, result = Status.OTHER, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.OTHER, 1593398522566, 38, 0, 1593398522604)),
                 changeSets = listOf()
             )
-        )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -445,7 +439,7 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId,
                 number = 1,
@@ -462,10 +456,9 @@ internal class BambooPipelineServiceTest {
                         timestamp = 1593398491000
                     )
                 )
-            ),
-        )
+            )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -502,7 +495,7 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        val builds = listOf(
+        val build =
             Build(
                 pipelineId = pipelineId,
                 number = 1,
@@ -519,10 +512,9 @@ internal class BambooPipelineServiceTest {
                         timestamp = 1593398491000
                     )
                 )
-            ),
-        )
+            )
 
-        verify(buildRepository, times(1)).save(builds)
+        verify(buildRepository, times(1)).save(build)
     }
 
     @Test
@@ -557,6 +549,6 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuilds(pipelineId)
 
-        verify(buildRepository, times(1)).save(emptyList())
+        verify(buildRepository, never()).save(MockitoHelper.anyObject<Build>())
     }
 }

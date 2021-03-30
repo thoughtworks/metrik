@@ -60,6 +60,7 @@ class BambooPipelineService(
         }
     }
 
+    @Synchronized
     override fun syncBuilds(pipelineId: String): List<Build> {
         logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
         val pipeline = pipelineRepository.findById(pipelineId)
@@ -82,11 +83,14 @@ class BambooPipelineService(
 
             val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
                 val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                convertToBuild(buildDetailResponse, pipelineId)
+                val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
+                if (convertedBuild != null) {
+                    buildRepository.save(convertedBuild)
+                }
+                convertedBuild
             }.toList().mapNotNull { it }
 
             logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${builds.size}] builds")
-            buildRepository.save(builds)
 
             return builds
         } catch (ex: HttpServerErrorException) {
