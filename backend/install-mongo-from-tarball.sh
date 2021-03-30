@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
-sudo apt-get install libcurl4 openssl liblzma5
-wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.4.4.tgz
-tar -zxvf mongodb-linux-*-4.4.4.tgz
-sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/
-mongo --eval 'db.serverStatus()'
-echo "success!"
+download_and_install() {
+  echo "${PWD}/mongodb-linux-x86_64-debian10-4.4.4 directory not found. Start installation."
+  sudo apt-get install libcurl4 openssl liblzma5
+  wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian10-4.4.4.tgz
+  tar -zxvf mongodb-linux-x86_64-debian10-4.4.4.tgz
+}
+
+[ -d "${PWD}/mongodb-linux-x86_64-debian10-4.4.4" ] \
+  && echo "${PWD}/mongodb-linux-x86_64-debian10-4.4.4 directory already exists. Do nothing." \
+  || download_and_install
+
+echo "Mongo install done!"

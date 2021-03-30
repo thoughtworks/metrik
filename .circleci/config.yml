@@ -16,6 +16,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+            - v1-mongo-{{ .Branch }}-{{ checksum "backend/install-mongo-from-tarball.sh" }}
+      - restore_cache:
+          keys:
             - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           keys:
@@ -25,12 +28,8 @@ jobs:
           command: ./gradlew build
           working_directory: backend
       - run:
-          name: Install MongoDB on primary docker instance
-          command: ./install-mongo-from-tarball.sh
-          working_directory: backend
-      - run:
-          name: Link mongo cli executable
-          command: sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()'
+          name: Install MongoDB on primary docker instance, and link commands
+          command: ./install-mongo-from-tarball.sh && sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()'
           working_directory: backend
       - run:
           name: Configure MongoDB for API test
@@ -62,6 +61,10 @@ jobs:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
+      - save_cache:
+          paths:
+            - ./backend/mongodb-linux-x86_64-debian10-4.4.4
+          key: v1-mongo-{{ .Branch }}-{{ checksum "backend/install-mongo-from-tarball.sh" }}
       - store_test_results:
           path: backend/build/test-results/apiTest/
       - store_artifacts:
@@ -89,7 +92,7 @@ jobs:
           working_directory: frontend
       - save_cache:
           paths:
-            - node_modules
+            - frontend/node_modules
           key: node-v1-{{ .Branch }}-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: Run tests
