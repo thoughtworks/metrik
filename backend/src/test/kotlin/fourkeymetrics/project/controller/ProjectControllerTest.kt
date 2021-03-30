@@ -48,7 +48,6 @@ class ProjectControllerTest {
 
     @Test
     internal fun `should get projects successfully `() {
-
         `when`(projectApplicationService.getProjects()).thenReturn(
             listOf(
                 ProjectResponse(
