@@ -30,7 +30,7 @@ You can contribute through many ways, which including but not limited to:
 
 1. `cd frontend`
 2. `npm install`
-3. `npm run start:dev-api`
+3. `npm run start:local-api`
 4. Now you can access it from: `http://localhost:2333/`
 
 # Conventions
