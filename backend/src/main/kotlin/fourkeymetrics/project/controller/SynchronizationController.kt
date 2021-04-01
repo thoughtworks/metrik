@@ -21,7 +21,7 @@ class SynchronizationController {
     @PostMapping("/api/project/{projectId}/synchronization")
     fun updateBuilds(@PathVariable projectId: String): ResponseEntity<SynchronizationRecordResponse> {
         logger.info("************** Syncing **************")
-        Thread.sleep(1000 * 60 * 11)
+        Thread.sleep(1000 * 60 * 6)
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
         logger.info("************** done **************")
