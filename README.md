@@ -66,9 +66,10 @@ Follow the two steps below to run the tool, and measure the four key metrics of 
 
 ### Install and run
 
-The product is released to Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please ensure that [Docker](https://www.docker.com) has already installed on your OS.
-
-You can run the container locally via the following command:
+The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please follow the steps:
+1. Ensure [Docker](https://www.docker.com) has already installed on your OS.
+2. Find avaiable release versions in the Docker repository: [https://gallery.ecr.aws/j2s5d3z8/4-key-metrics](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+3. Run the container locally via the following command:
 
 ``` bash
 docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
