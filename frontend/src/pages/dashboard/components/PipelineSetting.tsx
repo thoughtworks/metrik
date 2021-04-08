@@ -33,9 +33,10 @@ export enum PipelineSettingStatus {
 	UPDATE,
 }
 
-const PipelineSetting: FC<{ projectId: string; syncBuild: () => void }> = ({
+const PipelineSetting: FC<{ projectId: string; syncBuild: () => void; syncing: boolean }> = ({
 	projectId,
 	syncBuild,
+	syncing
 }) => {
 	const { visible, handleToggleVisible } = useModalVisible();
 	const {
@@ -78,7 +79,7 @@ const PipelineSetting: FC<{ projectId: string; syncBuild: () => void }> = ({
 
 	return (
 		<>
-			<Button css={settingStyles} onClick={handleToggleVisible} type={"link"}>
+			<Button css={settingStyles} onClick={handleToggleVisible} type={"link"} disabled={syncing}>
 				<SettingOutlined />
 				Pipeline Settings
 			</Button>
