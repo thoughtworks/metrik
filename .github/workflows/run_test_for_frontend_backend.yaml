@@ -33,6 +33,9 @@ jobs:
 
       - name: Run tests
         uses: ./.github/workflows/actions/backend_test
+        with:
+          workspace: ./backend
+
 
   frontend-test:
     name: Frontend module test
@@ -57,4 +60,6 @@ jobs:
 
       - name: Run tests
         uses: ./.github/workflows/actions/frontend_test
+        with:
+          workspace: ./frontend
 

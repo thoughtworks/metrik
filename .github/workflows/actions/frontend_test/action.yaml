@@ -2,16 +2,15 @@ name: 'Frontend tesing'
 description: 'Test frontend module'
 
 inputs:
-  frontend-dir:
+  workspace:
     description: 'The path of frontend module'
     required: true
-    default: '$GITHUB_WORKSPACE/frontend'
 
 runs:
   using: "composite"
   steps:
     - name: Enter frontend workspace
-      run: cd ${{ inputs.frontend-dir }}
+      run: cd ${{ inputs.workspace }}
       shell: bash
 
     - name: Install dependencies

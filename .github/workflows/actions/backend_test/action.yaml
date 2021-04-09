@@ -2,16 +2,15 @@ name: 'Backend testing'
 description: 'Test backend module'
 
 inputs:
-  backend-dir:
+  workspace:
     description: 'The path of backend module'
     required: true
-    default: '$GITHUB_WORKSPACE/backend'
 
 runs:
   using: "composite"
   steps:
     - name: Enter backend workspace
-      run: cd ${{ inputs.backend-dir }}
+      run: cd ${{ inputs.workspace }}
       shell: bash
 
     - name: Grant execute permission for gradlew
@@ -32,7 +31,7 @@ runs:
     - name: Configure MongoDB
       run: |
         mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
-        for file in `find ${{ inputs.backend-dir }}src/api-test/resources/ -type f -name '*.js'`
+        for file in `find ${{ inputs.workspace }}src/api-test/resources/ -type f -name '*.js'`
         do
           mongo 4-key-metrics < $file
         done
