@@ -1,0 +1,60 @@
+name: Frontend and Backend test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  backend-test:
+    name: Backend module test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2
+        with:
+          distrubution: 'adopt'
+          java-package: 'jdk'
+          java-version: '11'
+          check-latest: true
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/backend/.gradle/caches
+            ~/backend/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run tests
+        uses: .github/workflows/actions/backend_test
+
+  frontend-test:
+    name: Frontend module test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache Node.js packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/frontend/.npm
+            ~/frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run tests
+        uses: .github/workflows/actions/frontend_test
+
