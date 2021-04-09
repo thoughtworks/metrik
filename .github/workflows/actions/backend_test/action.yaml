@@ -1,0 +1,43 @@
+name: 'Backend testing'
+description: 'Test backend module'
+
+inputs:
+  backend-dir:
+    description: 'The path of backend module'
+    required: true
+    default: '${GITHUB_WORKSPACE}/backend'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Enter backend workspace
+      run: cd ${{ inputs.backend-dir }}
+      shell: bash
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      shell: bash
+
+    - name: Run Gradle test task
+      run: ./gradlew build
+      shell: bash
+
+    - name: Install MongoDB 4.4
+      run: |
+        echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+        sudo apt-get update
+        sudo apt-get install -y mongodb-org
+      shell: bash
+
+    - name: Configure MongoDB
+      run: |
+        mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
+        for file in `find ${{ inputs.backend-dir }}src/api-test/resources/ -type f -name '*.js'`
+        do
+          mongo 4-key-metrics < $file
+        done
+      shell: bash
+
+    - name: Run API tests
+      run: ./gradlew bootRun & ./gradlew apiTest
+      shell: bash
