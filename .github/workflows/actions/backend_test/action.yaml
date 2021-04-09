@@ -27,6 +27,18 @@ runs:
         sudo systemctl start mongod
       shell: bash
 
+    - name: MongoDB server check
+      run: |
+        COUNTER=0
+        mongo --eval "db.stats()"
+        while [[ $? -ne 0 && $COUNTER -lt 30 ]] ; do
+            sleep 2
+            let COUNTER+=2
+            echo "Waiting for Mongo to initialize... ($COUNTER seconds so far)"
+            mongo --eval "db.stats()"
+        done
+      shell: bash
+
     - name: Configure MongoDB
       run: |
         mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
