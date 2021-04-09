@@ -29,6 +29,7 @@
   <ul>
     <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#how-to-compute">How to Compute</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#license">License</a></li>
@@ -98,6 +99,12 @@ can mount the database folder `/data/db` out. And logs are also availalbe if you
 docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
 <!-- END OF USAGE -->
+
+
+<!-- HOW TO COMPUTE -->
+## How to compute
+[See our Wiki page](https://github.com/thoughtworks/metrik/wiki) 
+<!-- END OF HOW TO COMPUTE -->
 
 
 <!-- CONTRIBUTING -->
