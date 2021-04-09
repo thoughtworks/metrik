@@ -9,18 +9,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Enter frontend workspace
-      run: cd ${{ inputs.workspace }}
-      shell: bash
-
     - name: Install dependencies
       run: npm ci
       shell: bash
+      working-directory: ${{ inputs.workspace }}
 
     - name: Run tests
       run: npm run test
       shell: bash
+      working-directory: ${{ inputs.workspace }}
 
     - name: Build frontend artifacts
       run: npm run build:prod
       shell: bash
+      working-directory: ${{ inputs.workspace }}

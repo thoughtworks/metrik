@@ -9,17 +9,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Enter backend workspace
-      run: cd ${{ inputs.workspace }}
-      shell: bash
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       shell: bash
+      working-directory: ${{ inputs.workspace }}
 
     - name: Run Gradle test task
       run: ./gradlew build
       shell: bash
+      working-directory: ${{ inputs.workspace }}
 
     - name: Install MongoDB 4.4
       run: |
@@ -40,3 +38,4 @@ runs:
     - name: Run API tests
       run: ./gradlew bootRun & ./gradlew apiTest
       shell: bash
+      working-directory: ${{ inputs.workspace }}
