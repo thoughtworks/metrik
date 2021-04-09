@@ -4,10 +4,8 @@
 	"description": "The frontend React SPA for the 4-key-metrics visualization",
 	"main": "index.js",
 	"scripts": {
-		"start": "npm run start:dev-api",
-		"start:dev-api": "cross-env NODE_ENV=dev API_ENV=dev webpack serve --config ./scripts/webpack.dev.js",
-		"start:local-api": "cross-env NODE_ENV=dev API_ENV=local webpack serve --config ./scripts/webpack.dev.js",
-		"build:dev": "cross-env NODE_ENV=dev webpack --config ./scripts/webpack.dev.js",
+		"start": "npm run start:local-api",
+		"start:local-api": "cross-env NODE_ENV=dev webpack serve --config ./scripts/webpack.dev.js",
 		"build:prod": "cross-env NODE_ENV=prod webpack --config ./scripts/webpack.prod.js",
 		"build:prod:analyze": "cross-env NODE_ENV=prod ENABLE_ANALYZER=true webpack --config ./scripts/webpack.prod.js",
 		"test": "cross-env NODE_ENV=test jest --passWithNoTests",
