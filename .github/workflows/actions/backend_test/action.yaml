@@ -21,15 +21,9 @@ runs:
 
     - name: Install MongoDB 4.4
       run: |
-        sudo systemctl stop mongod
-        sudo apt-get purge ^mongodb
-        sudo rm -rf /usr/bin/mongo*
-        sudo rm -rf /var/log/mongodb
-        sudo rm -rf /var/lib/mongodb
         echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
         sudo apt-get update
-        sudo apt-get install -y mongodb-org-shell mongodb-org-server
-        sudo systemctl restart mongod
+        sudo apt-get install -y mongodb-org-shell
       shell: bash
 
     - name: MongoDB server check

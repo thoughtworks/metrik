@@ -10,6 +10,11 @@ jobs:
   backend-test:
     name: Backend module test
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:4.4-bionic
+        ports:
+          - 27017:27017
     steps:
       - uses: actions/checkout@v2
 
@@ -31,10 +36,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          sudo: true
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        with:
+#          sudo: true
 
       - name: Run tests
         uses: ./.github/workflows/actions/backend_test
