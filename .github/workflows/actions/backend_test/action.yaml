@@ -23,13 +23,14 @@ runs:
       run: |
         echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
         sudo apt-get update
-        sudo apt-get install -y mongodb-org
+        sudo apt-get install -y mongodb-org-shell mongodb-org-server
+        sudo systemctl start mongod
       shell: bash
 
     - name: Configure MongoDB
       run: |
         mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
-        for file in `find ${{ inputs.workspace }}src/api-test/resources/ -type f -name '*.js'`
+        for file in `find ${{ inputs.workspace }}/src/api-test/resources/ -type f -name '*.js'`
         do
           mongo 4-key-metrics < $file
         done
