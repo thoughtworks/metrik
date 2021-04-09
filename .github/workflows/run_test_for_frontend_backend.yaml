@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run tests
-        uses: .github/workflows/actions/backend_test
+        uses: ./.github/workflows/actions/backend_test
 
   frontend-test:
     name: Frontend module test
@@ -56,5 +56,5 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Run tests
-        uses: .github/workflows/actions/frontend_test
+        uses: ./.github/workflows/actions/frontend_test
 
