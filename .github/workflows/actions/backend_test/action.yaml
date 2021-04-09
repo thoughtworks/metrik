@@ -5,7 +5,7 @@ inputs:
   backend-dir:
     description: 'The path of backend module'
     required: true
-    default: '${GITHUB_WORKSPACE}/backend'
+    default: '$GITHUB_WORKSPACE/backend'
 
 runs:
   using: "composite"

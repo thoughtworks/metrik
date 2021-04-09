@@ -5,7 +5,7 @@ inputs:
   frontend-dir:
     description: 'The path of frontend module'
     required: true
-    default: '${GITHUB_WORKSPACE}/frontend'
+    default: '$GITHUB_WORKSPACE/frontend'
 
 runs:
   using: "composite"

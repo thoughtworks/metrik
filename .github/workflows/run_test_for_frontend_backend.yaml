@@ -16,7 +16,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v2
         with:
-          distrubution: 'adopt'
+          distribution: 'adopt'
           java-package: 'jdk'
           java-version: '11'
           check-latest: true
