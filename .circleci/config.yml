@@ -7,10 +7,10 @@ orbs:
 jobs:
   backend_test_and_build:
     docker:
-      - image: circleci/openjdk:11.0.8-jdk
+      - image: cimg/openjdk:11.0
         environment:
           TZ: "Asia/Shanghai"
-      - image: circleci/mongo:4.4.3-bionic
+      - image: circleci/mongo:4.4-bionic
     resource_class: medium
     steps:
       - checkout
@@ -137,45 +137,6 @@ jobs:
           repo: ${AWS_ECR_REPO}
           tag: latest
 
-  deploy_latest_version_to_sandbox:
-    docker:
-      - image: cimg/base:2021.01
-        environment:
-          TZ: "Asia/Shanghai"
-    resource_class: small
-
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "00:bb:8f:34:ae:be:33:3f:66:81:fc:ee:f5:96:96:5e"
-      - run:
-          name: Add remote sandbox host to trust-host
-          command: |
-              ssh-keyscan -H -p ${SANDBOX_SSH_PORT} ${SANDBOX_SSH_HOST} >> ~/.ssh/known_hosts
-      - run:
-          name: Login and deploy the latest version to Sandbox
-          command: |
-              ssh ${SANDBOX_SSH_USER}@${SANDBOX_SSH_HOST} -p ${SANDBOX_SSH_PORT} "
-                CONTAINER_NAME=4km
-                CURRENT_CONTAINER_ID=\$(sudo docker ps -aqf name=\$CONTAINER_NAME)
-
-                if [ ! -z \$CURRENT_CONTAINER_ID ]; then
-                  echo \"Killing existing docker container...\"
-                  sudo docker container stop \$CURRENT_CONTAINER_ID
-                  sudo docker container rm \$CURRENT_CONTAINER_ID
-                fi
-
-                echo \"Untag old image...\"
-                sudo docker rmi -f ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}
-
-                echo \"Deploying with the latest image...\"
-                sudo docker run --name \$CONTAINER_NAME -d -p 80:80 -p 9000:9000 -p 27017:27017 -v "/root/app/data/db:/data/db" -v "/root/app/logs:/app/logs" --restart always ${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO}:latest
-
-                echo \"Cleaning up...\"
-                sudo docker system prune -f
-              "
-      - run: echo "Deploymend to sandbox DONE."
-
   build_publish_release_version:
     docker:
       - image: cimg/base:2021.01
@@ -206,28 +167,8 @@ jobs:
           repo: ${AWS_ECR_REPO}
           tag: << pipeline.git.tag >>
 
-
 workflows:
   version: 2
-
-  build_image_and_deploy_sandbox:
-    unless: << pipeline.git.tag >>
-    jobs:
-      - frontend_test_and_build
-      - backend_test_and_build
-      - build_publish_latest_version:
-          filters: &canonical_repo_only_no_pull_request
-            branches:
-              only: /^(?!pull\/).*$/
-          requires:
-            - frontend_test_and_build
-            - backend_test_and_build
-      - deploy_latest_version_to_sandbox:
-          filters:
-            <<: *canonical_repo_only_no_pull_request
-          requires:
-            - build_publish_latest_version
-
   build_release_image:
     when: << pipeline.git.tag >>
     jobs:
