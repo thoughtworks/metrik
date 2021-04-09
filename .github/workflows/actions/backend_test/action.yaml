@@ -21,10 +21,13 @@ runs:
 
     - name: Install MongoDB 4.4
       run: |
+        sudo apt-get purge ^mongodb
+        sudo apt-get autoremove
+        sudo rm -rf /usr/bin/mongo*
         echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
         sudo apt-get update
         sudo apt-get install -y mongodb-org-shell mongodb-org-server
-        sudo systemctl start mongod
+        sudo systemctl restart mongod
       shell: bash
 
     - name: MongoDB server check
@@ -49,6 +52,6 @@ runs:
       shell: bash
 
     - name: Run API tests
-      run: ./gradlew bootRun & ./gradlew apiTest
+      run: ./gradlew bootRun && ./gradlew apiTest
       shell: bash
       working-directory: ${{ inputs.workspace }}
