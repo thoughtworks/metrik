@@ -169,6 +169,12 @@ jobs:
 
 workflows:
   version: 2
+  test_for_frontend_and_backend:
+    unless: << pipeline.git.tag >>
+    jobs:
+      - frontend_test_and_build
+      - backend_test_and_build
+
   build_release_image:
     when: << pipeline.git.tag >>
     jobs:
