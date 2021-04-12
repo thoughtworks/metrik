@@ -19,27 +19,27 @@ runs:
       shell: bash
       working-directory: ${{ inputs.workspace }}
 
-    - name: Check Mongo installation
-      run: |
-        if [ ! -f /usr/bin/mongo]; then
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-org-shell
-        fi
-      shell: bash
-
-    - name: Check MongoDB initialization
-      run: |
-        COUNTER=0
-        mongo --eval "db.stats()"
-        while [[ $? -ne 0 && $COUNTER -lt 30 ]] ; do
-            sleep 2
-            let COUNTER+=2
-            echo "Waiting for Mongo to initialize... ($COUNTER seconds so far)"
-            mongo --eval "db.stats()"
-        done
-        echo "MongoDB has been successfully initialized".
-      shell: bash
+#    - name: Check Mongo installation
+#      run: |
+#        if [ ! -f /usr/bin/mongo]; then
+#          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+#          sudo apt-get update
+#          sudo apt-get install -y mongodb-org-shell
+#        fi
+#      shell: bash
+#
+#    - name: Check MongoDB initialization
+#      run: |
+#        COUNTER=0
+#        mongo --eval "db.stats()"
+#        while [[ $? -ne 0 && $COUNTER -lt 30 ]] ; do
+#            sleep 2
+#            let COUNTER+=2
+#            echo "Waiting for Mongo to initialize... ($COUNTER seconds so far)"
+#            mongo --eval "db.stats()"
+#        done
+#        echo "MongoDB has been successfully initialized".
+#      shell: bash
 
 #    - name: Configure MongoDB
 #      run: |
