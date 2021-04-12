@@ -1,5 +1,7 @@
 #!/bin/bash
 
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 container_name=mongodb
 #this command to specify the network
 export COMPOSE_PROJECT_NAME=4km-docker
@@ -15,9 +17,10 @@ fi
 echo "start $container_name"
 docker rm "${container_name}"
 
-chmod 400 ../config/keyfile.txt
-chmod +x ../config/*.sh
-docker-compose -f docker-compose-for-local.yml up  -d
+chmod 400 "$DIR"/../config/keyfile.txt
+chmod +x "$DIR"/../config/*.sh
+
+docker-compose -f "$DIR"/docker-compose-for-local.yml up  -d
 
 is_health_check_success=0
 
