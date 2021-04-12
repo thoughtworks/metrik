@@ -44,7 +44,7 @@ runs:
     - name: Configure MongoDB
       run: |
         mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
-        for file in `find ${{ inputs.workspace }}/src/api-test/resources/ -type f -name '*.js'`
+        for file in `find $PWD/src/api-test/resources/ -type f -name '*.js'`
         do
           mongo 4-key-metrics < $file
         done
