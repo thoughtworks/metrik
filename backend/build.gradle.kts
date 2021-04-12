@@ -107,7 +107,7 @@ val apiTest = task<Test>("apiTest") {
 val startMongo by tasks.registering {
     doLast {
         exec {
-            commandLine("bash", "-c", "cd mongodb-setup && cd mongodb-for-apitest && sh ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh")
+            commandLine("bash", "-c", "cd mongodb-setup && cd mongodb-for-apitest && bash ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh")
         }
     }
 }

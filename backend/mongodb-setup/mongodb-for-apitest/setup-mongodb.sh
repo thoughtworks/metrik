@@ -20,7 +20,7 @@ do
   echo "checking $container_name status times: $i"
   status=$(docker inspect --format {{.State.Status}} "$container_name" | head -n 1)
   echo "the container $container_name status is: $status"
-   if [[ ${status} == "running" ]]; then
+   if [ ${status} == "running" ]; then
           is_health_check_success=1
           break
    fi
@@ -29,7 +29,7 @@ do
 done
 
 
-if [[ ${is_health_check_success} == 1 ]]; then
+if [ ${is_health_check_success} == 1 ]; then
         echo "initializing replicaSet and add user"
         docker exec $container_name /app/mongo/init.sh
         echo "mongodb set up success ✓✓✓, databaseName=4-key-metrics, username=4km, password=4000km."
