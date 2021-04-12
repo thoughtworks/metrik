@@ -15,7 +15,6 @@ jobs:
         image: mongo:4.4-bionic
         ports:
           - 27017:27017
-        command: -vvvvv
     steps:
       - uses: actions/checkout@v2
 
