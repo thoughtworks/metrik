@@ -20,11 +20,11 @@ while [ "$SERVICE_STATUS" -eq 0 ] && [ "$COUNTER" -lt "$TOLERANCE" ]; do
   if [[ "$CURL_RESP" == "{\"status\":\"UP\"}" ]]; then
     SERVICE_STATUS=1
     break
-  else
-    sleep 5
-    ((COUNTER+=5))
-    echo "Backend service is not ready. Waiting for retry ($COUNTER seconds so far)"
   fi
+  
+  sleep 5
+  ((COUNTER+=5))
+  echo "Backend service is not ready. Waiting for retry ($COUNTER seconds so far)"
 done
 
 if [ "$SERVICE_STATUS" -eq 1 ]; then

@@ -10,20 +10,25 @@ PORT="$2"
 TOLERANCE="$3"
 
 COUNTER=0
+PORT_STATUS=0
 
-nc -zv "$HOSTNAME" "$PORT" 2>&1 >/dev/null
-
-while [ $? -ne 0 ] && [ "$COUNTER" -lt "$TOLERANCE" ]; do
-  sleep 2
-  ((COUNTER += 2))
-  echo "[$HOSTNAME:$PORT] is down... Waiting for retry (${COUNTER} seconds so far)"
+while [ "$PORT_STATUS" -ne 0 ] && [ "$COUNTER" -lt "$TOLERANCE" ]; do
   nc -zv "$HOSTNAME" "$PORT" 2>&1 >/dev/null
+  
+  if [ $? -eq 0 ]; then
+    PORT_STATUS=1
+    break
+  fi
+  
+  sleep 2
+  ((COUNTER+=2))
+  echo "[$HOSTNAME:$PORT] is not accessible... Waiting for retry ($COUNTER seconds so far)"
 done
 
-if [ $? -eq 0 ]; then
+if [ "$PORT_STATUS" -eq 1 ]; then
   echo "[$HOSTNAME:$PORT] is up!"
   exit 0
-elif [ "$COUNTER" -ge "$TOLERANCE" ]; then
-  echo "[$HOSTNAME:$PORT] is not accessible, the service is not running."
+elif [ "$PORT_STATUS" -ne 1 ] || [ "$COUNTER" -ge "$TOLERANCE" ]; then
+  echo "[$HOSTNAME:$PORT] is down."
   exit 1
 fi
