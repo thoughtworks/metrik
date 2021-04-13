@@ -5,11 +5,11 @@
 ## arg2: Backend service port number
 ## arg3: Tolerant time (second)
 
-HEALTH_CHECK_URL="http://$HOSTNAME:$PORT/actuator/health"
-
 HOSTNAME="$1"
 PORT="$2"
 TOLERANCE="$3"
+
+HEALTH_CHECK_URL="http://$HOSTNAME:$PORT/actuator/health"
 
 COUNTER=0
 SERVICE_STATUS=0
