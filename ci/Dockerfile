@@ -1,4 +1,4 @@
-FROM mongo:4.4.3-bionic
+FROM mongo:4.4-bionic
 
 # set locale
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
