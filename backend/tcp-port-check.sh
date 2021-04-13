@@ -23,7 +23,7 @@ done
 if [ $? -eq 0 ] ; then
   echo "[$HOSTNAME:$PORT] is up!"
   exit 0
-elif [ $COUNTER -ge $TOLERANCE ]; then
+elif [ "$COUNTER" -ge "$TOLERANCE" ] ; then
   echo "[$HOSTNAME:$PORT] is not accessible, the service is not running."
   exit 1
 fi
