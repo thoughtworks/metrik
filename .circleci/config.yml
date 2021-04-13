@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Install MongoDB on primary docker instance, and link commands
           command: ./install-mongo-from-tarball.sh && sudo ln -s ${PWD}/mongodb-linux-x86_64-debian10-4.4.4/bin/* /usr/local/bin/ && mongo --eval 'db.serverStatus()'
-          working_directory: backend
+          working_directory: backend/scripts
       - run:
           name: Configure MongoDB for API test
           command: |
