@@ -4,8 +4,7 @@
 [![Issues](https://img.shields.io/github/issues-raw/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/issues)
 [![Licnece](https://img.shields.io/github/license/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt)
 
-[![CircleCI](https://circleci.com/gh/thoughtworks/metrik.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/thoughtworks/metrik)
-
+[![Frontend and Backend test](https://github.com/thoughtworks/metrik/actions/workflows/run_test_for_frontend_backend.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/run_test_for_frontend_backend.yaml)
 
 <!-- PROJECT TITLE -->
 <h1 align="center">
