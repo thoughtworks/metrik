@@ -9,15 +9,15 @@ on:
       
   workflow_dispatch:
 
-
 env:
   IMAGE_NAME: metrik
 
 jobs:
-    name: 'Run Tests, build artifacts and Build Docker image'
-    runs-on: ubuntu-latest
+    test-build-push-image:
+      name: 'Run tests, build artifacts and push image'
+      runs-on: ubuntu-latest
 
-    steps:
+      steps:
       - name: Setup timezone
         run: sudo timedatectl set-timezone "Asia/Shanghai"
 
