@@ -121,7 +121,7 @@ val startService by tasks.registering {
 val apiTestOneCommand by tasks.registering {
     doLast {
         exec {
-            commandLine("bash", "-c", "./check-container-status.sh localhost 9000 && ./gradlew clean apiTest")
+            commandLine("bash", "-c", "./gradlew apiTest")
         }
     }
 }

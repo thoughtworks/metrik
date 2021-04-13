@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Start Service and Run Api Test
           command: |
-            ./gradlew clean bootRun & ./check-container-status.sh localhost 9000 && ./gradlew apiTest
+            ./gradlew clean bootRun & ./tcp-port-check.sh localhost 9000 30 && ./gradlew apiTest
           working_directory: backend
       - run:
           name: Assemble JAR
