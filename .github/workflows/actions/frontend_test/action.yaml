@@ -1,5 +1,5 @@
-name: 'Frontend tesing'
-description: 'Test frontend module'
+name: 'Frontend module test'
+description: 'Run frontend module tests'
 
 inputs:
   workspace:

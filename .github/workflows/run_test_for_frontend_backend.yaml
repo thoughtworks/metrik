@@ -42,11 +42,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run tests
+      - name: Run backend tests
         uses: ./.github/workflows/actions/backend_test
         with:
           workspace: ./backend
-
+          
+      - name: Run backend API tests
+        uses: ./.github/workflows/actions/backend_api_test
+        with:
+          workspace: ./backend
+      
   frontend-test:
     name: Frontend module test
     runs-on: ubuntu-latest
@@ -69,7 +74,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Run tests
+      - name: Run frontend tests
         uses: ./.github/workflows/actions/frontend_test
         with:
           workspace: ./frontend
