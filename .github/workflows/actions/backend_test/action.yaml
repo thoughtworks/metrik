@@ -42,6 +42,6 @@ runs:
       shell: bash
 
     - name: Run API tests
-      run: java -jar build/libs/metrik-backend-*.jar & ./tcp-port-check.sh localhost 9000 20 && ./gradlew apiTest
+      run: java -jar build/libs/metrik-backend-*.jar & ./scripts/backend-service-check.sh localhost 9000 30 && ./gradlew apiTest
       shell: bash
       working-directory: ${{ inputs.workspace }}
