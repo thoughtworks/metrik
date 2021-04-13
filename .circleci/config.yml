@@ -16,9 +16,6 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-mongo-{{ .Branch }}-{{ checksum "backend/install-mongo-from-tarball.sh" }}
-      - restore_cache:
-          keys:
             - v1-gradle-wrapper-{{ .Branch }}-{{ checksum "backend/gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           keys:
@@ -43,15 +40,7 @@ jobs:
       - run:
           name: Start Service and Run Api Test
           command: |
-            ./gradlew clean bootRun & ./scripts/backend-service-check.sh localhost 9000 30 && ./gradlew apiTest
-          working_directory: backend
-      - run:
-          name: Assemble JAR
-          command: |
-            # Skip this for other nodes
-            if [ "$CIRCLE_NODE_INDEX" == 0 ]; then
-              ./gradlew assemble
-            fi
+            java -jar build/libs/metrik-backend-* & ./scripts/backend-service-check.sh localhost 9000 30 && ./gradlew apiTest
           working_directory: backend
       - save_cache:
           paths:
@@ -61,10 +50,6 @@ jobs:
           paths:
             - ~/.gradle/caches
           key: v1-gradle-cache-{{ .Branch }}-{{ checksum "backend/build.gradle.kts" }}
-      - save_cache:
-          paths:
-            - ./backend/mongodb-linux-x86_64-debian10-4.4.4
-          key: v1-mongo-{{ .Branch }}-{{ checksum "backend/install-mongo-from-tarball.sh" }}
       - store_test_results:
           path: backend/build/test-results/apiTest/
       - store_artifacts:
