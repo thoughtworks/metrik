@@ -1,0 +1,99 @@
+name: Publish release Docker image
+
+on:   
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+      
+  workflow_dispatch:
+
+
+env:
+  IMAGE_NAME: metrik
+
+jobs:
+    name: 'Run Tests, build artifacts and Build Docker image'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup timezone
+        run: sudo timedatectl set-timezone "Asia/Shanghai"
+
+      - uses: actions/checkout@v2
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-package: 'jdk'
+          java-version: '11'
+          check-latest: true
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run backend tests
+        uses: ./.github/workflows/actions/backend_test
+        with:
+          workspace: ./backend
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache Node.js packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run frontend tests
+        uses: ./.github/workflows/actions/frontend_test
+        with:
+          workspace: ./frontend
+
+      - name: Collect artifacts
+        run: |
+          ARTIFACT_DIR="./ci/artifacts"
+          
+          mkdir -p $ARTIFACT_DIR/backend
+          mkdir $ARTIFACT_DIR/frontend
+          
+          cp -rp ./frontend/dist $ARTIFACT_DIR/frontend/
+          cp -p ./backend/build/libs/metrik-backend-*.jar $ARTIFACT_DIR/backend/
+          cp -p ./backend/run.sh $ARTIFACT_DIR/backend/
+          
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        
+      - name: Build and push Docker image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          docker build . --file ./ci/Dockerfile-GitHub_Actions --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
+          
+          IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
+          for tag in "${DOCKER_TAGS[@]}"; do
+            docker push $IMAGE_ID:$tag
+          done
