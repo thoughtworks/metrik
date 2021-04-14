@@ -6,7 +6,6 @@ on:
       - master
     tags:
       - v*
-
   workflow_dispatch:
 
 env:
@@ -16,6 +15,13 @@ jobs:
   test-build-push-image:
     name: 'Run tests, build artifacts and push image'
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:4.4-bionic
+        env:
+          TZ: "Asia/Shanghai"
+        ports:
+          - 27017:27017
 
     steps:
       - name: Setup timezone
