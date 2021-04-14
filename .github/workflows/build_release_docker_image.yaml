@@ -1,23 +1,23 @@
 name: Publish release Docker image
 
-on:   
+on:
   push:
     branches:
       - master
     tags:
       - v*
-      
+
   workflow_dispatch:
 
 env:
   IMAGE_NAME: metrik
 
 jobs:
-    test-build-push-image:
-      name: 'Run tests, build artifacts and push image'
-      runs-on: ubuntu-latest
+  test-build-push-image:
+    name: 'Run tests, build artifacts and push image'
+    runs-on: ubuntu-latest
 
-      steps:
+    steps:
       - name: Setup timezone
         run: sudo timedatectl set-timezone "Asia/Shanghai"
 
@@ -45,7 +45,7 @@ jobs:
         uses: ./.github/workflows/actions/backend_test
         with:
           workspace: ./backend
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
@@ -67,17 +67,17 @@ jobs:
       - name: Collect artifacts
         run: |
           ARTIFACT_DIR="./ci/artifacts"
-          
+
           mkdir -p $ARTIFACT_DIR/backend
           mkdir $ARTIFACT_DIR/frontend
-          
+
           cp -rp ./frontend/dist $ARTIFACT_DIR/frontend/
           cp -p ./backend/build/libs/metrik-backend-*.jar $ARTIFACT_DIR/backend/
           cp -p ./backend/run.sh $ARTIFACT_DIR/backend/
-          
+
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        
+
       - name: Build and push Docker image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
@@ -87,12 +87,12 @@ jobs:
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          
+
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
           docker build . --file Dockerfile-GitHub_Actions --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
-          
+
           IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
           for tag in "${DOCKER_TAGS[@]}"; do
             docker push $IMAGE_ID:$tag
