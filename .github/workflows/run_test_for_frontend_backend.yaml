@@ -46,12 +46,7 @@ jobs:
         uses: ./.github/workflows/actions/backend_test
         with:
           workspace: ./backend
-          
-      - name: Run backend API tests
-        uses: ./.github/workflows/actions/backend_api_test
-        with:
-          workspace: ./backend
-      
+
   frontend-test:
     name: Frontend module test
     runs-on: ubuntu-latest

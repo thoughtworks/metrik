@@ -1,5 +1,5 @@
-name: 'Backend module test'
-description: 'Run backend module tests'
+name: 'Backend API test'
+description: 'Run backend service API tests with MongoDB'
 
 inputs:
   workspace:
@@ -9,12 +9,36 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Grant execute permission for shell scripts
+      run: |
+        chmod +x gradlew
+        chmod +x ./scripts/*.sh
       shell: bash
       working-directory: ${{ inputs.workspace }}
 
     - name: Run Gradle test task
       run: ./gradlew build
+      shell: bash
+      working-directory: ${{ inputs.workspace }}
+
+    - name: Configure MongoDB
+      run: |
+        ./scripts/mongodb-service-check.sh 10
+
+        mongo 4-key-metrics --eval "db.createUser({ user: '4km', pwd: '4000km', roles: [{ role: 'readWrite', db: '4-key-metrics' }]})"
+        for file in `find ./src/api-test/resources/ -type f -name '*.js'`
+        do
+          mongo -u "4km" --authenticationDatabase "4-key-metrics" -p "4000km" 4-key-metrics < $file
+        done
+      shell: bash
+      working-directory: ${{ inputs.workspace }}
+
+    - name: Run API tests
+      run: |
+        if !(ls build/libs/metrik-backend-*.jar 1> /dev/null 2>&1); then
+          ./gradlew clean build
+        fi
+
+        java -jar build/libs/metrik-backend-*.jar & ./scripts/backend-service-check.sh localhost 9000 20 && ./gradlew apiTest
       shell: bash
       working-directory: ${{ inputs.workspace }}
