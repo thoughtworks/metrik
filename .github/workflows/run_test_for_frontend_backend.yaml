@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run backend tests
-        uses: ./.github/workflows/actions/backend_test
+        uses: ./.github/actions/backend_test
         with:
           working-dir: ./backend
 
@@ -73,7 +73,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Run frontend tests
-        uses: ./.github/workflows/actions/frontend_test
+        uses: ./.github/actions/frontend_test
         with:
           working-dir: ./frontend
 
