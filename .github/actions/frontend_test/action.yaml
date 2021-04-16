@@ -2,7 +2,7 @@ name: 'Frontend module test'
 description: 'Run frontend module tests'
 
 inputs:
-  workspace:
+  working-dir:
     description: 'The path of frontend module'
     required: true
 
@@ -12,14 +12,14 @@ runs:
     - name: Install dependencies
       run: npm ci
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
 
     - name: Run tests
       run: npm run test
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
 
     - name: Build frontend artifacts
       run: npm run build:prod
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}

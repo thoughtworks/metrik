@@ -48,7 +48,7 @@ jobs:
       - name: Run backend tests
         uses: ./.github/workflows/actions/backend_test
         with:
-          workspace: ./backend
+          working-dir: ./backend
 
   frontend-test:
     name: Frontend module test
@@ -75,7 +75,7 @@ jobs:
       - name: Run frontend tests
         uses: ./.github/workflows/actions/frontend_test
         with:
-          workspace: ./frontend
+          working-dir: ./frontend
 
 ##     This step allow you to debug via SSH
 #      - name: Setup tmate session

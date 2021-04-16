@@ -48,9 +48,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run backend tests
-        uses: ./.github/workflows/actions/backend_test
+        uses: ./.github/actions/backend_test
         with:
-          workspace: ./backend
+          working-dir: ./backend
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -66,9 +66,9 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Run frontend tests
-        uses: ./.github/workflows/actions/frontend_test
+        uses: ./.github/actions/frontend_test
         with:
-          workspace: ./frontend
+          working-dir: ./frontend
 
       - name: Collect artifacts
         run: |

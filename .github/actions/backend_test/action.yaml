@@ -2,7 +2,7 @@ name: 'Backend API test'
 description: 'Run backend service API tests with MongoDB'
 
 inputs:
-  workspace:
+  working-dir:
     description: 'The path of backend module'
     required: true
 
@@ -14,14 +14,14 @@ runs:
         chmod +x gradlew
         chmod +x ./scripts/*.sh
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
 
     - name: Run Gradle test task
       run: ./gradlew build
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
 
-    - name: Configure MongoDB
+    - name: Configure MongoDB test data
       run: |
         ./scripts/mongodb-service-check.sh 10
 
@@ -31,7 +31,7 @@ runs:
           mongo -u "4km" --authenticationDatabase "4-key-metrics" -p "4000km" 4-key-metrics < $file
         done
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
 
     - name: Run API tests
       run: |
@@ -41,4 +41,4 @@ runs:
 
         java -jar build/libs/metrik-backend-*.jar & ./scripts/backend-service-check.sh localhost 9000 20 && ./gradlew apiTest
       shell: bash
-      working-directory: ${{ inputs.workspace }}
+      working-directory: ${{ inputs.working-dir }}
