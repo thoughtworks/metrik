@@ -6,8 +6,6 @@ import fourkeymetrics.common.model.Status
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks

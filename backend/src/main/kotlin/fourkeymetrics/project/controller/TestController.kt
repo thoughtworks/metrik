@@ -2,7 +2,7 @@ package fourkeymetrics.project.controller
 
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.project.service.impl.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

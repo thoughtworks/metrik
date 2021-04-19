@@ -3,52 +3,28 @@ package fourkeymetrics.project.controller.applicationservice
 import fourkeymetrics.exception.BadRequestException
 import fourkeymetrics.project.controller.vo.response.PipelineStagesResponse
 import fourkeymetrics.project.model.Pipeline
-import fourkeymetrics.project.model.PipelineType
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
-import fourkeymetrics.project.service.bamboo.BambooPipelineService
-import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.project.service.PipelineServiceFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class PipelineApplicationService {
-    @Autowired
-    @Qualifier("jenkinsPipelineService")
-    private lateinit var jenkinsPipelineService: JenkinsPipelineService
-
-    @Autowired
-    @Qualifier("bambooPipelineService")
-    private lateinit var bambooPipelineService: BambooPipelineService
-
-    @Autowired
-    private lateinit var pipelineRepository: PipelineRepository
-
-    @Autowired
-    private lateinit var projectRepository: ProjectRepository
-
-    @Autowired
-    private lateinit var buildRepository: BuildRepository
-
+class PipelineApplicationService(
+    @Autowired private val pipelineServiceFactory: PipelineServiceFactory,
+    @Autowired private val pipelineRepository: PipelineRepository,
+    @Autowired private val projectRepository: ProjectRepository,
+    @Autowired private val buildRepository: BuildRepository
+) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for pipeline [$pipeline]")
-        when (pipeline.type) {
-            PipelineType.JENKINS -> {
-                jenkinsPipelineService.verifyPipelineConfiguration(pipeline)
-            }
-            PipelineType.BAMBOO -> {
-                bambooPipelineService.verifyPipelineConfiguration(pipeline)
-            }
-            else -> {
-                throw BadRequestException("Pipeline type not support")
-            }
-        }
+
+        pipelineServiceFactory.getService(pipeline.type).verifyPipelineConfiguration(pipeline)
     }
 
     fun createPipeline(pipeline: Pipeline): Pipeline {
@@ -94,7 +70,11 @@ class PipelineApplicationService {
         verifyProjectExist(projectId)
         return pipelineRepository.findByProjectId(projectId)
             .map {
-                PipelineStagesResponse(it.id, it.name, jenkinsPipelineService.getStagesSortedByName(it.id))
+                PipelineStagesResponse(
+                    it.id,
+                    it.name,
+                    pipelineServiceFactory.getService(it.type).getStagesSortedByName(it.id)
+                )
             }
             .sortedBy { it.pipelineName.toUpperCase() }
     }

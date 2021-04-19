@@ -1,8 +1,7 @@
-package fourkeymetrics.datasource.pipeline.builddata.controller
+package fourkeymetrics.project.controller
 
-import fourkeymetrics.project.controller.SynchronizationController
-import fourkeymetrics.project.controller.applicationservice.SynchronizationApplicationService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.controller.applicationservice.SynchronizationApplicationService
 import org.apache.logging.log4j.util.Strings
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -73,7 +72,12 @@ class SynchronizationControllerTest {
     internal fun `should return 404 given project id not exist when synchronization`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(projectId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
+        `when`(synchronizationApplicationService.synchronize(projectId)).thenThrow(
+            ApplicationException(
+                HttpStatus.NOT_FOUND,
+                Strings.EMPTY
+            )
+        )
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -83,7 +87,12 @@ class SynchronizationControllerTest {
     internal fun `should return 404 given project id not exist when get synchronization record`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenThrow(ApplicationException(HttpStatus.NOT_FOUND, Strings.EMPTY))
+        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenThrow(
+            ApplicationException(
+                HttpStatus.NOT_FOUND,
+                Strings.EMPTY
+            )
+        )
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)

@@ -1,19 +1,22 @@
-package fourkeymetrics.datasource.pipeline.builddata.controller
+package fourkeymetrics.project.controller.applicationservice
 
+import fourkeymetrics.MockitoHelper.anyObject
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.project.controller.applicationservice.SynchronizationApplicationService
-import fourkeymetrics.project.model.Project
-import fourkeymetrics.project.model.Pipeline
-import fourkeymetrics.project.repository.ProjectRepository
-import fourkeymetrics.project.repository.PipelineRepository
-import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
-import fourkeymetrics.project.service.bamboo.BambooPipelineService
+import fourkeymetrics.project.model.Project
+import fourkeymetrics.project.repository.PipelineRepository
+import fourkeymetrics.project.repository.ProjectRepository
+import fourkeymetrics.project.service.PipelineService
+import fourkeymetrics.project.service.PipelineServiceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyLong
 import org.mockito.Mockito.anyString
@@ -27,8 +30,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @Import(SynchronizationApplicationService::class, ProjectRepository::class, PipelineRepository::class)
 internal class SynchronizationApplicationServiceTest {
-    @Autowired
-    private lateinit var synchronizationApplicationService: SynchronizationApplicationService
+    @Mock
+    private lateinit var pipelineServiceMock: PipelineService
+
+    @MockBean
+    private lateinit var pipelineServiceFactory: PipelineServiceFactory
 
     @MockBean
     private lateinit var projectRepository: ProjectRepository
@@ -36,11 +42,13 @@ internal class SynchronizationApplicationServiceTest {
     @MockBean
     private lateinit var pipelineRepository: PipelineRepository
 
-    @MockBean(name = "jenkinsPipelineService")
-    private lateinit var jenkins: JenkinsPipelineService
+    @Autowired
+    private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
-    @MockBean(name = "bambooPipelineService")
-    private lateinit var bamboo: BambooPipelineService
+    @BeforeEach
+    fun setup() {
+        Mockito.lenient().`when`(pipelineServiceFactory.getService(anyObject())).thenReturn(pipelineServiceMock)
+    }
 
     @Test
     internal fun `should sync builds when there is no previous update`() {
@@ -50,11 +58,11 @@ internal class SynchronizationApplicationServiceTest {
 
         `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
-        `when`(jenkins.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(jenkins, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull
@@ -70,11 +78,11 @@ internal class SynchronizationApplicationServiceTest {
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(jenkins.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
 
         val updateTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(jenkins, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updateTimestamp).isGreaterThan(lastSyncTimestamp)
@@ -89,7 +97,7 @@ internal class SynchronizationApplicationServiceTest {
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(jenkins.syncBuilds(pipelineId)).thenThrow(RuntimeException())
+        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenThrow(RuntimeException())
 
         assertThrows(ApplicationException::class.java) { synchronizationApplicationService.synchronize(projectId) }
     }
@@ -113,12 +121,19 @@ internal class SynchronizationApplicationServiceTest {
         val builds = listOf(Build())
 
         `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId, type = PipelineType.BAMBOO)))
-        `when`(bamboo.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(
+            listOf(
+                Pipeline(
+                    id = pipelineId,
+                    type = PipelineType.BAMBOO
+                )
+            )
+        )
+        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(bamboo, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull

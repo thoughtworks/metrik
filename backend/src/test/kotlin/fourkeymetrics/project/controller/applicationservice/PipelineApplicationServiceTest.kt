@@ -10,15 +10,17 @@ import fourkeymetrics.project.model.Project
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
-import fourkeymetrics.project.service.bamboo.BambooPipelineService
-import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
+import fourkeymetrics.project.service.PipelineService
+import fourkeymetrics.project.service.PipelineServiceFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -28,10 +30,10 @@ import org.springframework.http.HttpStatus
 @ExtendWith(MockitoExtension::class)
 internal class PipelineApplicationServiceTest {
     @Mock
-    private lateinit var jenkinsPipelineService: JenkinsPipelineService
+    private lateinit var pipelineServiceMock: PipelineService
 
     @Mock
-    private lateinit var bambooPipelineService: BambooPipelineService
+    private lateinit var pipelineServiceFactory: PipelineServiceFactory
 
     @Mock
     private lateinit var pipelineRepository: PipelineRepository
@@ -45,16 +47,10 @@ internal class PipelineApplicationServiceTest {
     @InjectMocks
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
-    @Test
-    internal fun `should throw BadRequestException when verify an unsupported pipeline`() {
-        val pipeline = buildPipeline().copy(type = PipelineType.GITHUB_ACTIONS)
-        val exception = assertThrows<BadRequestException> {
-            pipelineApplicationService.verifyPipelineConfiguration(pipeline)
-        }
-        assertEquals("Pipeline type not support", exception.message)
-        assertEquals(HttpStatus.BAD_REQUEST, exception.httpStatus)
+    @BeforeEach
+    fun setup() {
+        Mockito.lenient().`when`(pipelineServiceFactory.getService(anyObject())).thenReturn(pipelineServiceMock)
     }
-
 
     @Test
     internal fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
@@ -62,7 +58,7 @@ internal class PipelineApplicationServiceTest {
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
-        verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
+        verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
     }
@@ -73,7 +69,7 @@ internal class PipelineApplicationServiceTest {
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
-        verify(bambooPipelineService, times(1)).verifyPipelineConfiguration(
+        verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
     }
@@ -105,7 +101,7 @@ internal class PipelineApplicationServiceTest {
         val result = pipelineApplicationService.createPipeline(pipeline)
 
         verify(projectRepository).findById(projectId)
-        verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
+        verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
         verify(pipelineRepository).save(argThat {
@@ -136,7 +132,7 @@ internal class PipelineApplicationServiceTest {
         verify(projectRepository).findById(pipeline.projectId)
         verify(pipelineRepository).findByIdAndProjectId(pipeline.id, pipeline.projectId)
         verify(pipelineRepository).findByNameAndProjectId(pipeline.name, pipeline.projectId)
-        verify(jenkinsPipelineService, times(1)).verifyPipelineConfiguration(
+        verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
         verify(pipelineRepository).save(argThat {
@@ -220,9 +216,9 @@ internal class PipelineApplicationServiceTest {
 
         `when`(projectRepository.findById(projectId)).thenReturn(expectedProject)
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(pipeline1, pipeline2, pipeline3))
-        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline1Id)).thenReturn(listOf(pipeline1StageName))
-        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline2Id)).thenReturn(listOf(pipeline2StageName))
-        `when`(jenkinsPipelineService.getStagesSortedByName(pipeline3Id)).thenReturn(listOf(pipeline3StageName))
+        `when`(pipelineServiceMock.getStagesSortedByName(pipeline1Id)).thenReturn(listOf(pipeline1StageName))
+        `when`(pipelineServiceMock.getStagesSortedByName(pipeline2Id)).thenReturn(listOf(pipeline2StageName))
+        `when`(pipelineServiceMock.getStagesSortedByName(pipeline3Id)).thenReturn(listOf(pipeline3StageName))
 
         val pipelineStages = pipelineApplicationService.getPipelineStages(projectId)
 
