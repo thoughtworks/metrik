@@ -27,8 +27,11 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.net.URL
+import java.util.concurrent.ForkJoinPool
 import kotlin.streams.toList
 
+private const val PARALLELISM = 25
+private val FORK_JOIN_POOL = ForkJoinPool(PARALLELISM)
 
 @Service("bambooPipelineService")
 class BambooPipelineService(
@@ -81,14 +84,17 @@ class BambooPipelineService(
                         "[${buildNumbersToSync.size}] of them need to be synced"
             )
 
-            val builds = buildNumbersToSync.parallelStream().map { buildNumber ->
-                val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
-                if (convertedBuild != null) {
-                    buildRepository.save(convertedBuild)
-                }
-                convertedBuild
-            }.toList().mapNotNull { it }
+            val retrieveBuildDetails = {
+                buildNumbersToSync.parallelStream().map { buildNumber ->
+                    val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
+                    val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
+                    if (convertedBuild != null) {
+                        buildRepository.save(convertedBuild)
+                    }
+                    convertedBuild
+                }.toList().mapNotNull { it }
+            }
+            val builds = FORK_JOIN_POOL.submit(retrieveBuildDetails).get()
 
             logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${builds.size}] builds")
 
