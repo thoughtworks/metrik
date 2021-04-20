@@ -1,6 +1,6 @@
 <!-- PROJECT SHIELDS -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 [![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
@@ -171,6 +171,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/sasasakuna"><img src="https://avatars.githubusercontent.com/u/5813846?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sasasakuna</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=sasasakuna" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Miyakee"><img src="https://avatars.githubusercontent.com/u/11499267?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chen</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=Miyakee" title="Code">💻</a></td>
   </tr>
 </table>
 
