@@ -31,15 +31,6 @@
       "contributions": [
         "infra"
       ]
-    },
-    {
-      "login": "erikdtw",
-      "name": "Erik Doernenburg",
-      "avatar_url": "https://avatars.githubusercontent.com/u/22773961?v=4",
-      "profile": "https://www.thoughtworks.com/profiles/erik-dornenburg",
-      "contributions": [
-        "infra"
-      ]
     }
   ],
   "contributorsPerLine": 7,
