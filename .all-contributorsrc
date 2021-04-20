@@ -31,6 +31,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "paulaasf",
+      "name": "Paula Ferreira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31252141?v=4",
+      "profile": "https://github.com/paulaasf",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
