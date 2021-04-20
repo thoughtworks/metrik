@@ -13,6 +13,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hyrepo",
+      "name": "Hao Yang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15993536?v=4",
+      "profile": "https://github.com/hyrepo",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
