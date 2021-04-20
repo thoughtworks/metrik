@@ -71,7 +71,7 @@ Follow the two steps below to run the tool, and measure the four key metrics of 
 
 The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please follow the steps:
 1. Ensure [Docker](https://www.docker.com) has already installed on your OS.
-2. Find avaiable release versions in the Docker repository: [https://gallery.ecr.aws/j2s5d3z8/4-key-metrics](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+2. Find available release versions in the Docker repository: [https://gallery.ecr.aws/j2s5d3z8/4-key-metrics](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
 3. Run the container locally via the following command:
 
 ``` bash
@@ -81,7 +81,7 @@ docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${rel
 
 ### Configure your projects
 
-After the container is running on your machine. Go to your favourate browser and open the app. If running in local that would be `http://localhost:80/`.
+After the container is running on your machine. Go to your favourite browser and open the app. If running in local that would be `http://localhost:80/`.
 
 1. Start the configuration:
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step1.png" height=70% width=70%></div>
@@ -95,7 +95,7 @@ After the container is running on your machine. Go to your favourate browser and
 ### Advanced usage
 
 If you would like to keep the 4-key-metrics data to avoid losing any data when remove container, you
-can mount the database folder `/data/db` out. And logs are also availalbe if you mount the log folder `/app/logs`. As shown in the example below:
+can mount the database folder `/data/db` out. And logs are also available if you mount the log folder `/app/logs`. As shown in the example below:
 
 ``` bash
 docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
