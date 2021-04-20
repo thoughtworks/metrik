@@ -31,6 +31,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "binfang-huang",
+      "name": "HUANG Binfang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51937651?v=4",
+      "profile": "https://github.com/binfang-huang",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
