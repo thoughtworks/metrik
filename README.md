@@ -1,6 +1,6 @@
 <!-- PROJECT SHIELDS -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 [![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
@@ -166,6 +166,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Piaopiao-TW"><img src="https://avatars.githubusercontent.com/u/77046205?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Piaopiao-TW</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=Piaopiao-TW" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/zydxt"><img src="https://avatars.githubusercontent.com/u/9389762?v=4?s=100" width="100px;" alt=""/><br /><sub><b>zydxt</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=zydxt" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ifeelcold1824"><img src="https://avatars.githubusercontent.com/u/63954164?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ifeelcold1824</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=ifeelcold1824" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/klxq"><img src="https://avatars.githubusercontent.com/u/9253941?v=4?s=100" width="100px;" alt=""/><br /><sub><b>快乐心情</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=klxq" title="Code">💻</a></td>
   </tr>
 </table>
 
