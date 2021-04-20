@@ -1,6 +1,6 @@
 <!-- PROJECT SHIELDS -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 [![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
@@ -183,6 +183,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.thoughtworks.com/profiles/erik-dornenburg"><img src="https://avatars.githubusercontent.com/u/22773961?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Erik Doernenburg</b></sub></a><br /><a href="#infra-erikdtw" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     <td align="center"><a href="https://github.com/hstruebe"><img src="https://avatars.githubusercontent.com/u/5832390?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Henning S.</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=hstruebe" title="Code">💻</a></td>
     <td align="center"><a href="https://about.me/jainsahab"><img src="https://avatars.githubusercontent.com/u/5915092?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Prateek</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=jainsahab" title="Code">💻</a></td>
+    <td align="center"><a href="https://karuppiah7890.github.io/blog/"><img src="https://avatars.githubusercontent.com/u/12808424?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Karuppiah Natarajan</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=karuppiah7890" title="Code">💻</a></td>
   </tr>
 </table>
 
