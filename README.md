@@ -1,6 +1,6 @@
 <!-- PROJECT SHIELDS -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 [![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
@@ -156,6 +156,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/hyrepo"><img src="https://avatars.githubusercontent.com/u/15993536?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hao Yang</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=hyrepo" title="Code">💻</a></td>
     <td align="center"><a href="http://www.hackl0us.com"><img src="https://avatars.githubusercontent.com/u/10215166?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jason Zhang</b></sub></a><br /><a href="#infra-Hackl0us" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     <td align="center"><a href="https://reeli.github.io/"><img src="https://avatars.githubusercontent.com/u/8966348?v=4?s=100" width="100px;" alt=""/><br /><sub><b>橘子小睿</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=reeli" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/binfang-huang"><img src="https://avatars.githubusercontent.com/u/51937651?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HUANG Binfang</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=binfang-huang" title="Code">💻</a></td>
   </tr>
 </table>
 
