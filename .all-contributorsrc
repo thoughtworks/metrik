@@ -31,6 +31,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "kikychn",
+      "name": "Kiky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17060422?v=4",
+      "profile": "https://github.com/kikychn",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
