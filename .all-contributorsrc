@@ -31,6 +31,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "gtycherry",
+      "name": "Taiyu Guo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8056464?v=4",
+      "profile": "https://github.com/gtycherry",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
