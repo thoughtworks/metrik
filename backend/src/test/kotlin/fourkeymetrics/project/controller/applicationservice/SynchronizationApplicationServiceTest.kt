@@ -22,6 +22,9 @@ import org.mockito.Mockito.anyLong
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
@@ -45,6 +48,8 @@ internal class SynchronizationApplicationServiceTest {
     @Autowired
     private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
+    private val emitCbCaptor = argumentCaptor<(SyncProgress) -> Unit>()
+
     @BeforeEach
     fun setup() {
         Mockito.lenient().`when`(pipelineServiceFactory.getService(anyObject())).thenReturn(pipelineServiceMock)
@@ -58,11 +63,11 @@ internal class SynchronizationApplicationServiceTest {
 
         `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
-        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull
@@ -78,11 +83,11 @@ internal class SynchronizationApplicationServiceTest {
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
 
         val updateTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updateTimestamp).isGreaterThan(lastSyncTimestamp)
@@ -97,7 +102,7 @@ internal class SynchronizationApplicationServiceTest {
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenThrow(RuntimeException())
+        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenThrow(RuntimeException())
 
         assertThrows(ApplicationException::class.java) { synchronizationApplicationService.synchronize(projectId) }
     }
@@ -129,13 +134,41 @@ internal class SynchronizationApplicationServiceTest {
                 )
             )
         )
-        `when`(pipelineServiceMock.syncBuilds(pipelineId)).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuilds(pipelineId)
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
+        assertThat(updatedTimestamp).isNotNull
+    }
+
+    @Test
+    internal fun `should sync builds with progress emit callback passed in if callback function provided`() {
+        val projectId = "fake-project-id"
+        val pipelineId = "fake-pipeline-id"
+        val builds = listOf(Build())
+        val mockEmitCb = mock<(SyncProgress) -> Unit>()
+
+        `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(
+            listOf(
+                Pipeline(
+                    id = pipelineId,
+                    type = PipelineType.BAMBOO
+                )
+            )
+        )
+        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
+
+        val updatedTimestamp = synchronizationApplicationService.synchronize(projectId, mockEmitCb)
+
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
+        verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
+        val progress = SyncProgress(pipelineId, 1, 1)
+        emitCbCaptor.firstValue.invoke(progress)
+        verify(mockEmitCb, times(1)).invoke(progress)
         assertThat(updatedTimestamp).isNotNull
     }
 }

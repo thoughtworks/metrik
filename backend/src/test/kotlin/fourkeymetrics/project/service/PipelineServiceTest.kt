@@ -2,9 +2,8 @@ package fourkeymetrics.project.service
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.Status
-import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
+import fourkeymetrics.project.service.impl.NoopPipelineService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,29 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 internal class PipelineServiceTest {
-    internal class FakePipelineService : PipelineService() {
-        override fun syncBuilds(pipelineId: String): List<Build> {
-            return emptyList()
-        }
-
-        override fun verifyPipelineConfiguration(pipeline: Pipeline) {
-            println("fake implementation")
-        }
-
-        override fun mapStageStatus(statusInPipeline: String?): Status {
-            TODO("Not yet implemented")
-        }
-
-        override fun mapBuildStatus(statusInPipeline: String?): Status {
-            TODO("Not yet implemented")
-        }
-    }
-
     @Mock
     private lateinit var buildRepository: BuildRepository
 
     @InjectMocks
-    private lateinit var pipelineService: FakePipelineService
+    private lateinit var pipelineService: NoopPipelineService
 
     private val pipelineId = "pipelineId"
 

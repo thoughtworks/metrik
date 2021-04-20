@@ -2,6 +2,7 @@ package fourkeymetrics.project.service
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +14,8 @@ abstract class PipelineService {
     private lateinit var buildRepository: BuildRepository
 
     abstract fun syncBuilds(pipelineId: String): List<Build>
+
+    abstract fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build>
 
     abstract fun verifyPipelineConfiguration(pipeline: Pipeline)
 

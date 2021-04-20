@@ -8,6 +8,7 @@ import fourkeymetrics.common.utlils.RequestUtil.buildHeaders
 import fourkeymetrics.common.utlils.RequestUtil.getDomain
 import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.net.URL
 import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.streams.toList
 
 private const val PARALLELISM = 25
@@ -74,11 +76,8 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
+            val buildNumbersToSync = filterNeedToSync(pipelineId, maxBuildNumber)
 
-            val buildNumbersToSync = (1..maxBuildNumber).filter {
-                val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
-                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
-            }
             logger.info(
                 "For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
                         "[${buildNumbersToSync.size}] of them need to be synced"
@@ -104,6 +103,54 @@ class BambooPipelineService(
         } catch (ex: HttpClientErrorException) {
             throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
+    }
+
+    @Synchronized
+    override fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build> {
+        logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
+        val pipeline = pipelineRepository.findById(pipelineId)
+        val credential = pipeline.credential
+        val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
+        val entity = HttpEntity<String>(headers)
+
+        val progressCounter = AtomicInteger(0)
+
+        try {
+            val planKey = URL(pipeline.url).path.split("/").last()
+            val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
+            val buildNumbersToSync = filterNeedToSync(pipelineId, maxBuildNumber)
+
+            logger.info(
+                "For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
+                        "[${buildNumbersToSync.size}] of them need to be synced"
+            )
+
+            val retrieveBuildDetails = {
+                buildNumbersToSync.parallelStream().map { buildNumber ->
+                    val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
+                    val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
+                    if (convertedBuild != null) {
+                        buildRepository.save(convertedBuild)
+                    }
+                    emitCb(SyncProgress(pipelineId, progressCounter.incrementAndGet(), buildNumbersToSync.size))
+                    logger.info("[$pipelineId] sync progress: [${progressCounter.get()}/${buildNumbersToSync.size}]")
+                    convertedBuild
+                }.toList().mapNotNull { it }
+            }
+            val builds = FORK_JOIN_POOL.submit(retrieveBuildDetails).get()
+            logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${buildNumbersToSync.size}] builds")
+
+            return builds
+        } catch (ex: HttpServerErrorException) {
+            throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
+        } catch (ex: HttpClientErrorException) {
+            throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
+        }
+    }
+
+    private fun filterNeedToSync(pipelineId: String, maxBuildNumber: Int) = (1..maxBuildNumber).filter {
+        val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
+        buildInDB == null || buildInDB.result == Status.IN_PROGRESS
     }
 
     override fun mapStageStatus(statusInPipeline: String?): Status =

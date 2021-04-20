@@ -6,6 +6,7 @@ import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.Status
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
 import fourkeymetrics.project.repository.BuildRepository
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.*
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -268,6 +270,61 @@ internal class BambooPipelineServiceTest {
             )
 
         verify(buildRepository, times(1)).save(build)
+    }
+
+    @Test
+    internal fun `should sync builds and update progress via the emit callback at the same time`() {
+        `when`(pipelineRepository.findById(pipelineId))
+            .thenReturn(
+                Pipeline(
+                    pipelineId,
+                    credential = credential,
+                    url = "$baseUrl/browse/$planKey",
+                    type = PipelineType.BAMBOO
+                )
+            )
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+        val mockEmitCb = mock<(SyncProgress) -> Unit>()
+
+        bambooPipelineService.syncBuildsProgressively(pipelineId, mockEmitCb)
+
+        val build =
+            Build(
+                pipelineId = pipelineId,
+                number = 1,
+                result = Status.SUCCESS,
+                duration = 1133,
+                timestamp = 1593398521665,
+                url = "$baseUrl/rest/api/latest/result/$planKey-1",
+                stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
+                changeSets = listOf(
+                    Commit(
+                        commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
+                        date = "2020-06-29T02:41:31Z[UTC]",
+                        msg = "Create dc.txt",
+                        timestamp = 1593398491000
+                    )
+                )
+            )
+        val progress = SyncProgress(pipelineId, 1, 1)
+
+        verify(buildRepository, times(1)).save(build)
+        verify(mockEmitCb).invoke(progress)
     }
 
     @Test

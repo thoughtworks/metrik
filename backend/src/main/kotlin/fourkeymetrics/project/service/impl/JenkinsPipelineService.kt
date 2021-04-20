@@ -4,16 +4,21 @@ import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.controller.applicationservice.SyncProgress
+import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryCollectionDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryDTO
-import fourkeymetrics.exception.ApplicationException
-import fourkeymetrics.project.model.Pipeline
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
@@ -62,6 +67,10 @@ class JenkinsPipelineService(
         buildRepository.save(builds)
 
         return builds
+    }
+
+    override fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build> {
+        TODO("Not yet implemented")
     }
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {

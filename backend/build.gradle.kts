@@ -69,6 +69,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")  {
         exclude("org.junit.vintage","junit-vintage-engine")
     }
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("com.intuit.karate:karate-junit5:0.9.6")
     testImplementation("com.intuit.karate:karate-apache:0.9.6")
