@@ -211,6 +211,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "hstruebe",
+      "name": "Henning S.",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5832390?v=4",
+      "profile": "https://github.com/hstruebe",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
