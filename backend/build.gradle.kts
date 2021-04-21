@@ -39,6 +39,13 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        sourceDirs = sourceDirs - file("src/api-test/kotlin")
+        testSourceDirs = testSourceDirs + file("src/api-test/kotlin")
+    }
+}
+
 val apiTestImplementation by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
@@ -62,12 +69,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
-    configurations.compile{
+    configurations.compile {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")  {
-        exclude("org.junit.vintage","junit-vintage-engine")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude("org.junit.vintage", "junit-vintage-engine")
     }
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
@@ -76,7 +83,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 
-    configurations.testCompile{
+    configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")
     }
 }
@@ -108,14 +115,19 @@ val apiTest = task<Test>("apiTest") {
 val startMongo by tasks.registering {
     doLast {
         exec {
-            commandLine("bash", "-c", "cd mongodb-setup && cd mongodb-for-apitest && bash ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh")
+            commandLine(
+                "bash",
+                "-c",
+                "cd mongodb-setup && cd mongodb-for-apitest && bash ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh"
+            )
         }
     }
 }
 
 val startService by tasks.registering {
     doLast {
-        ProcessBuilder().directory(projectDir).command("bash", "-c", "SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun &").start()
+        ProcessBuilder().directory(projectDir)
+            .command("bash", "-c", "SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun &").start()
     }
 }
 
