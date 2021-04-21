@@ -229,6 +229,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "fabioformosa",
+      "name": "Fabio Formosa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4976513?v=4",
+      "profile": "http://www.fabioformosa.it",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
