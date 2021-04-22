@@ -40,7 +40,7 @@ class BambooPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var pipelineRepository: PipelineRepository,
     @Autowired private var buildRepository: BuildRepository
-) : PipelineService() {
+) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
@@ -63,6 +63,15 @@ class BambooPipelineService(
         } catch (ex: HttpClientErrorException) {
             throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
+    }
+
+    override fun getStagesSortedByName(pipelineId: String): List<String> {
+        return buildRepository.getAllBuilds(pipelineId)
+            .flatMap { it.stages }
+            .map { it.name }
+            .distinct()
+            .sortedBy { it.toUpperCase() }
+            .toList()
     }
 
     @Synchronized

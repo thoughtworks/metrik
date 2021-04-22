@@ -33,7 +33,7 @@ class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var pipelineRepository: PipelineRepository,
     @Autowired private var buildRepository: BuildRepository
-) : PipelineService() {
+) : PipelineService {
     override fun syncBuilds(pipelineId: String): List<Build> {
         val pipeline = pipelineRepository.findById(pipelineId)
 
@@ -88,6 +88,15 @@ class JenkinsPipelineService(
         } catch (ex: HttpClientErrorException) {
             throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
+    }
+
+    override fun getStagesSortedByName(pipelineId: String): List<String> {
+        return buildRepository.getAllBuilds(pipelineId)
+            .flatMap { it.stages }
+            .map { it.name }
+            .distinct()
+            .sortedBy { it.toUpperCase() }
+            .toList()
     }
 
     private fun constructBuildCommits(buildSummary: BuildSummaryDTO): List<List<Commit>> {

@@ -608,4 +608,31 @@ internal class BambooPipelineServiceTest {
 
         verify(buildRepository, never()).save(MockitoHelper.anyObject<Build>())
     }
+
+    @Test
+    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
+        val builds = listOf(
+            Build(
+                stages = listOf(
+                    Stage(name = "clone"), Stage(name = "build"),
+                    Stage(name = "zzz"), Stage(name = "amazing")
+                )
+            ),
+            Build(
+                stages = listOf(
+                    Stage(name = "build"), Stage("good")
+                )
+            )
+        )
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
+
+        val result = bambooPipelineService.getStagesSortedByName(pipelineId)
+
+        Assertions.assertEquals(5, result.size)
+        Assertions.assertEquals("amazing", result[0])
+        Assertions.assertEquals("build", result[1])
+        Assertions.assertEquals("clone", result[2])
+        Assertions.assertEquals("good", result[3])
+        Assertions.assertEquals("zzz", result[4])
+    }
 }
