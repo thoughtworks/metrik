@@ -1,12 +1,22 @@
-name: Frontend and Backend test
+name: Backend test
 
 on:
   push:
     branches:
       - main
+    paths:
+      - backend/**
+      - .github/actions/backend_test/**
+      - .github/workflows/backend_test.yaml
+
   pull_request:
     branches:
       - main
+    paths:
+      - backend/**
+      - .github/actions/backend_test/**
+      - .github/workflows/backend_test.yaml
+
   workflow_dispatch:
 
 jobs:

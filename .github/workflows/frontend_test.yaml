@@ -1,0 +1,54 @@
+name: Frontend test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+      - .github/actions/frontend_test/**
+      - .github/workflows/frontend_test.yaml
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - frontend/**
+      - .github/actions/frontend_test/**
+      - .github/workflows/frontend_test.yaml
+
+  workflow_dispatch:
+
+jobs:
+  frontend-test:
+    name: Frontend module test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup timezone
+        run: sudo timedatectl set-timezone "Asia/Shanghai"
+
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache Node.js packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run frontend tests
+        uses: ./.github/actions/frontend_test
+        with:
+          working-dir: ./frontend
+
+##     This step allow you to debug via SSH
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        with:
+#          sudo: true
