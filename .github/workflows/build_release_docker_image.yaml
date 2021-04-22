@@ -89,12 +89,19 @@ jobs:
           unzip awscliv2.zip
           sudo ./aws/install --update
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
       - name: Login to AWS ECR
-        run: aws ecr-public get-login-password --region ${AWS_PUBLIC_ECR_REGION} | docker login --username AWS --password-stdin ${AWS_PUBLIC_ECR_ACCOUNT_URL}
+        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_PUBLIC_ECR_ACCOUNT_URL }}
 
       - name: Build and push Docker image
         run: |
-          IMAGE_ID=${AWS_PUBLIC_ECR_ACCOUNT_URL}/${AWS_PUBLIC_ECR_REPO}
+          IMAGE_ID=${{ secrets.AWS_PUBLIC_ECR_ACCOUNT_URL }}/${{ secrets.AWS_PUBLIC_ECR_REPO }}
 
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
