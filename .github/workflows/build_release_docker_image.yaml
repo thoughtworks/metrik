@@ -112,6 +112,7 @@ jobs:
           for tag in "${DOCKER_TAGS[@]}"; do
             docker push $IMAGE_ID:$tag
           done
+        working-directory: ./ci
 
 #  - name: Build and push Docker image
 #      run: |
