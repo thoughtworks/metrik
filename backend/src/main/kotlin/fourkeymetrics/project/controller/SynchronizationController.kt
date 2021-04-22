@@ -1,5 +1,6 @@
 package fourkeymetrics.project.controller
 
+import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.controller.applicationservice.SynchronizationApplicationService
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +33,7 @@ class SynchronizationController {
 
     @GetMapping("/api/project/{projectId}/sse-sync")
     fun sseSynchronization(@PathVariable projectId: String): SseEmitter {
-        val emitter = SseEmitter(1000 * 60 * 10)
+        val emitter = SseEmitter(Companion.SSE_CONNECTION_TIMEOUT)
         val emitCb: (SyncProgress) -> Unit = { progress -> emitter.send(SseEmitter.event().data(progress)) }
         val sseMvcExecutor = Executors.newSingleThreadExecutor()
 
@@ -40,8 +41,9 @@ class SynchronizationController {
             try {
                 synchronizationApplicationService.synchronize(projectId, emitCb)
                 emitter.complete()
-            } catch (ex: Exception) {
+            } catch (ex: ApplicationException) {
                 emitter.completeWithError(ex)
+                throw(ex)
             }
         }
 
@@ -53,5 +55,9 @@ class SynchronizationController {
         val lastSyncTimestamp = synchronizationApplicationService.getLastSyncTimestamp(projectId)
 
         return ResponseEntity.ok(SynchronizationRecordResponse(lastSyncTimestamp))
+    }
+
+    companion object {
+        const val SSE_CONNECTION_TIMEOUT: Long = 1000 * 60 * 10
     }
 }
