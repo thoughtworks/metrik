@@ -1,5 +1,5 @@
-[![CircleCI](https://circleci.com/gh/thoughtworks/metrik.svg?style=shield&circle-token=b34a27ea76a1d28d669eba1e36b0e2cbc6f6e5f8)](https://app.circleci.com/pipelines/github/thoughtworks/metrik)
-
+[![Publish release Docker image](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml)
+[![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 
 <!-- PROJECT TITLE -->
 <h1 align="center">

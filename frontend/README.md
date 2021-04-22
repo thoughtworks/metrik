@@ -1,3 +1,5 @@
+[![Frontend test](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml)
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>

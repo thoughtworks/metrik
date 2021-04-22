@@ -1,13 +1,13 @@
 <!-- PROJECT SHIELDS -->
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
-[![Contributors](https://img.shields.io/github/contributors/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/graphs/contributors)
 [![Issues](https://img.shields.io/github/issues-raw/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/issues)
 [![Licnece](https://img.shields.io/github/license/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt)
 
-[![Frontend and Backend test](https://github.com/thoughtworks/metrik/actions/workflows/run_test_for_frontend_backend.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/run_test_for_frontend_backend.yaml)
+[![Backend test](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml)
+[![Frontend test](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml)
+
+[![Publish release Docker image](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml)
+[![Tag](https://img.shields.io/github/v/tag/thoughtworks/metrik.svg?style=flat)](https://github.com/thoughtworks/metrik/tags)
 
 <!-- PROJECT TITLE -->
 <h1 align="center">

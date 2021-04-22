@@ -1,3 +1,6 @@
+[![Backend test](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml)
+
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
