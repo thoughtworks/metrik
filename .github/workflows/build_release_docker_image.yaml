@@ -1,6 +1,10 @@
 name: Publish release Docker image
 
 on:
+  push:
+    tags:
+      - '*'
+
   release:
     types:
       - created
