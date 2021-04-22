@@ -52,7 +52,7 @@ ENV AES_KEY "&E)H@MbQeThWmZq4"
 ENV AES_IV "D(G+KbPeShVkYp3s"
 
 COPY artifacts/backend/run.sh /app/metrik-service.sh
-COPY artifacts/backend/build/libs/metrik-backend-*.jar /app/metrik-backend.jar
+COPY artifacts/backend/metrik-backend-*.jar /app/metrik-backend.jar
 
 # Copy FRONTEND artifact
 COPY artifacts/frontend/dist /usr/share/nginx/html

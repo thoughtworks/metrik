@@ -106,7 +106,7 @@ jobs:
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          docker build . --file Dockerfile-GitHub_Actions --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
+          docker build . --file Dockerfile --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
 
           IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
           for tag in "${DOCKER_TAGS[@]}"; do
@@ -124,7 +124,7 @@ jobs:
 #        # Strip "v" prefix from tag name
 #        VERSION=$(echo ${{ github.event.release.tag_name }} | sed -e 's/^v//')
 #
-#        docker build . --file Dockerfile-GitHub_Actions --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
+#        docker build . --file Dockerfile --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
 #
 #        IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
 #        for tag in "${DOCKER_TAGS[@]}"; do
