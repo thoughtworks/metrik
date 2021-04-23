@@ -15,6 +15,9 @@ import java.util.concurrent.Executors
 
 data class SynchronizationRecordResponse(val synchronizationTimestamp: Long?)
 
+private const val PROGRESS_UPDATE_EVENT = "PROGRESS_UPDATE_EVENT"
+private const val COMPLETE_STREAM_EVENT = "COMPLETE_STREAM_EVENT"
+
 @RestController
 class SynchronizationController {
     @Autowired
@@ -34,12 +37,14 @@ class SynchronizationController {
     @GetMapping("/api/project/{projectId}/sse-sync")
     fun sseSynchronization(@PathVariable projectId: String): SseEmitter {
         val emitter = SseEmitter(Companion.SSE_CONNECTION_TIMEOUT)
-        val emitCb: (SyncProgress) -> Unit = { progress -> emitter.send(SseEmitter.event().data(progress)) }
+        val emitCb: (SyncProgress) -> Unit =
+            { progress -> emitter.send(SseEmitter.event().name(PROGRESS_UPDATE_EVENT).data(progress)) }
         val sseMvcExecutor = Executors.newSingleThreadExecutor()
 
         sseMvcExecutor.execute {
             try {
                 synchronizationApplicationService.synchronize(projectId, emitCb)
+                emitter.send(SseEmitter.event().name(COMPLETE_STREAM_EVENT).data(COMPLETE_STREAM_EVENT))
                 emitter.complete()
             } catch (ex: ApplicationException) {
                 emitter.completeWithError(ex)
