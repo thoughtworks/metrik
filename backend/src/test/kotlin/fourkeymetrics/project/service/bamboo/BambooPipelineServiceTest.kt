@@ -52,8 +52,6 @@ internal class BambooPipelineServiceTest {
     private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
     private val getBuildDetailsUrl =
         "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
-    private val getBuild2DetailsUrl =
-        "$baseUrl/rest/api/latest/result/${planKey}-2.json?expand=changes.change,stages.stage.results"
     private lateinit var mockServer: MockRestServiceServer
     private val userInputURL = "http://localhost:80/browse/FKM-FKMS"
 
