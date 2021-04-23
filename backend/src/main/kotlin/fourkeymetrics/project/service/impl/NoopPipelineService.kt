@@ -1,7 +1,6 @@
 package fourkeymetrics.project.service.impl
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.Status
 import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.service.PipelineService
@@ -29,15 +28,5 @@ class NoopPipelineService : PipelineService {
     override fun getStagesSortedByName(pipelineId: String): List<String> {
         logger.info("Noop implementation")
         return emptyList()
-    }
-
-    override fun mapStageStatus(statusInPipeline: String?): Status {
-        logger.info("Noop implementation")
-        return Status.OTHER
-    }
-
-    override fun mapBuildStatus(statusInPipeline: String?): Status {
-        logger.info("Noop implementation")
-        return Status.OTHER
     }
 }

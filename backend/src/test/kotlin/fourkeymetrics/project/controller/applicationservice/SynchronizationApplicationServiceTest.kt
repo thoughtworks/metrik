@@ -11,10 +11,11 @@ import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.PipelineServiceFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -25,27 +26,23 @@ import org.mockito.Mockito.verify
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(SynchronizationApplicationService::class, ProjectRepository::class, PipelineRepository::class)
 internal class SynchronizationApplicationServiceTest {
     @Mock
     private lateinit var pipelineServiceMock: PipelineService
 
-    @MockBean
+    @Mock
     private lateinit var pipelineServiceFactory: PipelineServiceFactory
 
-    @MockBean
+    @Mock
     private lateinit var projectRepository: ProjectRepository
 
-    @MockBean
+    @Mock
     private lateinit var pipelineRepository: PipelineRepository
 
-    @Autowired
+    @InjectMocks
     private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
     private val emitCbCaptor = argumentCaptor<(SyncProgress) -> Unit>()
@@ -104,7 +101,7 @@ internal class SynchronizationApplicationServiceTest {
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
         `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenThrow(RuntimeException())
 
-        assertThrows(ApplicationException::class.java) { synchronizationApplicationService.synchronize(projectId) }
+        assertThrows<ApplicationException> { synchronizationApplicationService.synchronize(projectId) }
     }
 
     @Test

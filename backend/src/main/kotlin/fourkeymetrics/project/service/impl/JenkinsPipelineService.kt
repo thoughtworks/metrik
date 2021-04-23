@@ -55,7 +55,7 @@ class JenkinsPipelineService(
             Build(
                 pipelineId,
                 buildSummary.number,
-                mapBuildStatus(buildSummary.result),
+                buildSummary.getBuildExecutionStatus(),
                 buildSummary.duration,
                 buildSummary.timestamp,
                 buildSummary.url,
@@ -109,46 +109,15 @@ class JenkinsPipelineService(
 
     private fun constructBuildStages(buildDetails: BuildDetailsDTO): List<Stage> {
         return buildDetails.stages.map { stageDTO ->
-            val status = mapStageStatus(stageDTO.status)
             Stage(
-                stageDTO.name, status, stageDTO.startTimeMillis,
-                stageDTO.durationMillis, stageDTO.pauseDurationMillis
+                stageDTO.name,
+                stageDTO.getStageExecutionStatus(),
+                stageDTO.startTimeMillis,
+                stageDTO.durationMillis,
+                stageDTO.pauseDurationMillis
             )
         }
     }
-
-    override fun mapStageStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            "SUCCESS" -> {
-                Status.SUCCESS
-            }
-            "FAILED" -> {
-                Status.FAILED
-            }
-            "IN_PROGRESS" -> {
-                Status.IN_PROGRESS
-            }
-            else -> {
-                Status.OTHER
-            }
-        }
-
-
-    override fun mapBuildStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            null -> {
-                Status.IN_PROGRESS
-            }
-            "SUCCESS" -> {
-                Status.SUCCESS
-            }
-            "FAILURE" -> {
-                Status.FAILED
-            }
-            else -> {
-                Status.OTHER
-            }
-        }
 
     private fun getBuildDetailsFromJenkins(
         username: String, credential: String, baseUrl: String,

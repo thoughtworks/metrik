@@ -162,31 +162,6 @@ class BambooPipelineService(
         buildInDB == null || buildInDB.result == Status.IN_PROGRESS
     }
 
-    override fun mapStageStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            "Successful" -> {
-                Status.SUCCESS
-            }
-            "Failed" -> {
-                Status.FAILED
-            }
-            else -> {
-                Status.OTHER
-            }
-        }
-
-    override fun mapBuildStatus(statusInPipeline: String?): Status =
-        when (statusInPipeline) {
-            "Successful" -> {
-                Status.SUCCESS
-            }
-            "Failed" -> {
-                Status.FAILED
-            }
-            else -> {
-                Status.OTHER
-            }
-        }
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build? {
         logger.info(
@@ -202,7 +177,7 @@ class BambooPipelineService(
             val build = Build(
                 pipelineId,
                 buildDetailResponse.buildNumber,
-                mapBuildStatus(buildDetailResponse.buildState, buildDetailResponse.stages.stage),
+                buildDetailResponse.getBuildExecutionStatus(),
                 buildDetailResponse.buildDuration,
                 buildTimestamp,
                 buildDetailResponse.link.href,
@@ -217,10 +192,6 @@ class BambooPipelineService(
             logger.error("Converting Bamboo DTO failed, DTO: [$buildDetailResponse], exception: [$e]")
             throw e
         }
-    }
-
-    private fun mapBuildStatus(statusInPipeline: String, stageDTOs: List<StageDTO>): Status {
-        return if (stageDTOs.any { it.state == "Unknown" }) Status.IN_PROGRESS else mapBuildStatus(statusInPipeline)
     }
 
     private fun getBuildDetails(
@@ -280,7 +251,7 @@ class BambooPipelineService(
         val durationMillis: Long = completedTimeMillis - startTimeMillis
         val stage = Stage(
             stageDTO.name,
-            mapStageStatus(stageDTO.state),
+            stageDTO.getStageExecutionStatus(),
             startTimeMillis,
             durationMillis,
             0,
