@@ -1,6 +1,7 @@
-package fourkeymetrics.project.service
+package fourkeymetrics.project.service.factory
 
 import fourkeymetrics.project.model.PipelineType
+import fourkeymetrics.project.service.PipelineService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

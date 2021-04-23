@@ -1,4 +1,4 @@
-package fourkeymetrics.project.service.impl
+package fourkeymetrics.project.service.factory
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.project.controller.applicationservice.SyncProgress

@@ -9,7 +9,7 @@ import fourkeymetrics.project.model.Project
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.PipelineService
-import fourkeymetrics.project.service.PipelineServiceFactory
+import fourkeymetrics.project.service.factory.PipelineServiceFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

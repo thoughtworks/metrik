@@ -1,9 +1,8 @@
-package fourkeymetrics.project.service
+package fourkeymetrics.project.service.factory
 
 import fourkeymetrics.project.model.PipelineType
-import fourkeymetrics.project.service.impl.BambooPipelineService
-import fourkeymetrics.project.service.impl.JenkinsPipelineService
-import fourkeymetrics.project.service.impl.NoopPipelineService
+import fourkeymetrics.project.service.bamboo.BambooPipelineService
+import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

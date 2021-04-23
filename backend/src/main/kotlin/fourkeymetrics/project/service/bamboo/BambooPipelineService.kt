@@ -1,4 +1,4 @@
-package fourkeymetrics.project.service.impl
+package fourkeymetrics.project.service.bamboo
 
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit

@@ -6,7 +6,7 @@ import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
-import fourkeymetrics.project.service.PipelineServiceFactory
+import fourkeymetrics.project.service.factory.PipelineServiceFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

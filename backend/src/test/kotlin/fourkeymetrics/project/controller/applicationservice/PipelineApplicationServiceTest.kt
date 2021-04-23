@@ -11,7 +11,7 @@ import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.repository.ProjectRepository
 import fourkeymetrics.project.service.PipelineService
-import fourkeymetrics.project.service.PipelineServiceFactory
+import fourkeymetrics.project.service.factory.PipelineServiceFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
