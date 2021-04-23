@@ -71,13 +71,16 @@ Follow the two steps below to run the tool, and measure the four key metrics of 
 
 The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please follow the steps:
 1. Ensure [Docker](https://www.docker.com) has already installed on your OS.
-2. Find available release versions in the Docker repository: [https://gallery.ecr.aws/j2s5d3z8/4-key-metrics](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+2. Find available [release versions](https://github.com/thoughtworks/metrik/releases) in the release page.  
+   Or, you can find all history versions from our [image repository](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
 3. Run the container locally via the following command:
-
 ``` bash
 docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
-⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.
+*⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.*  
+*⚠️ The `latest` tag matches the most recent version of this repository. Thus using public.ecr.aws/j2s5d3z8/4-key-metrics:latest or public.ecr.aws/j2s5d3z8/4-key-metrics will ensure you are running the most up to date version of this image.*  
+If you want to stick to a specific version tag, remember there no "v" in version name. e.g. public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.10
+
 
 ### Configure your projects
 
