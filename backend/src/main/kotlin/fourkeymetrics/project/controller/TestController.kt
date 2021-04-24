@@ -4,6 +4,7 @@ package fourkeymetrics.project.controller
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.project.service.jenkins.JenkinsPipelineService
 import fourkeymetrics.exception.ApplicationException
+import fourkeymetrics.project.repository.PipelineRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -22,12 +23,16 @@ class TestController {
     @Autowired
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
+    @Autowired
+    private lateinit var pipelineRepository: PipelineRepository
+
     @PostMapping("/api/project/{projectId}/pipeline/{pipelineId}/builds")
     fun pullBuilds(
         @PathVariable projectId: String,
         @PathVariable pipelineId: String
     ): List<Build> {
-        return jenkinsPipelineService.syncBuilds(pipelineId)
+        val pipeline = pipelineRepository.findById(pipelineId)
+        return jenkinsPipelineService.syncBuilds(pipeline)
     }
 
     @GetMapping("/test")

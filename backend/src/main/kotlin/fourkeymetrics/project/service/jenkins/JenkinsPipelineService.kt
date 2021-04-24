@@ -8,7 +8,6 @@ import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
-import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryCollectionDTO
@@ -31,12 +30,9 @@ import kotlin.streams.toList
 @Service("jenkinsPipelineService")
 class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
-    @Autowired private var pipelineRepository: PipelineRepository,
     @Autowired private var buildRepository: BuildRepository
 ) : PipelineService {
-    override fun syncBuilds(pipelineId: String): List<Build> {
-        val pipeline = pipelineRepository.findById(pipelineId)
-
+    override fun syncBuilds(pipeline: Pipeline): List<Build> {
         val username = pipeline.username
         val credential = pipeline.credential
         val baseUrl = pipeline.url
@@ -44,7 +40,7 @@ class JenkinsPipelineService(
         val buildsNeedToSync = getBuildSummariesFromJenkins(username!!, credential, baseUrl)
             .parallelStream()
             .filter {
-                val buildInDB = buildRepository.findByBuildNumber(pipelineId, it.number)
+                val buildInDB = buildRepository.findByBuildNumber(pipeline.id, it.number)
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
             .toList()
@@ -53,7 +49,7 @@ class JenkinsPipelineService(
             val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
 
             Build(
-                pipelineId,
+                pipeline.id,
                 buildSummary.number,
                 buildSummary.getBuildExecutionStatus(),
                 buildSummary.duration,
@@ -69,7 +65,7 @@ class JenkinsPipelineService(
         return builds
     }
 
-    override fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build> {
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         TODO("Not yet implemented")
     }
 

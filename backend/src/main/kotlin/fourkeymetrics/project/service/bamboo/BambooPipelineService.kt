@@ -11,7 +11,6 @@ import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.repository.BuildRepository
-import fourkeymetrics.project.repository.PipelineRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.bamboo.dto.BuildDetailDTO
 import fourkeymetrics.project.service.bamboo.dto.BuildSummaryDTO
@@ -38,7 +37,6 @@ private val FORK_JOIN_POOL = ForkJoinPool(PARALLELISM)
 @Service("bambooPipelineService")
 class BambooPipelineService(
     @Autowired private var restTemplate: RestTemplate,
-    @Autowired private var pipelineRepository: PipelineRepository,
     @Autowired private var buildRepository: BuildRepository
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
@@ -75,9 +73,8 @@ class BambooPipelineService(
     }
 
     @Synchronized
-    override fun syncBuilds(pipelineId: String): List<Build> {
-        logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
-        val pipeline = pipelineRepository.findById(pipelineId)
+    override fun syncBuilds(pipeline: Pipeline): List<Build> {
+        logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
         val credential = pipeline.credential
         val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
         val entity = HttpEntity<String>(headers)
@@ -85,17 +82,17 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = filterNeedToSync(pipelineId, maxBuildNumber)
+            val buildNumbersToSync = filterNeedToSync(pipeline, maxBuildNumber)
 
             logger.info(
-                "For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
+                "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
                         "[${buildNumbersToSync.size}] of them need to be synced"
             )
 
             val retrieveBuildDetails = {
                 buildNumbersToSync.parallelStream().map { buildNumber ->
                     val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                    val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
+                    val convertedBuild = convertToBuild(buildDetailResponse, pipeline.id)
                     if (convertedBuild != null) {
                         buildRepository.save(convertedBuild)
                     }
@@ -104,7 +101,7 @@ class BambooPipelineService(
             }
             val builds = FORK_JOIN_POOL.submit(retrieveBuildDetails).get()
 
-            logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${builds.size}] builds")
+            logger.info("For Bamboo pipeline [${pipeline.id}] - Successfully synced [${builds.size}] builds")
 
             return builds
         } catch (ex: HttpServerErrorException) {
@@ -115,9 +112,8 @@ class BambooPipelineService(
     }
 
     @Synchronized
-    override fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build> {
-        logger.info("Started data sync for Bamboo pipeline [$pipelineId]")
-        val pipeline = pipelineRepository.findById(pipelineId)
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
+        logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
         val credential = pipeline.credential
         val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
         val entity = HttpEntity<String>(headers)
@@ -127,27 +123,36 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = filterNeedToSync(pipelineId, maxBuildNumber)
+            val buildNumbersToSync = filterNeedToSync(pipeline, maxBuildNumber)
 
             logger.info(
-                "For Bamboo pipeline [$pipelineId] - total build number is [$maxBuildNumber], " +
+                "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
                         "[${buildNumbersToSync.size}] of them need to be synced"
             )
 
             val retrieveBuildDetails = {
                 buildNumbersToSync.parallelStream().map { buildNumber ->
                     val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                    val convertedBuild = convertToBuild(buildDetailResponse, pipelineId)
+                    val convertedBuild = convertToBuild(buildDetailResponse, pipeline.id)
                     if (convertedBuild != null) {
                         buildRepository.save(convertedBuild)
                     }
-                    emitCb(SyncProgress(pipelineId, progressCounter.incrementAndGet(), buildNumbersToSync.size))
-                    logger.info("[$pipelineId] sync progress: [${progressCounter.get()}/${buildNumbersToSync.size}]")
+                    emitCb(
+                        SyncProgress(
+                            pipeline.id,
+                            pipeline.name,
+                            progressCounter.incrementAndGet(),
+                            buildNumbersToSync.size
+                        )
+                    )
+                    logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/${buildNumbersToSync.size}]")
                     convertedBuild
                 }.toList().mapNotNull { it }
             }
             val builds = FORK_JOIN_POOL.submit(retrieveBuildDetails).get()
-            logger.info("For Bamboo pipeline [$pipelineId] - Successfully synced [${buildNumbersToSync.size}] builds")
+            logger.info(
+                "For Bamboo pipeline [${pipeline.id}] - Successfully synced [${buildNumbersToSync.size}] builds"
+            )
 
             return builds
         } catch (ex: HttpServerErrorException) {
@@ -157,8 +162,8 @@ class BambooPipelineService(
         }
     }
 
-    private fun filterNeedToSync(pipelineId: String, maxBuildNumber: Int) = (1..maxBuildNumber).filter {
-        val buildInDB = buildRepository.findByBuildNumber(pipelineId, it)
+    private fun filterNeedToSync(pipeline: Pipeline, maxBuildNumber: Int) = (1..maxBuildNumber).filter {
+        val buildInDB = buildRepository.findByBuildNumber(pipeline.id, it)
         buildInDB == null || buildInDB.result == Status.IN_PROGRESS
     }
 

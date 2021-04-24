@@ -31,9 +31,9 @@ class SynchronizationApplicationService(
 
         pipelines.parallelStream().forEach {
             try {
-                pipelineServiceFactory.getService(it.type).syncBuildsProgressively(it.id, emitCb)
+                pipelineServiceFactory.getService(it.type).syncBuildsProgressively(it, emitCb)
             } catch (e: RuntimeException) {
-                logger.error("Synchronize failed for pipeline [${it.id}], error: [$e]")
+                logger.error("Synchronize failed for pipeline [${it.id} - ${it.name}], error: [$e]")
                 throw ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Synchronize failed")
             }
         }

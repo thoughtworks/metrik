@@ -10,12 +10,14 @@ import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
 import fourkeymetrics.project.model.PipelineType
 import fourkeymetrics.project.repository.BuildRepository
-import fourkeymetrics.project.repository.PipelineRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.never
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
@@ -41,9 +43,6 @@ internal class BambooPipelineServiceTest {
 
     @MockBean
     private lateinit var buildRepository: BuildRepository
-
-    @MockBean
-    private lateinit var pipelineRepository: PipelineRepository
 
     private val pipelineId = "1"
     private val credential = "fake-credential"
@@ -87,61 +86,49 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should throw exception when sync pipeline given response is 500`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
-
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.syncBuilds(pipelineId)
+            bambooPipelineService.syncBuilds(pipeline)
         }
     }
 
     @Test
     internal fun `should throw exception when sync pipeline given response is 400`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
-
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
         mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.syncBuilds(pipelineId)
+            bambooPipelineService.syncBuilds(pipeline)
         }
     }
 
     @Test
     internal fun `should sync builds given build has no stages`() {
         val mockServer = MockRestServiceServer.createServer(restTemplate)
-
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -161,7 +148,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build = Build(
             pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
@@ -175,15 +162,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given stage has no jobs`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -203,7 +187,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -218,15 +202,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given both build and stage status are success`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -246,7 +227,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -272,15 +253,14 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds and update progress via the emit callback at the same time`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipelineName = "pipeline name"
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO,
+            name = pipelineName
+        )
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -299,7 +279,7 @@ internal class BambooPipelineServiceTest {
             )
         val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
-        bambooPipelineService.syncBuildsProgressively(pipelineId, mockEmitCb)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -319,7 +299,7 @@ internal class BambooPipelineServiceTest {
                     )
                 )
             )
-        val progress = SyncProgress(pipelineId, 1, 1)
+        val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
 
         verify(buildRepository, times(1)).save(build)
         verify(mockEmitCb).invoke(progress)
@@ -327,15 +307,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given both build and stage status are failed`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -355,7 +332,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -370,15 +347,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should set build state to in progress when sync build given build contains stages of which status is unknown`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -398,7 +372,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -417,15 +391,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given both build and stage status are non-supported status`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -445,7 +416,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -460,15 +431,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given build state is in progress`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
             Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
@@ -492,7 +460,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -518,15 +486,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should sync builds given build state is not exists in DB`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(null)
 
@@ -548,7 +513,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         val build =
             Build(
@@ -574,15 +539,12 @@ internal class BambooPipelineServiceTest {
 
     @Test
     internal fun `should be able to convert not started build which has no start time and complete time`() {
-        `when`(pipelineRepository.findById(pipelineId))
-            .thenReturn(
-                Pipeline(
-                    pipelineId,
-                    credential = credential,
-                    url = "$baseUrl/browse/$planKey",
-                    type = PipelineType.BAMBOO
-                )
-            )
+        val pipeline = Pipeline(
+            pipelineId,
+            credential = credential,
+            url = "$baseUrl/browse/$planKey",
+            type = PipelineType.BAMBOO
+        )
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -602,7 +564,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipelineId)
+        bambooPipelineService.syncBuilds(pipeline)
 
         verify(buildRepository, never()).save(MockitoHelper.anyObject<Build>())
     }

@@ -56,15 +56,16 @@ internal class SynchronizationApplicationServiceTest {
     internal fun `should sync builds when there is no previous update`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
+        val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         val builds = listOf(Build())
 
         `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
-        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(pipeline))
+        `when`(pipelineServiceMock.syncBuildsProgressively(anyObject(), anyObject())).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipeline), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull
@@ -74,17 +75,18 @@ internal class SynchronizationApplicationServiceTest {
     internal fun `should save builds from 2 weeks ago of previous update to now`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
+        val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         val builds = listOf(Build())
         val lastSyncTimestamp = 1610668800000
 
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(pipeline))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(anyObject(), anyObject())).thenReturn(builds)
 
         val updateTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipeline), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updateTimestamp).isGreaterThan(lastSyncTimestamp)
@@ -94,12 +96,13 @@ internal class SynchronizationApplicationServiceTest {
     internal fun `should not save any builds if fetch data from pipeline failed`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
+        val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         val lastSyncTimestamp = 1610668800000
 
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId, "name", lastSyncTimestamp))
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(id = pipelineId)))
+        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(pipeline))
         `when`(projectRepository.updateSynchronizationTime(anyString(), anyLong())).thenReturn(lastSyncTimestamp + 1)
-        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenThrow(RuntimeException())
+        `when`(pipelineServiceMock.syncBuildsProgressively(anyObject(), anyObject())).thenThrow(RuntimeException())
 
         assertThrows<ApplicationException> { synchronizationApplicationService.synchronize(projectId) }
     }
@@ -120,6 +123,7 @@ internal class SynchronizationApplicationServiceTest {
     internal fun `should sync builds for Bamboo when there is no previous update`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
+        val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         val builds = listOf(Build())
 
         `when`(projectRepository.findById(anyString())).thenReturn(Project(projectId))
@@ -131,11 +135,11 @@ internal class SynchronizationApplicationServiceTest {
                 )
             )
         )
-        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(anyObject(), anyObject())).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
-        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipeline), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
 
         assertThat(updatedTimestamp).isNotNull
@@ -145,6 +149,7 @@ internal class SynchronizationApplicationServiceTest {
     internal fun `should sync builds with progress emit callback passed in if callback function provided`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
+        val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         val builds = listOf(Build())
         val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
@@ -157,13 +162,13 @@ internal class SynchronizationApplicationServiceTest {
                 )
             )
         )
-        `when`(pipelineServiceMock.syncBuildsProgressively(eq(pipelineId), anyObject())).thenReturn(builds)
+        `when`(pipelineServiceMock.syncBuildsProgressively(anyObject(), anyObject())).thenReturn(builds)
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId, mockEmitCb)
 
-        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipelineId), emitCbCaptor.capture())
+        verify(pipelineServiceMock, times(1)).syncBuildsProgressively(eq(pipeline), emitCbCaptor.capture())
         verify(projectRepository, times(1)).updateSynchronizationTime(anyString(), anyLong())
-        val progress = SyncProgress(pipelineId, 1, 1)
+        val progress = SyncProgress(pipelineId, "pipeline name", 1, 1)
         emitCbCaptor.firstValue.invoke(progress)
         verify(mockEmitCb, times(1)).invoke(progress)
         assertThat(updatedTimestamp).isNotNull

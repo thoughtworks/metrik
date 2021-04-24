@@ -6,9 +6,9 @@ import fourkeymetrics.project.model.Pipeline
 
 interface PipelineService {
 
-    fun syncBuilds(pipelineId: String): List<Build>
+    fun syncBuilds(pipeline: Pipeline): List<Build>
 
-    fun syncBuildsProgressively(pipelineId: String, emitCb: (SyncProgress) -> Unit): List<Build>
+    fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build>
 
     fun verifyPipelineConfiguration(pipeline: Pipeline)
 

@@ -38,13 +38,24 @@ class SynchronizationController {
     fun sseSynchronization(@PathVariable projectId: String): SseEmitter {
         val emitter = SseEmitter(Companion.SSE_CONNECTION_TIMEOUT)
         val emitCb: (SyncProgress) -> Unit =
-            { progress -> emitter.send(SseEmitter.event().name(PROGRESS_UPDATE_EVENT).data(progress)) }
+            { progress ->
+                emitter.send(
+                    SseEmitter.event()
+                        .name(PROGRESS_UPDATE_EVENT)
+                        .data(progress)
+                        .id(progress.name)
+                )
+            }
         val sseMvcExecutor = Executors.newSingleThreadExecutor()
 
         sseMvcExecutor.execute {
             try {
                 synchronizationApplicationService.synchronize(projectId, emitCb)
-                emitter.send(SseEmitter.event().name(COMPLETE_STREAM_EVENT).data(COMPLETE_STREAM_EVENT))
+                emitter.send(
+                    SseEmitter.event()
+                        .name(COMPLETE_STREAM_EVENT)
+                        .data(COMPLETE_STREAM_EVENT)
+                )
                 emitter.complete()
             } catch (ex: ApplicationException) {
                 emitter.completeWithError(ex)
