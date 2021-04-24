@@ -43,7 +43,7 @@ class SynchronizationController {
                     SseEmitter.event()
                         .name(PROGRESS_UPDATE_EVENT)
                         .data(progress)
-                        .id(progress.name)
+                        .id(progress.pipelineName)
                 )
             }
         val sseMvcExecutor = Executors.newSingleThreadExecutor()
