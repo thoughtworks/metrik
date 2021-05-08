@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -127,5 +128,16 @@ class BuildRepositoryTest {
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         assertThat(buildRepository.getAllBuilds(pipelineIds)).hasSize(2)
+    }
+
+    @Test
+    internal fun `should get the build with biggest build number`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(Build(pipelineId, 1), Build(pipelineId, 2), Build(pipelineId, 5))
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(5, buildRepository.getMaxBuild(pipelineId)!!.number)
     }
 }
