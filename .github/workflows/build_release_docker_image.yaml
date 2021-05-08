@@ -1,14 +1,9 @@
 name: Publish release Docker image
 
 on:
-  push:
-    tags:
-      - '*'
-
   release:
     types:
       - created
-      - published
 
 env:
   IMAGE_NAME: metrik
