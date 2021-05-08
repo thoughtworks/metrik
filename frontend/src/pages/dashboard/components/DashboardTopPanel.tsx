@@ -1,5 +1,5 @@
 import { EditableText } from "../../../components/EditableText";
-import { Button, Col, DatePicker, Form, Row, Select, Typography } from "antd";
+import { Button, Col, DatePicker, Form, Popover, Row, Select, Typography } from "antd";
 import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
@@ -16,7 +16,7 @@ import {
 } from "../../../utils/timeFormats/timeFormats";
 import { usePrevious } from "../../../hooks/usePrevious";
 import HintIcon from "../../../components/HintIcon";
-import { FourKeyMetrics} from "../../../clients/metricsApis";
+import { FourKeyMetrics } from "../../../clients/metricsApis";
 import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipelineApis";
 import {
 	getLastSynchronizationUsingGet,
@@ -27,6 +27,7 @@ import {
 import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
 import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 import { MetricsUnit } from "../../../models/metrics";
+import { ProgressSummary, SyncProgressContent } from "./SyncProgressContent";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -129,6 +130,9 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	const syncing = updateBuildsLoading || pipelineLoading;
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
 
+	const [progressSummary, setProgressSummary] = useState<ProgressSummary>({});
+	const [syncInProgress, setSyncInProgress] = useState(false);
+
 	const updateProjectName = async (name: string) => {
 		await updateProjectNameRequest({
 			projectId: projectId,
@@ -151,6 +155,25 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		setSynchronization(resp);
 		setPipelineStages([]);
 		getPipelineStages();
+	};
+
+	const syncBuildsWithProgress = () => {
+		setSyncInProgress(true);
+
+		const eventsource = new EventSource(`/api/project/${projectId}/sse-sync`);
+		eventsource.addEventListener("PROGRESS_UPDATE_EVENT", e => {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const progressUpdate: ProgressUpdateEvt = JSON.parse(e.data);
+			setProgressSummary(prevState => ({
+				...prevState,
+				[progressUpdate.pipelineId]: progressUpdate,
+			}));
+		});
+		eventsource.addEventListener("COMPLETE_STREAM_EVENT", () => {
+			setSyncInProgress(false);
+			eventsource.close();
+		});
 	};
 
 	const getProject = () => getProjectRequest({ projectId });
@@ -193,6 +216,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		setIsFullscreenVisible(true);
 	};
 	const durationTimestamps = getDurationTimestamps(formValues.duration);
+
 	return (
 		<section css={containerStyles} onKeyUp={event => hideFullscreen(event)}>
 			<div css={headerStyles}>
@@ -208,11 +232,23 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				</div>
 				<div>
 					<div css={pipelineSettingStyles}>
-						<PipelineSetting projectId={projectId} syncBuild={syncBuilds} syncing={syncing}/>
+						<PipelineSetting projectId={projectId} syncBuild={syncBuilds} syncing={syncing} />
 					</div>
 					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
 						{syncing ? "Synchronizing" : "Sync Data"}
 					</Button>
+					<Popover
+						placement="top"
+						content={<SyncProgressContent progressSummary={progressSummary} />}
+						trigger="click">
+						<Button
+							type="primary"
+							icon={<SyncOutlined />}
+							loading={syncInProgress}
+							onClick={syncBuildsWithProgress}>
+							{syncInProgress ? "Synchronizing" : "Sync Data v2"}
+						</Button>
+					</Popover>
 					<span css={fullScreenStyles} onClick={showFullscreen}>
 						<FullscreenOutlined css={fullScreenIconStyles} />
 						<Text css={fullScreenTextStyles}>Full Screen</Text>
