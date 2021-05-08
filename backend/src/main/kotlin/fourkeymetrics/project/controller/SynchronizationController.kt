@@ -36,7 +36,7 @@ class SynchronizationController {
 
     @GetMapping("/api/project/{projectId}/sse-sync")
     fun sseSynchronization(@PathVariable projectId: String): SseEmitter {
-        val emitter = SseEmitter(Companion.SSE_CONNECTION_TIMEOUT)
+        val emitter = SseEmitter(SSE_CONNECTION_TIMEOUT)
         val emitCb: (SyncProgress) -> Unit =
             { progress ->
                 emitter.send(
