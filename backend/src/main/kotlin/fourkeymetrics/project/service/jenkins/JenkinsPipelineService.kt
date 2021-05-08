@@ -66,7 +66,7 @@ class JenkinsPipelineService(
     }
 
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
-        TODO("Not yet implemented")
+        return syncBuilds(pipeline)
     }
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
