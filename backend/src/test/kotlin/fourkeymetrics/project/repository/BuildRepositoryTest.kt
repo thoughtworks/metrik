@@ -37,19 +37,6 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get all builds belonging to this pipeline`() {
-        val pipelineId = "fake pipeline"
-        val collectionName = "build"
-
-        val buildsToSave: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-1.json").readText())
-
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
-
-        assertThat(buildRepository.getAllBuilds(pipelineId)).hasSize(3)
-    }
-
-    @Test
     internal fun `should save a bunch of build data`() {
         val collectionName = "build"
 
@@ -85,26 +72,6 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should find build by number given build is exist in DB`() {
-        val pipelineId = "fake-id"
-        val firstBuild = Build(number = 1, pipelineId = pipelineId)
-
-        buildRepository.save(listOf(firstBuild))
-
-        assertThat(buildRepository.findByBuildNumber(pipelineId, 1)).isNotNull
-    }
-
-    @Test
-    internal fun `should get null when find by number given build is not exist in DB`() {
-        val pipelineId = "fake-id"
-        val firstBuild = Build(number = 1, pipelineId = pipelineId)
-
-        buildRepository.save(listOf(firstBuild))
-
-        assertThat(buildRepository.findByBuildNumber(pipelineId, 2)).isNull()
-    }
-
-    @Test
     internal fun `should remove collection data when given pipeline Id`() {
         val collectionName = "build"
         val pipelineId1 = "fake-pipelineId1"
@@ -128,6 +95,39 @@ class BuildRepositoryTest {
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         assertThat(buildRepository.getAllBuilds(pipelineIds)).hasSize(2)
+    }
+
+    @Test
+    internal fun `should get all builds belonging to this pipeline`() {
+        val pipelineId = "fake pipeline"
+        val collectionName = "build"
+
+        val buildsToSave: List<Build> =
+            objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-1.json").readText())
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertThat(buildRepository.getAllBuilds(pipelineId)).hasSize(3)
+    }
+
+    @Test
+    internal fun `should find build by number given build is exist in DB`() {
+        val pipelineId = "fake-id"
+        val firstBuild = Build(number = 1, pipelineId = pipelineId)
+
+        buildRepository.save(listOf(firstBuild))
+
+        assertThat(buildRepository.findByBuildNumber(pipelineId, 1)).isNotNull
+    }
+
+    @Test
+    internal fun `should get null when find by number given build is not exist in DB`() {
+        val pipelineId = "fake-id"
+        val firstBuild = Build(number = 1, pipelineId = pipelineId)
+
+        buildRepository.save(listOf(firstBuild))
+
+        assertThat(buildRepository.findByBuildNumber(pipelineId, 2)).isNull()
     }
 
     @Test

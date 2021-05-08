@@ -25,30 +25,6 @@ class BuildRepository {
 
     private val collectionName = "build"
 
-    fun getAllBuilds(pipelineId: String): List<Build> {
-        val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId))
-        val result = mongoTemplate.find<Build>(query, collectionName)
-        logger.info("Query result size for builds in pipeline [$pipelineId] is [${result.size}]")
-        return result
-    }
-
-    fun getAllBuilds(pipelineIds: Collection<String>): List<Build> {
-        val query = Query.query(Criteria.where(PROP_PIPELINEID).`in`(pipelineIds))
-        val result = mongoTemplate.find<Build>(query, collectionName)
-        logger.info("Query result size for builds in pipelines [$pipelineIds] is [${result.size}]")
-        return result
-    }
-
-    fun getMaxBuild(pipelineId: String): Build? {
-        val query = Query
-            .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
-            .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
-            .limit(1)
-        val result = mongoTemplate.findOne<Build>(query)
-        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result!!.number}]")
-        return result
-    }
-
     fun save(builds: List<Build>) {
         logger.info("Saving [${builds.size}] builds into DB")
         builds.parallelStream().forEach {
@@ -73,6 +49,26 @@ class BuildRepository {
         }
     }
 
+    fun clear(pipelineId: String) {
+        logger.info("Removing all build records under pipeline [$pipelineId]")
+        val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId))
+        mongoTemplate.remove(query, collectionName)
+    }
+
+    fun getAllBuilds(pipelineIds: Collection<String>): List<Build> {
+        val query = Query.query(Criteria.where(PROP_PIPELINEID).`in`(pipelineIds))
+        val result = mongoTemplate.find<Build>(query, collectionName)
+        logger.info("Query result size for builds in pipelines [$pipelineIds] is [${result.size}]")
+        return result
+    }
+
+    fun getAllBuilds(pipelineId: String): List<Build> {
+        val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId))
+        val result = mongoTemplate.find<Build>(query, collectionName)
+        logger.info("Query result size for builds in pipeline [$pipelineId] is [${result.size}]")
+        return result
+    }
+
     fun findByBuildNumber(pipelineId: String, number: Int): Build? {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_NUMBER).`is`(number))
         val result = mongoTemplate.findOne(query, Build::class.java, collectionName)
@@ -80,9 +76,13 @@ class BuildRepository {
         return result
     }
 
-    fun clear(pipelineId: String) {
-        logger.info("Removing all build records under pipeline [$pipelineId]")
-        val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId))
-        mongoTemplate.remove(query, collectionName)
+    fun getMaxBuild(pipelineId: String): Build? {
+        val query = Query
+            .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
+            .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
+            .limit(1)
+        val result = mongoTemplate.findOne<Build>(query)
+        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result!!.number}]")
+        return result
     }
 }
