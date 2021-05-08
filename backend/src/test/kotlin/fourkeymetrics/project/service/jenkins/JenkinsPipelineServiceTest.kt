@@ -212,7 +212,7 @@ internal class JenkinsPipelineServiceTest {
             url = baseUrl
         )
 
-        `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
+        `when`(buildRepository.getByBuildNumber(pipelineId, 1)).thenReturn(
             Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
         )
 

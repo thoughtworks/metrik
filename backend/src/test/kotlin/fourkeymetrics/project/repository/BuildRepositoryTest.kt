@@ -3,6 +3,7 @@ package fourkeymetrics.project.repository
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -117,7 +118,7 @@ class BuildRepositoryTest {
 
         buildRepository.save(listOf(firstBuild))
 
-        assertThat(buildRepository.findByBuildNumber(pipelineId, 1)).isNotNull
+        assertThat(buildRepository.getByBuildNumber(pipelineId, 1)).isNotNull
     }
 
     @Test
@@ -127,7 +128,24 @@ class BuildRepositoryTest {
 
         buildRepository.save(listOf(firstBuild))
 
-        assertThat(buildRepository.findByBuildNumber(pipelineId, 2)).isNull()
+        assertThat(buildRepository.getByBuildNumber(pipelineId, 2)).isNull()
+    }
+
+    @Test
+    internal fun `should get builds with certain build status`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Build(pipelineId, 1, Status.SUCCESS),
+            Build(pipelineId, 2, Status.SUCCESS),
+            Build(pipelineId, 5, Status.IN_PROGRESS)
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(2, buildRepository.getByBuildStatus(pipelineId, Status.SUCCESS).size)
+        assertEquals(1, buildRepository.getByBuildStatus(pipelineId, Status.IN_PROGRESS).size)
+        assertEquals(0, buildRepository.getByBuildStatus(pipelineId, Status.FAILED).size)
     }
 
     @Test

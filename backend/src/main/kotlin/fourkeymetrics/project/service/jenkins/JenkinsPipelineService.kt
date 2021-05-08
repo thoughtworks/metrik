@@ -40,7 +40,7 @@ class JenkinsPipelineService(
         val buildsNeedToSync = getBuildSummariesFromJenkins(username!!, credential, baseUrl)
             .parallelStream()
             .filter {
-                val buildInDB = buildRepository.findByBuildNumber(pipeline.id, it.number)
+                val buildInDB = buildRepository.getByBuildNumber(pipeline.id, it.number)
                 buildInDB == null || buildInDB.result == Status.IN_PROGRESS
             }
             .toList()

@@ -163,7 +163,7 @@ class BambooPipelineService(
     }
 
     private fun filterNeedToSync(pipeline: Pipeline, maxBuildNumber: Int) = (1..maxBuildNumber).filter {
-        val buildInDB = buildRepository.findByBuildNumber(pipeline.id, it)
+        val buildInDB = buildRepository.getByBuildNumber(pipeline.id, it)
         buildInDB == null || buildInDB.result == Status.IN_PROGRESS
     }
 

@@ -438,7 +438,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(
+        `when`(buildRepository.getByBuildNumber(pipelineId, 1)).thenReturn(
             Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
         )
 
@@ -493,7 +493,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.findByBuildNumber(pipelineId, 1)).thenReturn(null)
+        `when`(buildRepository.getByBuildNumber(pipelineId, 1)).thenReturn(null)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }

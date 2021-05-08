@@ -1,6 +1,7 @@
 package fourkeymetrics.project.repository
 
 import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Status
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -17,6 +18,7 @@ class BuildRepository {
     companion object {
         private const val PROP_PIPELINEID: String = "pipelineId"
         private const val PROP_NUMBER: String = "number"
+        private const val PROP_RESULT: String = "result"
     }
 
     @Autowired
@@ -69,10 +71,17 @@ class BuildRepository {
         return result
     }
 
-    fun findByBuildNumber(pipelineId: String, number: Int): Build? {
+    fun getByBuildNumber(pipelineId: String, number: Int): Build? {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_NUMBER).`is`(number))
-        val result = mongoTemplate.findOne(query, Build::class.java, collectionName)
-        logger.info("Query result for build number [$number] in pipeline [$pipelineId] is [${result}]")
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        logger.info("Query result for build number [$number] in pipeline [$pipelineId] is [$result]")
+        return result
+    }
+
+    fun getByBuildStatus(pipelineId: String, status: Status): List<Build> {
+        val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_RESULT).`is`(status))
+        val result = mongoTemplate.find<Build>(query, collectionName)
+        logger.info("Query result size for build status [$status] in pipeline [$pipelineId] is [${result.size}]")
         return result
     }
 
@@ -81,7 +90,7 @@ class BuildRepository {
             .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
             .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
             .limit(1)
-        val result = mongoTemplate.findOne<Build>(query)
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
         logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result!!.number}]")
         return result
     }
