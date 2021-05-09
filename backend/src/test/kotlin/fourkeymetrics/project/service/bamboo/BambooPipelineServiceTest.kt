@@ -437,7 +437,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given the build is marked as "need sync" by buildRepository`() {
+    internal fun `should sync builds given the build is marked as 'need sync' by buildRepository`() {
         val pipeline = Pipeline(
             pipelineId,
             credential = credential,
