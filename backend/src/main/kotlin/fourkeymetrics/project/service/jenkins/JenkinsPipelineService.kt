@@ -12,6 +12,7 @@ import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.jenkins.dto.BuildDetailsDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryCollectionDTO
 import fourkeymetrics.project.service.jenkins.dto.BuildSummaryDTO
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.nio.charset.Charset
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.streams.toList
 
 @Service("jenkinsPipelineService")
@@ -32,6 +34,8 @@ class JenkinsPipelineService(
     @Autowired private var restTemplate: RestTemplate,
     @Autowired private var buildRepository: BuildRepository
 ) : PipelineService {
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+
     override fun syncBuilds(pipeline: Pipeline): List<Build> {
         val username = pipeline.username
         val credential = pipeline.credential
@@ -66,7 +70,53 @@ class JenkinsPipelineService(
     }
 
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
-        return syncBuilds(pipeline)
+        logger.info("Started data sync for Jenkins pipeline [$pipeline.id]")
+        val progressCounter = AtomicInteger(0)
+
+        val buildsNeedToSync = getBuildSummariesFromJenkins(pipeline.username!!, pipeline.credential, pipeline.url)
+            .parallelStream()
+            .filter {
+                val buildInDB = buildRepository.getByBuildNumber(pipeline.id, it.number)
+                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
+            }
+            .toList()
+
+        logger.info(
+            "For Jenkins pipeline [${pipeline.id}] - found [${buildsNeedToSync.size}] builds need to be synced"
+        )
+        val builds = buildsNeedToSync.parallelStream().map { buildSummary ->
+            val buildDetails =
+                getBuildDetailsFromJenkins(pipeline.username!!, pipeline.credential, pipeline.url, buildSummary)
+
+            val convertedBuild = Build(
+                pipeline.id,
+                buildSummary.number,
+                buildSummary.getBuildExecutionStatus(),
+                buildSummary.duration,
+                buildSummary.timestamp,
+                buildSummary.url,
+                constructBuildStages(buildDetails),
+                constructBuildCommits(buildSummary).flatten()
+            )
+
+            emitCb(
+                SyncProgress(
+                    pipeline.id,
+                    pipeline.name,
+                    progressCounter.incrementAndGet(),
+                    buildsNeedToSync.size
+                )
+            )
+            logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/${buildsNeedToSync.size}]")
+            convertedBuild
+        }.toList()
+
+        buildRepository.save(builds)
+
+        logger.info(
+            "For Jenkins pipeline [${pipeline.id}] - Successfully synced [${buildsNeedToSync.size}] builds"
+        )
+        return builds
     }
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
@@ -116,7 +166,9 @@ class JenkinsPipelineService(
     }
 
     private fun getBuildDetailsFromJenkins(
-        username: String, credential: String, baseUrl: String,
+        username: String,
+        credential: String,
+        baseUrl: String,
         buildSummary: BuildSummaryDTO
     ): BuildDetailsDTO {
         val headers = setAuthHeader(username, credential)
