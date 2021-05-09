@@ -63,20 +63,23 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-builds-1.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-1.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-1.json").readText())
+            objectMapper.readValue(
+                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
+                    .readText()
+            )
         val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
@@ -100,20 +103,23 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-builds-3.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-3.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-3.json").readText())
+            objectMapper.readValue(
+                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-3.json")
+                    .readText()
+            )
         val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
@@ -137,20 +143,23 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-builds-4.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-4.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-4.json").readText())
+            objectMapper.readValue(
+                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
+                    .readText()
+            )
         val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
@@ -174,20 +183,23 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-builds-5.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-5.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/pipeline/builds-for-jenkins-5.json").readText())
+            objectMapper.readValue(
+                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-5.json")
+                    .readText()
+            )
         val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
@@ -219,21 +231,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-builds-2.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuild1DetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-2.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuild2DetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/raw-build-detail-2.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
