@@ -21,7 +21,6 @@ import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipe
 import {
 	getLastSynchronizationUsingGet,
 	getProjectDetailsUsingGet,
-	updateBuildsUsingPost,
 	updateProjectNameUsingPut,
 } from "../../../clients/projectApis";
 import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
@@ -116,22 +115,21 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		pipelines: [],
 	} as FormValues;
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
-	const [, updateBuildsRequest, updateBuildsLoading] = useRequest(updateBuildsUsingPost);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
-	const [synchronization, getLastSynchronizationRequest, , setSynchronization] = useRequest(
+	const [synchronization, getLastSynchronizationRequest] = useRequest(
 		getLastSynchronizationUsingGet
 	);
 	const [
 		pipelineStagesResp,
 		getPipelineStagesRequest,
-		pipelineLoading,
+		getPipelineStagesLoading,
 		setPipelineStages,
 	] = useRequest(getPipelineStagesUsingGet);
-	const syncing = updateBuildsLoading || pipelineLoading;
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
 
 	const [progressSummary, setProgressSummary] = useState<ProgressSummary>({});
 	const [syncInProgress, setSyncInProgress] = useState(false);
+	const updating = syncInProgress || getPipelineStagesLoading;
 
 	const updateProjectName = async (name: string) => {
 		await updateProjectNameRequest({
@@ -144,17 +142,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	const getLastSyncTime = async () => {
 		const resp = await getLastSynchronizationRequest({ projectId });
 		if (!resp?.synchronizationTimestamp) {
-			syncBuilds();
+			syncBuildsWithProgress();
 		}
-	};
-
-	const syncBuilds = async () => {
-		const resp = await updateBuildsRequest({
-			projectId,
-		});
-		setSynchronization(resp);
-		setPipelineStages([]);
-		getPipelineStages();
 	};
 
 	const syncBuildsWithProgress = () => {
@@ -171,8 +160,13 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 			}));
 		});
 		eventsource.addEventListener("COMPLETE_STREAM_EVENT", () => {
-			setSyncInProgress(false);
 			eventsource.close();
+			setSyncInProgress(false);
+			setProgressSummary({});
+
+			getLastSyncTime();
+			setPipelineStages([]);
+			getPipelineStages();
 		});
 	};
 
@@ -232,13 +226,15 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				</div>
 				<div>
 					<div css={pipelineSettingStyles}>
-						<PipelineSetting projectId={projectId} syncBuild={syncBuilds} syncing={syncing} />
+						<PipelineSetting
+							projectId={projectId}
+							syncBuild={syncBuildsWithProgress}
+							syncing={updating}
+						/>
 					</div>
-					<Button type="primary" icon={<SyncOutlined />} loading={syncing} onClick={syncBuilds}>
-						{syncing ? "Synchronizing" : "Sync Data"}
-					</Button>
 					<Popover
-						placement="bottom"
+						visible={syncInProgress}
+						placement="bottomLeft"
 						content={<SyncProgressContent progressSummary={progressSummary} />}
 						trigger="click">
 						<Button
@@ -246,7 +242,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 							icon={<SyncOutlined />}
 							loading={syncInProgress}
 							onClick={syncBuildsWithProgress}>
-							{syncInProgress ? "Synchronizing" : "Sync Data v2"}
+							{syncInProgress ? "Synchronizing" : "Sync Data"}
 						</Button>
 					</Popover>
 					<span css={fullScreenStyles} onClick={showFullscreen}>
@@ -277,7 +273,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 									/>
 								}
 								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} disabled={syncing} />
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} disabled={updating} />
 							</Form.Item>
 						</Col>
 						<Col>
@@ -289,7 +285,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 									/>
 								}
 								name="unit">
-								<Select disabled={syncing}>
+								<Select disabled={updating}>
 									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
 									<Select.Option value="Monthly">Monthly</Select.Option>
 								</Select>
@@ -305,7 +301,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 								}
 								name="pipelines">
 								<MultipleCascadeSelect
-									disabled={syncing}
+									disabled={updating}
 									options={options}
 									defaultValues={
 										!isEmpty(options[0]?.children)
@@ -324,7 +320,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item css={{ marginTop: 40 }}>
-								<Button htmlType="submit" disabled={syncing || isEmpty(options)}>
+								<Button htmlType="submit" disabled={updating || isEmpty(options)}>
 									Apply
 								</Button>
 							</Form.Item>
