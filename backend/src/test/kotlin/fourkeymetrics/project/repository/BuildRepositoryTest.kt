@@ -158,4 +158,20 @@ class BuildRepositoryTest {
 
         assertEquals(5, buildRepository.getMaxBuild(pipelineId)!!.number)
     }
+
+    @Test
+    internal fun `should get all build numbers that need a data synchronization given the most recent build number`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Build(pipelineId, 1, Status.SUCCESS),
+            Build(pipelineId, 2, Status.SUCCESS),
+            Build(pipelineId, 3, Status.IN_PROGRESS),
+            Build(pipelineId, 4, Status.SUCCESS)
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        val givenMostRecentBuild = 8
+        assertEquals(listOf(3, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
+    }
 }

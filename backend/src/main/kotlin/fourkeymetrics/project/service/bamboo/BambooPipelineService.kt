@@ -3,7 +3,6 @@ package fourkeymetrics.project.service.bamboo
 import fourkeymetrics.common.model.Build
 import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
-import fourkeymetrics.common.model.Status
 import fourkeymetrics.common.utlils.RequestUtil.buildHeaders
 import fourkeymetrics.common.utlils.RequestUtil.getDomain
 import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
@@ -82,7 +81,7 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = filterNeedToSync(pipeline, maxBuildNumber)
+            val buildNumbersToSync = buildRepository.getBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
 
             logger.info(
                 "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
@@ -123,7 +122,7 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = filterNeedToSync(pipeline, maxBuildNumber)
+            val buildNumbersToSync = buildRepository.getBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
 
             logger.info(
                 "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
@@ -161,12 +160,6 @@ class BambooPipelineService(
             throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
         }
     }
-
-    private fun filterNeedToSync(pipeline: Pipeline, maxBuildNumber: Int) = (1..maxBuildNumber).filter {
-        val buildInDB = buildRepository.getByBuildNumber(pipeline.id, it)
-        buildInDB == null || buildInDB.result == Status.IN_PROGRESS
-    }
-
 
     private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build? {
         logger.info(

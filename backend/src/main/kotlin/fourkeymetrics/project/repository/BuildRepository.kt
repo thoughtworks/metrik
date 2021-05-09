@@ -94,4 +94,13 @@ class BuildRepository {
         logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result!!.number}]")
         return result
     }
+
+    fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
+        val mostRecentBuildInDB = getMaxBuild(pipelineId)
+        val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
+        val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
+        val needSyncBuildNumbers = needSyncBuilds.map { it.number }
+
+        return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
+    }
 }
