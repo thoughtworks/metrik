@@ -29,15 +29,10 @@ export const SyncProgressContent: React.FC<SyncProgressContentProps> = ({ progre
 					<td>
 						<Progress
 							type="line"
-							strokeWidth={16}
+							strokeWidth={12}
 							size="small"
 							steps={50}
-							// size="default"
-							// strokeLinecap="round"
-							// strokeColor={{
-							// 	from: "#D63F97",
-							// 	to: "#298CE8",
-							// }}
+							strokeColor="#D63F97"
 							percent={Math.floor(
 								(progressSummary[progressKey]?.progress / progressSummary[progressKey]?.batchSize) *
 									100
