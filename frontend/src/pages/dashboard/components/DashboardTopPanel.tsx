@@ -238,7 +238,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						{syncing ? "Synchronizing" : "Sync Data"}
 					</Button>
 					<Popover
-						placement="top"
+						placement="bottom"
 						content={<SyncProgressContent progressSummary={progressSummary} />}
 						trigger="click">
 						<Button
