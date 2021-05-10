@@ -1,8 +1,6 @@
 package fourkeymetrics.project.service.bamboo
 
 import fourkeymetrics.common.model.Build
-import fourkeymetrics.common.model.Commit
-import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.utlils.RequestUtil.buildHeaders
 import fourkeymetrics.common.utlils.RequestUtil.getDomain
 import fourkeymetrics.exception.ApplicationException
@@ -12,7 +10,6 @@ import fourkeymetrics.project.repository.BuildRepository
 import fourkeymetrics.project.service.PipelineService
 import fourkeymetrics.project.service.bamboo.dto.BuildDetailDTO
 import fourkeymetrics.project.service.bamboo.dto.BuildSummaryDTO
-import fourkeymetrics.project.service.bamboo.dto.StageDTO
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -29,7 +26,7 @@ import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.streams.toList
 
-private const val PARALLELISM = 25
+private const val PARALLELISM = 4
 private val FORK_JOIN_POOL = ForkJoinPool(PARALLELISM)
 
 @Service("bambooPipelineService")
@@ -92,7 +89,8 @@ class BambooPipelineService(
             val retrieveBuildDetails = {
                 buildNumbersToSync.parallelStream().map { buildNumber ->
                     val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                    val convertedBuild = convertToBuild(buildDetailResponse, pipeline.id)
+                    val convertedBuild = buildDetailResponse?.convertToMetrikBuild(pipeline.id)
+
                     if (convertedBuild != null) {
                         buildRepository.save(convertedBuild)
                     }
@@ -121,54 +119,32 @@ class BambooPipelineService(
         }
     }
 
-    private fun convertToBuild(buildDetailResponse: BuildDetailDTO, pipelineId: String): Build? {
-        logger.info(
-            "Bamboo converting: Started converting BuildDetailDTO " +
-                    "[$buildDetailResponse] for pipeline [$pipelineId]"
-        )
-        try {
-            val buildTimestamp = buildDetailResponse.getBuildStartedTimestamp() ?: return null
-            val stages = buildDetailResponse.stages.stage.mapNotNull {
-                convertToBuildStage(it)
-            }
-
-            val build = Build(
-                pipelineId,
-                buildDetailResponse.buildNumber,
-                buildDetailResponse.getBuildExecutionStatus(),
-                buildDetailResponse.buildDuration,
-                buildTimestamp,
-                buildDetailResponse.link.href,
-                stages,
-                buildDetailResponse.changes.change.map {
-                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString(), it.comment)
-                }
-            )
-            logger.info("Bamboo converting: Build converted result: [$build]")
-            return build
-        } catch (e: Exception) {
-            logger.error("Converting Bamboo DTO failed, DTO: [$buildDetailResponse], exception: [$e]")
-            throw e
-        }
-    }
-
     private fun getBuildDetails(
         pipeline: Pipeline, planKey: String, buildNumber: Int,
         entity: HttpEntity<String>
-    ): BuildDetailDTO {
+    ): BuildDetailDTO? {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}-${buildNumber}.json?" +
                 "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url] with entity [$entity]")
-        val responseEntity: ResponseEntity<BuildDetailDTO>
+        var responseEntity: ResponseEntity<BuildDetailDTO>
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
-        } catch (e: Exception) {
-            logger.error("Getting Bamboo build details failed, URL: [$url], exception: [$e]")
-            throw e
+            logger.info("Get build details - Response from [$url]: $responseEntity")
+            return responseEntity.body!!
+        } catch (clientErrorException: HttpClientErrorException) {
+            if (clientErrorException.statusCode.equals(HttpStatus.NOT_FOUND)) {
+                logger.info(
+                    """
+                    Getting NOT_FOUND error for build [$buildNumber], skip this build since not exist.
+                    Exception: [$clientErrorException]
+                    """.trimIndent()
+                )
+                return null
+            } else {
+                logger.error("Getting Bamboo build details failed, URL: [$url], exception: [$clientErrorException]")
+                throw clientErrorException
+            }
         }
-
-        logger.info("Get build details - Response from [$url]: $responseEntity")
-        return responseEntity.body!!
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, entity: HttpEntity<String>): Int {
@@ -178,35 +154,5 @@ class BambooPipelineService(
         logger.info("Get max build number - Response from [$url]: $response")
         val buildSummaryDTO = response.body!!
         return buildSummaryDTO.results.result.first().buildNumber
-    }
-
-    private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
-        logger.info("Bamboo converting: Started converting StageDTO [$stageDTO]")
-        val isInProgress = stageDTO.state == "Unknown" ||
-                stageDTO.results.result.any {
-                    it.buildStartedTime == null || it.buildCompletedTime == null || it.buildDuration == null
-                }
-        val shouldSkip = stageDTO.results.result.isEmpty() || isInProgress
-        if (shouldSkip) {
-            return null
-        }
-
-        val startTimeMillis = stageDTO.results.result
-            .map { result -> result.getStageStartedTimestamp() }
-            .minOrNull()!!
-        val completedTimeMillis = stageDTO.results.result
-            .map { result -> result.getStageCompletedTimestamp() }
-            .maxOrNull()!!
-        val durationMillis: Long = completedTimeMillis - startTimeMillis
-        val stage = Stage(
-            stageDTO.name,
-            stageDTO.getStageExecutionStatus(),
-            startTimeMillis,
-            durationMillis,
-            0,
-            completedTimeMillis
-        )
-        logger.info("Bamboo converting: Stage converted result: [$stage]")
-        return stage
     }
 }

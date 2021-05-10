@@ -1,8 +1,11 @@
 package fourkeymetrics.project.service.bamboo.dto
 
+import fourkeymetrics.common.model.Build
+import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Status
 import fourkeymetrics.common.utlils.TimeFormatUtil
 import org.apache.logging.log4j.util.Strings
+import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 
 data class BuildSummaryDTO(var results: BuildResultCollectionDTO)
@@ -28,6 +31,8 @@ data class BuildDetailDTO(
     var changes: ChangeSetDTO,
     var buildCompletedTime: ZonedDateTime?
 ) {
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+
     fun getBuildExecutionStatus(): Status {
         return if (stages.stage.any { it.state == "Unknown" }) Status.IN_PROGRESS else
             when (this.buildState) {
@@ -50,11 +55,48 @@ data class BuildDetailDTO(
             else -> null
         }
     }
+
+    fun convertToMetrikBuild(pipelineId: String): Build? {
+        logger.info(
+            "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
+        )
+        val buildTimestamp = getBuildStartedTimestamp() ?: return null
+
+        try {
+            val stages = stages.stage.mapNotNull {
+                it.convertToMetrikBuildStage()
+            }
+
+            val build = Build(
+                pipelineId,
+                buildNumber,
+                getBuildExecutionStatus(),
+                buildDuration,
+                buildTimestamp,
+                link.href,
+                stages,
+                changes.change.map {
+                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString(), it.comment)
+                }
+            )
+            logger.info("Bamboo converting: Build converted result: [$build]")
+            return build
+        } catch (e: RuntimeException) {
+            logger.error("Converting Bamboo DTO failed, DTO: [$this], exception: [$e]")
+            throw e
+        }
+    }
 }
 
 data class Stage(val stage: List<StageDTO>)
 
-data class StageDTO(val name: String, val state: String?, val results: StageResult) {
+data class StageDTO(
+    val name: String,
+    val state: String?,
+    val results: StageResult
+) {
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+
     fun getStageExecutionStatus(): Status {
         return when (this.state) {
             "Successful" -> {
@@ -67,6 +109,37 @@ data class StageDTO(val name: String, val state: String?, val results: StageResu
                 Status.OTHER
             }
         }
+    }
+
+    fun convertToMetrikBuildStage(): fourkeymetrics.common.model.Stage? {
+        logger.info("Bamboo converting: Started converting StageDTO [$this]")
+
+        val isInProgress = state == "Unknown" || results.result.any {
+            it.buildStartedTime == null || it.buildCompletedTime == null || it.buildDuration == null
+        }
+        val shouldSkip = results.result.isEmpty() || isInProgress
+        if (shouldSkip) {
+            return null
+        }
+
+        val startTimeMillis = results.result
+            .map { result -> result.getStageStartedTimestamp() }
+            .minOrNull()!!
+        val completedTimeMillis = results.result
+            .map { result -> result.getStageCompletedTimestamp() }
+            .maxOrNull()!!
+        val durationMillis: Long = completedTimeMillis - startTimeMillis
+        val metrikStage = fourkeymetrics.common.model.Stage(
+            name,
+            getStageExecutionStatus(),
+            startTimeMillis,
+            durationMillis,
+            0,
+            completedTimeMillis
+        )
+        logger.info("Bamboo converting: Stage converted result: [$metrikStage]")
+
+        return metrikStage
     }
 }
 
