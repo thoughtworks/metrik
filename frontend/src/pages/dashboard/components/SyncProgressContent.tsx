@@ -1,5 +1,16 @@
 import React from "react";
 import { Progress } from "antd";
+import { css } from "@emotion/react";
+
+const tableRowStyles = css({
+	"& td:first-of-type": {
+		textAlign: "right",
+		paddingRight: 12,
+	},
+	"& td:last-of-type": {
+		paddingRight: 20,
+	},
+});
 
 export interface ProgressUpdateEvt {
 	pipelineId: string;
@@ -22,9 +33,9 @@ export const SyncProgressContent: React.FC<SyncProgressContentProps> = ({ progre
 	return keys.length === 0 ? (
 		<p>Waiting server response...</p>
 	) : (
-		<>
+		<table>
 			{Object.keys(progressSummary).map(progressKey => (
-				<tr key={progressKey}>
+				<tr key={progressKey} css={tableRowStyles}>
 					<td>{progressSummary[progressKey]?.pipelineName}:</td>
 					<td>
 						<Progress
@@ -44,6 +55,6 @@ export const SyncProgressContent: React.FC<SyncProgressContentProps> = ({ progre
 					</td>
 				</tr>
 			))}
-		</>
+		</table>
 	);
 };

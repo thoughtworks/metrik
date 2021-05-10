@@ -234,7 +234,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 					</div>
 					<Popover
 						visible={syncInProgress}
-						placement="bottomLeft"
+						placement="bottomRight"
 						content={<SyncProgressContent progressSummary={progressSummary} />}
 						trigger="click">
 						<Button
