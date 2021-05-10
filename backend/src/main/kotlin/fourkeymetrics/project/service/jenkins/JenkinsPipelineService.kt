@@ -62,39 +62,6 @@ class JenkinsPipelineService(
             .toList()
     }
 
-    override fun syncBuilds(pipeline: Pipeline): List<Build> {
-        val username = pipeline.username
-        val credential = pipeline.credential
-        val baseUrl = pipeline.url
-
-        val buildsNeedToSync = getBuildSummariesFromJenkins(username!!, credential, baseUrl)
-            .parallelStream()
-            .filter {
-                val buildInDB = buildRepository.getByBuildNumber(pipeline.id, it.number)
-                buildInDB == null || buildInDB.result == Status.IN_PROGRESS
-            }
-            .toList()
-
-        val builds = buildsNeedToSync.parallelStream().map { buildSummary ->
-            val buildDetails = getBuildDetailsFromJenkins(username, credential, baseUrl, buildSummary)
-
-            Build(
-                pipeline.id,
-                buildSummary.number,
-                buildSummary.getBuildExecutionStatus(),
-                buildSummary.duration,
-                buildSummary.timestamp,
-                buildSummary.url,
-                constructBuildStages(buildDetails),
-                constructBuildCommits(buildSummary).flatten()
-            )
-        }.toList()
-
-        buildRepository.save(builds)
-
-        return builds
-    }
-
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Started data sync for Jenkins pipeline [$pipeline.id]")
         val progressCounter = AtomicInteger(0)

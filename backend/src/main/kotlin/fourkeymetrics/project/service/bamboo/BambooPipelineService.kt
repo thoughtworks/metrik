@@ -71,45 +71,6 @@ class BambooPipelineService(
     }
 
     @Synchronized
-    override fun syncBuilds(pipeline: Pipeline): List<Build> {
-        logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
-        val credential = pipeline.credential
-        val headers = buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
-        val entity = HttpEntity<String>(headers)
-
-        try {
-            val planKey = URL(pipeline.url).path.split("/").last()
-            val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = buildRepository.getBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
-
-            logger.info(
-                "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                        "[${buildNumbersToSync.size}] of them need to be synced"
-            )
-
-            val retrieveBuildDetails = {
-                buildNumbersToSync.parallelStream().map { buildNumber ->
-                    val buildDetailResponse = getBuildDetails(pipeline, planKey, buildNumber, entity)
-                    val convertedBuild = convertToBuild(buildDetailResponse, pipeline.id)
-                    if (convertedBuild != null) {
-                        buildRepository.save(convertedBuild)
-                    }
-                    convertedBuild
-                }.toList().mapNotNull { it }
-            }
-            val builds = FORK_JOIN_POOL.submit(retrieveBuildDetails).get()
-
-            logger.info("For Bamboo pipeline [${pipeline.id}] - Successfully synced [${builds.size}] builds")
-
-            return builds
-        } catch (ex: HttpServerErrorException) {
-            throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
-        } catch (ex: HttpClientErrorException) {
-            throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
-        }
-    }
-
-    @Synchronized
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
         val credential = pipeline.credential

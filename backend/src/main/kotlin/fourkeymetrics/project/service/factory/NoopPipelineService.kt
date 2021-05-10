@@ -11,11 +11,6 @@ import org.springframework.stereotype.Service
 class NoopPipelineService : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    override fun syncBuilds(pipeline: Pipeline): List<Build> {
-        logger.info("Noop implementation")
-        return emptyList()
-    }
-
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Noop implementation")
         return emptyList()
