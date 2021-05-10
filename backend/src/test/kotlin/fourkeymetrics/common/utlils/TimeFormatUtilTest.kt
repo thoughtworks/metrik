@@ -1,7 +1,7 @@
 package fourkeymetrics.common.utlils
 
 import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime

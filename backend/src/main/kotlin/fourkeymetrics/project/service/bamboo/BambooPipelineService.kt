@@ -5,7 +5,6 @@ import fourkeymetrics.common.model.Commit
 import fourkeymetrics.common.model.Stage
 import fourkeymetrics.common.utlils.RequestUtil.buildHeaders
 import fourkeymetrics.common.utlils.RequestUtil.getDomain
-import fourkeymetrics.common.utlils.TimeFormatUtil.mapDateToTimeStamp
 import fourkeymetrics.exception.ApplicationException
 import fourkeymetrics.project.controller.applicationservice.SyncProgress
 import fourkeymetrics.project.model.Pipeline
@@ -167,7 +166,7 @@ class BambooPipelineService(
                     "[$buildDetailResponse] for pipeline [$pipelineId]"
         )
         try {
-            val buildTimestamp = getBuildTimestamp(buildDetailResponse) ?: return null
+            val buildTimestamp = buildDetailResponse.getBuildStartedTimestamp() ?: return null
             val stages = buildDetailResponse.stages.stage.mapNotNull {
                 convertToBuildStage(it)
             }
@@ -181,7 +180,7 @@ class BambooPipelineService(
                 buildDetailResponse.link.href,
                 stages,
                 buildDetailResponse.changes.change.map {
-                    Commit(it.changesetId, mapDateToTimeStamp(it.date), it.date.toString(), it.comment)
+                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString(), it.comment)
                 }
             )
             logger.info("Bamboo converting: Build converted result: [$build]")
@@ -220,15 +219,6 @@ class BambooPipelineService(
         return buildSummaryDTO.results.result.first().buildNumber
     }
 
-    private fun getBuildTimestamp(buildDetailResponse: BuildDetailDTO): Long? {
-        if (buildDetailResponse.buildStartedTime != null) {
-            return mapDateToTimeStamp(buildDetailResponse.buildStartedTime!!)
-        } else if (buildDetailResponse.buildCompletedTime != null) {
-            return mapDateToTimeStamp(buildDetailResponse.buildCompletedTime!!)
-        }
-        return null
-    }
-
     private fun convertToBuildStage(stageDTO: StageDTO): Stage? {
         logger.info("Bamboo converting: Started converting StageDTO [$stageDTO]")
         val isInProgress = stageDTO.state == "Unknown" ||
@@ -241,10 +231,10 @@ class BambooPipelineService(
         }
 
         val startTimeMillis = stageDTO.results.result
-            .map { result -> mapDateToTimeStamp(result.buildStartedTime!!) }
+            .map { result -> result.getStageStartedTimestamp() }
             .minOrNull()!!
         val completedTimeMillis = stageDTO.results.result
-            .map { result -> mapDateToTimeStamp(result.buildCompletedTime!!) }
+            .map { result -> result.getStageCompletedTimestamp() }
             .maxOrNull()!!
         val durationMillis: Long = completedTimeMillis - startTimeMillis
         val stage = Stage(

@@ -1,6 +1,7 @@
 package fourkeymetrics.project.service.bamboo.dto
 
 import fourkeymetrics.common.model.Status
+import fourkeymetrics.common.utlils.TimeFormatUtil
 import org.apache.logging.log4j.util.Strings
 import java.time.ZonedDateTime
 
@@ -41,6 +42,14 @@ data class BuildDetailDTO(
                 }
             }
     }
+
+    fun getBuildStartedTimestamp(): Long? {
+        return when {
+            buildStartedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildStartedTime!!)
+            buildCompletedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildCompletedTime!!)
+            else -> null
+        }
+    }
 }
 
 data class Stage(val stage: List<StageDTO>)
@@ -64,12 +73,25 @@ data class StageDTO(val name: String, val state: String?, val results: StageResu
 data class StageResult(val result: List<StageDetailResult>)
 
 data class StageDetailResult(
-    val buildStartedTime: ZonedDateTime?, var buildCompletedTime: ZonedDateTime?,
+    val buildStartedTime: ZonedDateTime?,
+    var buildCompletedTime: ZonedDateTime?,
     var buildDuration: Long?
-)
+) {
+    fun getStageStartedTimestamp(): Long {
+        return TimeFormatUtil.mapDateToTimeStamp(buildStartedTime!!)
+    }
+
+    fun getStageCompletedTimestamp(): Long {
+        return TimeFormatUtil.mapDateToTimeStamp(buildCompletedTime!!)
+    }
+}
 
 data class ChangeSetDTO(val change: List<CommitDTO> = emptyList())
 
-data class CommitDTO(val changesetId: String, val date: ZonedDateTime, val comment: String)
+data class CommitDTO(val changesetId: String, val date: ZonedDateTime, val comment: String) {
+    fun getDateTimestamp(): Long {
+        return TimeFormatUtil.mapDateToTimeStamp(date)
+    }
+}
 
 data class Link(val href: String)
