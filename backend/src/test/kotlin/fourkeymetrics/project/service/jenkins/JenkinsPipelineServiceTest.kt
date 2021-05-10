@@ -50,13 +50,92 @@ internal class JenkinsPipelineServiceTest {
 
     private lateinit var mockServer: MockRestServiceServer
 
+    private val mockEmitCb = mock<(SyncProgress) -> Unit>()
+
     @BeforeEach
     internal fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
     }
 
     @Test
-    internal fun `should return all builds from Jenkins when syncBuilds() given pipeline ID`() {
+    internal fun `should throw exception when verify pipeline given response is 400`() {
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
+
+        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+            .andRespond(
+                withBadRequest()
+            )
+
+        Assertions.assertThrows(ApplicationException::class.java) {
+            jenkinsPipelineService.verifyPipelineConfiguration(
+                Pipeline(
+                    id = "fake pipeline",
+                    username = username,
+                    credential = credential,
+                    url = baseUrl
+                )
+            )
+        }
+    }
+
+    @Test
+    internal fun `should throw exception when verify pipeline given response is 500`() {
+        val username = "fake-user"
+        val credential = "fake-credential"
+        val baseUrl = "http://localhost"
+        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
+
+        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+            .andRespond(
+                withServerError()
+            )
+
+        Assertions.assertThrows(ApplicationException::class.java) {
+            jenkinsPipelineService.verifyPipelineConfiguration(
+                Pipeline(
+                    id = "fake pipeline",
+                    username = username,
+                    credential = credential,
+                    url = baseUrl
+                )
+            )
+        }
+    }
+
+    @Test
+    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
+        val builds = listOf(
+            Build(
+                stages = listOf(
+                    Stage(name = "clone"), Stage(name = "build"),
+                    Stage(name = "zzz"), Stage(name = "amazing")
+                )
+            ),
+            Build(
+                stages = listOf(
+                    Stage(name = "build"), Stage("good")
+                )
+            )
+        )
+        `when`(buildRepository.getAllBuilds("fake pipeline")).thenReturn(builds)
+
+        val result = jenkinsPipelineService.getStagesSortedByName("fake pipeline")
+
+        Assertions.assertEquals(5, result.size)
+        Assertions.assertEquals("amazing", result[0])
+        Assertions.assertEquals("build", result[1])
+        Assertions.assertEquals("clone", result[2])
+        Assertions.assertEquals("good", result[3])
+        Assertions.assertEquals("zzz", result[4])
+    }
+
+    @Test
+    internal fun `should return all builds and emit the progress event given syncBuildsProgressively() given pipelineID`() {
+        val pipelineName = "pipeline name"
+        val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -64,10 +143,11 @@ internal class JenkinsPipelineServiceTest {
                 "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
-            id = "fake pipeline",
+            id = pipelineId,
             username = username,
             credential = credential,
-            url = baseUrl
+            url = baseUrl,
+            name = pipelineName
         )
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
@@ -89,9 +169,12 @@ internal class JenkinsPipelineServiceTest {
                 this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
             )
-        val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
+        val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
+
+        val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
+        verify(mockEmitCb).invoke(progress)
     }
 
     @Test
@@ -128,7 +211,7 @@ internal class JenkinsPipelineServiceTest {
                 this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-3.json")
                     .readText()
             )
-        val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
+        val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
     }
@@ -167,7 +250,7 @@ internal class JenkinsPipelineServiceTest {
                 this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
                     .readText()
             )
-        val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
+        val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
     }
@@ -206,7 +289,7 @@ internal class JenkinsPipelineServiceTest {
                 this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-5.json")
                     .readText()
             )
-        val allBuilds = jenkinsPipelineService.syncBuilds(pipeline)
+        val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(buildRepository, times(1)).save(allBuilds)
     }
@@ -300,81 +383,6 @@ internal class JenkinsPipelineServiceTest {
                 )
             )
 
-        jenkinsPipelineService.syncBuilds(pipeline)
-    }
-
-    @Test
-    internal fun `should throw exception when verify pipeline given response is 500`() {
-        val username = "fake-user"
-        val credential = "fake-credential"
-        val baseUrl = "http://localhost"
-        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
-
-        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
-            .andRespond(
-                withServerError()
-            )
-
-        Assertions.assertThrows(ApplicationException::class.java) {
-            jenkinsPipelineService.verifyPipelineConfiguration(
-                Pipeline(
-                    id = "fake pipeline",
-                    username = username,
-                    credential = credential,
-                    url = baseUrl
-                )
-            )
-        }
-    }
-
-    @Test
-    internal fun `should throw exception when verify pipeline given response is 400`() {
-        val username = "fake-user"
-        val credential = "fake-credential"
-        val baseUrl = "http://localhost"
-        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
-
-        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
-            .andRespond(
-                withBadRequest()
-            )
-
-        Assertions.assertThrows(ApplicationException::class.java) {
-            jenkinsPipelineService.verifyPipelineConfiguration(
-                Pipeline(
-                    id = "fake pipeline",
-                    username = username,
-                    credential = credential,
-                    url = baseUrl
-                )
-            )
-        }
-    }
-
-    @Test
-    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        val builds = listOf(
-            Build(
-                stages = listOf(
-                    Stage(name = "clone"), Stage(name = "build"),
-                    Stage(name = "zzz"), Stage(name = "amazing")
-                )
-            ),
-            Build(
-                stages = listOf(
-                    Stage(name = "build"), Stage("good")
-                )
-            )
-        )
-        `when`(buildRepository.getAllBuilds("fake pipeline")).thenReturn(builds)
-
-        val result = jenkinsPipelineService.getStagesSortedByName("fake pipeline")
-
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals("amazing", result[0])
-        Assertions.assertEquals("build", result[1])
-        Assertions.assertEquals("clone", result[2])
-        Assertions.assertEquals("good", result[3])
-        Assertions.assertEquals("zzz", result[4])
+        jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
     }
 }

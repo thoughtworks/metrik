@@ -36,6 +36,32 @@ class JenkinsPipelineService(
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
+    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+        val headers = setAuthHeader(pipeline.username!!, pipeline.credential)
+        val entity = HttpEntity<String>("", headers)
+        try {
+            val response = restTemplate.exchange<String>(
+                "${pipeline.url}/wfapi/", HttpMethod.GET, entity
+            )
+            if (!response.statusCode.is2xxSuccessful) {
+                throw ApplicationException(response.statusCode, response.body!!)
+            }
+        } catch (ex: HttpServerErrorException) {
+            throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
+        } catch (ex: HttpClientErrorException) {
+            throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
+        }
+    }
+
+    override fun getStagesSortedByName(pipelineId: String): List<String> {
+        return buildRepository.getAllBuilds(pipelineId)
+            .flatMap { it.stages }
+            .map { it.name }
+            .distinct()
+            .sortedBy { it.toUpperCase() }
+            .toList()
+    }
+
     override fun syncBuilds(pipeline: Pipeline): List<Build> {
         val username = pipeline.username
         val credential = pipeline.credential
@@ -117,32 +143,6 @@ class JenkinsPipelineService(
             "For Jenkins pipeline [${pipeline.id}] - Successfully synced [${buildsNeedToSync.size}] builds"
         )
         return builds
-    }
-
-    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
-        val headers = setAuthHeader(pipeline.username!!, pipeline.credential)
-        val entity = HttpEntity<String>("", headers)
-        try {
-            val response = restTemplate.exchange<String>(
-                "${pipeline.url}/wfapi/", HttpMethod.GET, entity
-            )
-            if (!response.statusCode.is2xxSuccessful) {
-                throw ApplicationException(response.statusCode, response.body!!)
-            }
-        } catch (ex: HttpServerErrorException) {
-            throw ApplicationException(HttpStatus.SERVICE_UNAVAILABLE, "Verify website unavailable")
-        } catch (ex: HttpClientErrorException) {
-            throw ApplicationException(HttpStatus.BAD_REQUEST, "Verify failed")
-        }
-    }
-
-    override fun getStagesSortedByName(pipelineId: String): List<String> {
-        return buildRepository.getAllBuilds(pipelineId)
-            .flatMap { it.stages }
-            .map { it.name }
-            .distinct()
-            .sortedBy { it.toUpperCase() }
-            .toList()
     }
 
     private fun constructBuildCommits(buildSummary: BuildSummaryDTO): List<List<Commit>> {
