@@ -72,7 +72,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-1.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -111,7 +111,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-3.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -150,7 +150,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-4.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -189,7 +189,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-5.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -229,7 +229,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-1.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -281,7 +281,7 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-builds-2.json").readText(),
+                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
