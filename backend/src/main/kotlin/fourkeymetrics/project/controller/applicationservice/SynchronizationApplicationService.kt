@@ -18,7 +18,7 @@ class SynchronizationApplicationService(
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     fun synchronize(projectId: String): Long? {
-        val emptyEmitCb: (SyncProgress) -> Unit = { logger.info("abc") }
+        val emptyEmitCb: (SyncProgress) -> Unit = { logger.info("emptyProgressEvt") }
         return synchronize(projectId, emptyEmitCb)
     }
 

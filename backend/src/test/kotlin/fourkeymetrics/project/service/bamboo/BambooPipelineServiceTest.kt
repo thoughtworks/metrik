@@ -44,6 +44,8 @@ internal class BambooPipelineServiceTest {
     @MockBean
     private lateinit var buildRepository: BuildRepository
 
+    private val mockEmitCb = mock<(SyncProgress) -> Unit>()
+
     private val pipelineId = "1"
     private val credential = "fake-credential"
     private val baseUrl = "http://localhost:80"
@@ -85,6 +87,33 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
+    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
+        val builds = listOf(
+            Build(
+                stages = listOf(
+                    Stage(name = "clone"), Stage(name = "build"),
+                    Stage(name = "zzz"), Stage(name = "amazing")
+                )
+            ),
+            Build(
+                stages = listOf(
+                    Stage(name = "build"), Stage("good")
+                )
+            )
+        )
+        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
+
+        val result = bambooPipelineService.getStagesSortedByName(pipelineId)
+
+        Assertions.assertEquals(5, result.size)
+        Assertions.assertEquals("amazing", result[0])
+        Assertions.assertEquals("build", result[1])
+        Assertions.assertEquals("clone", result[2])
+        Assertions.assertEquals("good", result[3])
+        Assertions.assertEquals("zzz", result[4])
+    }
+
+    @Test
     internal fun `should throw exception when sync pipeline given response is 500`() {
         val pipeline = Pipeline(
             pipelineId,
@@ -98,7 +127,7 @@ internal class BambooPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.syncBuilds(pipeline)
+            bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         }
     }
 
@@ -116,7 +145,7 @@ internal class BambooPipelineServiceTest {
             )
 
         Assertions.assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.syncBuilds(pipeline)
+            bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         }
     }
 
@@ -149,7 +178,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build = Build(
             pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
@@ -189,7 +218,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -203,59 +232,7 @@ internal class BambooPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds given both build and stage status are success`() {
-        val pipeline = Pipeline(
-            pipelineId,
-            credential = credential,
-            url = "$baseUrl/browse/$planKey",
-            type = PipelineType.BAMBOO
-        )
-
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
-        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
-        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
-        bambooPipelineService.syncBuilds(pipeline)
-
-        val build =
-            Build(
-                pipelineId = pipelineId,
-                number = 1,
-                result = Status.SUCCESS,
-                duration = 1133,
-                timestamp = 1593398521665,
-                url = "$baseUrl/rest/api/latest/result/$planKey-1",
-                stages = listOf(Stage("Stage 1", Status.SUCCESS, 1593398522566, 38, 0, 1593398522604)),
-                changeSets = listOf(
-                    Commit(
-                        commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
-                        date = "2020-06-29T02:41:31Z[UTC]",
-                        msg = "Create dc.txt",
-                        timestamp = 1593398491000
-                    )
-                )
-            )
-
-        verify(buildRepository, times(1)).save(build)
-    }
-
-    @Test
-    internal fun `should sync builds and update progress via the emit callback at the same time`() {
+    internal fun `should sync builds and emit the progress event given both build and stage status are success`() {
         val pipelineName = "pipeline name"
         val pipeline = Pipeline(
             pipelineId,
@@ -264,6 +241,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO,
             name = pipelineName
         )
+
         `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -273,6 +251,7 @@ internal class BambooPipelineServiceTest {
                     MediaType.APPLICATION_JSON
                 )
             )
+
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -281,7 +260,6 @@ internal class BambooPipelineServiceTest {
                     MediaType.APPLICATION_JSON
                 )
             )
-        val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
@@ -303,9 +281,10 @@ internal class BambooPipelineServiceTest {
                     )
                 )
             )
-        val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
 
         verify(buildRepository, times(1)).save(build)
+
+        val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
         verify(mockEmitCb).invoke(progress)
     }
 
@@ -337,7 +316,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -378,7 +357,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -423,7 +402,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -465,7 +444,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         val build =
             Build(
@@ -516,35 +495,8 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        bambooPipelineService.syncBuilds(pipeline)
+        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         verify(buildRepository, never()).save(MockitoHelper.anyObject<Build>())
-    }
-
-    @Test
-    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        val builds = listOf(
-            Build(
-                stages = listOf(
-                    Stage(name = "clone"), Stage(name = "build"),
-                    Stage(name = "zzz"), Stage(name = "amazing")
-                )
-            ),
-            Build(
-                stages = listOf(
-                    Stage(name = "build"), Stage("good")
-                )
-            )
-        )
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
-
-        val result = bambooPipelineService.getStagesSortedByName(pipelineId)
-
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals("amazing", result[0])
-        Assertions.assertEquals("build", result[1])
-        Assertions.assertEquals("clone", result[2])
-        Assertions.assertEquals("good", result[3])
-        Assertions.assertEquals("zzz", result[4])
     }
 }
