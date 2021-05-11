@@ -33,7 +33,7 @@ data class BuildDetailDTO(
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    fun getBuildExecutionStatus(): Status {
+    private fun getBuildExecutionStatus(): Status {
         return if (stages.stage.any { it.state == "Unknown" }) Status.IN_PROGRESS else
             when (this.buildState) {
                 "Successful" -> {
@@ -48,7 +48,7 @@ data class BuildDetailDTO(
             }
     }
 
-    fun getBuildStartedTimestamp(): Long? {
+    private fun getBuildStartedTimestamp(): Long? {
         return when {
             buildStartedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildStartedTime!!)
             buildCompletedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildCompletedTime!!)
@@ -93,11 +93,11 @@ data class Stage(val stage: List<StageDTO>)
 data class StageDTO(
     val name: String,
     val state: String?,
-    val results: StageResult
+    val results: StageResults
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    fun getStageExecutionStatus(): Status {
+    private fun getStageExecutionStatus(): Status {
         return when (this.state) {
             "Successful" -> {
                 Status.SUCCESS
@@ -143,9 +143,9 @@ data class StageDTO(
     }
 }
 
-data class StageResult(val result: List<StageDetailResult>)
+data class StageResults(val result: List<StageResultDetail>)
 
-data class StageDetailResult(
+data class StageResultDetail(
     val buildStartedTime: ZonedDateTime?,
     var buildCompletedTime: ZonedDateTime?,
     var buildDuration: Long?
