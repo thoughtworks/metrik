@@ -91,7 +91,7 @@ class BuildRepository {
             .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)
-        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result!!.number}]")
+        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result?.number}]")
         return result
     }
 
