@@ -1,7 +1,7 @@
 package metrik.metrics.calculator
 
-import metrik.common.model.Build
-import metrik.metrics.model.LEVEL
+import metrik.project.domain.model.Build
+import metrik.metrics.domain.model.LEVEL
 
 
 interface MetricsCalculator {

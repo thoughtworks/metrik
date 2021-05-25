@@ -1,8 +1,8 @@
 package metrik.metrics.calculator
 
-import metrik.common.model.Build
-import metrik.common.model.Status
-import metrik.project.repository.BuildRepository
+import metrik.project.domain.model.Build
+import metrik.project.domain.model.Status
+import metrik.project.domain.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

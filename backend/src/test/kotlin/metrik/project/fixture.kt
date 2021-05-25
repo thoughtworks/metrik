@@ -1,11 +1,11 @@
 package metrik.project
 
-import metrik.project.controller.vo.request.BambooPipelineRequest
-import metrik.project.controller.vo.request.BambooVerificationRequest
-import metrik.project.controller.vo.request.JenkinsPipelineRequest
-import metrik.project.controller.vo.request.JenkinsVerificationRequest
-import metrik.project.model.Pipeline
-import metrik.project.model.PipelineType
+import metrik.project.rest.vo.request.BambooPipelineRequest
+import metrik.project.rest.vo.request.BambooVerificationRequest
+import metrik.project.rest.vo.request.JenkinsPipelineRequest
+import metrik.project.rest.vo.request.JenkinsVerificationRequest
+import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineType
 
 fun buildJenkinsPipelineRequest() =
     JenkinsPipelineRequest(

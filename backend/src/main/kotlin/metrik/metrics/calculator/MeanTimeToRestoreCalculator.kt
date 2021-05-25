@@ -1,9 +1,9 @@
 package metrik.metrics.calculator
 
-import metrik.common.model.Build
-import metrik.common.model.Stage
-import metrik.common.model.Status
-import metrik.metrics.model.LEVEL
+import metrik.project.domain.model.Build
+import metrik.project.domain.model.Stage
+import metrik.project.domain.model.Status
+import metrik.metrics.domain.model.LEVEL
 import org.springframework.stereotype.Component
 import java.math.RoundingMode
 

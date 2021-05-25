@@ -9,5 +9,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 class Application
 
 fun main(args: Array<String>) {
+    @Suppress("SpreadOperator")
     SpringApplication.run(Application::class.java, *args)
 }

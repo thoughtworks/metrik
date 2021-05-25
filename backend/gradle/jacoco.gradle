@@ -1,13 +1,12 @@
 apply plugin: "jacoco"
 
 String[] exclusionPatterns = [
-        "fourkeymetrics/Application**",
+        "metrik/Application**",
         "**/applicationconfig**",
         "**/dto/**",
         "**/vo/**",
         "**/model/**",
-        "**/common/validation/**",
-        "**/project/controller/TestController**",
+        "**/rest/validation/**",
         "**GlobalExceptionHandler**"
 ]
 

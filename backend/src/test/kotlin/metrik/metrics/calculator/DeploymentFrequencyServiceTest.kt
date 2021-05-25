@@ -2,8 +2,8 @@ package metrik.metrics.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.common.model.Build
-import metrik.project.repository.BuildRepository
+import metrik.project.domain.model.Build
+import metrik.project.domain.repository.BuildRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

@@ -2,12 +2,11 @@ package metrik.metrics.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.common.model.Build
-import metrik.metrics.model.LEVEL
+import metrik.project.domain.model.Build
+import metrik.metrics.domain.model.LEVEL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class DeploymentFrequencyCalculatorTest {
