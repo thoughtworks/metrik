@@ -3,10 +3,10 @@ package metrik.metrics.rest
 import metrik.project.domain.model.Build
 import metrik.project.domain.repository.BuildRepository
 import metrik.metrics.exception.BadRequestException
-import metrik.metrics.calculator.ChangeFailureRateCalculator
-import metrik.metrics.calculator.DeploymentFrequencyCalculator
-import metrik.metrics.calculator.LeadTimeForChangeCalculator
-import metrik.metrics.calculator.MeanTimeToRestoreCalculator
+import metrik.metrics.domain.calculator.ChangeFailureRateCalculator
+import metrik.metrics.domain.calculator.DeploymentFrequencyCalculator
+import metrik.metrics.domain.calculator.LeadTimeForChangeCalculator
+import metrik.metrics.domain.calculator.MeanTimeToRestoreCalculator
 import metrik.metrics.rest.vo.PipelineStageRequest
 import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics

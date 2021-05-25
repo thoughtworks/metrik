@@ -1,4 +1,4 @@
-package metrik.metrics.calculator
+package metrik.metrics.domain.calculator
 
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Stage
