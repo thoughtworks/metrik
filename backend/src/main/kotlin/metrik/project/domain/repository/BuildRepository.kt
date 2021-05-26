@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
+import java.time.ZonedDateTime
 
 @Component
 class BuildRepository {
@@ -96,9 +97,11 @@ class BuildRepository {
     }
 
     fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
+        val twoWeeks: Long = 14
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
         val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
+            .filter { it.timestamp > ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond() }
         val needSyncBuildNumbers = needSyncBuilds.map { it.number }
 
         return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()

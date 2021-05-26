@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.findAll
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.time.ZonedDateTime
 
 
 @DataMongoTest
@@ -166,12 +167,12 @@ class BuildRepositoryTest {
         val buildsToSave = listOf(
             Build(pipelineId, 1, Status.SUCCESS),
             Build(pipelineId, 2, Status.SUCCESS),
-            Build(pipelineId, 3, Status.IN_PROGRESS),
-            Build(pipelineId, 4, Status.SUCCESS)
+            Build(pipelineId, 3, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+            Build(pipelineId, 4, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(13).toEpochSecond())
         )
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         val givenMostRecentBuild = 8
-        assertEquals(listOf(3, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
+        assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
     }
 }
