@@ -9,6 +9,8 @@
 
 [![Release](https://img.shields.io/github/v/release/thoughtworks/metrik.svg?include_prereleases&style=flat)](https://github.com/thoughtworks/metrik/releases)
 
+*多语言支持：*[English](https://github.com/thoughtworks/metrik), [简体中文](https://github.com/thoughtworks/metrik/blob/main/README-CH.md)
+
 <!-- PROJECT TITLE -->
 <h1 align="center">
   <sub>
@@ -19,87 +21,86 @@
 </h1>
 <p align="center">
 <sup>
-     <i> Maintained by SEA team, ThoughtWorks Inc.</i>
+     <i> 由ThoughtWorks Inc SEA团队维护</i>
 </sup>
 <br>
 </p>
 
-*Read this in other languages:* [English](https://github.com/thoughtworks/metrik), [简体中文](https://github.com/thoughtworks/metrik/blob/main/README-CH.md)
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-  <summary>Table of Contents</summary>
+  <summary>目录</summary>
   <ul>
-    <li><a href="#about-the-project">About the Project</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#how-to-compute">How to Compute</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#about-the-project">关于本项目</a></li>
+    <li><a href="#usage">使用方法</a></li>
+    <li><a href="#how-to-compute">算法</a></li>
+    <li><a href="#contributing">参与贡献</a></li>
+    <li><a href="#getting-started">快速开始</a></li>
     <li><a href="#license">License</a></li>
   </ul>
 </details>
 <!-- END OF PROJECT TITLE -->
 
 <!-- ABOUT THE PROJECT -->
-## About the Project
-For development teams who wants to measure their software delivery and operational (SDO) performance, this is a tool that helps them collect data from CD pipelines and visualize the key metrics in a friendly format.
+## 关于本项目
+对于想要衡量其软件交付和运营（SDO）效能的开发团队来说，本项目是一个帮助他们从CD管道收集数据并以友好的可视化方式展示关键指标的工具。
 
-**The key differentiators:**
-* One page configuration, quick and easy.
-* The ability to work across different CD platforms.
-* User can select the environment in which the analysis runs via a environment filter (Yes, production env is not the only one that matters)
+**关键差异化因素:**
+* 单页配置，简单易用.
+* 具有跨多个CD平台工作的能力.
+* 用户可以自行选择要分析的环境（是的，生产环境不是唯一重要的环境）。
 
-[Don't know what are those four key metrics?](https://www.thoughtworks.com/radar/techniques/four-key-metrics)
+[不知道什么是四个关键指标?](https://www.thoughtworks.com/radar/techniques/four-key-metrics)
 
 
-### Integration roadmap
-List of CD tools the product supports now/plan to support
+### 集成路线
+产品现在支持/计划支持的CD工具清单
 - [x] Jenkins
 - [x] Bamboo
 - [ ] Github Actions
 - [ ] CircleCI
 
-  ...and more on the way
+  ...以及更多即将集成的产品
 
 <!-- END OF ABOUT THE PROJECT -->
 
 
 <!-- USAGE -->
-## Usage
-Follow the two steps below to run the tool, and measure the four key metrics of your projects.
+## 用法
+按照以下两个步骤来运行该工具，并测量你的项目的四个关键指标。
 
-### Install and run
+### 安装和运行
 
-The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please follow the steps:
-1. Ensure [Docker](https://www.docker.com) has already installed on your OS.
-2. Find available [release versions](https://github.com/thoughtworks/metrik/releases) in the release page.  
-   Or, you can find all history versions from our [image repository](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
-3. Run the container locally via the following command:
+该产品被发布到ECR Docker仓库`public.ecr.aws/j2s5d3z8/4-key-metrics`。请按照以下步骤操作。
+1. 确保[Docker](https://www.docker.com)已经安装在你的操作系统上。
+2. 在发布页中查找可用的[已发布版本](https://github.com/thoughtworks/metrik/releases)。
+   或者，你可以从我们的[镜像库]中找到所有的历史版本(https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+3. 通过以下命令在本地运行该容器：
 ``` bash
 docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
 ```
-*⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.*  
-*⚠️ The `latest` tag matches the most recent version of this repository. Thus using public.ecr.aws/j2s5d3z8/4-key-metrics:latest or public.ecr.aws/j2s5d3z8/4-key-metrics will ensure you are running the most up to date version of this image.*  
-If you want to stick to a specific version tag, remember there no "v" in version name. e.g. public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.10
+*⚠️ 我们使用80端口来访问该应用程序。如果80端口被你机器上运行的其他应用程序占用，你可以切换到任何其他端口。  
+*⚠️ `latest`标签匹配该仓库的最新版本。因此，使用 public.ecr.aws/j2s5d3z8/4-key-metrics:latest 或 public.ecr.aws/j2s5d3z8/4-key-metrics 将确保你运行的是这个镜像的最新版本*。
+如果你想使用一个特定的版本标签，请记住版本名称中没有 "v"。例如，public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.10
 
 
-### Configure your projects
+### 配置
 
-After the container is running on your machine. Go to your favourite browser and open the app. If running in local that would be `http://localhost:80/`.
+容器在你的机器上运行后。进入你最喜欢的浏览器并打开该应用程序。如果在本地运行，那就是`http://localhost:80/`。
 
-1. Start the configuration:
+1. 开始配置:
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step1.png" height=70% width=70%></div>
 
-2. And the charts for each key metric will be available at the main page:
+2. 随后每个关键指标的图表将出现在主页面上:
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step2.png" height=70% width=70%></div>
 
-3. Also the full screen view if you want to put it on big screens:
+3. 如果你想把它放在大屏幕上，还可以全屏观看:
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step3.png" height=70% width=70%></div>
 
-### Advanced usage
+### 高级用法
 
-If you would like to keep the 4-key-metrics data to avoid losing any data when remove container, you
-can mount the database folder `/data/db` out. And logs are also available if you mount the log folder `/app/logs`. As shown in the example below:
+如果你想保留4-key-metrics的数据，以避免在删除容器时丢失任何数据，你可以将数据库文件夹`/data/db`挂出。
+可以把数据库文件夹`/data/db`挂载出来。如果你挂载日志文件夹`/app/logs`，那么日志也会被保存。如下面的例子所示。
 
 ``` bash
 docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
@@ -108,43 +109,43 @@ docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "
 
 
 <!-- HOW TO COMPUTE -->
-## How to compute
-[See our Wiki page](https://github.com/thoughtworks/metrik/wiki) 
+## 算法
+[详细算法请参考Wiki页面](https://github.com/thoughtworks/metrik/wiki) 
 <!-- END OF HOW TO COMPUTE -->
 
 
 <!-- CONTRIBUTING -->
-## Contributing
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## 贡献
+贡献是使开源社区成为一个学习、激励和创造的神奇场所的原因。我们真诚的感谢你所做的任何类型的贡献.
 
-Please check our contributing guideline form [HERE](https://github.com/thoughtworks/metrik/blob/main/CONTRIBUTING.md)
+请在[这里](https://github.com/thoughtworks/metrik/blob/main/CONTRIBUTING.md)查看我们的贡献者指南。
 <!-- END OF CONTRIBUTING -->
 
 
 <!-- GETTING STARTED -->
-## Getting Started
-The codebase comprises of three major components `frontend`, `backend`, `ci`.
-* Frontend app is a web application built with:
+## 快速开始
+该代码库由三个主要部分组成："前端"、"后端 "和 "CI"。
+* 前端应用由以下技术栈构建：
   * TypeScript
   * ReactJS
   * ReCharts
 
-  Go to [frontend folder](https://github.com/thoughtworks/metrik/tree/main/frontend) to find more details.
+  可以在[前端文件夹](https://github.com/thoughtworks/metrik/tree/main/frontend)找到更多细节。
 
-* Backend app is built with:
+* 后端程序由以下技术栈构建:
   * Kotlin
   * Spring Boot Web
   * MongoDB
 
-  Go to [backend folder](https://github.com/thoughtworks/metrik/tree/main/backend) to find more details.
+  可以在[后端文件夹](https://github.com/thoughtworks/metrik/tree/main/backend)找到更多细节。
   
-* Build/Package scripts lives in [ci folder](https://github.com/thoughtworks/metrik/tree/main/ci)
+* 构建/打包的脚本在[CI文件夹](https://github.com/thoughtworks/metrik/tree/main/ci)下。
 <!-- END OF GETTING STARTED -->
 
 
 <!-- LICENSE -->
 ## License
-Distributed under the MIT License. See [LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt) for more information
+在MIT许可下发布。更多信息见[LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt)
 <!-- END OF LICENSE -->
 
 ## Contributors ✨
