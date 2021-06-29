@@ -10,7 +10,7 @@ import metrik.metrics.domain.calculator.MeanTimeToRestoreCalculator
 import metrik.metrics.rest.vo.PipelineStageRequest
 import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -53,8 +53,8 @@ internal class MetricsApplicationServiceTest {
         val startTimestamp: Long = 1
         val endTimestamp: Long = 10
         val expectedBuilds = emptyList<Build>()
-        val unit = MetricsUnit.Fortnightly
-        val unit2 = MetricsUnit.Monthly
+        val unit = CalculationPeriod.Fortnightly
+        val unit2 = CalculationPeriod.Monthly
 
         `when`(buildRepository.getAllBuilds(targetStage.keys)).thenReturn(expectedBuilds)
         `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
@@ -94,11 +94,11 @@ internal class MetricsApplicationServiceTest {
             .thenReturn(0.6)
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
 
-        val fourKeyMetricsResponse = metricsApplicationService.retrieve4KeyMetrics(
+        val fourKeyMetricsResponse = metricsApplicationService.calculateFourKeyMetrics(
             pipelineStages, startTimestamp, endTimestamp, unit
         )
 
-        val fourKeyMetricsResponse2 = metricsApplicationService.retrieve4KeyMetrics(
+        val fourKeyMetricsResponse2 = metricsApplicationService.calculateFourKeyMetrics(
             pipelineStages, startTimestamp, endTimestamp, unit2
         )
 
@@ -167,11 +167,11 @@ internal class MetricsApplicationServiceTest {
         assertThrows(
             BadRequestException::class.java
         ) {
-            metricsApplicationService.retrieve4KeyMetrics(
+            metricsApplicationService.calculateFourKeyMetrics(
                 listOf(PipelineStageRequest("pipelineId", "deploy to prod")),
                 1,
                 1,
-                MetricsUnit.Fortnightly
+                CalculationPeriod.Fortnightly
             )
         }
     }

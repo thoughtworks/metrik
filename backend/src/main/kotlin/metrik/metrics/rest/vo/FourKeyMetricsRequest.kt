@@ -1,11 +1,11 @@
 package metrik.metrics.rest.vo
 
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 
 data class MetricsQueryRequest(
     val startTime: Long,
     val endTime: Long,
-    val unit: MetricsUnit,
+    val unit: CalculationPeriod,
     val pipelineStages: List<PipelineStageRequest>
 )
 

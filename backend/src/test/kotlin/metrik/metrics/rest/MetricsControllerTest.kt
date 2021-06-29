@@ -7,7 +7,7 @@ import metrik.metrics.rest.vo.MetricsQueryRequest
 import metrik.metrics.rest.vo.PipelineStageRequest
 import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +33,7 @@ internal class MetricsControllerTest {
         val pipelineB = PipelineStageRequest("pipelineB", "stageB")
         val startTime = 1609459200000L
         val endTime = 1611964800000L
-        val metricUnit = MetricsUnit.Fortnightly
+        val metricUnit = CalculationPeriod.Fortnightly
         val level = LEVEL.ELITE
         val value = 10.2
         val requestBody = MetricsQueryRequest(startTime, endTime, metricUnit, listOf(pipelineA, pipelineB))
@@ -48,7 +48,7 @@ internal class MetricsControllerTest {
             meanTimeToRestore = metrics
         )
         `when`(
-            metricsApplicationService.retrieve4KeyMetrics(
+            metricsApplicationService.calculateFourKeyMetrics(
                 requestBody.pipelineStages,
                 requestBody.startTime,
                 requestBody.endTime,
@@ -79,7 +79,7 @@ internal class MetricsControllerTest {
         val targetStage = "Deploy to UAT"
         val startTime = 1609459200000L
         val endTime = 1611964800000L
-        val metricUnit = MetricsUnit.Fortnightly
+        val metricUnit = CalculationPeriod.Fortnightly
         val level = LEVEL.ELITE
         val value = 10.2
 
@@ -93,7 +93,7 @@ internal class MetricsControllerTest {
             meanTimeToRestore = metrics
         )
         `when`(
-            metricsApplicationService.retrieve4KeyMetrics(
+            metricsApplicationService.calculateFourKeyMetrics(
                 listOf(PipelineStageRequest(pipelineId, targetStage)),
                 startTime,
                 endTime,

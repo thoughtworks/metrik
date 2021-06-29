@@ -1,12 +1,13 @@
 package metrik.project.rest.applicationservice
 
-import metrik.project.exception.SynchronizationException
 import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
 import metrik.project.domain.service.factory.PipelineServiceFactory
+import metrik.project.exception.SynchronizationException
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CachePut
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,6 +18,7 @@ class SynchronizationApplicationService(
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
+    @CachePut("4km_cache")
     fun synchronize(projectId: String): Long? {
         val emptyEmitCb: (SyncProgress) -> Unit = { logger.info("emptyProgressEvt") }
         return synchronize(projectId, emptyEmitCb)

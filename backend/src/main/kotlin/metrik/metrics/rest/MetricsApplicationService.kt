@@ -6,7 +6,7 @@ import metrik.metrics.domain.calculator.LeadTimeForChangeCalculator
 import metrik.metrics.domain.calculator.MeanTimeToRestoreCalculator
 import metrik.metrics.domain.calculator.MetricsCalculator
 import metrik.metrics.domain.model.Metrics
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 import metrik.metrics.exception.BadRequestException
 import metrik.metrics.rest.vo.FourKeyMetricsResponse
 import metrik.metrics.rest.vo.MetricsInfo
@@ -14,6 +14,7 @@ import metrik.metrics.rest.vo.PipelineStageRequest
 import metrik.project.domain.model.Build
 import metrik.project.domain.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
@@ -22,14 +23,6 @@ import java.util.*
 
 @Service
 class MetricsApplicationService {
-
-
-    companion object {
-        private const val FORTNIGHT_DURATION: Int = 14
-        private const val MONTH_DURATION: Int = 30
-    }
-
-
     @Autowired
     private lateinit var deploymentFrequencyCalculator: DeploymentFrequencyCalculator
 
@@ -48,16 +41,17 @@ class MetricsApplicationService {
     @Autowired
     private lateinit var timeRangeSplitter: TimeRangeSplitter
 
-    fun retrieve4KeyMetrics(
+    @Cacheable("4km_cache")
+    fun calculateFourKeyMetrics(
         pipelineWithStages: List<PipelineStageRequest>,
         startTimestamp: Long,
         endTimestamp: Long,
-        unit: MetricsUnit
+        period: CalculationPeriod
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
         val pipelineStageMap = pipelineWithStages.map { Pair(it.pipelineId, it.stage) }.toMap()
         val allBuilds = buildRepository.getAllBuilds(pipelineStageMap.keys)
-        val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, unit)
+        val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, period)
 
         return FourKeyMetricsResponse(
             generateDeployFrequencyMetrics(
@@ -66,7 +60,7 @@ class MetricsApplicationService {
                 endTimestamp,
                 pipelineStageMap,
                 timeRangeByUnit,
-                unit,
+                period,
                 deploymentFrequencyCalculator,
             ),
             generateMetrics(
@@ -132,7 +126,7 @@ class MetricsApplicationService {
         endTimeMillis: Long,
         pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
-        unit: MetricsUnit,
+        period: CalculationPeriod,
         calculator: DeploymentFrequencyCalculator
     ): MetricsInfo {
         val days = getDuration(startTimeMillis, endTimeMillis)
@@ -140,9 +134,8 @@ class MetricsApplicationService {
             allBuilds, startTimeMillis, endTimeMillis,
             pipelineStagesMap
         )
-        val factor = if (unit == MetricsUnit.Fortnightly) FORTNIGHT_DURATION else MONTH_DURATION
 
-        val deploymentCountPerUnit = deploymentCount.toDouble().div(days).times(factor)
+        val deploymentCountPerUnit = deploymentCount.toDouble().div(days).times(period.timeInDays)
 
         val summary = Metrics(
             deploymentCountPerUnit,

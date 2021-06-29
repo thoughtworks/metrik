@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.MongoTransactionManager
 import org.springframework.transaction.TransactionManager
 
-
 @Configuration
 class MongoConfiguration {
     @Bean

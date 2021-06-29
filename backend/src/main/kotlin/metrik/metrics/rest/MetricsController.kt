@@ -3,7 +3,7 @@ package metrik.metrics.rest
 import metrik.metrics.rest.vo.FourKeyMetricsResponse
 import metrik.metrics.rest.vo.MetricsQueryRequest
 import metrik.metrics.rest.vo.PipelineStageRequest
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +19,7 @@ class MetricsController {
 
     @PostMapping("/api/pipeline/metrics")
     fun getFourKeyMetrics(@RequestBody metricsQueryRequest: MetricsQueryRequest): FourKeyMetricsResponse {
-        return metricsApplicationService.retrieve4KeyMetrics(
+        return metricsApplicationService.calculateFourKeyMetrics(
             metricsQueryRequest.pipelineStages,
             metricsQueryRequest.startTime,
             metricsQueryRequest.endTime,
@@ -33,9 +33,9 @@ class MetricsController {
         @RequestParam targetStage: String,
         @RequestParam startTime: Long,
         @RequestParam endTime: Long,
-        @RequestParam unit: MetricsUnit
+        @RequestParam unit: CalculationPeriod
     ): FourKeyMetricsResponse {
-        return metricsApplicationService.retrieve4KeyMetrics(
+        return metricsApplicationService.calculateFourKeyMetrics(
             listOf(PipelineStageRequest(pipelineId, targetStage)),
             startTime,
             endTime,

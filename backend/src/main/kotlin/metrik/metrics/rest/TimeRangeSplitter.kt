@@ -1,6 +1,6 @@
 package metrik.metrics.rest
 
-import metrik.metrics.domain.model.MetricsUnit
+import metrik.metrics.domain.model.CalculationPeriod
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -23,11 +23,11 @@ class TimeRangeSplitter {
     fun split(
         startTimestamp: Long,
         endTimestamp: Long,
-        unit: MetricsUnit
+        unit: CalculationPeriod
     ): List<Pair<Long, Long>> {
         return when (unit) {
-            MetricsUnit.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
-            MetricsUnit.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
+            CalculationPeriod.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
+            CalculationPeriod.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
         }
 
     }
