@@ -50,5 +50,4 @@ class ProjectRepository {
         mongoTemplate.updateFirst(query, update, Project::class.java)
         return mongoTemplate.findOne(query, Project::class.java)?.synchronizationTimestamp
     }
-
 }

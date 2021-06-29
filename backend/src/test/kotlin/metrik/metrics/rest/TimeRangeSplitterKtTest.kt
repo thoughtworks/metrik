@@ -1,16 +1,13 @@
 package metrik.metrics.rest
 
+import metrik.infrastructure.utlils.toDefaultZoneEpochMill
 import metrik.metrics.domain.model.CalculationPeriod
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
 import java.time.LocalTime
 
 internal class TimeRangeSplitterKtTest {
-
-    private var timeRangeSplitter: TimeRangeSplitter = TimeRangeSplitter()
-
     @Test
     fun `should get range list of 3 pair given from Sep_1 to Nov_3 when split time range monthly`() {
 
@@ -19,7 +16,7 @@ internal class TimeRangeSplitterKtTest {
         val endTime = LocalDate.parse("2020-11-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
 
-        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
+        val timeRangeList = TimeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
 
         assertEquals(
             listOf(
@@ -47,7 +44,7 @@ internal class TimeRangeSplitterKtTest {
         val endTime = LocalDate.parse("2020-04-02").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
 
-        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
+        val timeRangeList = TimeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
 
         assertEquals(
             listOf(
@@ -78,7 +75,7 @@ internal class TimeRangeSplitterKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
+        val timeRangeList = TimeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Monthly)
 
         assertEquals(listOf(Pair(startTimestamp, endTimestamp)), timeRangeList)
     }
@@ -89,7 +86,7 @@ internal class TimeRangeSplitterKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-30").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Fortnightly)
+        val timeRangeList = TimeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Fortnightly)
 
         assertEquals(
             listOf(
@@ -116,7 +113,7 @@ internal class TimeRangeSplitterKtTest {
         val startTimestamp = startTime.toDefaultZoneEpochMill()
         val endTime = LocalDate.parse("2020-09-03").atStartOfDay()
         val endTimestamp = endTime.toDefaultZoneEpochMill()
-        val timeRangeList = timeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Fortnightly)
+        val timeRangeList = TimeRangeSplitter.split(startTimestamp, endTimestamp, CalculationPeriod.Fortnightly)
 
         assertEquals(
             listOf(

@@ -1,43 +1,30 @@
 package metrik.metrics.rest
 
+import metrik.infrastructure.utlils.atStartOfDay
+import metrik.infrastructure.utlils.endTimeOfSameMonth
+import metrik.infrastructure.utlils.toDefaultZoneEpochMill
+import metrik.infrastructure.utlils.toLocalDateTime
 import metrik.metrics.domain.model.CalculationPeriod
-import org.springframework.stereotype.Component
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.YearMonth
-import java.time.ZoneId
-import java.util.*
 
-@Component
-class TimeRangeSplitter {
-
-    companion object {
-        private const val FORTNIGHTLY_DAYS: Long = 14L
-    }
-
-    private fun getLocalDateTimeFromTimestampMillis(timestamp: Long): LocalDateTime {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId())
-    }
+object TimeRangeSplitter {
 
     fun split(
         startTimestamp: Long,
         endTimestamp: Long,
-        unit: CalculationPeriod
+        period: CalculationPeriod
     ): List<Pair<Long, Long>> {
-        return when (unit) {
+        return when (period) {
             CalculationPeriod.Monthly -> splitTimeRangeMonthly(startTimestamp, endTimestamp)
             CalculationPeriod.Fortnightly -> splitTimeRangeFortnightly(startTimestamp, endTimestamp)
         }
-
     }
 
     private fun splitTimeRangeMonthly(
         startTimestamp: Long,
         endTimestamp: Long
     ): List<Pair<Long, Long>> {
-        val startTime = getLocalDateTimeFromTimestampMillis(startTimestamp)
-        val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
+        val startTime = startTimestamp.toLocalDateTime()
+        val endTime = endTimestamp.toLocalDateTime()
         val timeRanges = mutableListOf<Pair<Long, Long>>()
         var tempStartTime = startTime
         var tempEndTime = startTime.endTimeOfSameMonth()
@@ -55,33 +42,19 @@ class TimeRangeSplitter {
         endTimestamp: Long
     ): List<Pair<Long, Long>> {
 
-        val startTime = getLocalDateTimeFromTimestampMillis(startTimestamp)
-        val endTime = getLocalDateTimeFromTimestampMillis(endTimestamp)
+        val startTime = startTimestamp.toLocalDateTime()
+        val endTime = endTimestamp.toLocalDateTime()
         val timeRanges = mutableListOf<Pair<Long, Long>>()
 
         var tempEndTime = endTime
-        var tempStartTime = tempEndTime.minusDays(FORTNIGHTLY_DAYS - 1).atStartOfDay()
+        var tempStartTime = tempEndTime.minusDays(CalculationPeriod.Fortnightly.timeInDays - 1).atStartOfDay()
 
         while (tempStartTime.isAfter(startTime)) {
             timeRanges.add(Pair(tempStartTime.toDefaultZoneEpochMill(), tempEndTime.toDefaultZoneEpochMill()))
             tempEndTime = tempStartTime.minusNanos(1)
-            tempStartTime = tempEndTime.minusDays(FORTNIGHTLY_DAYS - 1).atStartOfDay()
+            tempStartTime = tempEndTime.minusDays(CalculationPeriod.Fortnightly.timeInDays - 1).atStartOfDay()
         }
         timeRanges.add(Pair(startTimestamp, tempEndTime.toDefaultZoneEpochMill()))
         return timeRanges.asReversed().toList()
     }
-
 }
-
-fun LocalDateTime.toDefaultZoneEpochMill(): Long {
-    return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-}
-
-fun LocalDateTime.atStartOfDay(): LocalDateTime {
-    return this.toLocalDate().atStartOfDay()
-}
-
-fun LocalDateTime.endTimeOfSameMonth(): LocalDateTime {
-    return YearMonth.from(this).atEndOfMonth().atTime(LocalTime.MAX)
-}
-

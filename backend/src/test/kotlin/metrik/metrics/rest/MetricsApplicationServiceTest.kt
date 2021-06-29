@@ -37,12 +37,8 @@ internal class MetricsApplicationServiceTest {
     @Mock
     private lateinit var buildRepository: BuildRepository
 
-    @Mock
-    private lateinit var timeRangeSplitter: TimeRangeSplitter
-
     @InjectMocks
     private lateinit var metricsApplicationService: MetricsApplicationService
-
 
     @Test
     fun `should return correct metric response`() {
@@ -50,113 +46,114 @@ internal class MetricsApplicationServiceTest {
         val stage = "stage"
         val pipelineStages = listOf(PipelineStageRequest(pipelineId, stage))
         val targetStage = mapOf(Pair(pipelineId, stage))
-        val startTimestamp: Long = 1
-        val endTimestamp: Long = 10
+        val startOfFirstPeriod = 1622649600000L
+        val endOfFirstPeriod = 1623859199999L
+        val startOfSecondPeriod = 1623859200000L
+        val endOfSecondPeriod = 1624987108485L
+        val periodLengthInDays = 28
         val expectedBuilds = emptyList<Build>()
         val unit = CalculationPeriod.Fortnightly
         val unit2 = CalculationPeriod.Monthly
 
         `when`(buildRepository.getAllBuilds(targetStage.keys)).thenReturn(expectedBuilds)
-        `when`(timeRangeSplitter.split(startTimestamp, endTimestamp, unit))
-            .thenReturn(listOf(Pair(1, 5), Pair(6, 10)))
 
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(7)
-        `when`(deploymentFrequencyCalculator.calculateLevel(7, 1)).thenReturn(LEVEL.ELITE)
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+        `when`(deploymentFrequencyCalculator.calculateLevel(7, periodLengthInDays)).thenReturn(LEVEL.ELITE)
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
             .thenReturn(3)
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(4)
 
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(2.0)
         `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
             .thenReturn(1.0)
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(3.0)
         `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.HIGH)
 
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(2.25)
         `when`(meanTimeToRestoreCalculator.calculateLevel(2.25)).thenReturn(LEVEL.HIGH)
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
             .thenReturn(1.8)
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(5.7)
 
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 10, targetStage))
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(0.5)
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 1, 5, targetStage))
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
             .thenReturn(0.4)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, 6, 10, targetStage))
+        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
             .thenReturn(0.6)
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
 
         val fourKeyMetricsResponse = metricsApplicationService.calculateFourKeyMetrics(
-            pipelineStages, startTimestamp, endTimestamp, unit
+            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit
         )
 
         val fourKeyMetricsResponse2 = metricsApplicationService.calculateFourKeyMetrics(
-            pipelineStages, startTimestamp, endTimestamp, unit2
+            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit2
         )
 
         assertEquals(
-            fourKeyMetricsResponse.deploymentFrequency.summary,
-            Metrics(98.0, LEVEL.ELITE, 1, 10)
+            Metrics(3.5, LEVEL.ELITE, startOfFirstPeriod, endOfSecondPeriod),
+            fourKeyMetricsResponse.deploymentFrequency.summary
         )
 
         assertEquals(
-            fourKeyMetricsResponse2.deploymentFrequency.summary,
-            Metrics(210.0, LEVEL.ELITE, 1, 10)
+            Metrics(7.5, LEVEL.ELITE, startOfFirstPeriod, endOfSecondPeriod),
+            fourKeyMetricsResponse2.deploymentFrequency.summary
         )
 
         assertTrue(
             fourKeyMetricsResponse.deploymentFrequency.details.containsAll(
                 listOf(
-                    Metrics(3, 1, 5),
-                    Metrics(4, 6, 10)
+                    Metrics(3, startOfFirstPeriod, endOfFirstPeriod),
+                    Metrics(4, startOfSecondPeriod, endOfSecondPeriod)
                 )
             )
         )
 
         assertEquals(
-            fourKeyMetricsResponse.leadTimeForChange.summary,
-            Metrics(2.0, LEVEL.HIGH, 1, 10)
+            Metrics(2.0, LEVEL.HIGH, startOfFirstPeriod, endOfSecondPeriod),
+            fourKeyMetricsResponse.leadTimeForChange.summary
         )
         assertTrue(
             fourKeyMetricsResponse.leadTimeForChange.details.containsAll(
                 listOf(
-                    Metrics(1.0, 1, 5),
-                    Metrics(3.0, 6, 10)
+                    Metrics(1.0, startOfFirstPeriod, endOfFirstPeriod),
+                    Metrics(3.0, startOfSecondPeriod, endOfSecondPeriod)
                 )
             )
         )
 
         assertEquals(
-            fourKeyMetricsResponse.meanTimeToRestore.summary,
-            Metrics(2.25, LEVEL.HIGH, 1, 10)
+            Metrics(2.25, LEVEL.HIGH, startOfFirstPeriod, endOfSecondPeriod),
+            fourKeyMetricsResponse.meanTimeToRestore.summary
         )
         assertTrue(
             fourKeyMetricsResponse.meanTimeToRestore.details.containsAll(
                 listOf(
-                    Metrics(1.8, 1, 5),
-                    Metrics(5.7, 6, 10)
+                    Metrics(1.8, startOfFirstPeriod, endOfFirstPeriod),
+                    Metrics(5.7, startOfSecondPeriod, endOfSecondPeriod)
                 )
             )
         )
 
         assertEquals(
-            fourKeyMetricsResponse.changeFailureRate.summary,
-            Metrics(0.5, LEVEL.HIGH, 1, 10)
+            Metrics(0.5, LEVEL.HIGH, startOfFirstPeriod, endOfSecondPeriod),
+            fourKeyMetricsResponse.changeFailureRate.summary
         )
 
         assertTrue(
             fourKeyMetricsResponse.changeFailureRate.details.containsAll(
                 listOf(
-                    Metrics(0.4, 1, 5),
-                    Metrics(0.6, 6, 10)
+                    Metrics(0.4, startOfFirstPeriod, endOfFirstPeriod),
+                    Metrics(0.6, startOfSecondPeriod, endOfSecondPeriod)
                 )
             )
         )
@@ -175,5 +172,4 @@ internal class MetricsApplicationServiceTest {
             )
         }
     }
-
 }

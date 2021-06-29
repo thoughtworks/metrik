@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class PipelineRepository {
-
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
     private var logger = LoggerFactory.getLogger(this.javaClass.name)

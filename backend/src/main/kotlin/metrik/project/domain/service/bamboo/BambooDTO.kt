@@ -1,9 +1,9 @@
 package metrik.project.domain.service.bamboo.dto
 
+import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Status
-import metrik.infrastructure.utlils.TimeFormatUtil
 import org.apache.logging.log4j.util.Strings
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
@@ -50,8 +50,8 @@ data class BuildDetailDTO(
 
     private fun getBuildStartedTimestamp(): Long? {
         return when {
-            buildStartedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildStartedTime!!)
-            buildCompletedTime != null -> TimeFormatUtil.mapDateToTimeStamp(buildCompletedTime!!)
+            buildStartedTime != null -> buildStartedTime!!.toTimestamp()
+            buildCompletedTime != null -> buildCompletedTime!!.toTimestamp()
             else -> null
         }
     }
@@ -151,11 +151,11 @@ data class StageResultDetail(
     var buildDuration: Long?
 ) {
     fun getStageStartedTimestamp(): Long {
-        return TimeFormatUtil.mapDateToTimeStamp(buildStartedTime!!)
+        return buildStartedTime!!.toTimestamp()
     }
 
     fun getStageCompletedTimestamp(): Long {
-        return TimeFormatUtil.mapDateToTimeStamp(buildCompletedTime!!)
+        return buildCompletedTime!!.toTimestamp()
     }
 }
 
@@ -163,7 +163,7 @@ data class ChangeSetDTO(val change: List<CommitDTO> = emptyList())
 
 data class CommitDTO(val changesetId: String, val date: ZonedDateTime, val comment: String) {
     fun getDateTimestamp(): Long {
-        return TimeFormatUtil.mapDateToTimeStamp(date)
+        return date.toTimestamp()
     }
 }
 

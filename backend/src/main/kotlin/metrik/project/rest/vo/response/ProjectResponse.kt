@@ -3,7 +3,6 @@ package metrik.project.rest.vo.response
 import metrik.project.domain.model.Project
 import org.apache.logging.log4j.util.Strings
 
-
 class ProjectResponse(
     var id: String = Strings.EMPTY,
     var name: String = Strings.EMPTY,
@@ -14,5 +13,4 @@ class ProjectResponse(
         this.name = project.name
         this.synchronizationTimestamp = project.synchronizationTimestamp
     }
-
 }

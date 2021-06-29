@@ -5,8 +5,8 @@ import metrik.metrics.domain.calculator.DeploymentFrequencyCalculator
 import metrik.metrics.domain.calculator.LeadTimeForChangeCalculator
 import metrik.metrics.domain.calculator.MeanTimeToRestoreCalculator
 import metrik.metrics.domain.calculator.MetricsCalculator
-import metrik.metrics.domain.model.Metrics
 import metrik.metrics.domain.model.CalculationPeriod
+import metrik.metrics.domain.model.Metrics
 import metrik.metrics.exception.BadRequestException
 import metrik.metrics.rest.vo.FourKeyMetricsResponse
 import metrik.metrics.rest.vo.MetricsInfo
@@ -38,9 +38,6 @@ class MetricsApplicationService {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
-    @Autowired
-    private lateinit var timeRangeSplitter: TimeRangeSplitter
-
     @Cacheable("4km_cache")
     fun calculateFourKeyMetrics(
         pipelineWithStages: List<PipelineStageRequest>,
@@ -51,7 +48,7 @@ class MetricsApplicationService {
         validateTime(startTimestamp, endTimestamp)
         val pipelineStageMap = pipelineWithStages.map { Pair(it.pipelineId, it.stage) }.toMap()
         val allBuilds = buildRepository.getAllBuilds(pipelineStageMap.keys)
-        val timeRangeByUnit: List<Pair<Long, Long>> = timeRangeSplitter.split(startTimestamp, endTimestamp, period)
+        val timeRangeByUnit: List<Pair<Long, Long>> = TimeRangeSplitter.split(startTimestamp, endTimestamp, period)
 
         return FourKeyMetricsResponse(
             generateDeployFrequencyMetrics(
