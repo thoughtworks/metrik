@@ -50,10 +50,8 @@ val apiTestImplementation by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
-
 configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
 configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
-
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -75,15 +73,13 @@ dependencies {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude("org.junit.vintage", "junit-vintage-engine")
-    }
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("com.intuit.karate:karate-junit5:0.9.6")
     testImplementation("com.intuit.karate:karate-apache:0.9.6")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")
