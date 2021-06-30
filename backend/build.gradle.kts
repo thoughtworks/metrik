@@ -50,8 +50,10 @@ val apiTestImplementation by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
+
 configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
 configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
+
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -84,6 +86,11 @@ dependencies {
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")
     }
+
+    testImplementation("io.rest-assured:rest-assured:4.2.0")
+    testImplementation("io.rest-assured:json-path:4.2.0")
+    testImplementation("io.rest-assured:xml-path:4.2.0")
+    testImplementation("io.rest-assured:spring-mock-mvc:4.2.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -165,3 +172,32 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
 apply(from = "gradle/jacoco.gradle")
+
+// Adding new Api test framework
+// This will replace the existing karate tests
+// still WIP
+sourceSets {
+    create("apiTestNew") {
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+        java.srcDir("src/apiTestNew/kotlin")
+        resources.srcDir("src/apiTestNew/kotlin")
+    }
+}
+
+val apiTestNewImplementation by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+configurations["apiTestNewImplementation"].extendsFrom(configurations.testImplementation.get())
+configurations["apiTestNewRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
+
+val apiTestNew = task<Test>("apiTestNew") {
+    description = "Run API tests."
+    group = "verification"
+    testClassesDirs = sourceSets["apiTestNew"].output.classesDirs
+    classpath = sourceSets["apiTestNew"].runtimeClasspath
+    shouldRunAfter("build")
+    shouldRunAfter("test")
+}
+
+//tasks.build { dependsOn(apiTestNew) }
