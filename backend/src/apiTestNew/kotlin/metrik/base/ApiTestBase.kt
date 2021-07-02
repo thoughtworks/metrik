@@ -1,4 +1,4 @@
-package metrik
+package metrik.base
 
 import io.restassured.RestAssured
 import metrik.config.ApiTestConfiguration
@@ -23,24 +23,29 @@ internal class ApiTestBase {
     var springTestRandomServerPort = 0
 
     @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
+    lateinit var mongoTemplate: MongoTemplate
 
     @BeforeEach
     fun setUp() {
         RestAssured.port = springTestRandomServerPort
 
-        val project = Project("601cbae825c1392117aa0429", "4-key", 1580709600000L)
-        mongoTemplate.save(project)
-
-        val pipeline = Pipeline(
-            "601cbb3425c1392117aa053b",
-            "601cbae825c1392117aa0429",
-            "dfservice",
-            "E9fnMY3UGE6Oms35JzLGgQ==",
-            "FVSR/5o1BYh6dJQBeQaNvQ==",
-            "http://localhost:8001/job/4km-df/",
-            PipelineType.JENKINS
+        mongoTemplate.save(
+            Project(
+                id = "601cbae825c1392117aa0429",
+                name = "4-key",
+                synchronizationTimestamp = 1580709600000L
+            )
         )
-        mongoTemplate.save(pipeline)
+//        mongoTemplate.save(
+//            Pipeline(
+//                id = "601cbae825c1392117aa0429",
+//                projectId = "601cbae825c1392117aa0429",
+//                name = "cfr",
+//                username = "E9fnMY3UGE6Oms35JzLGgQ==",
+//                credential = "FVSR/5o1BYh6dJQBeQaNvQ==",
+//                url = "http://localhost:8001/job/4km-cfr/",
+//                type = PipelineType.JENKINS
+//            )
+//        )
     }
 }

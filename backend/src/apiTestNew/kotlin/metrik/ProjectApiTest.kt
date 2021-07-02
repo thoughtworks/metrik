@@ -2,6 +2,7 @@ package metrik
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
+import metrik.base.ApiTestBase
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.Test
 
