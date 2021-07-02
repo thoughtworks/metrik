@@ -7,10 +7,14 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestMethodOrder
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class PipelineApiTest : ApiTestBase() {
     @BeforeAll
     fun setUpPipelineTestData() {
@@ -39,6 +43,7 @@ internal class PipelineApiTest : ApiTestBase() {
     }
 
 //    @Test
+//    @Order(1)
 //    fun `should verify and save a pipeline config successfully`() {
 //        val createPipelineConfigRequest = """
 //            {
@@ -60,6 +65,7 @@ internal class PipelineApiTest : ApiTestBase() {
 //    }
 
     @Test
+    @Order(2)
     fun `should get pipeline config details with a valid ID`() {
         RestAssured
             .given()
