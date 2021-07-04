@@ -2,22 +2,14 @@
 
 echo "Running gradlew build..."
 cd backend
-./gradlew clean build
+./gradlew clean check > $OUTPUT
 EXIT_CODE=$?
 
-exit $EXIT_CODE
-
-#echo "Running api test..."
-#OUTPUT="/tmp/build-$(date +%s)"
-#./gradlew --stop && ./gradlew clean apiTestOneCommand > $OUTPUT
-#EXIT_CODE=$?
-#if [ $EXIT_CODE -ne 0 ]; then
-#  cat $OUTPUT
-#  rm $OUTPUT
-#  echo "***********************************************"
-#  echo "                 Api test failed                 "
-#  echo " Please fix the above issues before committing "
-#  echo "***********************************************"
-#  exit $EXIT_CODE
-#fi
-#rm $OUTPUT
+if [ $EXIT_CODE -ne 0]; then
+  cat $OUTPUT
+  echo "**********************************************"
+  echo "**************** Build Failed ****************"
+  echo " Please fix the above issues before committing "
+  echo "**********************************************"
+  exit $EXIT_CODE
+fi

@@ -112,11 +112,10 @@ val apiTest = task<Test>("apiTest") {
     group = "verification"
     testClassesDirs = sourceSets["apiTest"].output.classesDirs
     classpath = sourceSets["apiTest"].runtimeClasspath
-    shouldRunAfter("build")
     shouldRunAfter("test")
 }
 
-tasks.build { dependsOn(apiTest) }
+tasks.check { dependsOn(apiTest) }
 
 detekt {
     toolVersion = "1.15.0"
