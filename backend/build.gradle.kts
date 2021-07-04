@@ -29,20 +29,21 @@ dependencyManagement {
     }
 }
 
-sourceSets {
-    create("apiTest") {
-        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
-        runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
-        java.srcDir("src/api-test/kotlin")
-        resources.srcDir("src/api-test/kotlin")
-        resources.exclude("**/*.kt")
+
+// Configure Api test framework
+idea {
+    module {
+        sourceDirs = sourceDirs - file("src/apiTest/kotlin")
+        testSourceDirs = testSourceDirs + file("src/apiTest/kotlin")
     }
 }
 
-idea {
-    module {
-        sourceDirs = sourceDirs - file("src/api-test/kotlin")
-        testSourceDirs = testSourceDirs + file("src/api-test/kotlin")
+sourceSets {
+    create("apiTest") {
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+        java.srcDir("src/apiTest/kotlin")
+        resources.srcDir("src/apiTest/kotlin")
     }
 }
 
@@ -50,10 +51,9 @@ val apiTestImplementation by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
-
 configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
 configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
-
+// End of Configure Api test framework
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -108,50 +108,15 @@ tasks.withType<Test> {
 }
 
 val apiTest = task<Test>("apiTest") {
-    description = "Runs api tests."
+    description = "Run API tests."
     group = "verification"
-
     testClassesDirs = sourceSets["apiTest"].output.classesDirs
     classpath = sourceSets["apiTest"].runtimeClasspath
-
-    testLogging.showStandardStreams = true
+    shouldRunAfter("build")
+    shouldRunAfter("test")
 }
 
-val startMongo by tasks.registering {
-    doLast {
-        exec {
-            commandLine(
-                "bash",
-                "-c",
-                "cd mongodb-setup && cd mongodb-for-apitest && bash ./setup-mongodb.sh && cd ../../ && ./connect-to-mongodb.sh"
-            )
-        }
-    }
-}
-
-val startService by tasks.registering {
-    doLast {
-        ProcessBuilder().directory(projectDir)
-            .command("bash", "-c", "SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun &").start()
-    }
-}
-
-val apiTestOneCommand by tasks.registering {
-    doLast {
-        exec {
-            commandLine("bash", "-c", "./gradlew apiTest")
-        }
-    }
-}
-
-startService {
-    dependsOn(startMongo)
-}
-
-apiTestOneCommand {
-    dependsOn(startService)
-}
-
+tasks.build { dependsOn(apiTest) }
 
 detekt {
     toolVersion = "1.15.0"
@@ -172,32 +137,3 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
 apply(from = "gradle/jacoco.gradle")
-
-// Adding new Api test framework
-// This will replace the existing karate tests
-// still WIP
-sourceSets {
-    create("apiTestNew") {
-        compileClasspath += sourceSets.main.get().output
-        runtimeClasspath += sourceSets.main.get().output
-        java.srcDir("src/apiTestNew/kotlin")
-        resources.srcDir("src/apiTestNew/kotlin")
-    }
-}
-
-val apiTestNewImplementation by configurations.getting {
-    extendsFrom(configurations.implementation.get())
-}
-configurations["apiTestNewImplementation"].extendsFrom(configurations.testImplementation.get())
-configurations["apiTestNewRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
-
-val apiTestNew = task<Test>("apiTestNew") {
-    description = "Run API tests."
-    group = "verification"
-    testClassesDirs = sourceSets["apiTestNew"].output.classesDirs
-    classpath = sourceSets["apiTestNew"].runtimeClasspath
-    shouldRunAfter("build")
-    shouldRunAfter("test")
-}
-
-//tasks.build { dependsOn(apiTestNew) }
