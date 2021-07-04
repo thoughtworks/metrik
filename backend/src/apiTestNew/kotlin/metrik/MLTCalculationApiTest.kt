@@ -33,14 +33,14 @@ internal class MLTCalculationApiTest : ApiTestBase() {
         mongoTemplate.save(ltPipeline5)
         mongoTemplate.save(ltPipeline6)
         // init build data
-        val collectionName = "build"
-        mongoTemplate.save(ltBuild1, collectionName)
-        mongoTemplate.save(ltBuild2, collectionName)
-        mongoTemplate.save(ltBuild3, collectionName)
-        mongoTemplate.save(ltBuild4, collectionName)
-        mongoTemplate.save(ltBuild5, collectionName)
-        mongoTemplate.save(ltBuild6, collectionName)
-        mongoTemplate.save(ltBuild7, collectionName)
+        val buildCollectionName = "build"
+        mongoTemplate.save(ltBuild1, buildCollectionName)
+        mongoTemplate.save(ltBuild2, buildCollectionName)
+        mongoTemplate.save(ltBuild3, buildCollectionName)
+        mongoTemplate.save(ltBuild4, buildCollectionName)
+        mongoTemplate.save(ltBuild5, buildCollectionName)
+        mongoTemplate.save(ltBuild6, buildCollectionName)
+        mongoTemplate.save(ltBuild7, buildCollectionName)
     }
 
     @Test

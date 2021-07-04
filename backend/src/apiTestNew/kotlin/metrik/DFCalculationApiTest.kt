@@ -19,10 +19,10 @@ internal class DFCalculationApiTest : ApiTestBase() {
         // init pipeline config
         mongoTemplate.save(dfPipeline)
         // init build data
-        val collectionName = "build"
-        mongoTemplate.save(dfBuild1, collectionName)
-        mongoTemplate.save(dfBuild2, collectionName)
-        mongoTemplate.save(dfBuild3, collectionName)
+        val buildCollectionName = "build"
+        mongoTemplate.save(dfBuild1, buildCollectionName)
+        mongoTemplate.save(dfBuild2, buildCollectionName)
+        mongoTemplate.save(dfBuild3, buildCollectionName)
     }
 
     @Test

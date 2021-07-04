@@ -28,19 +28,19 @@ internal class CFRCalculationApiTest : ApiTestBase() {
         // init pipeline config
         mongoTemplate.save(cfrPipeline)
         // init build data
-        val collectionName = "build"
-        mongoTemplate.save(cfrBuild1, collectionName)
-        mongoTemplate.save(cfrBuild2, collectionName)
-        mongoTemplate.save(cfrBuild3, collectionName)
-        mongoTemplate.save(cfrBuild4, collectionName)
-        mongoTemplate.save(cfrBuild5, collectionName)
-        mongoTemplate.save(cfrBuild6, collectionName)
-        mongoTemplate.save(cfrBuild7, collectionName)
-        mongoTemplate.save(cfrBuild8, collectionName)
-        mongoTemplate.save(cfrBuild9, collectionName)
-        mongoTemplate.save(cfrBuild10, collectionName)
-        mongoTemplate.save(cfrBuild11, collectionName)
-        mongoTemplate.save(cfrBuild12, collectionName)
+        val buildCollectionName = "build"
+        mongoTemplate.save(cfrBuild1, buildCollectionName)
+        mongoTemplate.save(cfrBuild2, buildCollectionName)
+        mongoTemplate.save(cfrBuild3, buildCollectionName)
+        mongoTemplate.save(cfrBuild4, buildCollectionName)
+        mongoTemplate.save(cfrBuild5, buildCollectionName)
+        mongoTemplate.save(cfrBuild6, buildCollectionName)
+        mongoTemplate.save(cfrBuild7, buildCollectionName)
+        mongoTemplate.save(cfrBuild8, buildCollectionName)
+        mongoTemplate.save(cfrBuild9, buildCollectionName)
+        mongoTemplate.save(cfrBuild10, buildCollectionName)
+        mongoTemplate.save(cfrBuild11, buildCollectionName)
+        mongoTemplate.save(cfrBuild12, buildCollectionName)
     }
 
     @Test
