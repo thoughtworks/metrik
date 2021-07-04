@@ -32,8 +32,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609516799000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609430400000,
@@ -60,8 +60,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609459200000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609430400000,
@@ -88,8 +88,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609470000000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609466400000,
@@ -116,8 +116,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609470000000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609466400000,
@@ -144,8 +144,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609462832000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609462500000,
@@ -172,8 +172,8 @@ internal class DFCalculationApiTest : ApiTestBase() {
                 "endTime": 1609516799000,
                 "pipelineStages": [
                     {
-                    "pipelineId": "601cbb3425c1392117aa053b",
-                    "stage": "Deploy to DEV"
+                        "pipelineId": "601cbb3425c1392117aa053b",
+                        "stage": "Deploy to DEV"
                     }
                 ],
                 "startTime": 1609430400000,
