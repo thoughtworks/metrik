@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class DeploymentFrequencyCalculationApiTest : ApiTestBase() {
+internal class DFCalculationApiTest : ApiTestBase() {
     @BeforeAll
     fun setUpBuildDataFixture() {
         // init pipeline config
