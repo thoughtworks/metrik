@@ -280,3 +280,21 @@ val ltBuild7 = Build(
         )
     )
 )
+
+val ltPipelines = listOf(
+    ltPipeline1,
+    ltPipeline2,
+    ltPipeline3,
+    ltPipeline4,
+    ltPipeline5,
+    ltPipeline6
+)
+val ltBuilds = listOf(
+    ltBuild1,
+    ltBuild2,
+    ltBuild3,
+    ltBuild4,
+    ltBuild5,
+    ltBuild6,
+    ltBuild7,
+)

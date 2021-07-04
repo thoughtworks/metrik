@@ -3,19 +3,8 @@ package metrik
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import metrik.base.ApiTestBase
-import metrik.fixtures.ltBuild1
-import metrik.fixtures.ltBuild2
-import metrik.fixtures.ltBuild3
-import metrik.fixtures.ltBuild4
-import metrik.fixtures.ltBuild5
-import metrik.fixtures.ltBuild6
-import metrik.fixtures.ltBuild7
-import metrik.fixtures.ltPipeline1
-import metrik.fixtures.ltPipeline2
-import metrik.fixtures.ltPipeline3
-import metrik.fixtures.ltPipeline4
-import metrik.fixtures.ltPipeline5
-import metrik.fixtures.ltPipeline6
+import metrik.fixtures.ltBuilds
+import metrik.fixtures.ltPipelines
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -26,21 +15,14 @@ internal class MLTCalculationApiTest : ApiTestBase() {
     @BeforeAll
     fun setUpBuildDataFixture() {
         // init pipeline config
-        mongoTemplate.save(ltPipeline1)
-        mongoTemplate.save(ltPipeline2)
-        mongoTemplate.save(ltPipeline3)
-        mongoTemplate.save(ltPipeline4)
-        mongoTemplate.save(ltPipeline5)
-        mongoTemplate.save(ltPipeline6)
+        ltPipelines.forEach {
+            mongoTemplate.save(it)
+        }
         // init build data
         val buildCollectionName = "build"
-        mongoTemplate.save(ltBuild1, buildCollectionName)
-        mongoTemplate.save(ltBuild2, buildCollectionName)
-        mongoTemplate.save(ltBuild3, buildCollectionName)
-        mongoTemplate.save(ltBuild4, buildCollectionName)
-        mongoTemplate.save(ltBuild5, buildCollectionName)
-        mongoTemplate.save(ltBuild6, buildCollectionName)
-        mongoTemplate.save(ltBuild7, buildCollectionName)
+        ltBuilds.forEach {
+            mongoTemplate.save(it, buildCollectionName)
+        }
     }
 
     @Test

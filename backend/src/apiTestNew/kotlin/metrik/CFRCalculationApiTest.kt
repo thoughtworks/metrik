@@ -3,18 +3,7 @@ package metrik
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import metrik.base.ApiTestBase
-import metrik.fixtures.cfrBuild1
-import metrik.fixtures.cfrBuild10
-import metrik.fixtures.cfrBuild11
-import metrik.fixtures.cfrBuild12
-import metrik.fixtures.cfrBuild2
-import metrik.fixtures.cfrBuild3
-import metrik.fixtures.cfrBuild4
-import metrik.fixtures.cfrBuild5
-import metrik.fixtures.cfrBuild6
-import metrik.fixtures.cfrBuild7
-import metrik.fixtures.cfrBuild8
-import metrik.fixtures.cfrBuild9
+import metrik.fixtures.cfrBuilds
 import metrik.fixtures.cfrPipeline
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeAll
@@ -29,18 +18,9 @@ internal class CFRCalculationApiTest : ApiTestBase() {
         mongoTemplate.save(cfrPipeline)
         // init build data
         val buildCollectionName = "build"
-        mongoTemplate.save(cfrBuild1, buildCollectionName)
-        mongoTemplate.save(cfrBuild2, buildCollectionName)
-        mongoTemplate.save(cfrBuild3, buildCollectionName)
-        mongoTemplate.save(cfrBuild4, buildCollectionName)
-        mongoTemplate.save(cfrBuild5, buildCollectionName)
-        mongoTemplate.save(cfrBuild6, buildCollectionName)
-        mongoTemplate.save(cfrBuild7, buildCollectionName)
-        mongoTemplate.save(cfrBuild8, buildCollectionName)
-        mongoTemplate.save(cfrBuild9, buildCollectionName)
-        mongoTemplate.save(cfrBuild10, buildCollectionName)
-        mongoTemplate.save(cfrBuild11, buildCollectionName)
-        mongoTemplate.save(cfrBuild12, buildCollectionName)
+        cfrBuilds.forEach {
+            mongoTemplate.save(it, buildCollectionName)
+        }
     }
 
     @Test

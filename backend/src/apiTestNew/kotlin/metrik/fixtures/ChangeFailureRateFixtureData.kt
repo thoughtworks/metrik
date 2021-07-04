@@ -485,3 +485,18 @@ val cfrBuild12 = Build(
         )
     )
 )
+
+val cfrBuilds = listOf(
+    cfrBuild1,
+    cfrBuild2,
+    cfrBuild3,
+    cfrBuild4,
+    cfrBuild5,
+    cfrBuild6,
+    cfrBuild7,
+    cfrBuild8,
+    cfrBuild9,
+    cfrBuild10,
+    cfrBuild11,
+    cfrBuild12
+)
