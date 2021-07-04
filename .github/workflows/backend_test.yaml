@@ -23,13 +23,6 @@ jobs:
   backend-test:
     name: Backend module test
     runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:4.4-bionic
-        env:
-          TZ: "Asia/Shanghai"
-        ports:
-          - 27017:27017
 
     steps:
       - name: Setup timezone
