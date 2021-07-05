@@ -80,17 +80,14 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
-    testImplementation("com.intuit.karate:karate-junit5:0.9.6")
-    testImplementation("com.intuit.karate:karate-apache:0.9.6")
-
-    configurations.testCompile {
-        exclude("ch.qos.logback", "logback-classic")
-    }
-
     testImplementation("io.rest-assured:rest-assured:4.2.0")
     testImplementation("io.rest-assured:json-path:4.2.0")
     testImplementation("io.rest-assured:xml-path:4.2.0")
     testImplementation("io.rest-assured:spring-mock-mvc:4.2.0")
+
+    configurations.testCompile {
+        exclude("ch.qos.logback", "logback-classic")
+    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -102,8 +99,6 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    systemProperty("karate.options", System.getProperty("karate.options"))
-    systemProperty("karate.env", System.getProperty("karate.env"))
     outputs.upToDateWhen { false }
 }
 
@@ -135,4 +130,4 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 }
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
-apply(from = "gradle/jacoco.gradle")
+apply(from = "gradle/jacoco/jacoco.gradle")

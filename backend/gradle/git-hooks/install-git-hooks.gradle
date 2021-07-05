@@ -4,5 +4,4 @@ task installGitHooks(type: Copy) {
 }
 
 build.dependsOn installGitHooks
-
 test.dependsOn installGitHooks
