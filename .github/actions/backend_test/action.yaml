@@ -17,6 +17,6 @@ runs:
       working-directory: ${{ inputs.working-dir }}
 
     - name: Run Gradle build task, including unit test, integration test, and lint check
-      run: ./gradlew clean build build
+      run: ./gradlew clean build
       shell: bash
       working-directory: ${{ inputs.working-dir }}
