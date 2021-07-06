@@ -35,7 +35,7 @@ You can contribute through many ways, which including but not limited to:
 
 ## Architecture and Data Flow
 
-<div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/architecture.png" height=100% width=100%></div>
+<div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/architecture_and_data_flow.png" height=100% width=100%></div>
 
 ## Integrate with New CI/CD System
 
