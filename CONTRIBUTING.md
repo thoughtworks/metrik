@@ -33,6 +33,10 @@ You can contribute through many ways, which including but not limited to:
 3. `npm run start:local-api`
 4. Now you can access it from: `http://localhost:2333/`
 
+## Architecture and Data Flow
+
+<div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/architecture.png" height=100% width=100%></div>
+
 # Conventions
 
 ## Commit Message
