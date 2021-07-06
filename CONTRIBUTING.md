@@ -37,6 +37,12 @@ You can contribute through many ways, which including but not limited to:
 
 <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/architecture.png" height=100% width=100%></div>
 
+## Integrate with New CI/CD System
+
+Generally speaking, the data flow could be separated into two parts, one part reads data from CI/CD system and save the data to the database, another part retrieves data from the database and do calculations.
+
+Therefore, integrating a new CI/CD system will have nothing to do with the calculating logic, only need to focus on retrieve data from the pipeline and do some converting. To integrate, simply implement the `PipelineService` and add it into the `SynchronizationApplicationService`
+
 # Conventions
 
 ## Commit Message
