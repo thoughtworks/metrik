@@ -5,7 +5,7 @@ plugins {
     application
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    id("io.gitlab.arturbosch.detekt").version("1.15.0")
+    id("io.gitlab.arturbosch.detekt").version("1.17.1")
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.spring") version "1.4.21"
 }
@@ -113,7 +113,12 @@ val apiTest = task<Test>("apiTest") {
 tasks.check { dependsOn(apiTest) }
 
 detekt {
-    toolVersion = "1.15.0"
+    toolVersion = "1.17.1"
+    input = files(
+        "src/main/kotlin",
+        "src/test/kotlin",
+        "src/apiTest/kotlin"
+    )
     config = files("gradle/detekt/detekt.yml")
     buildUponDefaultConfig = true
 

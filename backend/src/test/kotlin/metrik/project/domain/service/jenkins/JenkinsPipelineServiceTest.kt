@@ -2,13 +2,13 @@ package metrik.project.domain.service.jenkins
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import metrik.exception.ApplicationException
 import metrik.project.domain.model.Build
+import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
-import metrik.exception.ApplicationException
-import metrik.project.rest.vo.response.SyncProgress
-import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.rest.vo.response.SyncProgress
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach

@@ -33,11 +33,19 @@ internal class DeploymentFrequencyServiceTest {
         val startTimestamp = 1610236800000L  // 2021-01-10
         val endTimestamp = 1611100800000L   // 2021-01-30
 
-        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
+        val mockBuildList: List<Build> =
+            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(1)
+        assertThat(
+            deploymentFrequencyService.getDeploymentCount(
+                pipelineId,
+                targetStage,
+                startTimestamp,
+                endTimestamp
+            )
+        ).isEqualTo(1)
     }
 
     /**
@@ -53,11 +61,19 @@ internal class DeploymentFrequencyServiceTest {
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
 
-        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
+        val mockBuildList: List<Build> =
+            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(2)
+        assertThat(
+            deploymentFrequencyService.getDeploymentCount(
+                pipelineId,
+                targetStage,
+                startTimestamp,
+                endTimestamp
+            )
+        ).isEqualTo(2)
     }
 
     /**
@@ -71,10 +87,18 @@ internal class DeploymentFrequencyServiceTest {
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
 
-        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-4.json").readText())
+        val mockBuildList: List<Build> =
+            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-4.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
-        assertThat(deploymentFrequencyService.getDeploymentCount(pipelineId, targetStage, startTimestamp, endTimestamp)).isEqualTo(0)
+        assertThat(
+            deploymentFrequencyService.getDeploymentCount(
+                pipelineId,
+                targetStage,
+                startTimestamp,
+                endTimestamp
+            )
+        ).isEqualTo(0)
     }
 }

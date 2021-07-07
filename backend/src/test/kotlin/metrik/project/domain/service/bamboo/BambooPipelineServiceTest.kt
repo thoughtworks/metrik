@@ -1,15 +1,15 @@
 package metrik.project.domain.service.bamboo
 
 import metrik.MockitoHelper
+import metrik.exception.ApplicationException
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Stage
-import metrik.project.domain.model.Status
-import metrik.exception.ApplicationException
-import metrik.project.rest.vo.response.SyncProgress
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
+import metrik.project.domain.model.Stage
+import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.rest.vo.response.SyncProgress
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

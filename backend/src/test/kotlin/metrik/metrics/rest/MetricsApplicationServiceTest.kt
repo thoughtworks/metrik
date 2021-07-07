@@ -1,17 +1,19 @@
 package metrik.metrics.rest
 
-import metrik.project.domain.model.Build
-import metrik.project.domain.repository.BuildRepository
-import metrik.metrics.exception.BadRequestException
 import metrik.metrics.domain.calculator.ChangeFailureRateCalculator
 import metrik.metrics.domain.calculator.DeploymentFrequencyCalculator
 import metrik.metrics.domain.calculator.LeadTimeForChangeCalculator
 import metrik.metrics.domain.calculator.MeanTimeToRestoreCalculator
-import metrik.metrics.rest.vo.PipelineStageRequest
+import metrik.metrics.domain.model.CalculationPeriod
 import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics
-import metrik.metrics.domain.model.CalculationPeriod
-import org.junit.jupiter.api.Assertions.*
+import metrik.metrics.exception.BadRequestException
+import metrik.metrics.rest.vo.PipelineStageRequest
+import metrik.project.domain.model.Build
+import metrik.project.domain.repository.BuildRepository
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -57,37 +59,121 @@ internal class MetricsApplicationServiceTest {
 
         `when`(buildRepository.getAllBuilds(targetStage.keys)).thenReturn(expectedBuilds)
 
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(7)
         `when`(deploymentFrequencyCalculator.calculateLevel(7, periodLengthInDays)).thenReturn(LEVEL.ELITE)
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
+        `when`(
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        )
             .thenReturn(3)
-        `when`(deploymentFrequencyCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(4)
 
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(2.0)
         `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
+        `when`(
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        )
             .thenReturn(1.0)
-        `when`(leadTimeForChangeCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(3.0)
         `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.HIGH)
 
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(2.25)
         `when`(meanTimeToRestoreCalculator.calculateLevel(2.25)).thenReturn(LEVEL.HIGH)
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
+        `when`(
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        )
             .thenReturn(1.8)
-        `when`(meanTimeToRestoreCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(5.7)
 
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(0.5)
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfFirstPeriod, endOfFirstPeriod, targetStage))
+        `when`(
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        )
             .thenReturn(0.4)
-        `when`(changeFailureRateCalculator.calculateValue(expectedBuilds, startOfSecondPeriod, endOfSecondPeriod, targetStage))
+        `when`(
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        )
             .thenReturn(0.6)
         `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
 

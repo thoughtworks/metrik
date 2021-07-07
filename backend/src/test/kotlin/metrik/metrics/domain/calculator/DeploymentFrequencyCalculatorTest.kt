@@ -2,10 +2,10 @@ package metrik.metrics.domain.calculator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.model.Build
 import metrik.metrics.domain.model.LEVEL
+import metrik.project.domain.model.Build
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -40,7 +40,8 @@ internal class DeploymentFrequencyCalculatorTest {
         val endTimestamp = 1611100800000L   // 2021-01-20
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
-        val deploymentCount = deploymentFrequencyCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val deploymentCount =
+            deploymentFrequencyCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(deploymentCount, 2)
     }
@@ -57,9 +58,17 @@ internal class DeploymentFrequencyCalculatorTest {
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
 
-        val mockBuildList: List<Build> = ObjectMapper().readValue(this.javaClass.getResource("/calculator/builds-for-DF-case-3.json").readText())
+        val mockBuildList: List<Build> =
+            ObjectMapper().readValue(this.javaClass.getResource("/calculator/builds-for-DF-case-3.json").readText())
 
-        assertThat(deploymentFrequencyCalculator.calculateValue(mockBuildList, startTimestamp, endTimestamp, targetStage)).isEqualTo(2)
+        assertThat(
+            deploymentFrequencyCalculator.calculateValue(
+                mockBuildList,
+                startTimestamp,
+                endTimestamp,
+                targetStage
+            )
+        ).isEqualTo(2)
     }
 
     @Test
