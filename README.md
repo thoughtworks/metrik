@@ -32,9 +32,10 @@
   <ul>
     <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#how-to-compute">How to Compute</a></li>
+    <li><a href="#how-to-compute-faqs">How to Compute</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#more">More</a></li>
     <li><a href="#license">License</a></li>
   </ul>
 </details>
@@ -107,8 +108,8 @@ docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "
 <!-- END OF USAGE -->
 
 
-<!-- HOW TO COMPUTE -->
-## How to compute
+<!-- Our Wiki -->
+## How to Compute, FAQs
 [See our Wiki page](https://github.com/thoughtworks/metrik/wiki) 
 <!-- END OF HOW TO COMPUTE -->
 
@@ -117,7 +118,7 @@ docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "
 ## Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-Please check our contributing guideline form [HERE](https://github.com/thoughtworks/metrik/blob/main/CONTRIBUTING.md)
+Please check our contributing guideline form [HERE](CONTRIBUTING.md)
 <!-- END OF CONTRIBUTING -->
 
 
@@ -142,11 +143,22 @@ The codebase comprises of three major components `frontend`, `backend`, `ci`.
 <!-- END OF GETTING STARTED -->
 
 
+<!-- MORE -->
+## More
+You might also like:
+* [Buildvis](https://github.com/cburgmer/buildviz), transparency for your build pipeline's results and runtime
+* [HeartBeat](https://github.com/thoughtworks/HeartBeat), calculates delivery metrics from CI/CD build data, revision control and project planning tools.
+* [GoCD Analytics Plugin](https://extensions-docs.gocd.org/analytics/current/), provides insights into your GoCD instance.
+<!-- END OF MORE -->
+
+
 <!-- LICENSE -->
 ## License
 Distributed under the MIT License. See [LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt) for more information
 <!-- END OF LICENSE -->
 
+
+<!-- CONTRIBUTORS -->
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -180,10 +192,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ivy-zxx"><img src="https://avatars.githubusercontent.com/u/57651346?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ZengXiaoXing</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=ivy-zxx" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/HeyWen"><img src="https://avatars.githubusercontent.com/u/43331064?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HeyWen</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=HeyWen" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/yong-wang1"><img src="https://avatars.githubusercontent.com/u/59590942?v=4?s=100" width="100px;" alt=""/><br /><sub><b>yong-wang1</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=yong-wang1" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/paulaasf"><img src="https://avatars.githubusercontent.com/u/31252141?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Paula Ferreira</b></sub></a><br /><a href="#infra-paulaasf" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/twpei"><img src="https://avatars.githubusercontent.com/u/80678709?v=4?s=100" width="100px;" alt=""/><br /><sub><b>twpei</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=twpei" title="Code">💻</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="https://github.com/twpei"><img src="https://avatars.githubusercontent.com/u/80678709?v=4?s=100" width="100px;" alt=""/><br /><sub><b>twpei</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=twpei" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/hstruebe"><img src="https://avatars.githubusercontent.com/u/5832390?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Henning S.</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=hstruebe" title="Code">💻</a></td>
     <td align="center"><a href="https://about.me/jainsahab"><img src="https://avatars.githubusercontent.com/u/5915092?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Prateek</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=jainsahab" title="Code">💻</a></td>
     <td align="center"><a href="https://karuppiah7890.github.io/blog/"><img src="https://avatars.githubusercontent.com/u/12808424?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Karuppiah Natarajan</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=karuppiah7890" title="Code">💻</a></td>
