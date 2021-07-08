@@ -15,82 +15,52 @@
 This is the backend API layer of *Metrik*, the 4-key-metrics measurement tool.
 
 # Tech Stack
+* Kotlin
 * Java 11
 * Gradle
-* Kotlin
-* MongoDB
 * SpringBoot
-* Junit 5 for unit testing
+* MongoDB
+* Junit5, RestAssured
 
 # Getting Started
-## Run Locally
+## Run the API locally
 Checkout the repo to local and go to the project folder: `${REPO_FOLDER}/backend`
-* Build: 
-```
-./gradlew clean build 
-```
-* Set up mongodb locally: 
+* Provision a mongodb instance.  
+  You can run the following script to start a docker container locally 
 ```
 cd mongodb-setup/mongodb-for-local
 ./setup-mongodb.sh
 ```
-* Start up APP locally
+* Start up locally
 ```
 ./gradlew clean bootRun 
 ```
-Then you can access [http://localhost:9000/swagger-ui/index.html](http://localhost:9000/swagger-ui/index.html) to check APIs.
+Then you can start exploring the APIs from the Swagger Doc [http://localhost:9000/swagger-ui/index.html](http://localhost:9000/swagger-ui/index.html).
 
+## Test and Build
+* Test and build   
+```
+./gradlew clean build 
+```
+*️This will run all unit tests, integration tests, coverage checks, and lint checks. [EmbeddedMongoDB](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo) is used here so that you don't need to start a MongoDB instance to run the test suites.*  
+* Or, some frequently used tasks
+```
+# Run unit test
+./gradlew clean test
 
-## Run API Tests
-
-### Feed Test Data 
-For those who first time running api tests on your local, you need to feed test data for api tests into your local mongodb. 
-1) run connect-to-mongodb.sh
-```
-./connect-to-mongodb.sh
-```
-
-### Run API Tests
-To run api tests, we need start our backend first.
-```
-SPRING_PROFILES_ACTIVE=apitest ./gradlew clean bootRun
-```
-
-To run all api tests, run command below
-```
+# Run API integration test
 ./gradlew clean apiTest
-```
 
-To run all *.feature files under src.api-test/karate/metrics, run command below
-```
-./gradlew clean apiTest --tests MetricsRunner
-```
+# Run one test file to get quicker response
+./gradlew apiTest --tests "metrik.CFRCalculationApiTest"
 
-To run one single feature file, for example, deployment-frequency.feature
+# Detekt code quality analysis
+./gradlew detekt
 ```
-./gradlew clean apiTest --tests MetricsRunner -Dkarate.options=classpath:karate/metrics/deployment-frequency.feature
-```
-
-To skip a scenario in feature file, add "@skip" tag above scenario.
-```
-@skip
-Scenario: targeted stage status is successful and time is within the selected date range should be counted in
-```
-
-To Run api test in one command. Gradle task will start mongodb, seed test data, start bootRun and run api tests.
-```
-./gradlew --stop && ./gradlew apiTestOneCommand
-```
-
-
-## Swagger Documentation
-Swagger url: [http://localhost:9000/swagger-ui/index.html](http://localhost:9000/swagger-ui/index.html)
-
 
 # Configuration
-
 ## Detekt
-This project use [Detekt](https://github.com/detekt/detekt) for static code analysing, you can adjust rules in `./gradle/detekt/detekt.yml`
+This project use [Detekt](https://github.com/detekt/detekt) for static code analysing, configuration file stays in `./gradle/detekt/detekt.yml`
 
 ## Jacoco
 This project use [Jacoco](https://github.com/jacoco/jacoco) for unit test coverage checking.

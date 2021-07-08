@@ -29,7 +29,7 @@ Node Version >= 10
 ## Run Locally
 Checkout the repo to local and go to the project folder: `${REPO_FOLDER}/frontend`
 
-* Install
+* Install dependencies
 ```bash
 npm i
 ```
@@ -40,7 +40,7 @@ npm run start:local-api
 ```
 Then you can access http://localhost:2333 to check web page.
 
-## Run tests
+## Test the project
 * Test
 ```bash
 npm test
