@@ -24,7 +24,7 @@
 <br>
 </p>
 
-*Read this in other languages:* [English](https://github.com/thoughtworks/metrik), [简体中文](https://github.com/thoughtworks/metrik/blob/main/README-CH.md)
+*Read this in other languages:* [English](README.md), [简体中文](README-CH.md)
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">

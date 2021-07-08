@@ -9,7 +9,8 @@
 
 [![Release](https://img.shields.io/github/v/release/thoughtworks/metrik.svg?include_prereleases&style=flat)](https://github.com/thoughtworks/metrik/releases)
 
-*多语言支持：*[English](https://github.com/thoughtworks/metrik), [简体中文](https://github.com/thoughtworks/metrik/blob/main/README-CH.md)
+*多语言支持：* [English](README.md), [简体中文](README-CH.md)  
+*GitHub 仓库：* [https://github.com/thoughtworks/metrik](https://github.com/thoughtworks/metrik)  
 
 <!-- PROJECT TITLE -->
 <h1 align="center">
