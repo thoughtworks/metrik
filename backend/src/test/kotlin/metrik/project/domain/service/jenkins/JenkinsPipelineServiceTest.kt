@@ -1,6 +1,6 @@
 package metrik.project.domain.service.jenkins
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.exception.ApplicationException
 import metrik.project.domain.model.Build
@@ -33,20 +33,20 @@ import org.springframework.web.client.RestTemplate
 
 
 @ExtendWith(SpringExtension::class)
-@Import(JenkinsPipelineService::class, ObjectMapper::class, RestTemplate::class)
+@Import(JenkinsPipelineService::class, RestTemplate::class)
 @RestClientTest
 internal class JenkinsPipelineServiceTest {
     @Autowired
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
 
     @Autowired
     private lateinit var restTemplate: RestTemplate
 
     @MockBean
     private lateinit var buildRepository: BuildRepository
+
+    private val objectMapper = jacksonObjectMapper()
 
     private lateinit var mockServer: MockRestServiceServer
 

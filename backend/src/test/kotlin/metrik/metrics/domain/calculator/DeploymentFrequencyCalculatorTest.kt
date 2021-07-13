@@ -1,6 +1,6 @@
 package metrik.metrics.domain.calculator
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.metrics.domain.model.LEVEL
 import metrik.project.domain.model.Build
@@ -32,7 +32,7 @@ internal class DeploymentFrequencyCalculatorTest {
      */
     @Test
     internal fun `should return DF given all builds with some Aborted and others success`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = jacksonObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-DF-case-1.json").readText()
         )
 
@@ -59,7 +59,9 @@ internal class DeploymentFrequencyCalculatorTest {
         val endTimestamp = 1612137600000L   // 2021-02-01
 
         val mockBuildList: List<Build> =
-            ObjectMapper().readValue(this.javaClass.getResource("/calculator/builds-for-DF-case-3.json").readText())
+            jacksonObjectMapper().readValue(
+                this.javaClass.getResource("/calculator/builds-for-DF-case-3.json").readText()
+            )
 
         assertThat(
             deploymentFrequencyCalculator.calculateValue(

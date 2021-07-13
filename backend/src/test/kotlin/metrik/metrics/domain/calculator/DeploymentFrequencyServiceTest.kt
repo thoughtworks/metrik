@@ -1,6 +1,6 @@
 package metrik.metrics.domain.calculator
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.project.domain.model.Build
 import metrik.project.domain.repository.BuildRepository
@@ -20,6 +20,8 @@ internal class DeploymentFrequencyServiceTest {
     @InjectMocks
     private lateinit var deploymentFrequencyService: DeploymentFrequencyService
 
+    private val objectMapper = jacksonObjectMapper()
+
     /**
      * test file: builds-for-jenkins-1.json
      * build 1 : deploy to prod, SUCCESS, start at 2021-01-01, end at 2021-01-01
@@ -34,7 +36,7 @@ internal class DeploymentFrequencyServiceTest {
         val endTimestamp = 1611100800000L   // 2021-01-30
 
         val mockBuildList: List<Build> =
-            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/service/builds-for-df-1.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
@@ -62,7 +64,7 @@ internal class DeploymentFrequencyServiceTest {
         val endTimestamp = 1612137600000L   // 2021-02-01
 
         val mockBuildList: List<Build> =
-            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/service/builds-for-df-3.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 
@@ -88,7 +90,7 @@ internal class DeploymentFrequencyServiceTest {
         val endTimestamp = 1612137600000L   // 2021-02-01
 
         val mockBuildList: List<Build> =
-            ObjectMapper().readValue(this.javaClass.getResource("/service/builds-for-df-4.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/service/builds-for-df-4.json").readText())
 
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(mockBuildList)
 

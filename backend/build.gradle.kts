@@ -29,7 +29,6 @@ dependencyManagement {
     }
 }
 
-
 // Configure Api test framework
 idea {
     module {

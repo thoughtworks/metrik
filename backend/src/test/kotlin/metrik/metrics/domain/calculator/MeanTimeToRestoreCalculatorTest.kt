@@ -1,9 +1,9 @@
 package metrik.metrics.domain.calculator
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.model.Build
 import metrik.metrics.domain.model.LEVEL
+import metrik.project.domain.model.Build
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test
 
 internal class MeanTimeToRestoreCalculatorTest {
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
+
+    private val objectMapper = jacksonObjectMapper()
 
     companion object {
         private const val MILLISECOND_TO_HOURS: Double = 3600000.0
@@ -33,7 +35,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return MTTR given all builds`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-1.json").readText()
         )
 
@@ -57,7 +59,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should contain first build given builds all failed before begin time`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-2.json").readText()
         )
 
@@ -83,7 +85,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return NaN while all builds are success`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-3.json").readText()
         )
 
@@ -109,7 +111,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return NaN while all builds are failed`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-4.json").readText()
         )
 
@@ -132,7 +134,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return correct MTTR given last stage status is failed `() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-5.json").readText()
         )
 
@@ -159,7 +161,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return MTTR given all builds with one Aborted`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-6.json").readText()
         )
 
@@ -184,7 +186,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     internal fun `should return MTTR given all builds with some Aborted and others success`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-7.json").readText()
         )
 

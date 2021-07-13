@@ -1,6 +1,6 @@
 package metrik.project.domain.repository
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Status
@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 
 @DataMongoTest
 @ExtendWith(SpringExtension::class)
-@Import(BuildRepository::class, ObjectMapper::class)
+@Import(BuildRepository::class)
 class BuildRepositoryTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
@@ -29,8 +29,7 @@ class BuildRepositoryTest {
     @Autowired
     private lateinit var buildRepository: BuildRepository
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+    private val objectMapper = jacksonObjectMapper()
 
     @BeforeEach
     internal fun setUp(@Autowired mongoTemplate: MongoTemplate) {

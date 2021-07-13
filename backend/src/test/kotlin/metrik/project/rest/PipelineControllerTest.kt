@@ -1,11 +1,15 @@
 package metrik.project.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import metrik.MockitoHelper.anyObject
-import metrik.project.*
+import metrik.project.buildBambooPipelineRequest
+import metrik.project.buildBambooPipelineVerificationRequest
+import metrik.project.buildJenkinsPipelineRequest
+import metrik.project.buildJenkinsPipelineVerificationRequest
+import metrik.project.buildPipeline
+import metrik.project.domain.model.PipelineType
 import metrik.project.rest.applicationservice.PipelineApplicationService
 import metrik.project.rest.vo.response.PipelineStagesResponse
-import metrik.project.domain.model.PipelineType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -26,6 +30,8 @@ internal class PipelineControllerTest {
     @MockBean
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
+    private val objectMapper = jacksonObjectMapper()
+
     private val projectId = "projectId"
 
     @Test
@@ -36,7 +42,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(pipelineVerificationRequest))
+                .content(objectMapper.writeValueAsString(pipelineVerificationRequest))
         ).andExpect(status().isOk)
     }
 
@@ -48,7 +54,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/pipeline/verify")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(pipelineVerificationRequest))
+                .content(objectMapper.writeValueAsString(pipelineVerificationRequest))
         ).andExpect(status().isOk)
     }
 
@@ -63,7 +69,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/project/$projectId/pipeline")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(pipelineRequest))
+                .content(objectMapper.writeValueAsString(pipelineRequest))
         )
             .andExpect(status().isCreated)
     }
@@ -79,7 +85,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/project/$projectId/pipeline")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(pipelineRequest))
+                .content(objectMapper.writeValueAsString(pipelineRequest))
         )
             .andExpect(status().isCreated)
     }
@@ -95,7 +101,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(buildJenkinsPipelineRequest()))
+                .content(objectMapper.writeValueAsString(buildJenkinsPipelineRequest()))
         )
             .andExpect(status().isOk)
     }
@@ -110,7 +116,7 @@ internal class PipelineControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(buildJenkinsPipelineRequest()))
+                .content(objectMapper.writeValueAsString(buildJenkinsPipelineRequest()))
         )
             .andExpect(status().isOk)
     }

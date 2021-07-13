@@ -1,15 +1,17 @@
 package metrik.metrics.domain.calculator
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.model.Build
 import metrik.metrics.domain.model.LEVEL
+import metrik.project.domain.model.Build
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class LeadTimeForChangeCalculatorTest {
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
+
+    private val objectMapper = jacksonObjectMapper()
 
     private val milliSecondsForOneDay = 24 * 60 * 60 * 1000.0
 
@@ -28,7 +30,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 1 should return value NaN when there is no deployment in given time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-1.json").readText()
         )
         val startTimestamp = 32847923847L
@@ -50,7 +52,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 2 there is only 1 deployment and the deployment finish time is in the given time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-2.json").readText()
         )
         val startTimestamp = 0L
@@ -73,7 +75,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 3 there is only 1 deployment and the deployment finish time is same as start time`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-3.json").readText()
         )
         val startTimestamp = 8L
@@ -96,7 +98,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 4 there is only 1 deployment and the deployment time is the end time`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-4.json").readText()
         )
         val startTimestamp = 1L
@@ -118,7 +120,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 5 there are 3 deployments but only the middle 1 deployment finish time in the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5.json").readText()
         )
         val startTimestamp = 10L
@@ -144,7 +146,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 5-1 there are three deployments without change set and only the middle 1 in the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-1.json").readText()
         )
         val startTimestamp = 11L
@@ -163,7 +165,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 5-2 there are one deployments with two commits with zero lead time for change`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-2.json").readText()
         )
         val startTimestamp = 8L
@@ -185,7 +187,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 5-3 there are four deployments and the third deployment is in the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-3.json").readText()
         )
         val startTimestamp = 16L
@@ -219,7 +221,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 6 there are multiple builds with different status and there are three deployment with the middle one in time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-6.json").readText()
         )
         val startTimestamp = 13L
@@ -245,7 +247,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 7 there are multiple builds with different status and wrong order and there are three deployment with the middle one in time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-7.json").readText()
         )
         val startTimestamp = 13L
@@ -270,7 +272,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 8 there are two deployments before the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-8.json").readText()
         )
         val startTimestamp = 13L
@@ -299,7 +301,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 9 there are 4 deployments and the middle two in the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-9.json").readText()
         )
         val startTimestamp = 13L
@@ -339,7 +341,7 @@ internal class LeadTimeForChangeCalculatorTest {
      */
     @Test
     internal fun `case 10 there are 4 deployments and the last 3 in the time range`() {
-        val allBuilds: List<Build> = ObjectMapper().readValue(
+        val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-10.json").readText()
         )
         val startTimestamp = 13L

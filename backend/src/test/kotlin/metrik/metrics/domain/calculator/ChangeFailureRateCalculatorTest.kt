@@ -1,6 +1,6 @@
 package metrik.metrics.domain.calculator
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.metrics.domain.model.LEVEL
 import metrik.project.domain.model.Build
@@ -13,13 +13,12 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@Import(ChangeFailureRateCalculator::class, ObjectMapper::class)
+@Import(ChangeFailureRateCalculator::class)
 class ChangeFailureRateCalculatorTest {
     @Autowired
     private lateinit var changeFailureRateCalculator: ChangeFailureRateCalculator
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+    private val objectMapper = jacksonObjectMapper()
 
     companion object {
         private const val PERCENTAGE_FACTOR = 100.0
