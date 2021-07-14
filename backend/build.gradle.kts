@@ -73,18 +73,20 @@ dependencies {
     configurations.compile {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
-    testImplementation("io.rest-assured:rest-assured:4.2.0")
-    testImplementation("io.rest-assured:json-path:4.2.0")
-    testImplementation("io.rest-assured:xml-path:4.2.0")
-    testImplementation("io.rest-assured:spring-mock-mvc:4.2.0")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+    testImplementation("io.rest-assured:rest-assured:4.4.0")
+    testImplementation("io.rest-assured:json-path:4.4.0")
+    testImplementation("io.rest-assured:xml-path:4.4.0")
+    testImplementation("io.rest-assured:spring-mock-mvc:4.4.0")
+    testImplementation("org.codehaus.groovy:groovy:3.0.8")
+    testImplementation("org.codehaus.groovy:groovy-json:3.0.8")
+    testImplementation("org.codehaus.groovy:groovy-xml:3.0.8")
 
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")
