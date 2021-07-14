@@ -32,7 +32,6 @@ internal class PipelineRepositoryTest {
     private val username = "tester"
     private val credential = "fake credential"
 
-
     @Test
     internal fun `should return Pipeline when findById() called given pipelineId exist in repo`() {
         `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(

@@ -83,6 +83,8 @@ dependencies {
     testImplementation("io.rest-assured:json-path:4.2.0")
     testImplementation("io.rest-assured:xml-path:4.2.0")
     testImplementation("io.rest-assured:spring-mock-mvc:4.2.0")
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
 
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")

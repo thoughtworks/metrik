@@ -39,7 +39,6 @@ internal class JenkinsPipelineServiceTest {
     @Autowired
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
-
     @Autowired
     private lateinit var restTemplate: RestTemplate
 
