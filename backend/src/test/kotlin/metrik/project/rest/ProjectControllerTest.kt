@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [ProjectController::class])
-class ProjectControllerTest {
+internal class ProjectControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -38,7 +38,7 @@ class ProjectControllerTest {
     private lateinit var projectDetailsResponse: ProjectDetailResponse
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         projectDetailsResponse = ProjectDetailResponse(
             projectId,
             projectName,
@@ -47,7 +47,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should get projects successfully `() {
+    fun `should get projects successfully `() {
         `when`(projectApplicationService.getProjects()).thenReturn(
             listOf(
                 ProjectResponse(
@@ -66,7 +66,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should get project details successfully `() {
+    fun `should get project details successfully `() {
 
         `when`(projectApplicationService.getProjectDetails(projectId)).thenReturn(projectDetailsResponse)
 
@@ -81,7 +81,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should create project and pipeline `() {
+    fun `should create project and pipeline `() {
         val projectRequest = ProjectRequest(projectName, buildJenkinsPipelineRequest())
         `when`(projectApplicationService.createProject(anyObject())).thenReturn(
             ProjectSummaryResponse(
@@ -100,7 +100,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should create project and bamboo pipeline`() {
+    fun `should create project and bamboo pipeline`() {
         val projectRequest = ProjectRequest(
             projectName, BambooPipelineRequest(
                 name = "pipeline",
@@ -125,7 +125,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should update project name `() {
+    fun `should update project name `() {
         val projectNewName = "projectNewName"
         `when`(projectApplicationService.updateProjectName(projectId, projectNewName)).thenReturn(
             ProjectResponse(projectId, projectNewName)
@@ -139,7 +139,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    internal fun `should delete project `() {
+    fun `should delete project `() {
         Mockito.doNothing().`when`(projectApplicationService).deleteProject(projectId)
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/project/$projectId")

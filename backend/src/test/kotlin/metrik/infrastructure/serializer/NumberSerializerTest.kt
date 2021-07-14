@@ -28,7 +28,7 @@ internal class NumberSerializerTest {
 
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         numberSerializer = NumberSerializer()
     }
 

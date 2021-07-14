@@ -53,7 +53,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
+    fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
         val pipeline = buildPipeline().copy(type = PipelineType.JENKINS)
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
@@ -64,7 +64,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should verify pipeline given pipeline type is BAMBOO`() {
+    fun `should verify pipeline given pipeline type is BAMBOO`() {
         val pipeline = buildPipeline(PipelineType.BAMBOO).copy(type = PipelineType.BAMBOO)
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
@@ -75,7 +75,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
+    fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
         val pipelineInDB = Pipeline()
@@ -92,7 +92,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return saved pipeline when createPipeline() called given valid Pipeline`() {
+    fun `should return saved pipeline when createPipeline() called given valid Pipeline`() {
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
         `when`(pipelineRepository.findByNameAndProjectId(pipeline.name, projectId)).thenReturn(null)
@@ -122,7 +122,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return saved pipeline when updatePipeline() called and successfully`() {
+    fun `should return saved pipeline when updatePipeline() called and successfully`() {
         val pipeline = buildPipeline()
         val savedPipeline = buildPipeline()
         `when`(pipelineRepository.save(anyObject())).thenReturn(savedPipeline)
@@ -153,7 +153,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should throw Exception when updatePipeline() with pipeline name already exist`() {
+    fun `should throw Exception when updatePipeline() with pipeline name already exist`() {
         val pipeline = buildPipeline()
         val pipelineInDB = Pipeline()
         `when`(pipelineRepository.findByNameAndProjectId(pipeline.name, pipeline.projectId)).thenReturn(pipelineInDB)
@@ -166,7 +166,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return pipeline when getPipeline() called`() {
+    fun `should return pipeline when getPipeline() called`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -185,7 +185,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should delete pipeline and its builds when deletePipeline() called`() {
+    fun `should delete pipeline and its builds when deletePipeline() called`() {
         val pipelineId = "pipelineId"
         val projectId = "projectId"
         pipelineApplicationService.deletePipeline(projectId, pipelineId)
@@ -197,7 +197,7 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    internal fun `should return Pipelines when getPipelineStages() called given projectId`() {
+    fun `should return Pipelines when getPipelineStages() called given projectId`() {
         val projectId = "projectId"
         val projectName = "projectName"
         val pipeline1Id = "pipeline1Id"

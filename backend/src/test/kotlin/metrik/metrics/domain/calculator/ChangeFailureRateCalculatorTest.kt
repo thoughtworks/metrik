@@ -8,15 +8,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @Import(ChangeFailureRateCalculator::class)
-class ChangeFailureRateCalculatorTest {
-    @Autowired
-    private lateinit var changeFailureRateCalculator: ChangeFailureRateCalculator
+internal class ChangeFailureRateCalculatorTest {
+    private val changeFailureRateCalculator = ChangeFailureRateCalculator()
 
     private val objectMapper = jacksonObjectMapper()
 
@@ -25,7 +23,7 @@ class ChangeFailureRateCalculatorTest {
     }
 
     /**
-     * test file: builds-cfr.json
+     * test file: builds-for-CFR-case-1.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod)
      * build 2 : 1609459200000, FAILED (deploy to prod)
      * build 3 : 1610668800000, SUCCESS (deploy to prod)
@@ -40,7 +38,7 @@ class ChangeFailureRateCalculatorTest {
         val endTimestamp = 1611994800000L
 
         val mockBuildList: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-1.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
@@ -53,7 +51,7 @@ class ChangeFailureRateCalculatorTest {
     }
 
     /**
-     * test file: builds-cfr-2.json
+     * test file: builds-for-CFR-case-2.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod) pipeline1
      * build 2 : 1609459200000, FAILED (deploy to prod) pipeline1
      * build 3 : 1610668800000, SUCCESS (deploy to prod) pipeline1
@@ -73,7 +71,7 @@ class ChangeFailureRateCalculatorTest {
         val endTimestamp = 1611994800000L
 
         val mockBuildList: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr-2.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-2.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
@@ -86,7 +84,7 @@ class ChangeFailureRateCalculatorTest {
     }
 
     /**
-     * test file: builds-cfr.json
+     * test file: builds-for-CFR-case-1.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod)
      * build 2 : 1609459200000, FAILED (deploy to prod)
      * build 3 : 1610668800000, SUCCESS (deploy to prod)
@@ -101,7 +99,7 @@ class ChangeFailureRateCalculatorTest {
         val endTimestamp = 1611974800000L
 
         val mockBuildList: List<Build> =
-            objectMapper.readValue(this.javaClass.getResource("/service/builds-cfr.json").readText())
+            objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-1.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
@@ -145,27 +143,27 @@ class ChangeFailureRateCalculatorTest {
     }
 
     @Test
-    internal fun `should return level low given value is 0_45 when calculate level`() {
+    fun `should return level low given value is 0_45 when calculate level`() {
         assertEquals(LEVEL.LOW, changeFailureRateCalculator.calculateLevel(0.45 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level medium given value is 0_3 when calculate level`() {
+    fun `should return level medium given value is 0_3 when calculate level`() {
         assertEquals(LEVEL.MEDIUM, changeFailureRateCalculator.calculateLevel(0.3 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level high given value is 0_15 when calculate level`() {
+    fun `should return level high given value is 0_15 when calculate level`() {
         assertEquals(LEVEL.HIGH, changeFailureRateCalculator.calculateLevel(0.15 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level elite given value lower than 0_14 when calculate level`() {
+    fun `should return level elite given value lower than 0_14 when calculate level`() {
         assertEquals(LEVEL.ELITE, changeFailureRateCalculator.calculateLevel(0.14 * PERCENTAGE_FACTOR))
     }
 
     @Test
-    internal fun `should return level invalid given invalid value  when calculate level`() {
+    fun `should return level invalid given invalid value  when calculate level`() {
         assertEquals(LEVEL.INVALID, changeFailureRateCalculator.calculateLevel(Double.NaN))
     }
 }

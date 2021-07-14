@@ -12,12 +12,12 @@ internal class GlobalExceptionHandlerTest {
     lateinit var globalExceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         globalExceptionHandler = GlobalExceptionHandler()
     }
 
     @Test
-    internal fun `should handle application exception`() {
+    fun `should handle application exception`() {
         val responseEntity =
             globalExceptionHandler.handleAppException(ApplicationException(HttpStatus.BAD_REQUEST, "invalid request"))
 
@@ -29,7 +29,7 @@ internal class GlobalExceptionHandlerTest {
     }
 
     @Test
-    internal fun `should handle unexpected exception`() {
+    fun `should handle unexpected exception`() {
         val responseEntity = globalExceptionHandler.handleThrowable(OutOfMemoryError("error message"))
 
         val errorResponse = responseEntity.body
@@ -40,7 +40,7 @@ internal class GlobalExceptionHandlerTest {
     }
 
     @Test
-    internal fun `should handle parameter missing exception`() {
+    fun `should handle parameter missing exception`() {
         val responseEntity = globalExceptionHandler.handleParamMissingException(
             MissingServletRequestParameterException("pipelineId", "String")
         )
@@ -53,7 +53,7 @@ internal class GlobalExceptionHandlerTest {
     }
 
     @Test
-    internal fun `should handle parameter illegal exception`() {
+    fun `should handle parameter illegal exception`() {
         val responseEntity = globalExceptionHandler.handleParamIllegalException(
             Mockito.mock(MethodArgumentTypeMismatchException::class.java)
         )

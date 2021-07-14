@@ -28,7 +28,7 @@ internal class MetricsControllerTest {
     private lateinit var metricsApplicationService: MetricsApplicationService
 
     @Test
-    internal fun `should return metrics response when call api`() {
+    fun `should return metrics response when call api`() {
         val pipelineA = PipelineStageRequest("pipelineA", "stageA")
         val pipelineB = PipelineStageRequest("pipelineB", "stageB")
         val startTime = 1609459200000L
@@ -74,7 +74,7 @@ internal class MetricsControllerTest {
     }
 
     @Test
-    internal fun `should return metrics response when call get api`() {
+    fun `should return metrics response when call get api`() {
         val pipelineId = "test pipeline Id"
         val targetStage = "Deploy to UAT"
         val startTime = 1609459200000L

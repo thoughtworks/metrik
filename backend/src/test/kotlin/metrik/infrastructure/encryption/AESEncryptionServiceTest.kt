@@ -9,28 +9,28 @@ internal class AESEncryptionServiceTest {
     private lateinit var aesEncryptionService: AESEncryptionService
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         properties = AESEncryptionProperties("JaNdRgUkXp2s5v8y", "KbPeShVmYq3s6v9y")
         aesEncryptionService = AESEncryptionService(properties)
     }
 
     @Test
-    internal fun `should encrypt`() {
+    fun `should encrypt`() {
         assertEquals(aesEncryptionService.encrypt("test"), "wbMbbtoNKyU6tiixRfSh+Q==")
     }
 
     @Test
-    internal fun `should not encrypt null value`() {
+    fun `should not encrypt null value`() {
         assertEquals(aesEncryptionService.encrypt(null), null)
     }
 
     @Test
-    internal fun `should decrypt`() {
+    fun `should decrypt`() {
         assertEquals(aesEncryptionService.decrypt("wbMbbtoNKyU6tiixRfSh+Q=="), "test")
     }
 
     @Test
-    internal fun `should not decrypt null value`() {
+    fun `should not decrypt null value`() {
         assertEquals(aesEncryptionService.decrypt(null), null)
     }
 }

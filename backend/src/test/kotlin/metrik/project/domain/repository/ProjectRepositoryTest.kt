@@ -33,27 +33,27 @@ internal class ProjectRepositoryTest {
     private val project = Project(projectId, projectName, synchronisationTime)
 
     @BeforeEach
-    internal fun setUp(@Autowired mongoTemplate: MongoTemplate) {
+    fun setUp(@Autowired mongoTemplate: MongoTemplate) {
         val collectionName = "project"
         mongoTemplate.dropCollection(collectionName)
     }
 
     @Test
-    internal fun `test existByName will false true if project with name not exist`() {
+    fun `test existByName will false true if project with name not exist`() {
         mongoTemplate.save(project)
 
         assertFalse(projectRepository.existWithGivenName("some name"))
     }
 
     @Test
-    internal fun `test existByName will return true if project with name not exist`() {
+    fun `test existByName will return true if project with name not exist`() {
         mongoTemplate.save(project)
 
         assertTrue(projectRepository.existWithGivenName(projectName))
     }
 
     @Test
-    internal fun `test find by id will return project`() {
+    fun `test find by id will return project`() {
         mongoTemplate.save(project)
 
         val project1 = projectRepository.findById(projectId)
@@ -64,7 +64,7 @@ internal class ProjectRepositoryTest {
     }
 
     @Test
-    internal fun `test find by id will throw ProjectNotFoundException if project not exist`() {
+    fun `test find by id will throw ProjectNotFoundException if project not exist`() {
         mongoTemplate.save(project)
 
         val exception: ProjectNotFoundException = assertThrows { projectRepository.findById("some id") }
@@ -73,7 +73,7 @@ internal class ProjectRepositoryTest {
     }
 
     @Test
-    internal fun `test save project`() {
+    fun `test save project`() {
         projectRepository.save(project)
 
         val foundProject = mongoTemplate.findById(projectId, Project::class.java)
@@ -84,7 +84,7 @@ internal class ProjectRepositoryTest {
     }
 
     @Test
-    internal fun `test findAll project`() {
+    fun `test findAll project`() {
         mongoTemplate.save(project)
 
         val projects = projectRepository.findAll()
@@ -95,7 +95,7 @@ internal class ProjectRepositoryTest {
     }
 
     @Test
-    internal fun `test delete project by id`() {
+    fun `test delete project by id`() {
         mongoTemplate.save(project)
         projectRepository.deleteById(projectId)
 
@@ -105,7 +105,7 @@ internal class ProjectRepositoryTest {
     }
 
     @Test
-    internal fun `test update synchronisation time`() {
+    fun `test update synchronisation time`() {
         val newSynchronisationTime = 13432L
         mongoTemplate.save(project)
 

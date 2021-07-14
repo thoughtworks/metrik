@@ -18,11 +18,10 @@ import org.springframework.data.mongodb.core.findAll
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.ZonedDateTime
 
-
 @DataMongoTest
 @ExtendWith(SpringExtension::class)
 @Import(BuildRepository::class)
-class BuildRepositoryTest {
+internal class BuildRepositoryTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
@@ -32,13 +31,13 @@ class BuildRepositoryTest {
     private val objectMapper = jacksonObjectMapper()
 
     @BeforeEach
-    internal fun setUp(@Autowired mongoTemplate: MongoTemplate) {
+    fun setUp(@Autowired mongoTemplate: MongoTemplate) {
         val collectionName = "build"
         mongoTemplate.dropCollection(collectionName)
     }
 
     @Test
-    internal fun `should save a bunch of build data`() {
+    fun `should save a bunch of build data`() {
         val collectionName = "build"
 
         val buildsToSave: List<Build> =
@@ -58,7 +57,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should overwrite build data given data is already exist in DB`() {
+    fun `should overwrite build data given data is already exist in DB`() {
         val collectionName = "build"
         val firstBuild = Build(number = 1)
         val secondBuild = Build(number = 2)
@@ -73,7 +72,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should remove collection data when given pipeline Id`() {
+    fun `should remove collection data when given pipeline Id`() {
         val collectionName = "build"
         val pipelineId1 = "fake-pipelineId1"
         val pipelineId2 = "fake-pipelineId2"
@@ -87,7 +86,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get all builds for multiple pipeline`() {
+    fun `should get all builds for multiple pipeline`() {
         val pipelineIds = listOf("1", "2")
         val collectionName = "build"
 
@@ -99,7 +98,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get all builds belonging to this pipeline`() {
+    fun `should get all builds belonging to this pipeline`() {
         val pipelineId = "fake pipeline"
         val collectionName = "build"
 
@@ -112,7 +111,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should find build by number given build is exist in DB`() {
+    fun `should find build by number given build is exist in DB`() {
         val pipelineId = "fake-id"
         val firstBuild = Build(number = 1, pipelineId = pipelineId)
 
@@ -122,7 +121,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get null when find by number given build is not exist in DB`() {
+    fun `should get null when find by number given build is not exist in DB`() {
         val pipelineId = "fake-id"
         val firstBuild = Build(number = 1, pipelineId = pipelineId)
 
@@ -132,7 +131,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get builds with certain build status`() {
+    fun `should get builds with certain build status`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(
@@ -149,7 +148,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get the build with biggest build number`() {
+    fun `should get the build with biggest build number`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(Build(pipelineId, 1), Build(pipelineId, 2), Build(pipelineId, 5))
@@ -160,7 +159,7 @@ class BuildRepositoryTest {
     }
 
     @Test
-    internal fun `should get all build numbers that need a data synchronization given the most recent build number`() {
+    fun `should get all build numbers that need a data synchronization given the most recent build number`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(

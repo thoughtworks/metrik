@@ -54,7 +54,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should sync builds when there is no previous update`() {
+    fun `should sync builds when there is no previous update`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
@@ -73,7 +73,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should save builds from 2 weeks ago of previous update to now`() {
+    fun `should save builds from 2 weeks ago of previous update to now`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
@@ -94,7 +94,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should not save any builds if fetch data from pipeline failed`() {
+    fun `should not save any builds if fetch data from pipeline failed`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
@@ -109,7 +109,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should get last synchronization time`() {
+    fun `should get last synchronization time`() {
         val projectId = "fake-project-id"
         val lastSyncTimestamp = 1610668800000
 
@@ -121,7 +121,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should sync builds for Bamboo when there is no previous update`() {
+    fun `should sync builds for Bamboo when there is no previous update`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
@@ -147,7 +147,7 @@ internal class SynchronizationApplicationServiceTest {
     }
 
     @Test
-    internal fun `should sync builds with progress emit callback passed in if callback function provided`() {
+    fun `should sync builds with progress emit callback passed in if callback function provided`() {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)

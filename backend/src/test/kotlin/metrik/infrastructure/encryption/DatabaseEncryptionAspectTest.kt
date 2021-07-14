@@ -26,7 +26,7 @@ internal class DatabaseEncryptionAspectTest {
     private lateinit var encryptionService: AESEncryptionService
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         `when`(encryptionService.encrypt(anyString())).thenReturn("encrypted")
         `when`(encryptionService.decrypt(anyString())).thenReturn("decrypted")
 
@@ -35,7 +35,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should encrypt data before call save() method in mongoTemplate for pipeline data`() {
+    fun `should encrypt data before call save() method in mongoTemplate for pipeline data`() {
         val username = "mock-username"
         val credential = "mock-credential"
 
@@ -48,7 +48,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should not encrypt data before call save() method in mongoTemplate for non pipeline data`() {
+    fun `should not encrypt data before call save() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.save(Build())
 
         verify(encryptionService, never()).encrypt(anyString())
@@ -56,7 +56,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should encrypt data before call insert() method in mongoTemplate for pipeline data`() {
+    fun `should encrypt data before call insert() method in mongoTemplate for pipeline data`() {
         val username = "mock-username"
         val credential = "mock-credential"
 
@@ -72,7 +72,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should not encrypt data before call insert() method in mongoTemplate for non pipeline data`() {
+    fun `should not encrypt data before call insert() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.insert(
             mutableListOf(Build()),
             Build::class.java
@@ -83,7 +83,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should decrypt data after call find() method in mongoTemplate for pipeline data only`() {
+    fun `should decrypt data after call find() method in mongoTemplate for pipeline data only`() {
         val username = "mock-username"
         val credential = "mock-credential"
         val projectId = "fake-project"
@@ -101,7 +101,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should not decrypt data after call find() method in mongoTemplate for non pipeline data`() {
+    fun `should not decrypt data after call find() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.save(Build(pipelineId = "1"))
 
         mongoTemplate.find(
@@ -113,7 +113,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should decrypt data after call findOne() method in mongoTemplate for pipeline data only`() {
+    fun `should decrypt data after call findOne() method in mongoTemplate for pipeline data only`() {
         val username = "mock-username"
         val credential = "mock-credential"
         val projectId = "fake-project"
@@ -131,7 +131,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should not decrypt data after call findOne() method in mongoTemplate for non pipeline data`() {
+    fun `should not decrypt data after call findOne() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.save(Build(pipelineId = "1"))
 
         mongoTemplate.findOne(
@@ -143,7 +143,7 @@ internal class DatabaseEncryptionAspectTest {
     }
 
     @Test
-    internal fun `should not decrypt data after call findOne() method in mongoTemplate when it returns null`() {
+    fun `should not decrypt data after call findOne() method in mongoTemplate when it returns null`() {
         mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("pipelineId").isEqualTo("1")),
             Pipeline::class.java

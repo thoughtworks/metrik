@@ -19,7 +19,7 @@ internal class MeanTimeToRestoreCalculatorTest {
     }
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         meanTimeToRestoreCalculator = MeanTimeToRestoreCalculator()
     }
 
@@ -34,7 +34,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 7 : deploy to prod, SUCCESS, end at 2021-01-05
      */
     @Test
-    internal fun `should return MTTR given all builds`() {
+    fun `should return MTTR given all builds`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-1.json").readText()
         )
@@ -58,7 +58,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 6, pipeline 2: deploy to prod, SUCCESS, end at 2021-01-03 *
      */
     @Test
-    internal fun `should contain first build given builds all failed before begin time`() {
+    fun `should contain first build given builds all failed before begin time`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-2.json").readText()
         )
@@ -84,7 +84,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 7, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-05
      */
     @Test
-    internal fun `should return NaN while all builds are success`() {
+    fun `should return NaN while all builds are success`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-3.json").readText()
         )
@@ -110,7 +110,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 7, pipeline 2 : deploy to prod, FAILED, end at 2021-01-05
      */
     @Test
-    internal fun `should return NaN while all builds are failed`() {
+    fun `should return NaN while all builds are failed`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-4.json").readText()
         )
@@ -133,7 +133,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 6, pipeline 2 : deploy to prod, FAILED, end at 2021-01-03 *
      */
     @Test
-    internal fun `should return correct MTTR given last stage status is failed `() {
+    fun `should return correct MTTR given last stage status is failed `() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-5.json").readText()
         )
@@ -160,7 +160,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 7, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-03 *
      */
     @Test
-    internal fun `should return MTTR given all builds with one Aborted`() {
+    fun `should return MTTR given all builds with one Aborted`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-6.json").readText()
         )
@@ -185,7 +185,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      * build 7, pipeline 2 : deploy to prod, SUCCESS, end at 2021-01-05
      */
     @Test
-    internal fun `should return MTTR given all builds with some Aborted and others success`() {
+    fun `should return MTTR given all builds with some Aborted and others success`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-7.json").readText()
         )
@@ -200,7 +200,7 @@ internal class MeanTimeToRestoreCalculatorTest {
     }
 
     @Test
-    internal fun `should return NO_VALUE given no builds`() {
+    fun `should return NO_VALUE given no builds`() {
         val startTimestamp = 1609459200000L // 2021.01.01
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
@@ -211,35 +211,35 @@ internal class MeanTimeToRestoreCalculatorTest {
     }
 
     @Test
-    internal fun `should return elite while MTTR less than 1 hour`() {
+    fun `should return elite while MTTR less than 1 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.5)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.ELITE)
     }
 
     @Test
-    internal fun `should return high while MTTR less than 24 hour and more than or equals 1 hour`() {
+    fun `should return high while MTTR less than 24 hour and more than or equals 1 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(0.999)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.HIGH)
     }
 
     @Test
-    internal fun `should return medium while MTTR less than 168 hour and more than or equals 24 hour`() {
+    fun `should return medium while MTTR less than 168 hour and more than or equals 24 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(156.0)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.MEDIUM)
     }
 
     @Test
-    internal fun `should return low while MTTR more than or equals 168 hour`() {
+    fun `should return low while MTTR more than or equals 168 hour`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(233.0)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.LOW)
     }
 
     @Test
-    internal fun `should return null while MTTR NaN`() {
+    fun `should return null while MTTR NaN`() {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(Double.NaN)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.INVALID)

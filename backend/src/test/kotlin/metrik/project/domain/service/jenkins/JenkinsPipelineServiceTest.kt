@@ -31,7 +31,6 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestTemplate
 
-
 @ExtendWith(SpringExtension::class)
 @Import(JenkinsPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -52,12 +51,12 @@ internal class JenkinsPipelineServiceTest {
     private val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
     }
 
     @Test
-    internal fun `should throw exception when verify pipeline given response is 400`() {
+    fun `should throw exception when verify pipeline given response is 400`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -81,7 +80,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should throw exception when verify pipeline given response is 500`() {
+    fun `should throw exception when verify pipeline given response is 500`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -105,7 +104,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should return sorted stage name lists when getStagesSortedByName() called`() {
+    fun `should return sorted stage name lists when getStagesSortedByName() called`() {
         val builds = listOf(
             Build(
                 stages = listOf(
@@ -132,7 +131,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should return all builds and emit the progress event given syncBuildsProgressively() given pipelineID`() {
+    fun `should return all builds and emit the progress event given syncBuildsProgressively() given pipelineID`() {
         val pipelineName = "pipeline name"
         val pipelineId = "fake pipeline"
         val username = "fake-user"
@@ -177,7 +176,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds from Jenkins when syncBuilds() given build status is failure`() {
+    fun `should sync builds from Jenkins when syncBuilds() given build status is failure`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -216,7 +215,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds from Jenkins when syncBuilds() given build status is null`() {
+    fun `should sync builds from Jenkins when syncBuilds() given build status is null`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -255,7 +254,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds from Jenkins when syncBuilds() given build status is success`() {
+    fun `should sync builds from Jenkins when syncBuilds() given build status is success`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -294,7 +293,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should sync builds and update progress via the emit callback at the same time`() {
+    fun `should sync builds and update progress via the emit callback at the same time`() {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -339,7 +338,7 @@ internal class JenkinsPipelineServiceTest {
     }
 
     @Test
-    internal fun `should return builds with previous status is building null or not exits in DB from Jenkins when syncBuilds() given pipeline ID`() {
+    fun `should return builds with previous status is building null or not exits in DB from Jenkins when syncBuilds() given pipeline ID`() {
         val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"

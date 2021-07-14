@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @WebMvcTest(controllers = [SynchronizationController::class])
 @Import(SynchronizationApplicationService::class)
-class SynchronizationControllerTest {
+internal class SynchronizationControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -29,7 +29,7 @@ class SynchronizationControllerTest {
     private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
     @Test
-    internal fun `should return update timestamp when update all build data success`() {
+    fun `should return update timestamp when update all build data success`() {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
@@ -41,7 +41,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return a non-blocking event stream when attempt to sync build data in background`() {
+    fun `should return a non-blocking event stream when attempt to sync build data in background`() {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
@@ -58,7 +58,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return 500 when update all build data failed`() {
+    fun `should return 500 when update all build data failed`() {
         val projectId = "fake-project-id"
 
         `when`(synchronizationApplicationService.synchronize(projectId)).thenReturn(null)
@@ -68,7 +68,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return last update timestamp`() {
+    fun `should return last update timestamp`() {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
@@ -80,7 +80,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return null when last sync timestamp not exist`() {
+    fun `should return null when last sync timestamp not exist`() {
         val projectId = "fake-project-id"
 
         `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenReturn(null)
@@ -91,7 +91,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return 404 given project id not exist when synchronization`() {
+    fun `should return 404 given project id not exist when synchronization`() {
         val projectId = "fake-project-id"
 
         `when`(synchronizationApplicationService.synchronize(projectId)).thenThrow(
@@ -106,7 +106,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
-    internal fun `should return 404 given project id not exist when get synchronization record`() {
+    fun `should return 404 given project id not exist when get synchronization record`() {
         val projectId = "fake-project-id"
 
         `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenThrow(

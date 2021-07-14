@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 internal class StageTest {
     @Test
-    internal fun `should return completedTime when stage contains completedTime`() {
+    fun `should return completedTime when stage contains completedTime`() {
         assertEquals(
             1610700490630,
             Stage(
@@ -18,7 +18,7 @@ internal class StageTest {
     }
 
     @Test
-    internal fun `should return sum of startTime and durationTime and pauseTime given stage does not contain completedTime`() {
+    fun `should return sum of startTime and durationTime and pauseTime given stage does not contain completedTime`() {
         assertEquals(
             1610700490630,
             Stage(

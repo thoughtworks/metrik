@@ -10,12 +10,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class DeploymentFrequencyCalculatorTest {
-
     private lateinit var deploymentFrequencyCalculator: DeploymentFrequencyCalculator
 
-
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         deploymentFrequencyCalculator = DeploymentFrequencyCalculator()
     }
 
@@ -31,7 +29,7 @@ internal class DeploymentFrequencyCalculatorTest {
      * build 3 : deploy to prod, SUCCESS, start at 2021-01-30, end at 2021-02-01
      */
     @Test
-    internal fun `should return DF given all builds with some Aborted and others success`() {
+    fun `should return DF given all builds with some Aborted and others success`() {
         val allBuilds: List<Build> = jacksonObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-DF-case-1.json").readText()
         )
@@ -53,7 +51,7 @@ internal class DeploymentFrequencyCalculatorTest {
      * build 3 : 2021-01-30, [build: FAILED, deploy to prod: SUCCESS]
      */
     @Test
-    internal fun `should get deployment count with success target stage status when calculate deployment count`() {
+    fun `should get deployment count with success target stage status when calculate deployment count`() {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
         val startTimestamp = 1609286400000L  // 2020-12-30
         val endTimestamp = 1612137600000L   // 2021-02-01
@@ -74,7 +72,7 @@ internal class DeploymentFrequencyCalculatorTest {
     }
 
     @Test
-    internal fun `should return elite given input deployment count greater than 15 when calculated in fortnightly`() {
+    fun `should return elite given input deployment count greater than 15 when calculated in fortnightly`() {
         val deployments = 15
         val days = 14
 
@@ -82,7 +80,7 @@ internal class DeploymentFrequencyCalculatorTest {
     }
 
     @Test
-    internal fun `should return high given input deployment frequency within 1 div 7 and 1`() {
+    fun `should return high given input deployment frequency within 1 div 7 and 1`() {
         val deployments = 1
         val days = 3
 
@@ -90,7 +88,7 @@ internal class DeploymentFrequencyCalculatorTest {
     }
 
     @Test
-    internal fun `should return medium given input deployment frequency within 1 div 30 and 1 div 7`() {
+    fun `should return medium given input deployment frequency within 1 div 30 and 1 div 7`() {
         val deployments = 1
         val days = 7
 
@@ -98,7 +96,7 @@ internal class DeploymentFrequencyCalculatorTest {
     }
 
     @Test
-    internal fun `should return low given input deployment frequency greater than`() {
+    fun `should return low given input deployment frequency greater than`() {
         val deployments = 1
         val days = 30
 

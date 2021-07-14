@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
 
 @ExtendWith(MockitoExtension::class)
-class ProjectApplicationServiceTest {
+internal class ProjectApplicationServiceTest {
     @InjectMocks
     private lateinit var projectApplicationService: ProjectApplicationService
 
@@ -56,7 +56,7 @@ class ProjectApplicationServiceTest {
         )
 
     @Test
-    internal fun `test create project successfully`() {
+    fun `test create project successfully`() {
         `when`(projectRepository.existWithGivenName(projectName)).thenReturn(false)
         `when`(projectRepository.save(anyObject())).thenReturn(expectedProject)
         `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
@@ -76,7 +76,7 @@ class ProjectApplicationServiceTest {
     }
 
     @Test
-    internal fun `create project will fail if project name already exist`() {
+    fun `create project will fail if project name already exist`() {
         `when`(projectRepository.existWithGivenName(projectName)).thenReturn(true)
 
         val exception = assertThrows<ProjectNameDuplicateException> {
@@ -88,7 +88,7 @@ class ProjectApplicationServiceTest {
     }
 
     @Test
-    internal fun `update project name`() {
+    fun `update project name`() {
         `when`(projectRepository.findById(projectId)).thenReturn(expectedProject)
         `when`(projectRepository.save(expectedProject)).thenReturn(expectedProject)
 
@@ -99,7 +99,7 @@ class ProjectApplicationServiceTest {
     }
 
     @Test
-    internal fun `test delete project`() {
+    fun `test delete project`() {
         `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId))
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(pipelineId, projectId)))
 
@@ -111,7 +111,7 @@ class ProjectApplicationServiceTest {
     }
 
     @Test
-    internal fun `test get pipeline details`() {
+    fun `test get pipeline details`() {
         `when`(projectRepository.findById(projectId)).thenReturn(expectedProject)
         `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(expectedPipeline))
 
@@ -124,7 +124,7 @@ class ProjectApplicationServiceTest {
     }
 
     @Test
-    internal fun `test get project list`() {
+    fun `test get project list`() {
         `when`(projectRepository.findAll()).thenReturn(listOf(expectedProject))
 
         val projects = projectApplicationService.getProjects()

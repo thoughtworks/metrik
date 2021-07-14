@@ -15,9 +15,8 @@ internal class LeadTimeForChangeCalculatorTest {
 
     private val milliSecondsForOneDay = 24 * 60 * 60 * 1000.0
 
-
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         leadTimeForChangeCalculator = LeadTimeForChangeCalculator()
     }
 
@@ -29,7 +28,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 1, 2
      */
     @Test
-    internal fun `case 1 should return value NaN when there is no deployment in given time range`() {
+    fun `case 1 should return value NaN when there is no deployment in given time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-1.json").readText()
         )
@@ -51,7 +50,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 6
      */
     @Test
-    internal fun `case 2 there is only 1 deployment and the deployment finish time is in the given time range`() {
+    fun `case 2 there is only 1 deployment and the deployment finish time is in the given time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-2.json").readText()
         )
@@ -74,7 +73,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 6
      */
     @Test
-    internal fun `case 3 there is only 1 deployment and the deployment finish time is same as start time`() {
+    fun `case 3 there is only 1 deployment and the deployment finish time is same as start time`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-3.json").readText()
         )
@@ -97,7 +96,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 3: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 6
      */
     @Test
-    internal fun `case 4 there is only 1 deployment and the deployment time is the end time`() {
+    fun `case 4 there is only 1 deployment and the deployment time is the end time`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-4.json").readText()
         )
@@ -119,7 +118,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 3 : start time 12: deploy to prod, SUCCESS, deployment finish time 17, two commits time: 10, 11
      */
     @Test
-    internal fun `case 5 there are 3 deployments but only the middle 1 deployment finish time in the time range`() {
+    fun `case 5 there are 3 deployments but only the middle 1 deployment finish time in the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5.json").readText()
         )
@@ -145,7 +144,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 3 : start time 12: deploy to prod, SUCCESS, deployment finish time 17, no commits
      */
     @Test
-    internal fun `case 5-1 there are three deployments without change set and only the middle 1 in the time range`() {
+    fun `case 5-1 there are three deployments without change set and only the middle 1 in the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-1.json").readText()
         )
@@ -164,7 +163,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 1 : start time 8: deploy to prod, SUCCESS, deployment finish time 8, two commits time: 8, 8
      */
     @Test
-    internal fun `case 5-2 there are one deployments with two commits with zero lead time for change`() {
+    fun `case 5-2 there are one deployments with two commits with zero lead time for change`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-2.json").readText()
         )
@@ -186,7 +185,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 4 : start time 18: deploy to prod, SUCCESS, deployment finish time 23, two commits time: 14, 15
      */
     @Test
-    internal fun `case 5-3 there are four deployments and the third deployment is in the time range`() {
+    fun `case 5-3 there are four deployments and the third deployment is in the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-5-3.json").readText()
         )
@@ -220,7 +219,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
-    internal fun `case 6 there are multiple builds with different status and there are three deployment with the middle one in time range`() {
+    fun `case 6 there are multiple builds with different status and there are three deployment with the middle one in time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-6.json").readText()
         )
@@ -246,7 +245,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 6 : start time 26: deploy to prod, OTHERS, deployment finish time 30, two commits time: 22, 23
      */
     @Test
-    internal fun `case 7 there are multiple builds with different status and wrong order and there are three deployment with the middle one in time range`() {
+    fun `case 7 there are multiple builds with different status and wrong order and there are three deployment with the middle one in time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-7.json").readText()
         )
@@ -271,7 +270,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 7 : start time 31: deploy to prod, SUCCESS, deployment finish time 36, two commits time: 28, 29
      */
     @Test
-    internal fun `case 8 there are two deployments before the time range`() {
+    fun `case 8 there are two deployments before the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-8.json").readText()
         )
@@ -300,7 +299,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * build 4 : start time 18: deploy to prod, SUCCESS, deployment finish time 23, two commits time: 16, 17
      */
     @Test
-    internal fun `case 9 there are 4 deployments and the middle two in the time range`() {
+    fun `case 9 there are 4 deployments and the middle two in the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-9.json").readText()
         )
@@ -340,7 +339,7 @@ internal class LeadTimeForChangeCalculatorTest {
      * result  = (  (44*4-37-38-33-34) + (34*2-16-17) + (17*5-10-11-12-6-7)  )*2/11*2
      */
     @Test
-    internal fun `case 10 there are 4 deployments and the last 3 in the time range`() {
+    fun `case 10 there are 4 deployments and the last 3 in the time range`() {
         val allBuilds: List<Build> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MLT-case-10.json").readText()
         )
@@ -356,7 +355,7 @@ internal class LeadTimeForChangeCalculatorTest {
 
 
     @Test
-    internal fun `should return level is low when MLT value is greater than 30 days`() {
+    fun `should return level is low when MLT value is greater than 30 days`() {
         val mltValue = 31
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -365,7 +364,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is low when MLT value is equals to 30 days`() {
+    fun `should return level is low when MLT value is equals to 30 days`() {
         val mltValue = 30
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -374,7 +373,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is medium when MLT value is less than 30 days and greater than 7 days`() {
+    fun `should return level is medium when MLT value is less than 30 days and greater than 7 days`() {
         val mltValue = 20
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -383,7 +382,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is medium when MLT value is equals to 7 days`() {
+    fun `should return level is medium when MLT value is equals to 7 days`() {
         val mltValue = 7
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -392,7 +391,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is high when MLT value is less than 7 days and greater than 1 day`() {
+    fun `should return level is high when MLT value is less than 7 days and greater than 1 day`() {
         val mltValue = 5
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -401,7 +400,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is high when MLT value is equals to 1 day`() {
+    fun `should return level is high when MLT value is equals to 1 day`() {
         val mltValue = 1.0
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -410,7 +409,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is elite when MLT value is less than 1 day`() {
+    fun `should return level is elite when MLT value is less than 1 day`() {
         val mltValue = 0.5
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -419,7 +418,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is elite when MLT value is equals to 0 day`() {
+    fun `should return level is elite when MLT value is equals to 0 day`() {
         val mltValue = 0.5
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)
@@ -428,7 +427,7 @@ internal class LeadTimeForChangeCalculatorTest {
     }
 
     @Test
-    internal fun `should return level is invalid when MLT value is NAN`() {
+    fun `should return level is invalid when MLT value is NAN`() {
         val mltValue = Double.NaN
 
         val level = leadTimeForChangeCalculator.calculateLevel(mltValue)

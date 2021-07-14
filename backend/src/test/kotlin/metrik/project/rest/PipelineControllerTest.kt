@@ -35,7 +35,7 @@ internal class PipelineControllerTest {
     private val projectId = "projectId"
 
     @Test
-    internal fun `should return OK when verify Jenkins pipeline successfully`() {
+    fun `should return OK when verify Jenkins pipeline successfully`() {
         val pipelineVerificationRequest = buildJenkinsPipelineVerificationRequest()
         Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(anyObject())
 
@@ -47,7 +47,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return OK when verify Bamboo pipeline successfully`() {
+    fun `should return OK when verify Bamboo pipeline successfully`() {
         val pipelineVerificationRequest = buildBambooPipelineVerificationRequest()
         Mockito.doNothing().`when`(pipelineApplicationService).verifyPipelineConfiguration(anyObject())
 
@@ -60,7 +60,7 @@ internal class PipelineControllerTest {
 
 
     @Test
-    internal fun `should return 200 when create Jenkins pipeline successfully`() {
+    fun `should return 200 when create Jenkins pipeline successfully`() {
         val pipelineRequest = buildJenkinsPipelineRequest()
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
@@ -76,7 +76,7 @@ internal class PipelineControllerTest {
 
 
     @Test
-    internal fun `should return 200 when create Bamboo pipeline successfully`() {
+    fun `should return 200 when create Bamboo pipeline successfully`() {
         val pipelineRequest = buildBambooPipelineRequest()
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
@@ -92,7 +92,7 @@ internal class PipelineControllerTest {
 
 
     @Test
-    internal fun `should return 200 when update Jenkins pipeline successfully`() {
+    fun `should return 200 when update Jenkins pipeline successfully`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -107,7 +107,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return 200 when update Bamboo pipeline successfully`() {
+    fun `should return 200 when update Bamboo pipeline successfully`() {
         val pipeline = buildPipeline(type = PipelineType.BAMBOO)
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -122,7 +122,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return 200 when get pipeline successfully`() {
+    fun `should return 200 when get pipeline successfully`() {
         val pipeline = buildPipeline()
         val pipelineId = pipeline.id
         val projectId = pipeline.projectId
@@ -136,7 +136,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return OK when delete pipeline successfully`() {
+    fun `should return OK when delete pipeline successfully`() {
         val pipelineId = "pipelineId"
         Mockito.doNothing().`when`(pipelineApplicationService).deletePipeline(projectId, pipelineId)
 
@@ -147,7 +147,7 @@ internal class PipelineControllerTest {
     }
 
     @Test
-    internal fun `should return PipelineStagesResponse when get pipeline stages successfully`() {
+    fun `should return PipelineStagesResponse when get pipeline stages successfully`() {
         val pipelineId = "pipelineId"
         val pipelineName = "pipelineName"
         val pipelineStagesResponse = PipelineStagesResponse(pipelineId, pipelineName, listOf("some stage"))
