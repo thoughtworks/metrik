@@ -2,30 +2,26 @@ package metrik.infrastructure.serializer
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
-import org.junit.jupiter.api.Test
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.eq
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
 import java.math.BigInteger
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 internal class NumberSerializerTest {
-
-    private lateinit var numberSerializer: NumberSerializer
-
-    @Mock
+    @MockK(relaxed = true)
     private lateinit var jsonGenerator: JsonGenerator
 
-    @Mock
+    @MockK(relaxed = true)
     private lateinit var serializerProvider: SerializerProvider
 
+    private lateinit var numberSerializer: NumberSerializer
 
     @BeforeEach
     fun setUp() {
@@ -35,56 +31,56 @@ internal class NumberSerializerTest {
     @Test
     fun should_write_value_when_serialize_big_decimal() {
         numberSerializer.serialize(BigDecimal.ONE, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(BigDecimal.ONE))
+        verify { jsonGenerator.writeNumber(BigDecimal.ONE) }
     }
 
     @Test
     fun should_write_value_when_serialize_big_integer() {
         numberSerializer.serialize(BigInteger.ONE, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(BigInteger.ONE))
+        verify { jsonGenerator.writeNumber(BigInteger.ONE) }
     }
 
     @Test
     fun should_write_value_when_serialize_long() {
         numberSerializer.serialize(Long.MIN_VALUE, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(Long.MIN_VALUE))
+        verify { jsonGenerator.writeNumber(Long.MIN_VALUE) }
     }
 
     @Test
     fun should_write_value_when_serialize_double() {
         numberSerializer.serialize(1.0, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq("1.00"))
+        verify { jsonGenerator.writeNumber("1.00") }
     }
 
     @Test
     fun should_write_value_when_serialize_float() {
         numberSerializer.serialize(1.0f, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq("1.00"))
+        verify { jsonGenerator.writeNumber("1.00") }
     }
 
     @Test
     fun should_write_value_when_serialize_double_nan() {
         numberSerializer.serialize(Double.NaN, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(Double.NaN))
+        verify { jsonGenerator.writeNumber(Double.NaN) }
     }
 
     @Test
     fun should_write_value_when_serialize_float_nan() {
         numberSerializer.serialize(Float.NaN, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(Float.NaN))
+        verify { jsonGenerator.writeNumber(Float.NaN) }
     }
 
     @Test
     fun should_write_value_when_serialize_value_not_int_byte_short() {
-        val mockNumber = mock(Number::class.java)
-        `when`(mockNumber.toString()).thenReturn("mockNumber")
+        val mockNumber = mockk<Number>()
+        every { mockNumber.toString() } returns "mockNumber"
         numberSerializer.serialize(mockNumber, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq("mockNumber"))
+        verify { jsonGenerator.writeNumber("mockNumber") }
     }
 
     @Test
     fun should_write_value_when_serialize_int() {
         numberSerializer.serialize(Int.MIN_VALUE, jsonGenerator, serializerProvider)
-        verify(jsonGenerator).writeNumber(eq(Int.MIN_VALUE))
+        verify { jsonGenerator.writeNumber(Int.MIN_VALUE) }
     }
 }
