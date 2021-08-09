@@ -53,8 +53,8 @@ internal class PipelineApplicationServiceTest {
     }
 
     @Test
-    fun `should invoke jenkinsPipelineService to verify when verifyPipeline() called given pipeline type is JENKINS`() {
-        val pipeline = buildPipeline().copy(type = PipelineType.JENKINS)
+    fun `should verify pipeline given pipeline type is JENKINS`() {
+        val pipeline = buildPipeline()
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 
@@ -65,7 +65,18 @@ internal class PipelineApplicationServiceTest {
 
     @Test
     fun `should verify pipeline given pipeline type is BAMBOO`() {
-        val pipeline = buildPipeline(PipelineType.BAMBOO).copy(type = PipelineType.BAMBOO)
+        val pipeline = buildPipeline(PipelineType.BAMBOO)
+
+        pipelineApplicationService.verifyPipelineConfiguration(pipeline)
+
+        verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
+            pipeline
+        )
+    }
+
+    @Test
+    fun `should verify pipeline given pipeline type is GITHUB_ACTIONS`() {
+        val pipeline = buildPipeline(PipelineType.GITHUB_ACTIONS)
 
         pipelineApplicationService.verifyPipelineConfiguration(pipeline)
 

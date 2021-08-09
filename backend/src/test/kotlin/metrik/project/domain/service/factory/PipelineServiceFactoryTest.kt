@@ -54,7 +54,7 @@ internal class PipelineServiceFactoryTest {
         pipelineServiceFactory.getService(PipelineType.GITHUB_ACTIONS).getStagesSortedByName("id")
         verify(exactly = 1) { githubActionsPipelineService.getStagesSortedByName("id") }
 
-        pipelineServiceFactory.getService(PipelineType.GITLAB).getStagesSortedByName("id")
+        pipelineServiceFactory.getService(PipelineType.NOT_SUPPORTED).getStagesSortedByName("id")
         verify(exactly = 1) { noopPipelineService.getStagesSortedByName("id") }
     }
 }

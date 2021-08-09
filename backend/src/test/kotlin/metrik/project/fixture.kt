@@ -1,11 +1,67 @@
 package metrik.project
 
-import metrik.project.rest.vo.request.BambooPipelineRequest
-import metrik.project.rest.vo.request.BambooVerificationRequest
-import metrik.project.rest.vo.request.JenkinsPipelineRequest
-import metrik.project.rest.vo.request.JenkinsVerificationRequest
+import metrik.project.TestConstants.bambooPipeline
+import metrik.project.TestConstants.githubActionsPipeline
+import metrik.project.TestConstants.jenkinsPipeline
+import metrik.project.TestConstants.noopPipeline
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
+import metrik.project.rest.vo.request.*
+
+
+
+object TestConstants{
+    private val pipelineID = "pipelineId"
+
+    private val projectId = "projectId"
+
+    private val name = "pipeline"
+
+    private val username = "username"
+
+    private val credential = "credential"
+
+    private val url = "url"
+
+    val jenkinsPipeline = Pipeline(
+        id = pipelineID,
+        projectId = projectId,
+        name = name,
+        username = username,
+        credential = credential,
+        url = url,
+        type = PipelineType.JENKINS
+    )
+    val bambooPipeline = Pipeline(
+        id = pipelineID,
+        projectId = projectId,
+        name = name,
+        username = username,
+        credential = credential,
+        url = url,
+        type = PipelineType.BAMBOO
+    )
+    val githubActionsPipeline = Pipeline(
+        id = pipelineID,
+        projectId = projectId,
+        name = name,
+        username = username,
+        credential = credential,
+        url = url,
+        type = PipelineType.GITHUB_ACTIONS
+    )
+    val noopPipeline = Pipeline(
+        id = pipelineID,
+        projectId = projectId,
+        name = name,
+        username = username,
+        credential = credential,
+        url = url,
+        type = PipelineType.NOT_SUPPORTED
+    )
+
+}
+
 
 fun buildJenkinsPipelineRequest() =
     JenkinsPipelineRequest(
@@ -22,6 +78,13 @@ fun buildBambooPipelineRequest() =
         url = "url"
     )
 
+fun buildGithubActionsPipelineRequest() =
+    GithubActionsPipelineRequest(
+        name = "pipeline",
+        credential = "credential",
+        url = "url"
+    )
+
 fun buildJenkinsPipelineVerificationRequest() = JenkinsVerificationRequest(
     url = "url",
     username = "username",
@@ -33,25 +96,16 @@ fun buildBambooPipelineVerificationRequest() = BambooVerificationRequest(
     credential = "credential",
 )
 
-fun buildPipeline(type: PipelineType = PipelineType.JENKINS): Pipeline {
-    if (type == PipelineType.JENKINS) {
-        return Pipeline(
-            id = "pipelineId",
-            projectId = "projectId",
-            name = "pipeline",
-            username = "username",
-            credential = "credential",
-            url = "url",
-            type = PipelineType.JENKINS
-        ).copy()
-    } else {
-        return Pipeline(
-            id = "pipelineId",
-            projectId = "projectId",
-            name = "pipeline",
-            credential = "credential",
-            url = "url",
-            type = PipelineType.BAMBOO
-        ).copy()
+fun buildGithubActionsPipelineVerificationRequest() = GithubActionVerificationRequest(
+    url = "url",
+    credential = "credential",
+)
+
+fun buildPipeline(type: PipelineType = PipelineType.NOT_SUPPORTED): Pipeline =
+    when(type){
+        PipelineType.JENKINS -> jenkinsPipeline.copy()
+        PipelineType.BAMBOO -> bambooPipeline.copy()
+        PipelineType.GITHUB_ACTIONS -> githubActionsPipeline.copy()
+        else -> noopPipeline.copy()
     }
-}
+
