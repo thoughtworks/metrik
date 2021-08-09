@@ -1,66 +1,55 @@
 package metrik.project
 
-import metrik.project.TestConstants.bambooPipeline
-import metrik.project.TestConstants.githubActionsPipeline
-import metrik.project.TestConstants.jenkinsPipeline
-import metrik.project.TestConstants.noopPipeline
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.rest.vo.request.*
 
 
+private const val pipelineID = "pipelineId"
+private const val projectId = "projectId"
+private const val name = "pipeline"
+private const val username = "username"
+private const val credential = "credential"
+private const val url = "url"
 
-object TestConstants{
-    private val pipelineID = "pipelineId"
+val jenkinsPipeline = Pipeline(
+    id = pipelineID,
+    projectId = projectId,
+    name = name,
+    username = username,
+    credential = credential,
+    url = url,
+    type = PipelineType.JENKINS
+)
+val bambooPipeline = Pipeline(
+    id = pipelineID,
+    projectId = projectId,
+    name = name,
+    username = username,
+    credential = credential,
+    url = url,
+    type = PipelineType.BAMBOO
+)
+val githubActionsPipeline = Pipeline(
+    id = pipelineID,
+    projectId = projectId,
+    name = name,
+    username = username,
+    credential = credential,
+    url = url,
+    type = PipelineType.GITHUB_ACTIONS
+)
+val noopPipeline = Pipeline(
+    id = pipelineID,
+    projectId = projectId,
+    name = name,
+    username = username,
+    credential = credential,
+    url = url,
+    type = PipelineType.NOT_SUPPORTED
+)
 
-    private val projectId = "projectId"
 
-    private val name = "pipeline"
-
-    private val username = "username"
-
-    private val credential = "credential"
-
-    private val url = "url"
-
-    val jenkinsPipeline = Pipeline(
-        id = pipelineID,
-        projectId = projectId,
-        name = name,
-        username = username,
-        credential = credential,
-        url = url,
-        type = PipelineType.JENKINS
-    )
-    val bambooPipeline = Pipeline(
-        id = pipelineID,
-        projectId = projectId,
-        name = name,
-        username = username,
-        credential = credential,
-        url = url,
-        type = PipelineType.BAMBOO
-    )
-    val githubActionsPipeline = Pipeline(
-        id = pipelineID,
-        projectId = projectId,
-        name = name,
-        username = username,
-        credential = credential,
-        url = url,
-        type = PipelineType.GITHUB_ACTIONS
-    )
-    val noopPipeline = Pipeline(
-        id = pipelineID,
-        projectId = projectId,
-        name = name,
-        username = username,
-        credential = credential,
-        url = url,
-        type = PipelineType.NOT_SUPPORTED
-    )
-
-}
 
 
 fun buildJenkinsPipelineRequest() =
