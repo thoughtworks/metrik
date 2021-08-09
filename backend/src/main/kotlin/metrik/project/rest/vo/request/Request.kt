@@ -22,12 +22,14 @@ data class ProjectRequest(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BambooPipelineRequest::class, name = "BAMBOO"),
-    JsonSubTypes.Type(value = JenkinsPipelineRequest::class, name = "JENKINS")
+    JsonSubTypes.Type(value = JenkinsPipelineRequest::class, name = "JENKINS"),
+    JsonSubTypes.Type(value = GithubActionsPipelineRequest::class, name = "GITHUB_ACTIONS")
 )
 abstract class PipelineRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
-    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO"], message = "type only allow JENKINS and BAMBOO")
+    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
+        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS")
     var type: String
 ) {
     abstract fun toPipeline(projectId: String, pipelineId: String): Pipeline
@@ -41,12 +43,14 @@ abstract class PipelineRequest(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BambooVerificationRequest::class, name = "BAMBOO"),
-    JsonSubTypes.Type(value = JenkinsVerificationRequest::class, name = "JENKINS")
+    JsonSubTypes.Type(value = JenkinsVerificationRequest::class, name = "JENKINS"),
+    JsonSubTypes.Type(value = GithubActionVerificationRequest::class, name = "GITHUB_ACTIONS")
 )
 abstract class PipelineVerificationRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
-    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO"], message = "type only allow JENKINS and BAMBOO")
+    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
+        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS")
     val type: String,
 ) {
     abstract fun toPipeline(): Pipeline
