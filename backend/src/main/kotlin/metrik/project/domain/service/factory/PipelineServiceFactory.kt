@@ -9,12 +9,14 @@ import org.springframework.stereotype.Component
 class PipelineServiceFactory(
     @Autowired private val jenkinsPipelineService: PipelineService,
     @Autowired private val bambooPipelineService: PipelineService,
+    @Autowired private val githubActionsPipelineService: PipelineService,
     @Autowired private val noopPipelineService: PipelineService
 ) {
     fun getService(pipelineType: PipelineType): PipelineService {
         return when (pipelineType) {
             PipelineType.JENKINS -> this.jenkinsPipelineService
             PipelineType.BAMBOO -> this.bambooPipelineService
+            PipelineType.GITHUB_ACTIONS -> this.githubActionsPipelineService
             else -> this.noopPipelineService
         }
     }

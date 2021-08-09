@@ -7,6 +7,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.service.bamboo.BambooPipelineService
+import metrik.project.domain.service.githubactions.GithubActionsPipelineService
 import metrik.project.domain.service.jenkins.JenkinsPipelineService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +22,9 @@ internal class PipelineServiceFactoryTest {
     private lateinit var bambooPipelineService: BambooPipelineService
 
     @MockK
+    private lateinit var githubActionsPipelineService: GithubActionsPipelineService
+
+    @MockK
     private lateinit var noopPipelineService: NoopPipelineService
 
     @InjectMockKs(overrideValues = true)
@@ -30,6 +34,7 @@ internal class PipelineServiceFactoryTest {
     fun setUp() {
         every { jenkinsPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { bambooPipelineService.getStagesSortedByName("id") } returns emptyList()
+        every { githubActionsPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { noopPipelineService.getStagesSortedByName("id") } returns emptyList()
     }
 
@@ -37,6 +42,7 @@ internal class PipelineServiceFactoryTest {
     fun `should get corresponding service instance given a valid PipelineType`() {
         verify(exactly = 0) { jenkinsPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { bambooPipelineService.getStagesSortedByName("id") }
+        verify(exactly = 0) { githubActionsPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { noopPipelineService.getStagesSortedByName("id") }
 
         pipelineServiceFactory.getService(PipelineType.JENKINS).getStagesSortedByName("id")
@@ -46,6 +52,9 @@ internal class PipelineServiceFactoryTest {
         verify(exactly = 1) { bambooPipelineService.getStagesSortedByName("id") }
 
         pipelineServiceFactory.getService(PipelineType.GITHUB_ACTIONS).getStagesSortedByName("id")
+        verify(exactly = 1) { githubActionsPipelineService.getStagesSortedByName("id") }
+
+        pipelineServiceFactory.getService(PipelineType.GITLAB).getStagesSortedByName("id")
         verify(exactly = 1) { noopPipelineService.getStagesSortedByName("id") }
     }
 }
