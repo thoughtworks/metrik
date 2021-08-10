@@ -97,13 +97,19 @@ class BuildRepository {
     }
 
     fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
+        val (needSyncBuilds, syncStartIndex) = getBuildNumbersNeedSyncNoFlatten(pipelineId, maxBuildNumber)
+
+        val needSyncBuildNumbers = needSyncBuilds.map { it.number }
+
+        return listOf(needSyncBuildNumbers, syncStartIndex).flatten()
+    }
+
+    fun getBuildNumbersNeedSyncNoFlatten(pipelineId: String, maxBuildNumber: Int): Pair<List<Build>, List<Int>> {
         val twoWeeks: Long = 14
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
         val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
             .filter { it.timestamp > ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond() }
-        val needSyncBuildNumbers = needSyncBuilds.map { it.number }
-
-        return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
+        return Pair(needSyncBuilds, listOf(syncStartIndex..maxBuildNumber).flatten())
     }
 }

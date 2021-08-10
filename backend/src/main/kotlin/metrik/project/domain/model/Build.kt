@@ -18,7 +18,7 @@ data class Stage(
     val completedTimeMillis: Long? = null,
 ) {
     fun getStageDoneTime(): Long {
-        return this.completedTimeMillis ?: this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
+        return this.completedTimeMillis ?: (this.startTimeMillis + this.durationMillis + this.pauseDurationMillis)
     }
 }
 
