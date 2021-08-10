@@ -58,7 +58,6 @@ internal class PipelineControllerTest {
         ).andExpect(status().isOk)
     }
 
-
     @Test
     fun `should return 200 when create Jenkins pipeline successfully`() {
         val pipelineRequest = buildJenkinsPipelineRequest()
@@ -73,7 +72,6 @@ internal class PipelineControllerTest {
         )
             .andExpect(status().isCreated)
     }
-
 
     @Test
     fun `should return 200 when create Bamboo pipeline successfully`() {
@@ -90,7 +88,6 @@ internal class PipelineControllerTest {
             .andExpect(status().isCreated)
     }
 
-
     @Test
     fun `should return 200 when update Jenkins pipeline successfully`() {
         val pipeline = buildPipeline()
@@ -99,7 +96,7 @@ internal class PipelineControllerTest {
         `when`(pipelineApplicationService.updatePipeline(anyObject())).thenReturn(pipeline)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
+            MockMvcRequestBuilders.put("/api/project/$projectId/pipeline/$pipelineId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buildJenkinsPipelineRequest()))
         )
@@ -114,7 +111,7 @@ internal class PipelineControllerTest {
         `when`(pipelineApplicationService.updatePipeline(anyObject())).thenReturn(pipeline)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/project/${projectId}/pipeline/${pipelineId}")
+            MockMvcRequestBuilders.put("/api/project/$projectId/pipeline/$pipelineId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buildJenkinsPipelineRequest()))
         )
@@ -129,7 +126,7 @@ internal class PipelineControllerTest {
         `when`(pipelineApplicationService.getPipeline(projectId, pipelineId)).thenReturn(pipeline)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/api/project/${projectId}/pipeline/${pipelineId}")
+            MockMvcRequestBuilders.get("/api/project/$projectId/pipeline/$pipelineId")
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
@@ -141,7 +138,7 @@ internal class PipelineControllerTest {
         Mockito.doNothing().`when`(pipelineApplicationService).deletePipeline(projectId, pipelineId)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/api/project/${projectId}/pipeline/${pipelineId}")
+            MockMvcRequestBuilders.delete("/api/project/$projectId/pipeline/$pipelineId")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
     }

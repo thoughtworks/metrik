@@ -24,12 +24,8 @@ class GithubActionsPipelineService(
     private var restTemplate: RestTemplate,
     @Autowired
     private var buildRepository: BuildRepository
-) : PipelineService{
+) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
-
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
-        TODO("Not yet implemented")
-    }
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
@@ -51,15 +47,21 @@ class GithubActionsPipelineService(
         } catch (ex: HttpClientErrorException) {
             throw PipelineConfigVerifyException("Verify failed")
         }
-
     }
 
-    override fun getStagesSortedByName(pipelineId: String): List<String> {
+    override fun getStagesSortedByName(pipelineId: String): List<String> =
+        buildRepository.getAllBuilds(pipelineId)
+            .flatMap { it.stages }
+            .map { it.name }
+            .distinct()
+            .sortedBy { it.toUpperCase() }
+            .toList()
+
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         TODO("Not yet implemented")
     }
 
-    private companion object{
+    private companion object {
         const val urlSuffix = "/actions/runs?per_page=1"
     }
-
 }

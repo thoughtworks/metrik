@@ -1,13 +1,13 @@
 package metrik.metrics.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import metrik.metrics.domain.model.CalculationPeriod
+import metrik.metrics.domain.model.LEVEL
+import metrik.metrics.domain.model.Metrics
 import metrik.metrics.rest.vo.FourKeyMetricsResponse
 import metrik.metrics.rest.vo.MetricsInfo
 import metrik.metrics.rest.vo.MetricsQueryRequest
 import metrik.metrics.rest.vo.PipelineStageRequest
-import metrik.metrics.domain.model.LEVEL
-import metrik.metrics.domain.model.Metrics
-import metrik.metrics.domain.model.CalculationPeriod
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired

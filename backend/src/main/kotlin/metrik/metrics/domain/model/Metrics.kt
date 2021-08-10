@@ -3,7 +3,6 @@ package metrik.metrics.domain.model
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import metrik.infrastructure.serializer.NumberSerializer
 
-
 enum class LEVEL {
     ELITE, HIGH, MEDIUM, LOW, INVALID
 }

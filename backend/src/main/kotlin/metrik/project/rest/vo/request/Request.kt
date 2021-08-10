@@ -2,8 +2,8 @@ package metrik.project.rest.vo.request
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import metrik.project.rest.validation.EnumConstraint
 import metrik.project.domain.model.Pipeline
+import metrik.project.rest.validation.EnumConstraint
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
@@ -13,7 +13,6 @@ data class ProjectRequest(
     @field:Valid
     val pipeline: PipelineRequest
 )
-
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -28,13 +27,14 @@ data class ProjectRequest(
 abstract class PipelineRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
-    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
-        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS")
+    @field:EnumConstraint(
+        acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
+        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS"
+    )
     var type: String
 ) {
     abstract fun toPipeline(projectId: String, pipelineId: String): Pipeline
 }
-
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -49,8 +49,10 @@ abstract class PipelineRequest(
 abstract class PipelineVerificationRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
-    @field:EnumConstraint(acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
-        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS")
+    @field:EnumConstraint(
+        acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
+        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS"
+    )
     val type: String,
 ) {
     abstract fun toPipeline(): Pipeline

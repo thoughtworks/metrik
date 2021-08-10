@@ -11,7 +11,7 @@ class GithubActionsPipelineRequest(
     val credential: String,
 
     url: String
-): PipelineRequest(url, PipelineType.GITHUB_ACTIONS.toString()) {
+) : PipelineRequest(url, PipelineType.GITHUB_ACTIONS.toString()) {
     override fun toPipeline(projectId: String, pipelineId: String): Pipeline {
         return with(this) {
             Pipeline(

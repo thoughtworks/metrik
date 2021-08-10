@@ -62,7 +62,7 @@ internal class JenkinsPipelineServiceTest {
         val baseUrl = "http://localhost"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
-        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+        mockServer.expect(requestTo("$baseUrl/wfapi/"))
             .andRespond(
                 withBadRequest()
             )
@@ -86,7 +86,7 @@ internal class JenkinsPipelineServiceTest {
         val baseUrl = "http://localhost"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
 
-        mockServer.expect(requestTo("${baseUrl}/wfapi/"))
+        mockServer.expect(requestTo("$baseUrl/wfapi/"))
             .andRespond(
                 withServerError()
             )
@@ -138,7 +138,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = pipelineId,
@@ -181,7 +181,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
@@ -220,7 +220,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
@@ -259,7 +259,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
@@ -298,7 +298,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
@@ -344,7 +344,7 @@ internal class JenkinsPipelineServiceTest {
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
         val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-                "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
+            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
         val getBuild1DetailUrl = "$baseUrl/1/wfapi/describe"
         val getBuild2DetailUrl = "$baseUrl/2/wfapi/describe"
         val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()

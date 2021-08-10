@@ -2,6 +2,7 @@ package metrik.project.domain.service.bamboo
 
 import metrik.MockitoHelper
 import metrik.exception.ApplicationException
+import metrik.project.builds
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -30,7 +31,6 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
-
 @ExtendWith(SpringExtension::class)
 @Import(BambooPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -50,9 +50,9 @@ internal class BambooPipelineServiceTest {
     private val credential = "fake-credential"
     private val baseUrl = "http://localhost:80"
     private val planKey = "fake-plan-key"
-    private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
+    private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/$planKey.json"
     private val getBuildDetailsUrl =
-        "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
+        "$baseUrl/rest/api/latest/result/$planKey-1.json?expand=changes.change,stages.stage.results"
     private lateinit var mockServer: MockRestServiceServer
     private val userInputURL = "http://localhost:80/browse/FKM-FKMS"
 
@@ -63,7 +63,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/project/"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -76,7 +76,7 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 400`() {
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/project/"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
@@ -88,19 +88,6 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        val builds = listOf(
-            Build(
-                stages = listOf(
-                    Stage(name = "clone"), Stage(name = "build"),
-                    Stage(name = "zzz"), Stage(name = "amazing")
-                )
-            ),
-            Build(
-                stages = listOf(
-                    Stage(name = "build"), Stage("good")
-                )
-            )
-        )
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
 
         val result = bambooPipelineService.getStagesSortedByName(pipelineId)
@@ -121,7 +108,7 @@ internal class BambooPipelineServiceTest {
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/result/$planKey.json"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -139,7 +126,7 @@ internal class BambooPipelineServiceTest {
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/result/$planKey.json"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )

@@ -1,13 +1,18 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.exception.ApplicationException
+import metrik.project.builds
+import metrik.project.credential
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.pipelineID
+import metrik.project.url
+import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -41,7 +46,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/actions/runs?per_page=1"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$url/actions/runs?per_page=1"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -56,7 +61,7 @@ internal class GithubActionsPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 400`() {
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/actions/runs?per_page=1"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$url/actions/runs?per_page=1"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
@@ -68,10 +73,17 @@ internal class GithubActionsPipelineServiceTest {
         }
     }
 
-    private companion object{
-        private const val baseUrl = "http://localhost:80"
-        private const val credential = "fake-credential"
-        private const val userInputURL = "http://localhost:80/test_project/test_repo"
-    }
+    @Test
+    fun `should return sorted stage name lists when getStagesSortedByName() called`() {
+        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(builds)
 
+        val result = githubActionsPipelineService.getStagesSortedByName(pipelineID)
+
+        Assertions.assertEquals(5, result.size)
+        Assertions.assertEquals("amazing", result[0])
+        Assertions.assertEquals("build", result[1])
+        Assertions.assertEquals("clone", result[2])
+        Assertions.assertEquals("good", result[3])
+        Assertions.assertEquals("zzz", result[4])
+    }
 }

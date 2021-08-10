@@ -28,7 +28,6 @@ class JenkinsPipelineRequest(
     }
 }
 
-
 class JenkinsVerificationRequest(
     @field:NotBlank(message = "Username cannot be empty")
     val username: String,

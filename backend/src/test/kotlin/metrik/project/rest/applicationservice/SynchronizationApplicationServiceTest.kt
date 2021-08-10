@@ -1,9 +1,8 @@
 package metrik.project.rest.applicationservice
 
 import metrik.MockitoHelper.anyObject
-import metrik.project.domain.model.Build
 import metrik.exception.ApplicationException
-import metrik.project.rest.vo.response.SyncProgress
+import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
@@ -11,6 +10,7 @@ import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.factory.PipelineServiceFactory
+import metrik.project.rest.vo.response.SyncProgress
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

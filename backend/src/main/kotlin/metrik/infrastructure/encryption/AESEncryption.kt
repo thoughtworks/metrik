@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.collections.ArrayList
 
 @Configuration
 data class AESEncryptionProperties(
@@ -72,7 +73,7 @@ class DatabaseEncryptionAspect {
 
     @Before(
         "execution(* org.springframework.data.mongodb.core.MongoTemplate.insert(..)) && " +
-                "args(pipelines, entityClass)"
+            "args(pipelines, entityClass)"
     )
     fun <T> encryptBeforeSavingToDB(pipelines: ArrayList<T>, entityClass: Class<T>) {
         if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
@@ -87,7 +88,7 @@ class DatabaseEncryptionAspect {
 
     @AfterReturning(
         pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.find(..)) && " +
-                "args(query, entityClass)",
+            "args(query, entityClass)",
         returning = "pipelines"
     )
     fun <T> decryptAfterRetrievingFromDB(query: Query, entityClass: Class<T>, pipelines: List<*>) {

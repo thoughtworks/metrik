@@ -47,11 +47,10 @@ data class Build(
         endTimestamp: Long
     ): Boolean {
         return this.stages.any {
-            it.name == deployStageName
-                    && it.status == status
-                    && it.getStageDoneTime() in startTimestamp..endTimestamp
+            it.name == deployStageName &&
+                it.status == status &&
+                it.getStageDoneTime() in startTimestamp..endTimestamp
         }
-
     }
 
     fun containsGivenDeploymentBeforeGivenTimestamp(
@@ -60,9 +59,9 @@ data class Build(
         timestamp: Long
     ): Boolean {
         return this.stages.any {
-            it.name == deployStageName
-                    && it.status == status
-                    && it.getStageDoneTime() < timestamp
+            it.name == deployStageName &&
+                it.status == status &&
+                it.getStageDoneTime() < timestamp
         }
     }
 
@@ -72,5 +71,3 @@ data class Build(
         }
     }
 }
-
-

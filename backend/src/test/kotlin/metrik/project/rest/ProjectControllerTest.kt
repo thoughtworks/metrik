@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import metrik.MockitoHelper.anyObject
 import metrik.project.buildJenkinsPipelineRequest
 import metrik.project.rest.applicationservice.ProjectApplicationService
-import metrik.project.rest.vo.request.ProjectRequest
 import metrik.project.rest.vo.request.BambooPipelineRequest
+import metrik.project.rest.vo.request.ProjectRequest
 import metrik.project.rest.vo.response.PipelineResponse
 import metrik.project.rest.vo.response.ProjectDetailResponse
 import metrik.project.rest.vo.response.ProjectResponse
@@ -71,7 +71,7 @@ internal class ProjectControllerTest {
         `when`(projectApplicationService.getProjectDetails(projectId)).thenReturn(projectDetailsResponse)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/api/project/${projectId}")
+            MockMvcRequestBuilders.get("/api/project/$projectId")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(projectId))
@@ -102,7 +102,8 @@ internal class ProjectControllerTest {
     @Test
     fun `should create project and bamboo pipeline`() {
         val projectRequest = ProjectRequest(
-            projectName, BambooPipelineRequest(
+            projectName,
+            BambooPipelineRequest(
                 name = "pipeline",
                 credential = "credential",
                 url = "url"
@@ -132,7 +133,7 @@ internal class ProjectControllerTest {
         )
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/project/${projectId}")
+            MockMvcRequestBuilders.put("/api/project/$projectId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectNewName)
         ).andExpect(status().isOk)

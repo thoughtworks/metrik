@@ -115,16 +115,18 @@ internal class PipelineApplicationServiceTest {
         verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
-        verify(pipelineRepository).save(argThat {
-            assertEquals(projectId, it.projectId)
-            assertNotNull(it.id)
-            assertEquals(pipeline.name, it.name)
-            assertEquals(pipeline.username, it.username)
-            assertEquals(pipeline.credential, it.credential)
-            assertEquals(pipeline.url, it.url)
-            assertEquals(pipeline.type, it.type)
-            true
-        })
+        verify(pipelineRepository).save(
+            argThat {
+                assertEquals(projectId, it.projectId)
+                assertNotNull(it.id)
+                assertEquals(pipeline.name, it.name)
+                assertEquals(pipeline.username, it.username)
+                assertEquals(pipeline.credential, it.credential)
+                assertEquals(pipeline.url, it.url)
+                assertEquals(pipeline.type, it.type)
+                true
+            }
+        )
         assertEquals(pipeline.name, result.name)
         assertEquals(pipeline.url, result.url)
         assertEquals(pipeline.username, result.username)
@@ -146,16 +148,18 @@ internal class PipelineApplicationServiceTest {
         verify(pipelineServiceMock, times(1)).verifyPipelineConfiguration(
             pipeline
         )
-        verify(pipelineRepository).save(argThat {
-            assertEquals(pipeline.projectId, it.projectId)
-            assertEquals(pipeline.id, it.id)
-            assertEquals(pipeline.name, it.name)
-            assertEquals(pipeline.username, it.username)
-            assertEquals(pipeline.credential, it.credential)
-            assertEquals(pipeline.url, it.url)
-            assertEquals(pipeline.type, it.type)
-            true
-        })
+        verify(pipelineRepository).save(
+            argThat {
+                assertEquals(pipeline.projectId, it.projectId)
+                assertEquals(pipeline.id, it.id)
+                assertEquals(pipeline.name, it.name)
+                assertEquals(pipeline.username, it.username)
+                assertEquals(pipeline.credential, it.credential)
+                assertEquals(pipeline.url, it.url)
+                assertEquals(pipeline.type, it.type)
+                true
+            }
+        )
         assertEquals(pipeline.name, result.name)
         assertEquals(pipeline.url, result.url)
         assertEquals(pipeline.username, result.username)

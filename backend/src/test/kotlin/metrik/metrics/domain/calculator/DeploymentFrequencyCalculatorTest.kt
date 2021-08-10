@@ -34,8 +34,8 @@ internal class DeploymentFrequencyCalculatorTest {
             this.javaClass.getResource("/calculator/builds-for-DF-case-1.json").readText()
         )
 
-        val startTimestamp = 1610236800000L  // 2021-01-10
-        val endTimestamp = 1611100800000L   // 2021-01-20
+        val startTimestamp = 1610236800000L // 2021-01-10
+        val endTimestamp = 1611100800000L // 2021-01-20
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val deploymentCount =
@@ -53,8 +53,8 @@ internal class DeploymentFrequencyCalculatorTest {
     @Test
     fun `should get deployment count with success target stage status when calculate deployment count`() {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
-        val startTimestamp = 1609286400000L  // 2020-12-30
-        val endTimestamp = 1612137600000L   // 2021-02-01
+        val startTimestamp = 1609286400000L // 2020-12-30
+        val endTimestamp = 1612137600000L // 2021-02-01
 
         val mockBuildList: List<Build> =
             jacksonObjectMapper().readValue(

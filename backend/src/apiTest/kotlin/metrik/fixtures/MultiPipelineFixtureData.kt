@@ -7,7 +7,6 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 
-
 val multiPipeline1 = Pipeline(
     id = "600a701221048076f92c4e43",
     projectId = "601cbae825c1392117aa0429",
@@ -26,7 +25,6 @@ val multiPipeline2 = Pipeline(
     url = "http://localhost:8001/job/4km-multi-pipeline-test-2/",
     type = PipelineType.JENKINS
 )
-
 
 val multiPipelineBuild1 = Build(
     pipelineId = "600a701221048076f92c4e43",

@@ -148,7 +148,6 @@ internal class MeanTimeToRestoreCalculatorTest {
         assertThat(averageMTTR.toDouble()).isNaN
     }
 
-
     /**
      * test file: builds-for-MTTR-case-6.json
      * build 1, pipeline 1 : deploy to prod, SUCCESS, end at 2020-12-29

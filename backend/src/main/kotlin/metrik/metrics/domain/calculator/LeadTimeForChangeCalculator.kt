@@ -1,8 +1,8 @@
 package metrik.metrics.domain.calculator
 
+import metrik.metrics.domain.model.LEVEL
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Status
-import metrik.metrics.domain.model.LEVEL
 import org.springframework.stereotype.Component
 
 @Component
@@ -12,7 +12,6 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         private const val EARLIEST_TIMESTAMP: Long = 0
         private const val MILLI_SECONDS_FOR_ONE_DAY = 24 * 60 * 60 * 1000
     }
-
 
     override fun calculateValue(
         allBuilds: List<Build>,
@@ -26,7 +25,10 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     }
 
     private fun getLeadTimeForChangeList(
-        allBuilds: List<Build>, startTimestamp: Long, endTimestamp: Long, targetStage: String?
+        allBuilds: List<Build>,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String?
     ): List<Long> {
         if (targetStage == null) return emptyList()
         val buildOrderByTimestampAscending = allBuilds.sortedBy { it.timestamp }

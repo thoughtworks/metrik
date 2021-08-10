@@ -3,14 +3,14 @@ package metrik.project.rest.applicationservice
 import metrik.MockitoHelper.anyObject
 import metrik.MockitoHelper.argThat
 import metrik.project.buildJenkinsPipelineRequest
-import metrik.project.rest.vo.request.ProjectRequest
-import metrik.project.exception.ProjectNameDuplicateException
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
+import metrik.project.exception.ProjectNameDuplicateException
+import metrik.project.rest.vo.request.ProjectRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -66,13 +66,15 @@ internal class ProjectApplicationServiceTest {
             projectApplicationService.createProject(ProjectRequest(projectName, pipeline))
 
         assertEquals(projectDetailResponse.id, projectId)
-        verify(pipelineApplicationService).verifyPipelineConfiguration(argThat {
-            assertEquals(pipeline.url, it.url)
-            assertEquals(pipeline.username, it.username)
-            assertEquals(pipeline.credential, it.credential)
-            assertEquals(PipelineType.JENKINS, it.type)
-            true
-        })
+        verify(pipelineApplicationService).verifyPipelineConfiguration(
+            argThat {
+                assertEquals(pipeline.url, it.url)
+                assertEquals(pipeline.username, it.username)
+                assertEquals(pipeline.credential, it.credential)
+                assertEquals(PipelineType.JENKINS, it.type)
+                true
+            }
+        )
     }
 
     @Test

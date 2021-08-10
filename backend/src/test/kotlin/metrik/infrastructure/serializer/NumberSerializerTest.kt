@@ -2,9 +2,8 @@ package metrik.infrastructure.serializer
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeEach
-
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -25,7 +24,6 @@ internal class NumberSerializerTest {
 
     @Mock
     private lateinit var serializerProvider: SerializerProvider
-
 
     @BeforeEach
     fun setUp() {

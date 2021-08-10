@@ -7,7 +7,6 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 
-
 val ltPipeline1 = Pipeline(
     id = "6012505c42fbb8439fc08e17",
     projectId = "601cbae825c1392117aa0429",
@@ -77,7 +76,8 @@ val ltBuild1 = Build(
             startTimeMillis = 1598284800000,
             durationMillis = 3600000,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.SUCCESS,
             name = "deploy to prod",
             startTimeMillis = 1598288400000,
@@ -108,7 +108,8 @@ val ltBuild2 = Build(
             startTimeMillis = 1598284800000,
             durationMillis = 3600000,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.FAILED,
             name = "deploy to prod",
             startTimeMillis = 1598288400000,
@@ -139,7 +140,8 @@ val ltBuild3 = Build(
             startTimeMillis = 1598284800000,
             durationMillis = 3600000,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.OTHER,
             name = "deploy to prod",
             startTimeMillis = 1598288400000,
@@ -170,7 +172,8 @@ val ltBuild4 = Build(
             startTimeMillis = 1598284800000,
             durationMillis = 3600000,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.SUCCESS,
             name = "deploy to prod",
             startTimeMillis = 1598288400000,
@@ -194,7 +197,8 @@ val ltBuild5 = Build(
             startTimeMillis = 1598284800000,
             durationMillis = 100,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.FAILED,
             name = "deploy to prod",
             startTimeMillis = 1598284800100,
@@ -225,7 +229,8 @@ val ltBuild6 = Build(
             startTimeMillis = 1598292000000,
             durationMillis = 100,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.SUCCESS,
             name = "deploy to prod",
             startTimeMillis = 1598292000100,
@@ -249,7 +254,8 @@ val ltBuild7 = Build(
             startTimeMillis = 1598292000000,
             durationMillis = 100,
             pauseDurationMillis = 0
-        ), Stage(
+        ),
+        Stage(
             status = Status.SUCCESS,
             name = "deploy to prod",
             startTimeMillis = 1598292000100,

@@ -64,7 +64,6 @@ internal class LeadTimeForChangeCalculatorTest {
         assertEquals(5.0, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
 
-
     /**
      * test file: builds-for-MLT-case-3.json
      * pipeline 1
@@ -87,7 +86,6 @@ internal class LeadTimeForChangeCalculatorTest {
         assertEquals(5.0, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
 
-
     /**
      * test file: builds-for-MLT-case-raw-build-summary-4.json
      * pipeline 1
@@ -109,7 +107,6 @@ internal class LeadTimeForChangeCalculatorTest {
 
         assertEquals(5.0, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
-
 
     /**
      * test file: builds-for-MLT-case-5.json
@@ -233,7 +230,6 @@ internal class LeadTimeForChangeCalculatorTest {
         assertEquals(60.0 / 8, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
 
-
     /**
      * test file: builds-for-MLT-case-7.json
      * build 3 : start time 12: deploy to prod, OTHERS, deployment finish time 14, no commits
@@ -259,7 +255,6 @@ internal class LeadTimeForChangeCalculatorTest {
         assertEquals(10.0, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
 
-
     /**
      * test file: builds-for-MLT-case-8.json
      * build 2 : start time 8: deploy to prod, FAILED, deployment finish time 11, two commits time: 4, 5
@@ -283,7 +278,6 @@ internal class LeadTimeForChangeCalculatorTest {
 
         assertEquals(10.0, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
-
 
     /**
      * test file: builds-for-MLT-case-9.json
@@ -352,7 +346,6 @@ internal class LeadTimeForChangeCalculatorTest {
 
         assertEquals(9.818181818181818, leadTimeForChangeValue.toDouble() * milliSecondsForOneDay)
     }
-
 
     @Test
     fun `should return level is low when MLT value is greater than 30 days`() {

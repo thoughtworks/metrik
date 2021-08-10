@@ -97,11 +97,13 @@ internal class PipelineRepositoryTest {
         `when`(mongoTemplate.save<Pipeline>(anyObject())).thenReturn(pipeline)
 
         pipelineRepository.save(pipeline)
-        verify(mongoTemplate).save<Pipeline>(argThat {
-            assertEquals(pipeline.id, it.id)
-            assertEquals(pipeline.name, it.name)
-            true
-        })
+        verify(mongoTemplate).save<Pipeline>(
+            argThat {
+                assertEquals(pipeline.id, it.id)
+                assertEquals(pipeline.name, it.name)
+                true
+            }
+        )
     }
 
     @Test
