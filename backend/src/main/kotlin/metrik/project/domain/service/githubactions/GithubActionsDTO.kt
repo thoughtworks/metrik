@@ -25,13 +25,15 @@ data class BuildDetailDTO(var workflowRuns: MutableList<WorkflowRuns>)
 
 @JsonNaming(SnakeCaseStrategy::class)
 data class WorkflowRuns(
+    val id: String,
     val name: String,
     val runNumber: Int = 0,
     val status: String,
     val conclusion: String,
     val url: String,
     val createdAt: ZonedDateTime?,
-    val updatedAt: ZonedDateTime?
+    val updatedAt: ZonedDateTime?,
+    val jobs: MutableList<Jobs> = mutableListOf()
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
@@ -42,3 +44,23 @@ data class WorkflowRuns(
             else -> null
         }
 }
+
+@JsonNaming(SnakeCaseStrategy::class)
+data class Jobs(
+    val runId: String,
+    val name: String,
+    val status: String,
+    val conclusion: String,
+    val startedAt: ZonedDateTime?,
+    val completedAt: ZonedDateTime?,
+    val steps: List<Steps>
+)
+
+@JsonNaming(SnakeCaseStrategy::class)
+data class Steps(
+    val name: String,
+    val status: String,
+    val conclusion: String,
+    val startedAt: ZonedDateTime?,
+    val completedAt: ZonedDateTime?
+)

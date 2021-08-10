@@ -85,9 +85,15 @@ class GithubActionsPipelineService(
             )
 
             val retrieveBuildDetails = {
-                val newBuildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, workflowID, entity)
+                val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, workflowID, entity)
 
-                val InProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
+                val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
+
+                buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
+
+                buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
+
+
             }
             TODO("Not yet implemented")
         } catch (ex: HttpServerErrorException) {
@@ -183,6 +189,15 @@ class GithubActionsPipelineService(
         }
     }
 
+    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Jobs{
+        val url = "${getDomain(pipeline.url)}${urlSuffix}/${runID}/jobs"
+        logger.info("Get jobs in run: ${runID} - Sending request to [$url] with entity [$entity]")
+        val response = restTemplate.exchange<Jobs>(url, HttpMethod.GET, entity)
+        logger.info("Get jobs in run - Response from [$url]: $response")
+        return response.body!!
+    }
+
+
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>, workflowID: String): Int {
         val url = "${getDomain(pipeline.url)}$urlRepoWorkflow/$workflowID/runs?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
@@ -201,6 +216,7 @@ class GithubActionsPipelineService(
         val workflowID = workflows.workflows.filter { it.name == pipeline.id }
         return workflowID.first().id
     }
+
 
     private companion object {
         const val urlSummarySuffix = "/actions/runs?per_page=1"
