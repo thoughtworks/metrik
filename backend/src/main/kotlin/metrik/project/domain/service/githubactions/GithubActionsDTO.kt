@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
+import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import org.slf4j.LoggerFactory
@@ -22,15 +23,6 @@ enum class GithubActionsConclusion(val value: String?) {
     OTHER(null)
 }
 
-data class WorkflowRepository(
-    val workflows: List<WorkFlowDetails>
-)
-
-data class WorkFlowDetails(
-    val id: String,
-    val name: String
-)
-
 @JsonNaming(SnakeCaseStrategy::class)
 data class BuildSummaryDTO(
     val totalCount: Int = 0
@@ -47,9 +39,9 @@ data class WorkflowRuns(
     val status: String,
     val conclusion: String,
     val url: String,
+    val headCommit: HeadCommit,
     val createdAt: ZonedDateTime?,
     val updatedAt: ZonedDateTime?,
-    val jobs: MutableList<Job> = mutableListOf()
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
@@ -74,20 +66,35 @@ data class WorkflowRuns(
         )
 
         try {
-            val stages = jobs.mapNotNull { it.convertToMetrikBuildStage() }
+
+            val status = getBuildExecutionStatus()
+
+            if (status == Status.IN_PROGRESS) {
+                return null
+            }
 
             val startTimeMillis = getBuildTimestamp(createdAt)
             val completedTimeMillis = getBuildTimestamp(updatedAt)
             val durationMillis: Long = completedTimeMillis - startTimeMillis
 
+            val stage = Stage(
+                name,
+                status,
+                startTimeMillis,
+                durationMillis,
+                0,
+                completedTimeMillis
+            )
+
             val build = Build(
                 pipelineId,
                 runNumber,
-                getBuildExecutionStatus(),
+                status,
                 durationMillis,
                 startTimeMillis,
                 url,
-                stages
+                listOf(stage),
+                listOf(headCommit.convertToMetrikCommit())
             )
 
             logger.info(
@@ -102,48 +109,17 @@ data class WorkflowRuns(
     }
 }
 
-@JsonNaming(SnakeCaseStrategy::class)
-data class Job(
-    val runId: String,
-    val name: String,
-    val status: String,
-    val conclusion: String,
-    val startedAt: ZonedDateTime?,
-    val completedAt: ZonedDateTime?,
+data class HeadCommit(
+    val id: String,
+    val message: String,
+    val timestamp: ZonedDateTime
 ) {
-    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    private fun getStageTimestamp(timestamp: ZonedDateTime?): Long {
-        return timestamp!!.toTimestamp()
-    }
-
-    private fun getStageExecutionStatus(): Status =
-        when (conclusion) {
-            GithubActionsConclusion.SUCCESS.value ->
-                Status.SUCCESS
-            GithubActionsConclusion.FAILURE.value ->
-                Status.FAILED
-            else -> Status.OTHER
-        }
-
-    fun convertToMetrikBuildStage(): Stage {
-        logger.info("Github Actions converting: Started converting StageDTO [$this]")
-
-        val startTimeMillis = getStageTimestamp(startedAt)
-        val completedTimeMillis = getStageTimestamp(completedAt)
-        val durationMillis: Long = completedTimeMillis - startTimeMillis
-
-        val metrikStage = Stage(
-            name,
-            getStageExecutionStatus(),
-            startTimeMillis,
-            durationMillis,
-            0,
-            completedTimeMillis
+    fun convertToMetrikCommit(): Commit =
+        Commit(
+            id,
+            timestamp.toTimestamp(),
+            timestamp.toString(),
+            message
         )
-
-        logger.info("Github Actions converting: Stage converted result: [$metrikStage]")
-
-        return metrikStage
-    }
 }

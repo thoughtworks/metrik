@@ -86,5 +86,4 @@ internal class GithubActionsPipelineServiceTest {
         Assertions.assertEquals("good", result[3])
         Assertions.assertEquals("zzz", result[4])
     }
-
 }

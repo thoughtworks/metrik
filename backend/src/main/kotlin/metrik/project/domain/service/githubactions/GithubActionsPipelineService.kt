@@ -68,12 +68,11 @@ class GithubActionsPipelineService(
         val credential = pipeline.credential
         val headers = RequestUtil.buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
         val entity = HttpEntity<String>(headers)
-        val workflowID = getWorkflowID(pipeline, entity)
 
         val progressCounter = AtomicInteger(0)
 
         try {
-            val maxBuildNumber = getMaxBuildNumber(pipeline, entity, workflowID)
+            val maxBuildNumber = getMaxBuildNumber(pipeline, entity)
             val (inProgressBuildsToSync, newBuildsToSync) =
                 buildRepository.getBuildNumbersNeedSyncNoFlatten(pipeline.id, maxBuildNumber)
 
@@ -84,13 +83,13 @@ class GithubActionsPipelineService(
                     "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
-            val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, workflowID, entity)
+            val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, entity)
 
             val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
 
             buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
 
-            buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
+//            buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
 
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.mapNotNull {
                 val convertedBuild = it.convertToMetrikBuild(pipeline.id)
@@ -126,7 +125,6 @@ class GithubActionsPipelineService(
     private fun getNewBuildDetails(
         pipeline: Pipeline,
         buildNumber: Int,
-        workflowID: String,
         entity: HttpEntity<String>
     ): BuildDetailDTO {
 
@@ -137,7 +135,7 @@ class GithubActionsPipelineService(
         for (page in 1..callTimes) {
 
             val url =
-                "${getDomain(pipeline.url)}$urlRepoWorkflow/$workflowID/runs?per_page=$maxPerPage&page=$page"
+                "${getDomain(pipeline.url)}$urlSuffix?per_page=$maxPerPage&page=$page"
 
             logger.info("Get build details - Sending request to [$url] with entity [$entity]")
             var responseEntity: ResponseEntity<BuildDetailDTO>
@@ -170,7 +168,7 @@ class GithubActionsPipelineService(
             run {
                 val runID = URL(build.url).path.split("/").last()
                 val url =
-                    "${getDomain(pipeline.url)}$urlRepoWorkflow/actions/runs/$runID"
+                    "${getDomain(pipeline.url)}$urlSuffix/$runID"
                 logger.info("Get build details - Sending request to [$url] with entity [$entity]")
                 var responseEntity: ResponseEntity<WorkflowRuns>
 
@@ -209,16 +207,16 @@ class GithubActionsPipelineService(
         }
     }
 
-    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Job {
-        val url = "${getDomain(pipeline.url)}$urlSuffix/$runID/jobs"
-        logger.info("Get jobs in run: $runID - Sending request to [$url] with entity [$entity]")
-        val response = restTemplate.exchange<Job>(url, HttpMethod.GET, entity)
-        logger.info("Get jobs in run - Response from [$url]: $response")
-        return response.body!!
-    }
+//    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Job {
+//        val url = "${getDomain(pipeline.url)}$urlSuffix/$runID/jobs"
+//        logger.info("Get jobs in run: $runID - Sending request to [$url] with entity [$entity]")
+//        val response = restTemplate.exchange<Job>(url, HttpMethod.GET, entity)
+//        logger.info("Get jobs in run - Response from [$url]: $response")
+//        return response.body!!
+//    }
 
-    private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>, workflowID: String): Int {
-        val url = "${getDomain(pipeline.url)}$urlRepoWorkflow/$workflowID/runs?per_page=1"
+    private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
+        val url = "${getDomain(pipeline.url)}$urlSuffix?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")
@@ -226,19 +224,9 @@ class GithubActionsPipelineService(
         return buildSummaryDTO.totalCount
     }
 
-    private fun getWorkflowID(pipeline: Pipeline, entity: HttpEntity<String>): String {
-        val url = "${getDomain(pipeline.url)}$urlRepoWorkflow"
-        logger.info("Get Github Actions workflow name - Sending request to [$url] with entity [$entity]\"")
-        val response = restTemplate.exchange<WorkflowRepository>(url, HttpMethod.GET, entity)
-        logger.info("Get Github Actions workflow name - Response from [$url]: $response")
-        val workflows = response.body!!
-        val workflowID = workflows.workflows.filter { it.name == pipeline.id }
-        return workflowID.first().id
-    }
-
     private companion object {
         const val urlSummarySuffix = "/actions/runs?per_page=1"
-        const val urlRepoWorkflow = "/actions/workflows"
+//        const val urlRepoWorkflow = "/actions/workflows"
         const val urlSuffix = "/actions/runs"
         const val maxPerPage = 100
     }
