@@ -87,38 +87,4 @@ internal class GithubActionsPipelineServiceTest {
         Assertions.assertEquals("zzz", result[4])
     }
 
-//    @Test
-//    fun `should sync builds given build has no stages`() {
-//        val mockServer = MockRestServiceServer.createServer(restTemplate)
-//
-//        `when`(buildRepository.getBuildNumbersNeedSync(projectId, 1)).thenReturn(listOf(1))
-//        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildDetailsUrl))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//        bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-//
-//        val build = Build(
-//            pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
-//            url = "$baseUrl/rest/api/latest/result/$planKey-1",
-//            stages = emptyList(),
-//            changeSets = emptyList()
-//        )
-//
-//        Mockito.verify(buildRepository, Mockito.times(1)).save(build)
-//    }
 }

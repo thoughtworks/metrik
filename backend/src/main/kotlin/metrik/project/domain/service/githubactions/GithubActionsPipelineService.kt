@@ -84,18 +84,38 @@ class GithubActionsPipelineService(
                     "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
-            val retrieveBuildDetails = {
-                val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, workflowID, entity)
+            val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, workflowID, entity)
 
-                val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
+            val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
 
-                buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
+            buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
 
-                buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
+            buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
 
+            val retrieveBuildDetails = buildDetailResponse.workflowRuns.mapNotNull {
+                val convertedBuild = it.convertToMetrikBuild(pipeline.id)
+                if (convertedBuild != null) {
+                    buildRepository.save(convertedBuild)
+                }
 
+                emitCb(
+                    SyncProgress(
+                        pipeline.id,
+                        pipeline.name,
+                        progressCounter.incrementAndGet(),
+                        totalBuildNumbersToSync
+                    )
+                )
+
+                logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/$totalBuildNumbersToSync]")
+                convertedBuild
             }
-            TODO("Not yet implemented")
+
+            logger.info(
+                "For Github Actions pipeline [${pipeline.id}] - Successfully synced [$totalBuildNumbersToSync] builds"
+            )
+
+            return retrieveBuildDetails
         } catch (ex: HttpServerErrorException) {
             throw SynchronizationException("Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -189,14 +209,13 @@ class GithubActionsPipelineService(
         }
     }
 
-    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Jobs{
-        val url = "${getDomain(pipeline.url)}${urlSuffix}/${runID}/jobs"
-        logger.info("Get jobs in run: ${runID} - Sending request to [$url] with entity [$entity]")
-        val response = restTemplate.exchange<Jobs>(url, HttpMethod.GET, entity)
+    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Job {
+        val url = "${getDomain(pipeline.url)}$urlSuffix/$runID/jobs"
+        logger.info("Get jobs in run: $runID - Sending request to [$url] with entity [$entity]")
+        val response = restTemplate.exchange<Job>(url, HttpMethod.GET, entity)
         logger.info("Get jobs in run - Response from [$url]: $response")
         return response.body!!
     }
-
 
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>, workflowID: String): Int {
         val url = "${getDomain(pipeline.url)}$urlRepoWorkflow/$workflowID/runs?per_page=1"
@@ -216,7 +235,6 @@ class GithubActionsPipelineService(
         val workflowID = workflows.workflows.filter { it.name == pipeline.id }
         return workflowID.first().id
     }
-
 
     private companion object {
         const val urlSummarySuffix = "/actions/runs?per_page=1"

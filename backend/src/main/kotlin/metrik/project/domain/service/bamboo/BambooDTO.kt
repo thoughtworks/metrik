@@ -60,6 +60,7 @@ data class BuildDetailDTO(
         logger.info(
             "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
         )
+
         val buildTimestamp = getBuildStartedTimestamp() ?: return null
 
         try {
