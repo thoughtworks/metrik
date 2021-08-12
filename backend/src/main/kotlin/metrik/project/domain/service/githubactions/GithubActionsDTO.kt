@@ -20,6 +20,10 @@ enum class GithubActionsConclusion(val value: String?) {
     FAILURE("failure"),
     CANCELLED("cancelled"),
     SUCCESS("success"),
+    ACTION_REQUIRED("action_required"),
+    SKIPPED("skipped"),
+    STALE("stale"),
+    TIMED_OUT("timed_out"),
     OTHER(null)
 }
 

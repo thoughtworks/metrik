@@ -43,7 +43,7 @@ val githubActionsPipeline = Pipeline(
     name = name,
     username = username,
     credential = credential,
-    url = url,
+    url = userInputURL,
     type = PipelineType.GITHUB_ACTIONS
 )
 val noopPipeline = Pipeline(

@@ -19,6 +19,7 @@ class BuildRepository {
     companion object {
         private const val PROP_PIPELINEID: String = "pipelineId"
         private const val PROP_NUMBER: String = "number"
+        private const val CREATED_TIMESTAMP: String = "timestamp"
         private const val PROP_RESULT: String = "result"
     }
 
@@ -92,24 +93,34 @@ class BuildRepository {
             .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)
-        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result?.number}]")
+        logger.info(
+            "Query result the most recent build through build number in pipeline [$pipelineId] is [${result?.number}]"
+        )
         return result
     }
 
     fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
-        val (needSyncBuilds, syncStartIndex) = getBuildNumbersNeedSyncNoFlatten(pipelineId, maxBuildNumber)
-
-        val needSyncBuildNumbers = needSyncBuilds.map { it.number }
-
-        return listOf(needSyncBuildNumbers, syncStartIndex).flatten()
-    }
-
-    fun getBuildNumbersNeedSyncNoFlatten(pipelineId: String, maxBuildNumber: Int): Pair<List<Build>, List<Int>> {
         val twoWeeks: Long = 14
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
         val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
             .filter { it.timestamp > ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond() }
-        return Pair(needSyncBuilds, listOf(syncStartIndex..maxBuildNumber).flatten())
+        val needSyncBuildNumbers = needSyncBuilds.map { it.number }
+
+        return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
     }
+
+    fun getLatestBuild(pipelineId: String): Build? {
+        val query = Query
+            .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
+            .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
+            .limit(1)
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        logger.info(
+            "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
+        )
+        return result
+    }
+
+
 }

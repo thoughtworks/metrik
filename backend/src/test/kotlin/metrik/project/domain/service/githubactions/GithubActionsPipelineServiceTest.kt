@@ -4,6 +4,7 @@ import metrik.exception.ApplicationException
 import metrik.project.builds
 import metrik.project.credential
 import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineType
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.pipelineID
 import metrik.project.url
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -86,4 +88,28 @@ internal class GithubActionsPipelineServiceTest {
         Assertions.assertEquals("good", result[3])
         Assertions.assertEquals("zzz", result[4])
     }
+
+//    @Test
+//    fun `should sync builds given build has no stages`(){
+//        `when`(buildRepository.getBuildNumbersNeedSyncNoFlatten(pipelineID, 1)).thenReturn(
+//            Pair(emptyList(), listOf(1))
+//        )
+//        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
+//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+//            .andRespond(
+//                MockRestResponseCreators.withSuccess(
+//                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
+//                    MediaType.APPLICATION_JSON
+//                )
+//            )
+//
+//    }
+
+
+    private companion object{
+        private val baseUrl = "http://localhost:80/test_project/test_repo"
+        private val totslBuildsUrl = "$baseUrl"
+    }
+
+
 }

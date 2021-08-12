@@ -1,7 +1,6 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.RequestUtil
-import metrik.infrastructure.utlils.RequestUtil.getDomain
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
@@ -43,7 +42,7 @@ class GithubActionsPipelineService(
         val entity = HttpEntity<String>(headers)
 
         try {
-            val url = "${getDomain(pipeline.url)}$urlSummarySuffix"
+            val url = "${pipeline.url}$urlSummarySuffix"
             logger.info("Github Actions verification - Sending request to [$url] with entity [$entity]")
             val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
             logger.info("Github Actions verification - Response from [$url]: $responseEntity")
@@ -71,55 +70,55 @@ class GithubActionsPipelineService(
 
         val progressCounter = AtomicInteger(0)
 
-        try {
-            val maxBuildNumber = getMaxBuildNumber(pipeline, entity)
-            val (inProgressBuildsToSync, newBuildsToSync) =
-                buildRepository.getBuildNumbersNeedSyncNoFlatten(pipeline.id, maxBuildNumber)
+        TODO("need to implement")
 
-            val totalBuildNumbersToSync = inProgressBuildsToSync.size + newBuildsToSync.size
-
-            logger.info(
-                "For Github Actions pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                    "[$totalBuildNumbersToSync] of them need to be synced"
-            )
-
-            val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, entity)
-
-            val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
-
-            buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
-
-//            buildDetailResponse.workflowRuns.forEach { it.jobs.add(getJobsInWorkflow(pipeline, it.id, entity)) }
-
-            val retrieveBuildDetails = buildDetailResponse.workflowRuns.mapNotNull {
-                val convertedBuild = it.convertToMetrikBuild(pipeline.id)
-                if (convertedBuild != null) {
-                    buildRepository.save(convertedBuild)
-                }
-
-                emitCb(
-                    SyncProgress(
-                        pipeline.id,
-                        pipeline.name,
-                        progressCounter.incrementAndGet(),
-                        totalBuildNumbersToSync
-                    )
-                )
-
-                logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/$totalBuildNumbersToSync]")
-                convertedBuild
-            }
-
-            logger.info(
-                "For Github Actions pipeline [${pipeline.id}] - Successfully synced [$totalBuildNumbersToSync] builds"
-            )
-
-            return retrieveBuildDetails
-        } catch (ex: HttpServerErrorException) {
-            throw SynchronizationException("Verify website unavailable")
-        } catch (ex: HttpClientErrorException) {
-            throw SynchronizationException("Verify failed")
-        }
+//        try {
+//            val maxBuildNumber = getMaxBuildNumber(pipeline, entity)
+//            val (inProgressBuildsToSync, newBuildsToSync) =
+//                buildRepository.getBuildNumbersNeedSyncNoFlatten(pipeline.id, maxBuildNumber)
+//
+//            val totalBuildNumbersToSync = inProgressBuildsToSync.size + newBuildsToSync.size
+//
+//            logger.info(
+//                "For Github Actions pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
+//                    "[$totalBuildNumbersToSync] of them need to be synced"
+//            )
+//
+//            val buildDetailResponse = getNewBuildDetails(pipeline, newBuildsToSync.size, entity)
+//
+//            val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuildsToSync, entity)
+//
+//            buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
+//
+//            val retrieveBuildDetails = buildDetailResponse.workflowRuns.mapNotNull {
+//                val convertedBuild = it.convertToMetrikBuild(pipeline.id)
+//                if (convertedBuild != null) {
+//                    buildRepository.save(convertedBuild)
+//                }
+//
+//                emitCb(
+//                    SyncProgress(
+//                        pipeline.id,
+//                        pipeline.name,
+//                        progressCounter.incrementAndGet(),
+//                        totalBuildNumbersToSync
+//                    )
+//                )
+//
+//                logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/$totalBuildNumbersToSync]")
+//                convertedBuild
+//            }
+//
+//            logger.info(
+//                "For Github Actions pipeline [${pipeline.id}] - Successfully synced [$totalBuildNumbersToSync] builds"
+//            )
+//
+//            return retrieveBuildDetails
+//        } catch (ex: HttpServerErrorException) {
+//            throw SynchronizationException("Verify website unavailable")
+//        } catch (ex: HttpClientErrorException) {
+//            throw SynchronizationException("Verify failed")
+//        }
     }
 
     private fun getNewBuildDetails(
@@ -135,7 +134,7 @@ class GithubActionsPipelineService(
         for (page in 1..callTimes) {
 
             val url =
-                "${getDomain(pipeline.url)}$urlSuffix?per_page=$maxPerPage&page=$page"
+                "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$page"
 
             logger.info("Get build details - Sending request to [$url] with entity [$entity]")
             var responseEntity: ResponseEntity<BuildDetailDTO>
@@ -168,7 +167,7 @@ class GithubActionsPipelineService(
             run {
                 val runID = URL(build.url).path.split("/").last()
                 val url =
-                    "${getDomain(pipeline.url)}$urlSuffix/$runID"
+                    "${pipeline.url}$urlSuffix/$runID"
                 logger.info("Get build details - Sending request to [$url] with entity [$entity]")
                 var responseEntity: ResponseEntity<WorkflowRuns>
 
@@ -188,7 +187,7 @@ class GithubActionsPipelineService(
         return totalWorkflowRuns
     }
 
-    protected fun <T> withApplicationException(action: () -> T, url: String): T? {
+    fun <T> withApplicationException(action: () -> T, url: String): T? {
         try {
             return action()
         } catch (clientErrorException: HttpClientErrorException) {
@@ -201,22 +200,16 @@ class GithubActionsPipelineService(
                 )
                 return null
             } else {
-                logger.error("Getting Github Actions build details failed, URL: [$url], exception: [$clientErrorException]")
+                logger.error(
+                    "Getting Github Actions build details failed, URL: [$url], exception: [$clientErrorException]"
+                )
                 throw clientErrorException
             }
         }
     }
 
-//    private fun getJobsInWorkflow(pipeline: Pipeline, runID: String, entity: HttpEntity<String>): Job {
-//        val url = "${getDomain(pipeline.url)}$urlSuffix/$runID/jobs"
-//        logger.info("Get jobs in run: $runID - Sending request to [$url] with entity [$entity]")
-//        val response = restTemplate.exchange<Job>(url, HttpMethod.GET, entity)
-//        logger.info("Get jobs in run - Response from [$url]: $response")
-//        return response.body!!
-//    }
-
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
-        val url = "${getDomain(pipeline.url)}$urlSuffix?per_page=1"
+        val url = "${pipeline.url}$urlSuffix?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")
@@ -226,7 +219,6 @@ class GithubActionsPipelineService(
 
     private companion object {
         const val urlSummarySuffix = "/actions/runs?per_page=1"
-//        const val urlRepoWorkflow = "/actions/workflows"
         const val urlSuffix = "/actions/runs"
         const val maxPerPage = 100
     }

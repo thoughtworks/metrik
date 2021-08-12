@@ -17,6 +17,8 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.findAll
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.ZonedDateTime
+import org.apache.logging.log4j.util.Strings
+
 
 @DataMongoTest
 @ExtendWith(SpringExtension::class)
@@ -159,6 +161,22 @@ internal class BuildRepositoryTest {
     }
 
     @Test
+    fun `should get latest build`(){
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Build(pipelineId, 1, timestamp=20201123),
+            Build(pipelineId, 2, timestamp=20201122),
+            Build(pipelineId, 5, timestamp=20191202),
+            Build(pipelineId, 6, timestamp=0)
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(1, buildRepository.getLatestBuild(pipelineId)!!.number)
+    }
+
+    @Test
     fun `should get all build numbers that need a data synchronization given the most recent build number`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
@@ -173,4 +191,6 @@ internal class BuildRepositoryTest {
         val givenMostRecentBuild = 8
         assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
     }
+
+
 }
