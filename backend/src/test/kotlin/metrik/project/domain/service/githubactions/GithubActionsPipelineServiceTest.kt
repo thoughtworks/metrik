@@ -1,28 +1,28 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.exception.ApplicationException
-import metrik.project.builds
-import metrik.project.credential
-import metrik.project.domain.model.Pipeline
+import metrik.project.*
+import metrik.project.domain.model.*
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.pipelineID
-import metrik.project.url
-import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(SpringExtension::class)
 @Import(GithubActionsPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -87,24 +87,53 @@ internal class GithubActionsPipelineServiceTest {
         Assertions.assertEquals("zzz", result[4])
     }
 
-//    @Test
-//    fun `should sync builds given build has no stages`(){
-//        `when`(buildRepository.getBuildNumbersNeedSyncNoFlatten(pipelineID, 1)).thenReturn(
-//            Pair(emptyList(), listOf(1))
-//        )
-//        mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//    }
+    @Test
+    fun `should sync all builds given first time synchronization and builds need to sync are below maxPerPage`() {
+        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(null)
+        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(emptyList())
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource(
+                        "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    this.javaClass.getResource(
+                        "/pipeline/githubactions/runs/empty-run.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
+
+        verify(buildRepository, times(1)).save(githubActionsBuildOne)
+        verify(buildRepository, times(1)).save(githubActionsBuildTwo)
+    }
 
     private companion object {
-        private val baseUrl = "http://localhost:80/test_project/test_repo"
-        private val totslBuildsUrl = "$baseUrl"
+        private const val baseUrl = "http://localhost:80/test_project/test_repo"
+        private const val getRunsBaseUrl = "$baseUrl/actions/runs"
+        private const val verifyPipelineUrl = "$getRunsBaseUrl?per_page=1"
     }
 }

@@ -10,6 +10,7 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.mockEmitCb
 import metrik.project.rest.vo.response.SyncProgress
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +20,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -31,6 +31,7 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(SpringExtension::class)
 @Import(BambooPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -43,8 +44,6 @@ internal class BambooPipelineServiceTest {
 
     @MockBean
     private lateinit var buildRepository: BuildRepository
-
-    private val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
     private val pipelineId = "1"
     private val credential = "fake-credential"

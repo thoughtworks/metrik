@@ -1,15 +1,14 @@
 package metrik.project
 
-import metrik.project.domain.model.Build
-import metrik.project.domain.model.Pipeline
-import metrik.project.domain.model.PipelineType
-import metrik.project.domain.model.Stage
+import metrik.project.domain.model.*
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionVerificationRequest
 import metrik.project.rest.vo.request.GithubActionsPipelineRequest
 import metrik.project.rest.vo.request.JenkinsPipelineRequest
 import metrik.project.rest.vo.request.JenkinsVerificationRequest
+import metrik.project.rest.vo.response.SyncProgress
+import org.mockito.kotlin.mock
 
 const val pipelineID = "pipelineId"
 const val projectId = "projectId"
@@ -18,6 +17,7 @@ const val username = "username"
 const val credential = "credential"
 const val url = "http://localhost:80"
 const val userInputURL = "http://localhost:80/test_project/test_repo"
+val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
 val jenkinsPipeline = Pipeline(
     id = pipelineID,
@@ -54,6 +54,51 @@ val noopPipeline = Pipeline(
     credential = credential,
     url = url,
     type = PipelineType.NOT_SUPPORTED
+)
+
+val stage = Stage(
+    "CI",
+    Status.SUCCESS,
+    1628680261000,
+    16000,
+    0,
+    1628680277000
+)
+val commit = Commit(
+    "3986a82cf9f852e9938f7e7984d1e95742854baa",
+    1628646391000,
+    "2021-08-11T01:46:31Z[UTC]",
+    "Create blank.yml"
+)
+
+val githubActionsBuildOne = Build(
+    pipelineId = pipelineID,
+    number = 1111111111,
+    result = Status.SUCCESS,
+    duration = 16000,
+    timestamp = 1628680261000,
+    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
+    stages = listOf(
+        stage
+    ),
+    changeSets = listOf(
+        commit
+    )
+)
+
+val githubActionsBuildTwo = Build(
+    pipelineId = pipelineID,
+    number = 1111111112,
+    result = Status.SUCCESS,
+    duration = 16000,
+    timestamp = 1628680261000,
+    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
+    stages = listOf(
+        stage
+    ),
+    changeSets = listOf(
+        commit
+    )
 )
 
 val builds = listOf(

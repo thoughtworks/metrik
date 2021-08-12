@@ -77,16 +77,18 @@ data class WorkflowRuns(
             val completedTimeMillis = getBuildTimestamp(updatedAt)
             val durationMillis: Long = completedTimeMillis - startTimeMillis
 
-            val stage: Stage =
+            val stage: List<Stage> =
                 when (status) {
-                    Status.IN_PROGRESS -> Stage()
-                    else -> Stage(
-                        name,
-                        status,
-                        startTimeMillis,
-                        durationMillis,
-                        0,
-                        completedTimeMillis
+                    Status.IN_PROGRESS -> emptyList()
+                    else -> listOf(
+                        Stage(
+                            name,
+                            status,
+                            startTimeMillis,
+                            durationMillis,
+                            0,
+                            completedTimeMillis
+                        )
                     )
                 }
 
@@ -97,7 +99,7 @@ data class WorkflowRuns(
                 durationMillis,
                 startTimeMillis,
                 url,
-                listOf(stage),
+                stage,
                 listOf(headCommit.convertToMetrikCommit())
             )
 
