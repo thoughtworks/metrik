@@ -24,6 +24,7 @@ enum class GithubActionsConclusion(val value: String?) {
     SKIPPED("skipped"),
     STALE("stale"),
     TIMED_OUT("timed_out"),
+    NEUTRAL("neutral"),
     OTHER(null)
 }
 
@@ -41,7 +42,7 @@ data class WorkflowRuns(
     val name: String,
     val runNumber: Int,
     val status: String,
-    val conclusion: String,
+    val conclusion: String?,
     val url: String,
     val headCommit: HeadCommit,
     val createdAt: ZonedDateTime,

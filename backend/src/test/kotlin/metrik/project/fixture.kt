@@ -71,24 +71,9 @@ val commit = Commit(
     "Create blank.yml"
 )
 
-val githubActionsBuildOne = Build(
+val githubActionsBuild = Build(
     pipelineId = pipelineID,
     number = 1111111111,
-    result = Status.SUCCESS,
-    duration = 16000,
-    timestamp = 1628680261000,
-    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
-    stages = listOf(
-        stage
-    ),
-    changeSets = listOf(
-        commit
-    )
-)
-
-val githubActionsBuildTwo = Build(
-    pipelineId = pipelineID,
-    number = 1111111112,
     result = Status.SUCCESS,
     duration = 16000,
     timestamp = 1628680261000,
