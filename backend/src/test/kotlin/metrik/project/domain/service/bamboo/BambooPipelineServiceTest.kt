@@ -146,7 +146,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -186,7 +186,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -229,7 +229,7 @@ internal class BambooPipelineServiceTest {
             name = pipelineName
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -284,7 +284,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -325,7 +325,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -370,7 +370,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -411,7 +411,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }

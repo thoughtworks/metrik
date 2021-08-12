@@ -21,6 +21,7 @@ class BuildRepository {
         private const val PROP_NUMBER: String = "number"
         private const val CREATED_TIMESTAMP: String = "timestamp"
         private const val PROP_RESULT: String = "result"
+        private const val twoWeeks: Long = 14
     }
 
     @Autowired
@@ -99,16 +100,19 @@ class BuildRepository {
         return result
     }
 
-    fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
-        val twoWeeks: Long = 14
+    fun getBambooJenkinsBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
-        val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
-            .filter { it.timestamp > ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond() }
+        val needSyncBuilds = getInProgressBuilds(pipelineId)
         val needSyncBuildNumbers = needSyncBuilds.map { it.number }
 
         return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
     }
+
+    fun getInProgressBuilds(pipelineId: String, weeks: Long = twoWeeks): List<Build> =
+        getByBuildStatus(pipelineId, Status.IN_PROGRESS)
+            .filter { it.timestamp > ZonedDateTime.now().minusDays(weeks).toEpochSecond() }
+
 
     fun getLatestBuild(pipelineId: String): Build? {
         val query = Query

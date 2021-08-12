@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.findAll
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.ZonedDateTime
-import org.apache.logging.log4j.util.Strings
 
 
 @DataMongoTest
@@ -177,7 +176,42 @@ internal class BuildRepositoryTest {
     }
 
     @Test
-    fun `should get all build numbers that need a data synchronization given the most recent build number`() {
+    fun `should get in-progress builds`(){
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val twoWeeks: Long = 14
+        val now = ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond()
+        val inProgressBuild = Build(
+            pipelineId,
+            1,
+            result = Status.IN_PROGRESS,
+            timestamp = now + 10
+        )
+        val buildsToSave = listOf(
+            inProgressBuild,
+            Build(
+                pipelineId,
+                2,
+                result=Status.FAILED,
+                timestamp = now + 10
+            ),
+            Build(
+                pipelineId,
+                5,
+                result=Status.SUCCESS,
+                timestamp = now + 10
+            ),
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        val builds = listOf(inProgressBuild)
+
+        assertEquals(builds, buildRepository.getInProgressBuilds(pipelineId))
+    }
+
+    @Test
+    fun `should get all build numbers that need a data synchronization given the most recent build number in Jenkins and Bamboo`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(
@@ -189,8 +223,10 @@ internal class BuildRepositoryTest {
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         val givenMostRecentBuild = 8
-        assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
+        assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
     }
+
+
 
 
 }

@@ -79,7 +79,7 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = buildRepository.getBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
+            val buildNumbersToSync = buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
 
             logger.info(
                 "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
