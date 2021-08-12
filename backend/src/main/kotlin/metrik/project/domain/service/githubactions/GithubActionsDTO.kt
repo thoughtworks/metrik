@@ -37,20 +37,20 @@ data class BuildDetailDTO(var workflowRuns: MutableList<WorkflowRuns>)
 
 @JsonNaming(SnakeCaseStrategy::class)
 data class WorkflowRuns(
-    val id: String,
+    val id: Int,
     val name: String,
     val runNumber: Int,
     val status: String,
     val conclusion: String,
     val url: String,
     val headCommit: HeadCommit,
-    val createdAt: ZonedDateTime?,
-    val updatedAt: ZonedDateTime?,
+    val createdAt: ZonedDateTime,
+    val updatedAt: ZonedDateTime,
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    private fun getBuildTimestamp(timestamp: ZonedDateTime?): Long {
-        return timestamp!!.toTimestamp()
+    fun getBuildTimestamp(timestamp: ZonedDateTime): Long {
+        return timestamp.toTimestamp()
     }
 
     private fun getBuildExecutionStatus(): Status =
@@ -64,7 +64,7 @@ data class WorkflowRuns(
             else -> Status.OTHER
         }
 
-    fun convertToMetrikBuild(pipelineId: String): Build? {
+    fun convertToMetrikBuild(pipelineId: String): Build {
         logger.info(
             "Github Actions converting: Started converting WorkflowRuns [$this] for pipeline [$pipelineId]"
         )
@@ -73,26 +73,26 @@ data class WorkflowRuns(
 
             val status = getBuildExecutionStatus()
 
-            if (status == Status.IN_PROGRESS) {
-                return null
-            }
-
             val startTimeMillis = getBuildTimestamp(createdAt)
             val completedTimeMillis = getBuildTimestamp(updatedAt)
             val durationMillis: Long = completedTimeMillis - startTimeMillis
 
-            val stage = Stage(
-                name,
-                status,
-                startTimeMillis,
-                durationMillis,
-                0,
-                completedTimeMillis
-            )
+            val stage: Stage =
+                when (status) {
+                    Status.IN_PROGRESS -> Stage()
+                    else -> Stage(
+                        name,
+                        status,
+                        startTimeMillis,
+                        durationMillis,
+                        0,
+                        completedTimeMillis
+                    )
+                }
 
             val build = Build(
                 pipelineId,
-                runNumber,
+                id,
                 status,
                 durationMillis,
                 startTimeMillis,

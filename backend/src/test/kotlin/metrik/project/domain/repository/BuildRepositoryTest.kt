@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.findAll
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.ZonedDateTime
 
-
 @DataMongoTest
 @ExtendWith(SpringExtension::class)
 @Import(BuildRepository::class)
@@ -160,14 +159,14 @@ internal class BuildRepositoryTest {
     }
 
     @Test
-    fun `should get latest build`(){
+    fun `should get latest build`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(
-            Build(pipelineId, 1, timestamp=20201123),
-            Build(pipelineId, 2, timestamp=20201122),
-            Build(pipelineId, 5, timestamp=20191202),
-            Build(pipelineId, 6, timestamp=0)
+            Build(pipelineId, 1, timestamp = 20201123),
+            Build(pipelineId, 2, timestamp = 20201122),
+            Build(pipelineId, 5, timestamp = 20191202),
+            Build(pipelineId, 6, timestamp = 0)
         )
 
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
@@ -176,7 +175,7 @@ internal class BuildRepositoryTest {
     }
 
     @Test
-    fun `should get in-progress builds`(){
+    fun `should get in-progress builds`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val twoWeeks: Long = 14
@@ -192,13 +191,13 @@ internal class BuildRepositoryTest {
             Build(
                 pipelineId,
                 2,
-                result=Status.FAILED,
+                result = Status.FAILED,
                 timestamp = now + 10
             ),
             Build(
                 pipelineId,
                 5,
-                result=Status.SUCCESS,
+                result = Status.SUCCESS,
                 timestamp = now + 10
             ),
         )
@@ -225,8 +224,4 @@ internal class BuildRepositoryTest {
         val givenMostRecentBuild = 8
         assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
     }
-
-
-
-
 }

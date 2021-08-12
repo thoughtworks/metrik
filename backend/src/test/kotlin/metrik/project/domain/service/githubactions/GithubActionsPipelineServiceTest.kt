@@ -4,7 +4,6 @@ import metrik.exception.ApplicationException
 import metrik.project.builds
 import metrik.project.credential
 import metrik.project.domain.model.Pipeline
-import metrik.project.domain.model.PipelineType
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.pipelineID
 import metrik.project.url
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -105,11 +103,8 @@ internal class GithubActionsPipelineServiceTest {
 //
 //    }
 
-
-    private companion object{
+    private companion object {
         private val baseUrl = "http://localhost:80/test_project/test_repo"
         private val totslBuildsUrl = "$baseUrl"
     }
-
-
 }

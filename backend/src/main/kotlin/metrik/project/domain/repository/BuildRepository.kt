@@ -113,7 +113,6 @@ class BuildRepository {
         getByBuildStatus(pipelineId, Status.IN_PROGRESS)
             .filter { it.timestamp > ZonedDateTime.now().minusDays(weeks).toEpochSecond() }
 
-
     fun getLatestBuild(pipelineId: String): Build? {
         val query = Query
             .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
@@ -125,6 +124,4 @@ class BuildRepository {
         )
         return result
     }
-
-
 }
