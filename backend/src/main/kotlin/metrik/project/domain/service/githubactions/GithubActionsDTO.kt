@@ -118,7 +118,6 @@ data class WorkflowRuns(
 
 data class HeadCommit(
     val id: String,
-    val message: String,
     val timestamp: ZonedDateTime
 ) {
 
@@ -126,7 +125,6 @@ data class HeadCommit(
         Commit(
             id,
             timestamp.toTimestamp(),
-            timestamp.toString(),
-            message
+            timestamp.toString()
         )
 }

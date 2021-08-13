@@ -99,7 +99,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -145,7 +145,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -204,7 +204,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -262,7 +262,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (build)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -308,7 +308,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (build)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -395,7 +395,7 @@ internal class GithubActionsPipelineServiceTest {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
-        mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
@@ -450,6 +450,6 @@ internal class GithubActionsPipelineServiceTest {
     private companion object {
         private const val baseUrl = "http://localhost:80/test_project/test_repo"
         private const val getRunsBaseUrl = "$baseUrl/actions/runs"
-        private const val verifyPipelineUrl = "$getRunsBaseUrl?per_page=1"
+        private const val getRunsFirstPagePipelineUrl = "$getRunsBaseUrl?per_page=1"
     }
 }
