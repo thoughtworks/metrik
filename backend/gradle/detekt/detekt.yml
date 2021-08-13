@@ -117,7 +117,7 @@ complexity:
     ignoreStringsRegex: '$^'
   TooManyFunctions:
     active: true
-    excludes: [ '**/test/**', '**/apiTest/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    excludes: [ '**/test/**', '**/apiTest/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
     thresholdInFiles: 11
     thresholdInClasses: 11
     thresholdInInterfaces: 11
@@ -212,7 +212,7 @@ exceptions:
   TooGenericExceptionCaught:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**',
-                '**/iosTest/**', '**SynchronizationApplicationService**', '**BambooDTO**' ]
+                '**/iosTest/**', '**SynchronizationApplicationService**', '**BambooDTO**', '**GithubActionsDTO**' ]
     exceptionNames:
       - ArrayIndexOutOfBoundsException
       - Error

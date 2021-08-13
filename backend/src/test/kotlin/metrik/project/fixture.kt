@@ -1,6 +1,11 @@
 package metrik.project
 
-import metrik.project.domain.model.*
+import metrik.project.domain.model.Build
+import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineType
+import metrik.project.domain.model.Stage
+import metrik.project.domain.model.Status
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionVerificationRequest

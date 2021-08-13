@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 
+@SuppressWarnings("TooManyFunctions")
 @Component
 class BuildRepository {
     companion object {

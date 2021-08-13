@@ -1,42 +1,48 @@
 package metrik.project.domain.service.githubactions
 
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
+import io.mockk.junit5.MockKExtension
+import io.mockk.verify
+import metrik.configuration.RestTemplateConfiguration
 import metrik.exception.ApplicationException
-import metrik.project.*
-import metrik.project.domain.model.*
+import metrik.project.builds
+import metrik.project.credential
+import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.githubActionsBuild
+import metrik.project.githubActionsPipeline
+import metrik.project.mockEmitCb
+import metrik.project.name
+import metrik.project.pipelineID
 import metrik.project.rest.vo.response.SyncProgress
+import metrik.project.stage
+import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@ExtendWith(SpringExtension::class)
-@Import(GithubActionsPipelineService::class, RestTemplate::class)
-@RestClientTest
+@ExtendWith(MockKExtension::class)
 internal class GithubActionsPipelineServiceTest {
 
-    @Autowired
-    private lateinit var restTemplate: RestTemplate
+    @SpyK
+    private var restTemplate: RestTemplate = RestTemplateConfiguration().restTemplate()
 
-    @Autowired
-    private lateinit var githubActionsPipelineService: GithubActionsPipelineService
-
-    @MockBean
+    @MockK(relaxed = true)
     private lateinit var buildRepository: BuildRepository
+
+    @InjectMockKs
+    private lateinit var githubActionsPipelineService: GithubActionsPipelineService
 
     private lateinit var mockServer: MockRestServiceServer
 
@@ -47,7 +53,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$url/actions/runs?per_page=1"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$userInputURL/actions/runs?per_page=1"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -62,7 +68,7 @@ internal class GithubActionsPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 400`() {
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("$url/actions/runs?per_page=1"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$userInputURL/actions/runs?per_page=1"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
@@ -76,7 +82,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        `when`(buildRepository.getAllBuilds(pipelineID)).thenReturn(builds)
+        every { buildRepository.getAllBuilds(pipelineID) } returns (builds)
 
         val result = githubActionsPipelineService.getStagesSortedByName(pipelineID)
 
@@ -90,8 +96,8 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync only one page`() {
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(null)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(emptyList())
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -128,14 +134,16 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(githubActionsBuild)
-        verify(buildRepository, times(1)).save(githubActionsBuild.copy(number = 1111111112))
+        verify {
+            buildRepository.save(githubActionsBuild)
+            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
+        }
     }
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync more than one page`() {
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(null)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(emptyList())
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -183,16 +191,18 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(githubActionsBuild)
-        verify(buildRepository, times(1)).save(githubActionsBuild.copy(number = 1111111112))
-        verify(buildRepository, times(1)).save(githubActionsBuild.copy(number = 1111111113))
-        verify(buildRepository, times(1)).save(githubActionsBuild.copy(number = 1111111114))
+        verify {
+            buildRepository.save(githubActionsBuild)
+            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111113))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111114))
+        }
     }
 
     @Test
     fun `should sync and save all in-progress builds to databases`() {
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(null)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(emptyList())
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -229,30 +239,28 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                result = Status.IN_PROGRESS,
-                stages = emptyList()
+        verify {
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    result = Status.IN_PROGRESS,
+                    stages = emptyList()
+                )
             )
-        )
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                result = Status.IN_PROGRESS,
-                stages = emptyList(),
-                number = 1111111112
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    result = Status.IN_PROGRESS,
+                    stages = emptyList(),
+                    number = 1111111112
+                )
             )
-        )
+        }
     }
 
     @Test
     fun `should sync and update all previous in-progress builds`() {
         val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(build)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(
-            listOf(
-                build
-            )
-        )
+        every { buildRepository.getLatestBuild(pipelineID) } returns (build)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -289,18 +297,16 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(githubActionsBuild)
+        verify {
+            buildRepository.save(githubActionsBuild)
+        }
     }
 
     @Test
     fun `should sync new builds, update all previous in-progress builds and emit the progress event`() {
         val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(build)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(
-            listOf(
-                build
-            )
-        )
+        every { buildRepository.getLatestBuild(pipelineID) } returns (build)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -348,44 +354,46 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                number = 1111111113,
-                result = Status.FAILED,
-                timestamp = 1628766661000,
-                stages = listOf(
-                    stage.copy(
-                        status = Status.FAILED,
-                        startTimeMillis = 1628766661000,
-                        completedTimeMillis = 1628766677000
-                    )
-                )
-            )
-        )
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                number = 1111111114,
-                timestamp = 1628766661000,
-                stages = listOf(
-                    stage.copy(
-                        startTimeMillis = 1628766661000,
-                        completedTimeMillis = 1628766677000
-                    )
-                )
-            )
-        )
-        verify(buildRepository, times(1)).save(githubActionsBuild)
-
         val progress = SyncProgress(pipelineID, name, 1, 3)
-        verify(mockEmitCb).invoke(progress)
-        verify(mockEmitCb).invoke(progress.copy(progress = 2))
-        verify(mockEmitCb).invoke(progress.copy(progress = 3))
+
+        verify {
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    number = 1111111113,
+                    result = Status.FAILED,
+                    timestamp = 1628766661000,
+                    stages = listOf(
+                        stage.copy(
+                            status = Status.FAILED,
+                            startTimeMillis = 1628766661000,
+                            completedTimeMillis = 1628766677000
+                        )
+                    )
+                )
+            )
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    number = 1111111114,
+                    timestamp = 1628766661000,
+                    stages = listOf(
+                        stage.copy(
+                            startTimeMillis = 1628766661000,
+                            completedTimeMillis = 1628766677000
+                        )
+                    )
+                )
+            )
+            buildRepository.save(githubActionsBuild)
+            mockEmitCb.invoke(progress)
+            mockEmitCb.invoke(progress.copy(progress = 2))
+            mockEmitCb.invoke(progress.copy(progress = 3))
+        }
     }
 
     @Test
-    fun `should sync builds given status is completed and conclusion is non-supported types`(){
-        `when`(buildRepository.getLatestBuild(pipelineID)).thenReturn(null)
-        `when`(buildRepository.getInProgressBuilds(pipelineID)).thenReturn(emptyList())
+    fun `should sync builds given status is completed and conclusion is non-supported types`() {
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 
         mockServer.expect(MockRestRequestMatchers.requestTo(verifyPipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -422,19 +430,21 @@ internal class GithubActionsPipelineServiceTest {
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                result = Status.OTHER,
-                stages = emptyList()
+        verify {
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    result = Status.OTHER,
+                    stages = emptyList()
+                )
             )
-        )
-        verify(buildRepository, times(1)).save(
-            githubActionsBuild.copy(
-                result = Status.OTHER,
-                stages = emptyList(),
-                number = 1111111112
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    result = Status.OTHER,
+                    stages = emptyList(),
+                    number = 1111111112
+                )
             )
-        )
+        }
     }
 
     private companion object {

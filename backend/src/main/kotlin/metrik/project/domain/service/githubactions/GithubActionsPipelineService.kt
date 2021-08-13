@@ -9,7 +9,6 @@ import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -24,9 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
-    @Autowired
     private var restTemplate: RestTemplate,
-    @Autowired
     private var buildRepository: BuildRepository
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
