@@ -80,7 +80,7 @@ data class WorkflowRuns(
 
             val stage: List<Stage> =
                 when (status) {
-                    Status.IN_PROGRESS -> emptyList()
+                    Status.IN_PROGRESS, Status.OTHER -> emptyList()
                     else -> listOf(
                         Stage(
                             name,
