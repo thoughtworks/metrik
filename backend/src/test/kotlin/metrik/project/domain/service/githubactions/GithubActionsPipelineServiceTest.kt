@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -103,7 +104,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -114,7 +115,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -125,7 +126,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -149,7 +150,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify2.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -160,7 +161,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -171,7 +172,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/runs2.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -182,7 +183,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -208,7 +209,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -219,7 +220,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/in-progress-runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -230,7 +231,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -266,7 +267,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -277,7 +278,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -288,7 +289,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/run/in-progress-update-runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -312,7 +313,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -323,7 +324,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/runs3.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -334,7 +335,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -345,7 +346,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/run/in-progress-update-runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -399,7 +400,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -410,7 +411,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/non-supported-runs1.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -421,7 +422,7 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource(
+                    javaClass.getResource(
                         "/pipeline/githubactions/runs/empty-run.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
@@ -444,6 +445,150 @@ internal class GithubActionsPipelineServiceTest {
                     number = 1111111112
                 )
             )
+        }
+    }
+
+    @Test
+    fun `should ignore not found in-progress builds and continue with next in-progress build`() {
+        val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
+
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns
+            listOf(
+                build,
+                build.copy(
+                    number = 1111111112,
+                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/verify-pipeline/runs-verify1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/empty-run.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl/1111111111"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND)
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl/1111111112"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/run/in-progress-update-runs2.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
+
+        verify(exactly = 1) {
+            buildRepository.save(
+                githubActionsBuild.copy(
+                    number = 1111111112,
+                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `should stop calling next page api when the previous api call throw not found exception and sync builds until exception is thrown`() {
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/verify-pipeline/runs-verify2.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND)
+            )
+
+        githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
+
+        verify {
+            buildRepository.save(githubActionsBuild)
+            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
+        }
+    }
+
+    @Test
+    fun `should throw exception when the server responds 500 at any time`() {
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/verify-pipeline/runs-verify2.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withServerError()
+            )
+
+        Assertions.assertThrows(ApplicationException::class.java) {
+            githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
         }
     }
 

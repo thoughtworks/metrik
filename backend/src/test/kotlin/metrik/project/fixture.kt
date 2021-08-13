@@ -72,8 +72,7 @@ val stage = Stage(
 val commit = Commit(
     "3986a82cf9f852e9938f7e7984d1e95742854baa",
     1628646391000,
-    "2021-08-11T01:46:31Z[UTC]",
-    "Create blank.yml"
+    "2021-08-11T01:46:31Z[UTC]"
 )
 
 val githubActionsBuild = Build(

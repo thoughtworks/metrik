@@ -150,7 +150,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -159,7 +159,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -190,7 +190,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -199,7 +199,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -233,7 +233,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -242,7 +242,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -288,7 +288,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -297,7 +297,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -329,7 +329,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -338,7 +338,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -374,7 +374,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -383,7 +383,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -416,7 +416,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -425,7 +425,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -467,7 +467,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -476,7 +476,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-8.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-8.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )

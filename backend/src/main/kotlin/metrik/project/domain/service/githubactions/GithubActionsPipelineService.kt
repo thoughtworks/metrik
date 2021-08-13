@@ -154,9 +154,11 @@ class GithubActionsPipelineService(
                         buildsNeedToSync.isEmpty() -> ifRetrieving = false
                         else -> totalResponseBody.workflowRuns.addAll(buildsNeedToSync)
                     }
+                    true
                 },
                 url
-            )
+            ) ?: break
+
             pageIndex ++
         }
         return totalResponseBody
@@ -184,9 +186,11 @@ class GithubActionsPipelineService(
                         responseEntity
                     },
                     url
-                )?.body!!
+                )?.let { it.body!! }
 
-                totalWorkflowRuns.add(response)
+                if (response != null) {
+                    totalWorkflowRuns.add(response)
+                }
             }
         }
 
@@ -197,7 +201,7 @@ class GithubActionsPipelineService(
         try {
             return action()
         } catch (clientErrorException: HttpClientErrorException) {
-            if (clientErrorException.statusCode.equals(HttpStatus.NOT_FOUND)) {
+            if (clientErrorException.statusCode == HttpStatus.NOT_FOUND) {
                 logger.info(
                     """
                     Getting NOT_FOUND error found.
