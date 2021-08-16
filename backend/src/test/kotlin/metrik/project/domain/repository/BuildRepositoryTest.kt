@@ -6,6 +6,7 @@ import metrik.project.domain.model.Build
 import metrik.project.domain.model.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -222,6 +223,44 @@ internal class BuildRepositoryTest {
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         val givenMostRecentBuild = 8
-        assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
+        assertEquals(
+            listOf(4, 5, 6, 7, 8),
+            buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild)
+        )
+    }
+
+    @Test
+    fun `should get closest build given a timestamp`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val targetBuild =
+            Build(pipelineId, 3, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond())
+        val buildsToSave = listOf(
+            Build(pipelineId, 2, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond()),
+            Build(pipelineId, 1, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+            targetBuild
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(
+            targetBuild,
+            buildRepository.getPreviousBuild(pipelineId, ZonedDateTime.now().minusDays(13).toEpochSecond())
+        )
+    }
+
+    @Test
+    fun `should get build given no build is earlier`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val targetBuild =
+            Build(pipelineId, 3, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond())
+        val buildsToSave = listOf(
+            Build(pipelineId, 2, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond()),
+            Build(pipelineId, 1, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+            targetBuild
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertNull(buildRepository.getPreviousBuild(pipelineId, ZonedDateTime.now().minusDays(16).toEpochSecond()))
     }
 }

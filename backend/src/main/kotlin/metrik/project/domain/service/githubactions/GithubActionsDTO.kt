@@ -74,6 +74,7 @@ data class BuildDetailDTO(var workflowRuns: MutableList<WorkflowRuns>)
 data class WorkflowRuns(
     val id: Int,
     val name: String,
+    val headBranch: String,
     val runNumber: Int,
     val status: String,
     val conclusion: String?,

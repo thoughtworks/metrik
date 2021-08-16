@@ -125,4 +125,16 @@ class BuildRepository {
         )
         return result
     }
+
+    fun getPreviousBuild(pipelineId: String, timestamp: Long): Build? {
+        val query = Query
+            .query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(CREATED_TIMESTAMP).lt(timestamp))
+            .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
+            .limit(1)
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        logger.info(
+            "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
+        )
+        return result
+    }
 }
