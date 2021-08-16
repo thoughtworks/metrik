@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
+import org.springframework.web.client.HttpServerErrorException.InternalServerError
 import org.springframework.web.client.RestTemplate
 import java.time.ZonedDateTime
 
@@ -66,6 +68,62 @@ internal class GithubActionsCommitServiceTest {
         )
 
         Assertions.assertEquals(listOf(commit), commits)
+    }
+
+    @Test
+    fun `should stop calling next page api when the current api call throw not found exception`() {
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/commit1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND)
+            )
+
+        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+            sinceTimeStampZonedFormat,
+            untilTimeStampZonedFormat,
+            pipeline = githubActionsPipeline
+        )
+
+        Assertions.assertEquals(listOf(commit), commits)
+    }
+
+    @Test
+    fun `should throw exception when the server responds 500 at any time`() {
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/commit1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withServerError()
+            )
+
+        Assertions.assertThrows(InternalServerError::class.java) {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                sinceTimeStampZonedFormat,
+                untilTimeStampZonedFormat,
+                pipeline = githubActionsPipeline
+            )
+        }
     }
 
     private companion object {
