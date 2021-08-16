@@ -31,6 +31,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestTemplate
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(SpringExtension::class)
 @Import(JenkinsPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -150,21 +151,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
-                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
+                javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
@@ -192,21 +193,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-3.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-3.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
-                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-3.json")
+                javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-3.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
@@ -231,21 +232,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-4.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-4.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
-                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
+                javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
@@ -270,21 +271,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-5.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-5.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
-                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-5.json")
+                javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-5.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
@@ -310,21 +311,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuildDetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
-                this.javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
+                javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
             )
         val mockEmitCb = mock<(SyncProgress) -> Unit>()
@@ -362,21 +363,21 @@ internal class JenkinsPipelineServiceTest {
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-summary-2.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuild1DetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
         mockServer.expect(requestTo(getBuild2DetailUrl))
             .andRespond(
                 withSuccess(
-                    this.javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
+                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )

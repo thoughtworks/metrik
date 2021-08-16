@@ -514,7 +514,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should stop calling next page api when the previous api call throw not found exception and sync builds until exception is thrown`() {
+    fun `should stop calling next page api when the current api call throw not found exception and sync builds before that exception is thrown`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
 

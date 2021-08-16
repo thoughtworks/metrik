@@ -18,7 +18,7 @@ data class Stage(
     val completedTimeMillis: Long? = null,
 ) {
     fun getStageDoneTime(): Long {
-        return this.completedTimeMillis ?: (this.startTimeMillis + this.durationMillis + this.pauseDurationMillis)
+        return completedTimeMillis ?: (startTimeMillis + durationMillis + pauseDurationMillis)
     }
 }
 
@@ -46,7 +46,7 @@ data class Build(
         startTimestamp: Long,
         endTimestamp: Long
     ): Boolean {
-        return this.stages.any {
+        return stages.any {
             it.name == deployStageName &&
                 it.status == status &&
                 it.getStageDoneTime() in startTimestamp..endTimestamp
@@ -58,7 +58,7 @@ data class Build(
         status: Status,
         timestamp: Long
     ): Boolean {
-        return this.stages.any {
+        return stages.any {
             it.name == deployStageName &&
                 it.status == status &&
                 it.getStageDoneTime() < timestamp
@@ -66,7 +66,7 @@ data class Build(
     }
 
     fun findGivenStage(deployStageName: String, status: Status): Stage? {
-        return this.stages.find {
+        return stages.find {
             it.name == deployStageName && it.status == status
         }
     }

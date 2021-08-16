@@ -89,7 +89,7 @@ class GithubActionsPipelineService(
 
             logger.info(
                 "For Github Actions pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                    "[$totalBuildNumbersToSync] of them need to be synced"
+                        "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
@@ -159,7 +159,7 @@ class GithubActionsPipelineService(
                 url
             ) ?: break
 
-            pageIndex ++
+            pageIndex++
         }
         return totalResponseBody
     }
