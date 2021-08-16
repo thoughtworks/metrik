@@ -28,6 +28,40 @@ enum class GithubActionsConclusion(val value: String?) {
     OTHER(null)
 }
 
+data class CommitSummaryDTO(
+    val sha: String,
+    val commit: CommitInfo
+) {
+    data class CommitInfo(
+        val committer: Committer
+    ) {
+        data class Committer(
+            val date: ZonedDateTime
+        )
+    }
+    private var logger = LoggerFactory.getLogger(javaClass.name)
+
+    fun convertToMetrikCommit(pipelineId: String): Commit {
+        logger.info(
+            "Github Actions converting: Started converting CommitsDTO [$this] for pipeline [$pipelineId]"
+        )
+
+        try {
+            val timestamp = commit.committer.date
+            val commitBuild = Commit(sha, timestamp.toTimestamp(), timestamp.toString())
+
+            logger.info(
+                "Github Actions converting: Build converted result: [$commitBuild]"
+            )
+
+            return commitBuild
+        } catch (e: RuntimeException) {
+            logger.error("Converting Github Actions DTO failed, DTO: [$this], exception: [$e]")
+            throw e
+        }
+    }
+}
+
 @JsonNaming(SnakeCaseStrategy::class)
 data class BuildSummaryDTO(
     val totalCount: Int = 0
@@ -48,7 +82,7 @@ data class WorkflowRuns(
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime,
 ) {
-    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+    private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun getBuildTimestamp(timestamp: ZonedDateTime): Long {
         return timestamp.toTimestamp()

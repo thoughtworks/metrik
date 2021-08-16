@@ -26,7 +26,7 @@ class GithubActionsPipelineService(
     private var restTemplate: RestTemplate,
     private var buildRepository: BuildRepository
 ) : PipelineService {
-    private var logger = LoggerFactory.getLogger(this.javaClass.name)
+    private var logger = LoggerFactory.getLogger(javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
@@ -89,7 +89,7 @@ class GithubActionsPipelineService(
 
             logger.info(
                 "For Github Actions pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                        "[$totalBuildNumbersToSync] of them need to be synced"
+                    "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
@@ -188,9 +188,7 @@ class GithubActionsPipelineService(
                     url
                 )?.let { it.body!! }
 
-                if (response != null) {
-                    totalWorkflowRuns.add(response)
-                }
+                response?.also { totalWorkflowRuns.add(it) }
             }
         }
 

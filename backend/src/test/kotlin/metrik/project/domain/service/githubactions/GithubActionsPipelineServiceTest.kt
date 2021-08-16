@@ -593,8 +593,8 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     private companion object {
-        private const val baseUrl = "http://localhost:80/test_project/test_repo"
-        private const val getRunsBaseUrl = "$baseUrl/actions/runs"
-        private const val getRunsFirstPagePipelineUrl = "$getRunsBaseUrl?per_page=1"
+        const val baseUrl = "http://localhost:80/test_project/test_repo"
+        const val getRunsBaseUrl = "$baseUrl/actions/runs"
+        const val getRunsFirstPagePipelineUrl = "$getRunsBaseUrl?per_page=1"
     }
 }
