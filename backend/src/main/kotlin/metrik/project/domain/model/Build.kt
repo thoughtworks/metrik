@@ -36,6 +36,7 @@ data class Build(
     val duration: Long = 0,
     val timestamp: Long = 0,
     val url: String = Strings.EMPTY,
+    val branch: String = Strings.EMPTY,
     val stages: List<Stage> = emptyList(),
     val changeSets: List<Commit> = emptyList()
 ) {

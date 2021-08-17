@@ -82,6 +82,7 @@ val githubActionsBuild = Build(
     duration = 16000,
     timestamp = 1628680261000,
     url = "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
+    branch = "master",
     stages = listOf(
         stage
     ),

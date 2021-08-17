@@ -135,6 +135,7 @@ data class WorkflowRuns(
                 durationMillis,
                 startTimeMillis,
                 url,
+                headBranch,
                 stage,
                 listOf(headCommit.convertToMetrikCommit())
             )

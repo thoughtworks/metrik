@@ -94,8 +94,8 @@ class JenkinsPipelineService(
                 buildSummary.duration,
                 buildSummary.timestamp,
                 buildSummary.url,
-                constructBuildStages(buildDetails),
-                constructBuildCommits(buildSummary).flatten()
+                stages=constructBuildStages(buildDetails),
+                changeSets=constructBuildCommits(buildSummary).flatten()
             )
 
             emitCb(
