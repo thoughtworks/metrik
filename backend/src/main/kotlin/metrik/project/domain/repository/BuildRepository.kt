@@ -21,6 +21,7 @@ class BuildRepository {
         private const val PROP_PIPELINEID: String = "pipelineId"
         private const val PROP_NUMBER: String = "number"
         private const val CREATED_TIMESTAMP: String = "timestamp"
+        private const val BRANCH: String = "branch"
         private const val PROP_RESULT: String = "result"
         private const val twoWeeks: Long = 14
     }
@@ -126,9 +127,16 @@ class BuildRepository {
         return result
     }
 
-    fun getPreviousBuild(pipelineId: String, timestamp: Long): Build? {
+    fun getPreviousBuild(pipelineId: String, timestamp: Long, branch: String): Build? {
         val query = Query
-            .query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(CREATED_TIMESTAMP).lt(timestamp))
+            .query(
+                Criteria.where(PROP_PIPELINEID)
+                    .isEqualTo(pipelineId)
+                    .and(CREATED_TIMESTAMP)
+                    .lt(timestamp)
+                    .and(BRANCH)
+                    .isEqualTo(branch)
+            )
             .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)

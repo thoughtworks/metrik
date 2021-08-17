@@ -234,17 +234,39 @@ internal class BuildRepositoryTest {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val targetBuild =
-            Build(pipelineId, 3, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond())
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
         val buildsToSave = listOf(
-            Build(pipelineId, 2, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond()),
-            Build(pipelineId, 1, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "master"
+            ),
             targetBuild
         )
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(
             targetBuild,
-            buildRepository.getPreviousBuild(pipelineId, ZonedDateTime.now().minusDays(13).toEpochSecond())
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(13).toEpochSecond(),
+                branch = "master"
+            )
         )
     }
 
@@ -252,15 +274,79 @@ internal class BuildRepositoryTest {
     fun `should get build given no build is earlier`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val targetBuild =
-            Build(pipelineId, 3, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond())
         val buildsToSave = listOf(
-            Build(pipelineId, 2, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond()),
-            Build(pipelineId, 1, Status.SUCCESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertNull(
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(16).toEpochSecond(),
+                branch = "master"
+            )
+        )
+    }
+
+    @Test
+    fun `should get earlier build from correct branch`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val targetBuild =
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
+        val buildsToSave = listOf(
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "feature"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "feature"
+            ),
             targetBuild
         )
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
-        assertNull(buildRepository.getPreviousBuild(pipelineId, ZonedDateTime.now().minusDays(16).toEpochSecond()))
+        assertEquals(
+            targetBuild,
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(10).toEpochSecond(),
+                branch = "master"
+            )
+        )
     }
 }
