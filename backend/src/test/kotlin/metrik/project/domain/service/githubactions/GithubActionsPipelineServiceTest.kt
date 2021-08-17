@@ -39,7 +39,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 import java.time.ZonedDateTime
 
-@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
 @ExtendWith(MockKExtension::class)
 internal class GithubActionsPipelineServiceTest {
 
@@ -138,7 +138,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should map multiple run to its commits`() {
+    fun `should map multiple runs to their commits`() {
         val buildFirst = githubActionsBuild.copy(timestamp = previousTimeStamp)
         val buildSecond = githubActionsBuild.copy(timestamp = 1619098860779)
         val buildThird = githubActionsBuild.copy(timestamp = 1618926060779)
@@ -211,11 +211,28 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync only one page`() {
+        val map = mapOf(branch to mapOf(githubActionsWorkflow to listOf(commit)))
+
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
         every {
             buildRepository.getPreviousBuild(pipelineID, 1629183550, branch)
         } returns null
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -262,6 +279,21 @@ internal class GithubActionsPipelineServiceTest {
     fun `should sync all builds given first time synchronization and builds need to sync more than one page`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -321,6 +353,21 @@ internal class GithubActionsPipelineServiceTest {
     fun `should sync and save all in-progress builds to databases`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -379,6 +426,21 @@ internal class GithubActionsPipelineServiceTest {
         val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
         every { buildRepository.getLatestBuild(pipelineID) } returns (build)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -425,6 +487,21 @@ internal class GithubActionsPipelineServiceTest {
         val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
         every { buildRepository.getLatestBuild(pipelineID) } returns (build)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (listOf(build))
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -512,6 +589,21 @@ internal class GithubActionsPipelineServiceTest {
     fun `should sync builds given status is completed and conclusion is non-supported types`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -578,6 +670,21 @@ internal class GithubActionsPipelineServiceTest {
                     url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
                 )
             )
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -634,6 +741,21 @@ internal class GithubActionsPipelineServiceTest {
     fun `should stop calling next page api when the current api call throw not found exception and sync builds before that exception is thrown`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -675,6 +797,21 @@ internal class GithubActionsPipelineServiceTest {
     fun `should throw exception when the server responds 500 at any time`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }

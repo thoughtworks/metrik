@@ -98,6 +98,8 @@ class GithubActionsPipelineService(
                     "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
+            buildDetailResponse.workflowRuns.sortedByDescending { it.headCommit.timestamp }
+
             val mapToCommits = mapCommitToWorkflow(pipeline, buildDetailResponse.workflowRuns)
 
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
