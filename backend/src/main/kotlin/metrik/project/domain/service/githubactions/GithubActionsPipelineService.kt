@@ -249,14 +249,14 @@ class GithubActionsPipelineService(
             val lastTimeStamp = when (index) {
                 runs.lastIndex -> previousZonedDateTime
                 else -> {
-                    val toEpochSecond = runs[index + 1].createdAt
+                    val toEpochSecond = runs[index + 1].headCommit.timestamp
                     if (previousZonedDateTime == null) toEpochSecond
                     else maxOf(toEpochSecond, previousZonedDateTime)
                 }
             }
             val commits = githubActionsCommitService.getCommitsBetweenBuilds(
                 lastTimeStamp?.plus(OFFSET, ChronoUnit.SECONDS),
-                run.createdAt,
+                run.headCommit.timestamp,
                 branch = run.headBranch,
                 pipeline = pipeline
             )

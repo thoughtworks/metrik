@@ -106,7 +106,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should map each run to its commits`() {
+    fun `should map one run to its commits`() {
         val build = githubActionsBuild.copy(timestamp = previousTimeStamp)
 
         every {
@@ -132,6 +132,78 @@ internal class GithubActionsPipelineServiceTest {
             githubActionsPipelineService.mapCommitToWorkflow(
                 githubActionsPipeline,
                 mutableListOf(githubActionsWorkflow)
+            ),
+            map
+        )
+    }
+
+    @Test
+    fun `should map multiple run to its commits`() {
+        val buildFirst = githubActionsBuild.copy(timestamp = previousTimeStamp)
+        val buildSecond = githubActionsBuild.copy(timestamp = 1619098860779)
+        val buildThird = githubActionsBuild.copy(timestamp = 1618926060779)
+
+        val githubActionsWorkflowSecond = githubActionsWorkflow.copy(
+            headCommit = HeadCommit(
+                id = "1234",
+                timestamp = ZonedDateTime.parse("2021-04-23T13:41:00.779Z")
+            )
+        )
+
+        val githubActionsWorkflowThird = githubActionsWorkflow.copy(
+            headCommit = HeadCommit(
+                id = "1234",
+                timestamp = ZonedDateTime.parse("2021-04-22T13:41:00.779Z")
+            )
+        )
+
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns buildFirst andThen buildSecond andThen buildThird
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                ZonedDateTime.parse("2021-04-22T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-23T13:41:00.779Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-22T13:41:00.779Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        val map = mapOf(
+            branch to mapOf(
+                githubActionsWorkflow to listOf(commit),
+                githubActionsWorkflowSecond to listOf(commit),
+                githubActionsWorkflowThird to listOf(commit)
+            )
+        )
+
+        assertEquals(
+            githubActionsPipelineService.mapCommitToWorkflow(
+                githubActionsPipeline,
+                mutableListOf(githubActionsWorkflow, githubActionsWorkflowSecond, githubActionsWorkflowThird)
             ),
             map
         )

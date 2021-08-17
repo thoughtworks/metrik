@@ -25,12 +25,11 @@ const val username = "username"
 const val credential = "credential"
 const val url = "http://localhost:80"
 const val userInputURL = "http://localhost:80/test_project/test_repo"
-const val branch = "main"
+const val branch = "master"
 val mockEmitCb = mock<(SyncProgress) -> Unit>()
 const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
 const val futureTimeStamp: Long = 1639185260779
-
 
 val githubActionsWorkflow = WorkflowRuns(
     id = 123,
