@@ -8,20 +8,26 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.configuration.RestTemplateConfiguration
 import metrik.exception.ApplicationException
+import metrik.project.branch
 import metrik.project.builds
+import metrik.project.commit
 import metrik.project.credential
+import metrik.project.currentTimeStamp
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.githubActionsBuild
 import metrik.project.githubActionsPipeline
+import metrik.project.githubActionsWorkflow
 import metrik.project.mockEmitCb
 import metrik.project.name
 import metrik.project.pipelineID
+import metrik.project.previousTimeStamp
 import metrik.project.rest.vo.response.SyncProgress
 import metrik.project.stage
 import metrik.project.userInputURL
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,6 +37,7 @@ import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
+import java.time.ZonedDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(MockKExtension::class)
@@ -44,6 +51,9 @@ internal class GithubActionsPipelineServiceTest {
 
     @InjectMockKs
     private lateinit var githubActionsPipelineService: GithubActionsPipelineService
+
+    @MockK(relaxed = true)
+    private lateinit var githubActionsCommitService: GithubActionsCommitService
 
     private lateinit var mockServer: MockRestServiceServer
 
@@ -59,7 +69,7 @@ internal class GithubActionsPipelineServiceTest {
                 MockRestResponseCreators.withServerError()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
                 Pipeline(credential = credential, url = userInputURL)
             )
@@ -74,7 +84,7 @@ internal class GithubActionsPipelineServiceTest {
                 MockRestResponseCreators.withBadRequest()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
                 Pipeline(credential = credential, url = userInputURL)
             )
@@ -87,18 +97,53 @@ internal class GithubActionsPipelineServiceTest {
 
         val result = githubActionsPipelineService.getStagesSortedByName(pipelineID)
 
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals("amazing", result[0])
-        Assertions.assertEquals("build", result[1])
-        Assertions.assertEquals("clone", result[2])
-        Assertions.assertEquals("good", result[3])
-        Assertions.assertEquals("zzz", result[4])
+        assertEquals(5, result.size)
+        assertEquals("amazing", result[0])
+        assertEquals("build", result[1])
+        assertEquals("clone", result[2])
+        assertEquals("good", result[3])
+        assertEquals("zzz", result[4])
+    }
+
+    @Test
+    fun `should map each run to its commits`() {
+        val build = githubActionsBuild.copy(timestamp = previousTimeStamp)
+
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                currentTimeStamp,
+                branch
+            )
+        } returns build
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        val map = mapOf(branch to mapOf(githubActionsWorkflow to listOf(commit)))
+
+        assertEquals(
+            githubActionsPipelineService.mapCommitToWorkflow(
+                githubActionsPipeline,
+                mutableListOf(githubActionsWorkflow)
+            ),
+            map
+        )
     }
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync only one page`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(pipelineID, 1629183550, branch)
+        } returns null
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -587,7 +632,7 @@ internal class GithubActionsPipelineServiceTest {
                 MockRestResponseCreators.withServerError()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
         }
     }

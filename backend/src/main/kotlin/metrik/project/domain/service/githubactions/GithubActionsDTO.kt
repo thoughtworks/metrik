@@ -100,7 +100,7 @@ data class WorkflowRuns(
             else -> Status.OTHER
         }
 
-    fun convertToMetrikBuild(pipelineId: String): Build {
+    fun convertToMetrikBuild(pipelineId: String, commits: List<Commit>): Build {
         logger.info(
             "Github Actions converting: Started converting WorkflowRuns [$this] for pipeline [$pipelineId]"
         )
@@ -137,7 +137,7 @@ data class WorkflowRuns(
                 url,
                 headBranch,
                 stage,
-                listOf(headCommit.convertToMetrikCommit())
+                commits
             )
 
             logger.info(
@@ -155,12 +155,4 @@ data class WorkflowRuns(
 data class HeadCommit(
     val id: String,
     val timestamp: ZonedDateTime
-) {
-
-    fun convertToMetrikCommit(): Commit =
-        Commit(
-            id,
-            timestamp.toTimestamp(),
-            timestamp.toString()
-        )
-}
+)

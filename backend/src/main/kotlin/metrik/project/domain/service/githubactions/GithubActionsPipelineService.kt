@@ -2,6 +2,7 @@ package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.RequestUtil
 import metrik.project.domain.model.Build
+import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
@@ -19,11 +20,16 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.net.URL
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
     private var restTemplate: RestTemplate,
+    private var githubActionsCommitService: GithubActionsCommitService,
     private var buildRepository: BuildRepository
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
@@ -92,8 +98,12 @@ class GithubActionsPipelineService(
                     "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
+            val mapToCommits = mapCommitToWorkflow(pipeline, buildDetailResponse.workflowRuns)
+
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
-                val convertedBuild = it.convertToMetrikBuild(pipeline.id)
+
+                val commits: List<Commit> = mapToCommits[it.headBranch]!![it]!!
+                val convertedBuild = it.convertToMetrikBuild(pipeline.id, commits)
 
                 buildRepository.save(convertedBuild)
 
@@ -216,6 +226,45 @@ class GithubActionsPipelineService(
         }
     }
 
+    fun mapCommitToWorkflow(pipeline: Pipeline, workflows: MutableList<WorkflowRuns>):
+        Map<String, Map<WorkflowRuns, List<Commit>>> {
+            val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
+            workflows
+                .groupBy { it.headBranch }
+                .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
+            return workflowsNewMap.toMap()
+        }
+
+    private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
+        val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
+        runs.forEachIndexed { index, run ->
+            val previousBuild = buildRepository.getPreviousBuild(
+                pipeline.id,
+                run.getBuildTimestamp(run.createdAt),
+                run.headBranch
+            )?.timestamp
+            val previousZonedDateTime = previousBuild?.let {
+                ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
+            }
+            val lastTimeStamp = when (index) {
+                runs.lastIndex -> previousZonedDateTime
+                else -> {
+                    val toEpochSecond = runs[index + 1].createdAt
+                    if (previousZonedDateTime == null) toEpochSecond
+                    else maxOf(toEpochSecond, previousZonedDateTime)
+                }
+            }
+            val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+                lastTimeStamp?.plus(OFFSET, ChronoUnit.SECONDS),
+                run.createdAt,
+                branch = run.headBranch,
+                pipeline = pipeline
+            )
+            map[run] = commits
+        }
+        return map.toMap()
+    }
+
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
         val url = "${pipeline.url}$urlSuffix?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
@@ -229,5 +278,6 @@ class GithubActionsPipelineService(
         const val urlSummarySuffix = "/actions/runs?per_page=1"
         const val urlSuffix = "/actions/runs"
         const val defaultMaxPerPage = 100
+        const val OFFSET: Long = 1
     }
 }

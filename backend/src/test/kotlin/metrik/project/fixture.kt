@@ -6,6 +6,8 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
+import metrik.project.domain.service.githubactions.HeadCommit
+import metrik.project.domain.service.githubactions.WorkflowRuns
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionVerificationRequest
@@ -14,6 +16,7 @@ import metrik.project.rest.vo.request.JenkinsPipelineRequest
 import metrik.project.rest.vo.request.JenkinsVerificationRequest
 import metrik.project.rest.vo.response.SyncProgress
 import org.mockito.kotlin.mock
+import java.time.ZonedDateTime
 
 const val pipelineID = "pipelineId"
 const val projectId = "projectId"
@@ -22,7 +25,28 @@ const val username = "username"
 const val credential = "credential"
 const val url = "http://localhost:80"
 const val userInputURL = "http://localhost:80/test_project/test_repo"
+const val branch = "main"
 val mockEmitCb = mock<(SyncProgress) -> Unit>()
+const val currentTimeStamp: Long = 1629203005000
+const val previousTimeStamp: Long = 1619185260779
+const val futureTimeStamp: Long = 1639185260779
+
+
+val githubActionsWorkflow = WorkflowRuns(
+    id = 123,
+    name = "234",
+    headBranch = "master",
+    runNumber = 23456,
+    status = "completed",
+    conclusion = "SUCCESS",
+    url = "12345",
+    headCommit = HeadCommit(
+        id = "1234",
+        timestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
+    ),
+    createdAt = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+    updatedAt = ZonedDateTime.parse("2021-08-17T12:23:25Z")
+)
 
 val jenkinsPipeline = Pipeline(
     id = pipelineID,
