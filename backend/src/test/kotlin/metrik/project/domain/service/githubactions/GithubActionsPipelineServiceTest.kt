@@ -119,7 +119,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-23T13:41:00.780Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -167,7 +167,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-23T13:41:00.780Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -176,7 +176,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-22T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-22T13:41:00.780Z")!!,
                 ZonedDateTime.parse("2021-04-23T13:41:00.779Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -185,7 +185,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-04-20T13:41:00.780Z")!!,
                 ZonedDateTime.parse("2021-04-22T13:41:00.779Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -204,6 +204,39 @@ internal class GithubActionsPipelineServiceTest {
             githubActionsPipelineService.mapCommitToWorkflow(
                 githubActionsPipeline,
                 mutableListOf(githubActionsWorkflow, githubActionsWorkflowSecond, githubActionsWorkflowThird)
+            ),
+            map
+        )
+    }
+
+    @Test
+    fun `should map first run given no previous runs`() {
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns null
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                untilTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        val map = mapOf(
+            branch to mapOf(
+                githubActionsWorkflow to listOf(commit),
+            )
+        )
+
+        assertEquals(
+            githubActionsPipelineService.mapCommitToWorkflow(
+                githubActionsPipeline,
+                mutableListOf(githubActionsWorkflow)
             ),
             map
         )
