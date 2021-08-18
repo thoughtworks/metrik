@@ -71,6 +71,71 @@ internal class GithubActionsCommitServiceTest {
     }
 
     @Test
+    fun `should get all commits given since timestamp is not provided`() {
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/commit1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/empty-commit.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+            untilTimeStamp = untilTimeStampZonedFormat,
+            pipeline = githubActionsPipeline
+        )
+
+        Assertions.assertEquals(listOf(commit), commits)
+    }
+
+    @Test
+    fun `should get all commits in assigned branch`() {
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&sha=feature&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/commit1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&sha=feature&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/commits/empty-commit.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+            untilTimeStamp = untilTimeStampZonedFormat,
+            branch = "feature",
+            pipeline = githubActionsPipeline
+        )
+
+        Assertions.assertEquals(listOf(commit), commits)
+    }
+
+    @Test
     fun `should stop calling next page api when the current api call throw not found exception`() {
         mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
