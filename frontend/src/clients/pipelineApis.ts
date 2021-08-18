@@ -71,8 +71,13 @@ export interface BambooPipeline extends BasePipeline {
 	type: PipelineTool.BAMBOO;
 }
 
-export type Pipeline = JenkinsPipeline | BambooPipeline;
+export interface GithubActions extends BasePipeline {
+	type: PipelineTool.GITHUB_ACTIONS;
+}
+
+export type Pipeline = JenkinsPipeline | BambooPipeline | GithubActions;
 
 export type PipelineVerification =
 	| Omit<JenkinsPipeline, "id" | "name">
-	| Omit<BambooPipeline, "id" | "name">;
+	| Omit<BambooPipeline, "id" | "name">
+	| Omit<GithubActions, "id" | "name">;
