@@ -128,9 +128,9 @@ class GithubActionsPipelineService(
 
             return retrieveBuildDetails
         } catch (ex: HttpServerErrorException) {
-            throw SynchronizationException("Verify website unavailable")
+            throw SynchronizationException("Connection to Github Actions is unavailable")
         } catch (ex: HttpClientErrorException) {
-            throw SynchronizationException("Verify failed")
+            throw SynchronizationException("Syncing Github Commits details failed")
         }
     }
 

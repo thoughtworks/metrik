@@ -31,12 +31,14 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.exchange
 import java.time.ZonedDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
@@ -60,6 +62,24 @@ internal class GithubActionsPipelineServiceTest {
     @BeforeEach
     fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
+    }
+
+    @Test
+    fun `should successfully verify a pipeline given response is 200`() {
+        val url = "$userInputURL/actions/runs?per_page=1"
+        mockServer.expect(MockRestRequestMatchers.requestTo(url))
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    "success!",
+                    MediaType.TEXT_PLAIN
+                )
+            )
+
+        githubActionsPipelineService.verifyPipelineConfiguration(githubActionsPipeline)
+
+        verify {
+            restTemplate.exchange<String>(url, HttpMethod.GET, any())
+        }
     }
 
     @Test
@@ -696,13 +716,13 @@ internal class GithubActionsPipelineServiceTest {
 
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns
-            listOf(
-                build,
-                build.copy(
-                    number = 1111111112,
-                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
+                listOf(
+                    build,
+                    build.copy(
+                        number = 1111111112,
+                        url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
+                    )
                 )
-            )
         every {
             buildRepository.getPreviousBuild(
                 pipelineID,
@@ -827,7 +847,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should throw exception when the server responds 500 at any time`() {
+    fun `should throw synchronization exception when the server responds 500 at any time`() {
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
         every {
@@ -872,6 +892,59 @@ internal class GithubActionsPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withServerError()
+            )
+
+        assertThrows(ApplicationException::class.java) {
+            githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
+        }
+    }
+
+    @Test
+    fun `should throw synchronization exception when the server responds 400 other than 404 at any time`() {
+        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
+        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                any(),
+                branch
+            )
+        } returns githubActionsBuild
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                any(),
+                any(),
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/verify-pipeline/runs-verify2.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withBadRequest()
             )
 
         assertThrows(ApplicationException::class.java) {
