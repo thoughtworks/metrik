@@ -135,6 +135,7 @@ detekt {
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     exclude("fourkeymetrics/Application.kt")
+    finalizedBy(tasks.check)
 }
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
