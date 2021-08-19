@@ -264,8 +264,6 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync only one page`() {
-        val map = mapOf(branch to mapOf(githubActionsWorkflow to listOf(commit)))
-
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
         every {
@@ -953,8 +951,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     private companion object {
-        const val baseUrl = "http://localhost:80/test_project/test_repo"
-        const val getRunsBaseUrl = "$baseUrl/actions/runs"
+        const val getRunsBaseUrl = "$userInputURL/actions/runs"
         const val getRunsFirstPagePipelineUrl = "$getRunsBaseUrl?per_page=1"
     }
 }

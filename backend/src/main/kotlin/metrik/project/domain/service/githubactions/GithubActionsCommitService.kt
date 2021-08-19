@@ -41,7 +41,7 @@ class GithubActionsCommitService(
         val totalResponseBody = mutableListOf<CommitSummaryDTO>()
 
         while (ifRetrieving) {
-            val baseUrl = "${pipeline.url}$commitSuffix"
+            val baseUrl = "${pipeline.githubApiUrl}$commitSuffix"
 
             val urlBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl)
 

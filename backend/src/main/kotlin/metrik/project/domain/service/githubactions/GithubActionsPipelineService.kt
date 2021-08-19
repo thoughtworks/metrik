@@ -45,7 +45,7 @@ class GithubActionsPipelineService(
         val entity = HttpEntity<String>(headers)
 
         try {
-            val url = "${pipeline.url}$urlSummarySuffix"
+            val url = "${pipeline.githubApiUrl}$urlSummarySuffix"
             logger.info("Github Actions verification - Sending request to [$url] with entity [$entity]")
             val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
             logger.info("Github Actions verification - Response from [$url]: $responseEntity")
@@ -149,7 +149,7 @@ class GithubActionsPipelineService(
         while (ifRetrieving) {
 
             val url =
-                "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
+                "${pipeline.githubApiUrl}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
 
             logger.info("Get build details - Sending request to [$url] with entity [$entity]")
             var responseEntity: ResponseEntity<BuildDetailDTO>
@@ -187,7 +187,7 @@ class GithubActionsPipelineService(
             run {
                 val runID = URL(build.url).path.split("/").last()
                 val url =
-                    "${pipeline.url}$urlSuffix/$runID"
+                    "${pipeline.githubApiUrl}$urlSuffix/$runID"
                 logger.info("Get build details - Sending request to [$url] with entity [$entity]")
                 var responseEntity: ResponseEntity<WorkflowRuns>
 
@@ -257,10 +257,10 @@ class GithubActionsPipelineService(
                 }
             }
             val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-                lastTimeStamp?.plus(OFFSET, ChronoUnit.SECONDS),
+                lastTimeStamp?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
                 run.headCommit.timestamp,
                 branch = run.headBranch,
-                pipeline = pipeline
+                pipeline = pipeline,
             )
             map[run] = commits
         }
@@ -268,7 +268,7 @@ class GithubActionsPipelineService(
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
-        val url = "${pipeline.url}$urlSuffix?per_page=1"
+        val url = "${pipeline.githubApiUrl}$urlSuffix?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")
@@ -280,6 +280,6 @@ class GithubActionsPipelineService(
         const val urlSummarySuffix = "/actions/runs?per_page=1"
         const val urlSuffix = "/actions/runs"
         const val defaultMaxPerPage = 100
-        const val OFFSET: Long = 1
+        const val COMMIT_OFFSET: Long = 1
     }
 }
