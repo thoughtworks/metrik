@@ -139,7 +139,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-23T13:41:00.780Z")!!,
+                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -187,7 +187,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-23T13:41:00.780Z")!!,
+                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -196,7 +196,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-22T13:41:00.780Z")!!,
+                ZonedDateTime.parse("2021-04-22T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-04-23T13:41:00.779Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -205,7 +205,7 @@ internal class GithubActionsPipelineServiceTest {
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-20T13:41:00.780Z")!!,
+                ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-04-22T13:41:00.779Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -716,13 +716,13 @@ internal class GithubActionsPipelineServiceTest {
 
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns
-                listOf(
-                    build,
-                    build.copy(
-                        number = 1111111112,
-                        url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
-                    )
+            listOf(
+                build,
+                build.copy(
+                    number = 1111111112,
+                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
                 )
+            )
         every {
             buildRepository.getPreviousBuild(
                 pipelineID,

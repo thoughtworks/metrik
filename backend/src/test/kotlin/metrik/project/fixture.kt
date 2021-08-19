@@ -10,8 +10,8 @@ import metrik.project.domain.service.githubactions.HeadCommit
 import metrik.project.domain.service.githubactions.WorkflowRuns
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
-import metrik.project.rest.vo.request.GithubActionVerificationRequest
 import metrik.project.rest.vo.request.GithubActionsPipelineRequest
+import metrik.project.rest.vo.request.GithubActionsVerificationRequest
 import metrik.project.rest.vo.request.JenkinsPipelineRequest
 import metrik.project.rest.vo.request.JenkinsVerificationRequest
 import metrik.project.rest.vo.response.SyncProgress
@@ -161,7 +161,7 @@ fun buildBambooPipelineVerificationRequest() = BambooVerificationRequest(
     credential = "credential",
 )
 
-fun buildGithubActionsPipelineVerificationRequest() = GithubActionVerificationRequest(
+fun buildGithubActionsPipelineVerificationRequest() = GithubActionsVerificationRequest(
     url = "url",
     credential = "credential",
 )

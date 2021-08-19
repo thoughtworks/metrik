@@ -95,11 +95,12 @@ internal class PipelineRepositoryTest {
 
         pipelineRepository.save(pipeline)
         verify {
-            mongoTemplate.save<Pipeline>(withArg {
-                assertEquals("pipelineId", it.id)
-                assertEquals("", it.name)
-            })
-
+            mongoTemplate.save<Pipeline>(
+                withArg {
+                    assertEquals("pipelineId", it.id)
+                    assertEquals("", it.name)
+                }
+            )
         }
     }
 

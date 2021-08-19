@@ -1,5 +1,6 @@
 package metrik.project.domain.service.factory
 
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -8,6 +9,7 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.service.bamboo.BambooPipelineService
 import metrik.project.domain.service.githubactions.GithubActionsPipelineService
 import metrik.project.domain.service.jenkins.JenkinsPipelineService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -35,7 +37,7 @@ internal class PipelineServiceFactoryTest {
         every { githubActionsPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { noopPipelineService.getStagesSortedByName("id") } returns emptyList()
     }
-    
+
     @Test
     fun `should get corresponding service instance given a valid PipelineType`() {
         verify(exactly = 0) { jenkinsPipelineService.getStagesSortedByName("id") }

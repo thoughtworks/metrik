@@ -257,7 +257,7 @@ class GithubActionsPipelineService(
                 }
             }
             val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-                lastTimeStamp?.plus(OFFSET, ChronoUnit.MILLIS),
+                lastTimeStamp?.plus(OFFSET, ChronoUnit.SECONDS),
                 run.headCommit.timestamp,
                 branch = run.headBranch,
                 pipeline = pipeline

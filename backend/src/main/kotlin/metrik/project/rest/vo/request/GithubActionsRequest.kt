@@ -20,7 +20,6 @@ class GithubActionsPipelineRequest(
     )
 }
 
-
 class GithubActionsVerificationRequest(
     @field:NotBlank(message = "Credential cannot be null or empty") val credential: String,
     url: String
@@ -30,5 +29,4 @@ class GithubActionsVerificationRequest(
         url = url,
         type = PipelineType.valueOf(type)
     )
-
 }
