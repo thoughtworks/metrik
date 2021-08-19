@@ -1,6 +1,7 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.RequestUtil
+import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -239,29 +240,43 @@ class GithubActionsPipelineService(
 
     private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
         val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
+
+        val latestTimestamp = runs.first().headCommit.timestamp
+        val lastRun = runs.last()
+        val previousRunBeforeLastRun = buildRepository.getPreviousBuild(
+            pipeline.id,
+            lastRun.getBuildTimestamp(lastRun.headCommit.timestamp),
+            lastRun.headBranch
+        )?.changeSets?.first()?.timestamp
+        val previousZonedDateTime = previousRunBeforeLastRun?.let {
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
+        }
+        val totalCommits = githubActionsCommitService.getCommitsBetweenBuilds(
+            previousZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
+            latestTimestamp,
+            branch = lastRun.headBranch,
+            pipeline = pipeline,
+        )
+
         runs.forEachIndexed { index, run ->
+            val runTimeStamp = run.headCommit.timestamp.toTimestamp()
             val previousBuild = buildRepository.getPreviousBuild(
                 pipeline.id,
                 run.getBuildTimestamp(run.createdAt),
                 run.headBranch
-            )?.timestamp
-            val previousZonedDateTime = previousBuild?.let {
-                ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
-            }
+            )?.changeSets?.first()?.timestamp
             val lastTimeStamp = when (index) {
-                runs.lastIndex -> previousZonedDateTime
+                runs.lastIndex -> previousRunBeforeLastRun
                 else -> {
-                    val toEpochSecond = runs[index + 1].headCommit.timestamp
-                    if (previousZonedDateTime == null) toEpochSecond
-                    else maxOf(toEpochSecond, previousZonedDateTime)
+                    val toEpochSecond = runs[index + 1].headCommit.timestamp.toTimestamp()
+                    if (previousBuild == null) toEpochSecond
+                    else maxOf(toEpochSecond, previousBuild)
                 }
             }
-            val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-                lastTimeStamp?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
-                run.headCommit.timestamp,
-                branch = run.headBranch,
-                pipeline = pipeline,
-            )
+            val commits = when (lastTimeStamp) {
+                null -> totalCommits.filter { it.timestamp <= runTimeStamp }
+                else -> totalCommits.filter { it.timestamp in (lastTimeStamp + 1)..runTimeStamp }
+            }
             map[run] = commits
         }
         return map.toMap()
