@@ -1,15 +1,15 @@
 package metrik.project.domain.service.bamboo
 
-import metrik.project.domain.model.Build
 import metrik.infrastructure.utlils.RequestUtil.buildHeaders
 import metrik.infrastructure.utlils.RequestUtil.getDomain
-import metrik.project.exception.PipelineConfigVerifyException
-import metrik.project.exception.SynchronizationException
+import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
 import metrik.project.domain.service.bamboo.dto.BuildSummaryDTO
+import metrik.project.exception.PipelineConfigVerifyException
+import metrik.project.exception.SynchronizationException
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,14 +59,13 @@ class BambooPipelineService(
         }
     }
 
-    override fun getStagesSortedByName(pipelineId: String): List<String> {
-        return buildRepository.getAllBuilds(pipelineId)
+    override fun getStagesSortedByName(pipelineId: String): List<String> =
+        buildRepository.getAllBuilds(pipelineId)
             .flatMap { it.stages }
             .map { it.name }
             .distinct()
             .sortedBy { it.toUpperCase() }
             .toList()
-    }
 
     @Synchronized
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
@@ -80,11 +79,11 @@ class BambooPipelineService(
         try {
             val planKey = URL(pipeline.url).path.split("/").last()
             val maxBuildNumber = getMaxBuildNumber(pipeline, planKey, entity)
-            val buildNumbersToSync = buildRepository.getBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
+            val buildNumbersToSync = buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
 
             logger.info(
                 "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                        "[${buildNumbersToSync.size}] of them need to be synced"
+                    "[${buildNumbersToSync.size}] of them need to be synced"
             )
 
             val retrieveBuildDetails = {
@@ -121,11 +120,13 @@ class BambooPipelineService(
     }
 
     private fun getBuildDetails(
-        pipeline: Pipeline, planKey: String, buildNumber: Int,
+        pipeline: Pipeline,
+        planKey: String,
+        buildNumber: Int,
         entity: HttpEntity<String>
     ): BuildDetailDTO? {
-        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}-${buildNumber}.json?" +
-                "expand=changes.change,stages.stage.results"
+        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
+            "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url] with entity [$entity]")
         var responseEntity: ResponseEntity<BuildDetailDTO>
         try {
@@ -149,7 +150,7 @@ class BambooPipelineService(
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, entity: HttpEntity<String>): Int {
-        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/${planKey}.json"
+        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")

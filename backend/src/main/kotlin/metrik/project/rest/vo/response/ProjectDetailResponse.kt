@@ -16,7 +16,8 @@ data class ProjectDetailResponse(
         id = project.id,
         name = project.name,
         synchronizationTimestamp = project.synchronizationTimestamp,
-        pipelines = pipelines.map { PipelineResponse(it) })
+        pipelines = pipelines.map { PipelineResponse(it) }
+    )
 }
 
 data class ProjectSummaryResponse(

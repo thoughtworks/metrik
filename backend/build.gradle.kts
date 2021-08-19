@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val ktlint: Configuration by configurations.creating
+
 plugins {
     idea
     application
@@ -9,6 +11,11 @@ plugins {
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.spring") version "1.4.21"
 }
+
+dependencies {
+    ktlint("com.pinterest:ktlint:0.39.0")
+}
+
 
 group = "metrik-backend"
 version = "0.0.1-SNAPSHOT"
@@ -140,3 +147,19 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
 apply(from = "gradle/jacoco/jacoco.gradle")
+
+
+// ktlint
+val outputDir = "${project.buildDir}/reports/ktlint/"
+val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
+
+val ktlintFormat = task<JavaExec>("ktlintFormat") {
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
+
+    description = "Fix Kotlin code style deviations."
+    classpath = ktlint
+    group = "formatting"
+    main = "com.pinterest.ktlint.Main"
+    args = listOf("-F", "src/**/*.kt")
+}

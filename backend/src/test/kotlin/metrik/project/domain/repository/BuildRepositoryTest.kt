@@ -6,6 +6,7 @@ import metrik.project.domain.model.Build
 import metrik.project.domain.model.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -159,7 +160,58 @@ internal class BuildRepositoryTest {
     }
 
     @Test
-    fun `should get all build numbers that need a data synchronization given the most recent build number`() {
+    fun `should get latest build`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Build(pipelineId, 1, timestamp = 20201123),
+            Build(pipelineId, 2, timestamp = 20201122),
+            Build(pipelineId, 5, timestamp = 20191202),
+            Build(pipelineId, 6, timestamp = 0)
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(1, buildRepository.getLatestBuild(pipelineId)!!.number)
+    }
+
+    @Test
+    fun `should get in-progress builds`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val twoWeeks: Long = 14
+        val now = ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond()
+        val inProgressBuild = Build(
+            pipelineId,
+            1,
+            result = Status.IN_PROGRESS,
+            timestamp = now + 10
+        )
+        val buildsToSave = listOf(
+            inProgressBuild,
+            Build(
+                pipelineId,
+                2,
+                result = Status.FAILED,
+                timestamp = now + 10
+            ),
+            Build(
+                pipelineId,
+                5,
+                result = Status.SUCCESS,
+                timestamp = now + 10
+            ),
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        val builds = listOf(inProgressBuild)
+
+        assertEquals(builds, buildRepository.getInProgressBuilds(pipelineId))
+    }
+
+    @Test
+    fun `should get all build numbers that need a data synchronization given the most recent build number in Jenkins and Bamboo`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
         val buildsToSave = listOf(
@@ -171,6 +223,130 @@ internal class BuildRepositoryTest {
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
 
         val givenMostRecentBuild = 8
-        assertEquals(listOf(4, 5, 6, 7, 8), buildRepository.getBuildNumbersNeedSync(pipelineId, givenMostRecentBuild))
+        assertEquals(
+            listOf(4, 5, 6, 7, 8),
+            buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild)
+        )
+    }
+
+    @Test
+    fun `should get closest build given a timestamp`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val targetBuild =
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
+        val buildsToSave = listOf(
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "master"
+            ),
+            targetBuild
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(
+            targetBuild,
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(13).toEpochSecond(),
+                branch = "master"
+            )
+        )
+    }
+
+    @Test
+    fun `should get build given no build is earlier`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "master"
+            ),
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertNull(
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(16).toEpochSecond(),
+                branch = "master"
+            )
+        )
+    }
+
+    @Test
+    fun `should get earlier build from correct branch`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val targetBuild =
+            Build(
+                pipelineId,
+                3,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
+                branch = "master"
+            )
+        val buildsToSave = listOf(
+            Build(
+                pipelineId,
+                2,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
+                branch = "feature"
+            ),
+            Build(
+                pipelineId,
+                1,
+                Status.SUCCESS,
+                timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
+                branch = "feature"
+            ),
+            targetBuild
+        )
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(
+            targetBuild,
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                ZonedDateTime.now().minusDays(10).toEpochSecond(),
+                branch = "master"
+            )
+        )
     }
 }

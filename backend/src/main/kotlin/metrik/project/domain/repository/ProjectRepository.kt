@@ -1,7 +1,7 @@
 package metrik.project.domain.repository
 
-import metrik.project.exception.ProjectNotFoundException
 import metrik.project.domain.model.Project
+import metrik.project.exception.ProjectNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -25,7 +25,7 @@ class ProjectRepository {
 
     fun findById(id: String): Project {
         val result = mongoTemplate.findById(id, Project::class.java)
-        logger.info("Query result project ID [$id] is [${result}]")
+        logger.info("Query result project ID [$id] is [$result]")
         return result ?: throw ProjectNotFoundException()
     }
 

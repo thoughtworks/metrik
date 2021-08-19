@@ -14,12 +14,16 @@ import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 
+@SuppressWarnings("TooManyFunctions")
 @Component
 class BuildRepository {
     companion object {
         private const val PROP_PIPELINEID: String = "pipelineId"
         private const val PROP_NUMBER: String = "number"
+        private const val CREATED_TIMESTAMP: String = "timestamp"
+        private const val BRANCH: String = "branch"
         private const val PROP_RESULT: String = "result"
+        private const val twoWeeks: Long = 14
     }
 
     @Autowired
@@ -92,18 +96,53 @@ class BuildRepository {
             .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)
-        logger.info("Query result the most recent build in pipeline [$pipelineId] is [${result?.number}]")
+        logger.info(
+            "Query result the most recent build through build number in pipeline [$pipelineId] is [${result?.number}]"
+        )
         return result
     }
 
-    fun getBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
-        val twoWeeks: Long = 14
+    fun getBambooJenkinsBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
-        val needSyncBuilds = getByBuildStatus(pipelineId, Status.IN_PROGRESS)
-            .filter { it.timestamp > ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond() }
+        val needSyncBuilds = getInProgressBuilds(pipelineId)
         val needSyncBuildNumbers = needSyncBuilds.map { it.number }
 
         return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
+    }
+
+    fun getInProgressBuilds(pipelineId: String, weeks: Long = twoWeeks): List<Build> =
+        getByBuildStatus(pipelineId, Status.IN_PROGRESS)
+            .filter { it.timestamp > ZonedDateTime.now().minusDays(weeks).toEpochSecond() }
+
+    fun getLatestBuild(pipelineId: String): Build? {
+        val query = Query
+            .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
+            .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
+            .limit(1)
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        logger.info(
+            "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
+        )
+        return result
+    }
+
+    fun getPreviousBuild(pipelineId: String, timestamp: Long, branch: String): Build? {
+        val query = Query
+            .query(
+                Criteria.where(PROP_PIPELINEID)
+                    .isEqualTo(pipelineId)
+                    .and(CREATED_TIMESTAMP)
+                    .lt(timestamp)
+                    .and(BRANCH)
+                    .isEqualTo(branch)
+            )
+            .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
+            .limit(1)
+        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        logger.info(
+            "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
+        )
+        return result
     }
 }

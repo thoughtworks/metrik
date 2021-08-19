@@ -1,8 +1,8 @@
 package metrik.metrics.domain.calculator
 
+import metrik.metrics.domain.model.LEVEL
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Status
-import metrik.metrics.domain.model.LEVEL
 import org.springframework.stereotype.Component
 
 @Component
@@ -34,7 +34,7 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     override fun calculateLevel(value: Number, days: Int?): LEVEL {
         val deploymentCount = value.toDouble()
 
-        val deploymentFrequency = deploymentCount/days!!
+        val deploymentFrequency = deploymentCount / days!!
 
         return when {
             deploymentFrequency <= 1.0 / ONE_MONTH -> LEVEL.LOW
@@ -45,25 +45,27 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     }
 
     private fun isInvalidBuild(
-        currentBuild: Build, startTimestamp: Long,
-        endTimestamp: Long, targetStage: String
+        currentBuild: Build,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String
     ): Boolean {
         return !isTargetStageWithinTimeRange(currentBuild, startTimestamp, endTimestamp, targetStage) ||
-                !isTargetStageSuccess(currentBuild, targetStage)
+            !isTargetStageSuccess(currentBuild, targetStage)
     }
 
     private fun isTargetStageSuccess(build: Build, targetStage: String) =
         build.stages.find { stage -> stage.name == targetStage }?.status == Status.SUCCESS
 
     private fun isTargetStageWithinTimeRange(
-        build: Build, startTimestamp: Long,
-        endTimestamp: Long, targetStage: String
+        build: Build,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        targetStage: String
     ): Boolean {
         val stage = build.stages.find { it.name == targetStage }
         val deploymentFinishTimestamp = stage?.getStageDoneTime()
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp
     }
-
-
 }

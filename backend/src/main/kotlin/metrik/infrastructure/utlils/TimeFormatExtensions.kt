@@ -6,7 +6,7 @@ import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.TimeZone
 
 fun ZonedDateTime.toTimestamp(): Long = this.toInstant().toEpochMilli()
 

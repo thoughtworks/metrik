@@ -1,9 +1,9 @@
 package metrik.project.domain.service.factory
 
 import metrik.project.domain.model.Build
-import metrik.project.rest.vo.response.SyncProgress
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.service.PipelineService
+import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

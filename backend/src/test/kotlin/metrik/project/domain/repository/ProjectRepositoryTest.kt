@@ -1,7 +1,7 @@
 package metrik.project.domain.repository
 
-import metrik.project.exception.ProjectNotFoundException
 import metrik.project.domain.model.Project
+import metrik.project.exception.ProjectNotFoundException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -113,7 +113,6 @@ internal class ProjectRepositoryTest {
             projectRepository.updateSynchronizationTime(projectId, newSynchronisationTime)
 
         assertEquals(updateSynchronizationTime, newSynchronisationTime)
-
 
         val findById = mongoTemplate.findById(projectId, Project::class.java)
 

@@ -18,7 +18,7 @@ data class Stage(
     val completedTimeMillis: Long? = null,
 ) {
     fun getStageDoneTime(): Long {
-        return this.completedTimeMillis ?: this.startTimeMillis + this.durationMillis + this.pauseDurationMillis
+        return completedTimeMillis ?: (startTimeMillis + durationMillis + pauseDurationMillis)
     }
 }
 
@@ -36,6 +36,7 @@ data class Build(
     val duration: Long = 0,
     val timestamp: Long = 0,
     val url: String = Strings.EMPTY,
+    val branch: String = Strings.EMPTY,
     val stages: List<Stage> = emptyList(),
     val changeSets: List<Commit> = emptyList()
 ) {
@@ -46,12 +47,11 @@ data class Build(
         startTimestamp: Long,
         endTimestamp: Long
     ): Boolean {
-        return this.stages.any {
-            it.name == deployStageName
-                    && it.status == status
-                    && it.getStageDoneTime() in startTimestamp..endTimestamp
+        return stages.any {
+            it.name == deployStageName &&
+                it.status == status &&
+                it.getStageDoneTime() in startTimestamp..endTimestamp
         }
-
     }
 
     fun containsGivenDeploymentBeforeGivenTimestamp(
@@ -59,18 +59,16 @@ data class Build(
         status: Status,
         timestamp: Long
     ): Boolean {
-        return this.stages.any {
-            it.name == deployStageName
-                    && it.status == status
-                    && it.getStageDoneTime() < timestamp
+        return stages.any {
+            it.name == deployStageName &&
+                it.status == status &&
+                it.getStageDoneTime() < timestamp
         }
     }
 
     fun findGivenStage(deployStageName: String, status: Status): Stage? {
-        return this.stages.find {
+        return stages.find {
             it.name == deployStageName && it.status == status
         }
     }
 }
-
-

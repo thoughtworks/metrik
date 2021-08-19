@@ -1,8 +1,7 @@
 package metrik.metrics.domain.calculator
 
-import metrik.project.domain.model.Build
 import metrik.metrics.domain.model.LEVEL
-
+import metrik.project.domain.model.Build
 
 interface MetricsCalculator {
     fun calculateValue(
@@ -13,5 +12,4 @@ interface MetricsCalculator {
     ): Number
 
     fun calculateLevel(value: Number, days: Int? = 0): LEVEL
-
 }

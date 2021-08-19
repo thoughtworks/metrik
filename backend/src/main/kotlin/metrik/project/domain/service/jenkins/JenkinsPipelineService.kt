@@ -2,15 +2,15 @@ package metrik.project.domain.service.jenkins
 
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
-import metrik.project.exception.PipelineConfigVerifyException
-import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
 import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
 import metrik.project.domain.service.jenkins.dto.BuildSummaryDTO
+import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +24,7 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import java.nio.charset.Charset
-import java.util.*
+import java.util.Base64
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.streams.toList
 
@@ -48,7 +48,7 @@ class JenkinsPipelineService(
                     Failed to verify pipeline config for [${pipeline.url}]
                     statusCode: ${response.statusCode}
                     responseBody: ${response.body}          
-                """.trimIndent()
+                    """.trimIndent()
                 )
                 throw PipelineConfigVerifyException(response.body!!)
             }
@@ -94,8 +94,8 @@ class JenkinsPipelineService(
                 buildSummary.duration,
                 buildSummary.timestamp,
                 buildSummary.url,
-                constructBuildStages(buildDetails),
-                constructBuildCommits(buildSummary).flatten()
+                stages = constructBuildStages(buildDetails),
+                changeSets = constructBuildCommits(buildSummary).flatten()
             )
 
             emitCb(
@@ -152,7 +152,8 @@ class JenkinsPipelineService(
     }
 
     private fun getBuildSummariesFromJenkins(
-        username: String, credential: String,
+        username: String,
+        credential: String,
         baseUrl: String
     ): List<BuildSummaryDTO> {
         val headers = setAuthHeader(username, credential)
@@ -160,7 +161,7 @@ class JenkinsPipelineService(
         val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
             restTemplate.exchange(
                 "$baseUrl/api/json?tree=allBuilds[building,number," +
-                        "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
+                    "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
                 HttpMethod.GET,
                 entity
             )

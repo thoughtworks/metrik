@@ -32,7 +32,8 @@ internal class TimeRangeSplitterKtTest {
                     LocalDate.parse("2020-11-01").atStartOfDay().toDefaultZoneEpochMill(),
                     endTimestamp
                 )
-            ), timeRangeList
+            ),
+            timeRangeList
         )
     }
 
@@ -64,7 +65,8 @@ internal class TimeRangeSplitterKtTest {
                     LocalDate.parse("2020-04-01").atStartOfDay().toDefaultZoneEpochMill(),
                     endTimestamp
                 )
-            ), timeRangeList
+            ),
+            timeRangeList
         )
     }
 

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.*
+import java.util.TimeZone
 
 @Service
 class MetricsApplicationService {

@@ -2,6 +2,7 @@ package metrik.project.domain.service.bamboo
 
 import metrik.MockitoHelper
 import metrik.exception.ApplicationException
+import metrik.project.builds
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -9,6 +10,7 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.mockEmitCb
 import metrik.project.rest.vo.response.SyncProgress
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -18,7 +20,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -30,7 +31,7 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
-
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(SpringExtension::class)
 @Import(BambooPipelineService::class, RestTemplate::class)
 @RestClientTest
@@ -44,15 +45,13 @@ internal class BambooPipelineServiceTest {
     @MockBean
     private lateinit var buildRepository: BuildRepository
 
-    private val mockEmitCb = mock<(SyncProgress) -> Unit>()
-
     private val pipelineId = "1"
     private val credential = "fake-credential"
     private val baseUrl = "http://localhost:80"
     private val planKey = "fake-plan-key"
-    private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/${planKey}.json"
+    private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/$planKey.json"
     private val getBuildDetailsUrl =
-        "$baseUrl/rest/api/latest/result/${planKey}-1.json?expand=changes.change,stages.stage.results"
+        "$baseUrl/rest/api/latest/result/$planKey-1.json?expand=changes.change,stages.stage.results"
     private lateinit var mockServer: MockRestServiceServer
     private val userInputURL = "http://localhost:80/browse/FKM-FKMS"
 
@@ -63,7 +62,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/project/"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -76,7 +75,7 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 400`() {
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/project/"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/project/"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
@@ -88,19 +87,6 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        val builds = listOf(
-            Build(
-                stages = listOf(
-                    Stage(name = "clone"), Stage(name = "build"),
-                    Stage(name = "zzz"), Stage(name = "amazing")
-                )
-            ),
-            Build(
-                stages = listOf(
-                    Stage(name = "build"), Stage("good")
-                )
-            )
-        )
         `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
 
         val result = bambooPipelineService.getStagesSortedByName(pipelineId)
@@ -121,7 +107,7 @@ internal class BambooPipelineServiceTest {
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/result/$planKey.json"))
             .andRespond(
                 MockRestResponseCreators.withServerError()
             )
@@ -139,7 +125,7 @@ internal class BambooPipelineServiceTest {
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
-        mockServer.expect(MockRestRequestMatchers.requestTo("${baseUrl}/rest/api/latest/result/${planKey}.json"))
+        mockServer.expect(MockRestRequestMatchers.requestTo("$baseUrl/rest/api/latest/result/$planKey.json"))
             .andRespond(
                 MockRestResponseCreators.withBadRequest()
             )
@@ -159,12 +145,12 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -173,7 +159,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-2.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -199,12 +185,12 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -213,7 +199,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-6.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -242,12 +228,12 @@ internal class BambooPipelineServiceTest {
             name = pipelineName
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -256,7 +242,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -297,12 +283,12 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -311,7 +297,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-3.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -338,12 +324,12 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -352,7 +338,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-4.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -383,12 +369,12 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -397,7 +383,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-5.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -424,13 +410,13 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -439,7 +425,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-1.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -481,7 +467,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )
@@ -490,7 +476,7 @@ internal class BambooPipelineServiceTest {
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withSuccess(
-                    this.javaClass.getResource("/pipeline/bamboo/raw-build-details-8.json").readText(),
+                    javaClass.getResource("/pipeline/bamboo/raw-build-details-8.json").readText(),
                     MediaType.APPLICATION_JSON
                 )
             )

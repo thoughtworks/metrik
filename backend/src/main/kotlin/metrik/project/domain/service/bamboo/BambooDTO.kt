@@ -60,6 +60,7 @@ data class BuildDetailDTO(
         logger.info(
             "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
         )
+
         val buildTimestamp = getBuildStartedTimestamp() ?: return null
 
         try {
@@ -74,8 +75,8 @@ data class BuildDetailDTO(
                 buildDuration,
                 buildTimestamp,
                 link.href,
-                stages,
-                changes.change.map {
+                stages = stages,
+                changeSets = changes.change.map {
                     Commit(it.changesetId, it.getDateTimestamp(), it.date.toString(), it.comment)
                 }
             )

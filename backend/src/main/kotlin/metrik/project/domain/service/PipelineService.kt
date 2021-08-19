@@ -1,8 +1,8 @@
 package metrik.project.domain.service
 
 import metrik.project.domain.model.Build
-import metrik.project.rest.vo.response.SyncProgress
 import metrik.project.domain.model.Pipeline
+import metrik.project.rest.vo.response.SyncProgress
 
 interface PipelineService {
 
@@ -11,5 +11,4 @@ interface PipelineService {
     fun verifyPipelineConfiguration(pipeline: Pipeline)
 
     fun getStagesSortedByName(pipelineId: String): List<String>
-
 }

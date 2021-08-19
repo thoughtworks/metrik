@@ -12,4 +12,3 @@ internal class TimeFormatUtilTest {
         assertEquals(1514764800000, date.toTimestamp())
     }
 }
-
