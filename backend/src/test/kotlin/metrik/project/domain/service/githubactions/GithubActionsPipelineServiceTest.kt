@@ -127,7 +127,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should map one run to its commits`() {
-        val build = githubActionsBuild.copy(timestamp = previousTimeStamp)
+        val build = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
 
         every {
             buildRepository.getPreviousBuild(
@@ -159,9 +159,9 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should map multiple runs to their commits`() {
-        val buildFirst = githubActionsBuild.copy(timestamp = previousTimeStamp)
-        val buildSecond = githubActionsBuild.copy(timestamp = 1619098860779)
-        val buildThird = githubActionsBuild.copy(timestamp = 1618926060779)
+        val buildFirst = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
+        val buildSecond = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = 1619098860779)))
+        val buildThird = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = 1618926060779)))
 
         val githubActionsWorkflowSecond = githubActionsWorkflow.copy(
             headCommit = HeadCommit(
@@ -183,40 +183,26 @@ internal class GithubActionsPipelineServiceTest {
                 any(),
                 branch
             )
-        } returns buildFirst andThen buildSecond andThen buildThird
+        } returns buildThird andThen buildFirst andThen buildSecond andThen buildThird
 
-        every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
-                branch = branch,
-                pipeline = githubActionsPipeline
-            )
-        } returns listOf(commit)
-
-        every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
-                ZonedDateTime.parse("2021-04-22T13:41:01.779Z")!!,
-                ZonedDateTime.parse("2021-04-23T13:41:00.779Z")!!,
-                branch = branch,
-                pipeline = githubActionsPipeline
-            )
-        } returns listOf(commit)
+        val commit1 = commit.copy(timestamp = 1629203005000)
+        val commit2 = commit.copy(timestamp = 1619185260779)
+        val commit3 = commit.copy(timestamp = 1619098860779)
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
                 ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
-                ZonedDateTime.parse("2021-04-22T13:41:00.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
-        } returns listOf(commit)
+        } returns listOf(commit1, commit2, commit3)
 
         val map = mapOf(
             branch to mapOf(
-                githubActionsWorkflow to listOf(commit),
-                githubActionsWorkflowSecond to listOf(commit),
-                githubActionsWorkflowThird to listOf(commit)
+                githubActionsWorkflow to listOf(commit1),
+                githubActionsWorkflowSecond to listOf(commit2),
+                githubActionsWorkflowThird to listOf(commit3)
             )
         )
 
@@ -264,8 +250,6 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync all builds given first time synchronization and builds need to sync only one page`() {
-        val map = mapOf(branch to mapOf(githubActionsWorkflow to listOf(commit)))
-
         every { buildRepository.getLatestBuild(pipelineID) } returns (null)
         every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
         every {
@@ -323,8 +307,8 @@ internal class GithubActionsPipelineServiceTest {
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
-            buildRepository.save(githubActionsBuild)
-            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList(), number = 1111111112))
         }
     }
 
@@ -395,10 +379,10 @@ internal class GithubActionsPipelineServiceTest {
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
-            buildRepository.save(githubActionsBuild)
-            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
-            buildRepository.save(githubActionsBuild.copy(number = 1111111113))
-            buildRepository.save(githubActionsBuild.copy(number = 1111111114))
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111112, changeSets = emptyList()))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111113, changeSets = emptyList()))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111114, changeSets = emptyList()))
         }
     }
 
@@ -461,14 +445,16 @@ internal class GithubActionsPipelineServiceTest {
             buildRepository.save(
                 githubActionsBuild.copy(
                     result = Status.IN_PROGRESS,
-                    stages = emptyList()
+                    stages = emptyList(),
+                    changeSets = emptyList()
                 )
             )
             buildRepository.save(
                 githubActionsBuild.copy(
                     result = Status.IN_PROGRESS,
                     stages = emptyList(),
-                    number = 1111111112
+                    number = 1111111112,
+                    changeSets = emptyList()
                 )
             )
         }
@@ -531,7 +517,7 @@ internal class GithubActionsPipelineServiceTest {
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
-            buildRepository.save(githubActionsBuild)
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
         }
     }
 
@@ -616,7 +602,8 @@ internal class GithubActionsPipelineServiceTest {
                             startTimeMillis = 1628766661000,
                             completedTimeMillis = 1628766677000
                         )
-                    )
+                    ),
+                    changeSets = emptyList()
                 )
             )
             buildRepository.save(
@@ -628,10 +615,11 @@ internal class GithubActionsPipelineServiceTest {
                             startTimeMillis = 1628766661000,
                             completedTimeMillis = 1628766677000
                         )
-                    )
+                    ),
+                    changeSets = emptyList()
                 )
             )
-            buildRepository.save(githubActionsBuild)
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
             mockEmitCb.invoke(progress)
             mockEmitCb.invoke(progress.copy(progress = 2))
             mockEmitCb.invoke(progress.copy(progress = 3))
@@ -697,14 +685,16 @@ internal class GithubActionsPipelineServiceTest {
             buildRepository.save(
                 githubActionsBuild.copy(
                     result = Status.OTHER,
-                    stages = emptyList()
+                    stages = emptyList(),
+                    changeSets = emptyList()
                 )
             )
             buildRepository.save(
                 githubActionsBuild.copy(
                     result = Status.OTHER,
                     stages = emptyList(),
-                    number = 1111111112
+                    number = 1111111112,
+                    changeSets = emptyList()
                 )
             )
         }
@@ -784,7 +774,8 @@ internal class GithubActionsPipelineServiceTest {
             buildRepository.save(
                 githubActionsBuild.copy(
                     number = 1111111112,
-                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112"
+                    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111112",
+                    changeSets = emptyList()
                 )
             )
         }
@@ -841,8 +832,8 @@ internal class GithubActionsPipelineServiceTest {
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
-            buildRepository.save(githubActionsBuild)
-            buildRepository.save(githubActionsBuild.copy(number = 1111111112))
+            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
+            buildRepository.save(githubActionsBuild.copy(number = 1111111112, changeSets = emptyList()))
         }
     }
 
@@ -953,8 +944,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     private companion object {
-        const val baseUrl = "http://localhost:80/test_project/test_repo"
-        const val getRunsBaseUrl = "$baseUrl/actions/runs"
+        const val getRunsBaseUrl = "$userInputURL/actions/runs"
         const val getRunsFirstPagePipelineUrl = "$getRunsBaseUrl?per_page=1"
     }
 }

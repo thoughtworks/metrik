@@ -7,6 +7,7 @@ import metrik.configuration.RestTemplateConfiguration
 import metrik.project.commit
 import metrik.project.credential
 import metrik.project.githubActionsPipeline
+import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -192,7 +193,7 @@ internal class GithubActionsCommitServiceTest {
     }
 
     private companion object {
-        const val commitUrl = "http://localhost:80/test_project/test_repo/commits"
+        const val commitUrl = "$userInputURL/commits"
         const val sinceTimeStamp = "2021-08-10T01:46:31Z"
         const val untilTimeStamp = "2021-08-11T01:46:31Z"
         val sinceTimeStampZonedFormat: ZonedDateTime = ZonedDateTime.parse(sinceTimeStamp)!!

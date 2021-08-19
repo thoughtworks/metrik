@@ -1,6 +1,7 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.RequestUtil
+import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -45,7 +46,7 @@ class GithubActionsPipelineService(
         val entity = HttpEntity<String>(headers)
 
         try {
-            val url = "${pipeline.url}$urlSummarySuffix"
+            val url = "${pipeline.githubApiUrl}$urlSummarySuffix"
             logger.info("Github Actions verification - Sending request to [$url] with entity [$entity]")
             val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
             logger.info("Github Actions verification - Response from [$url]: $responseEntity")
@@ -149,7 +150,7 @@ class GithubActionsPipelineService(
         while (ifRetrieving) {
 
             val url =
-                "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
+                "${pipeline.githubApiUrl}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
 
             logger.info("Get build details - Sending request to [$url] with entity [$entity]")
             var responseEntity: ResponseEntity<BuildDetailDTO>
@@ -187,7 +188,7 @@ class GithubActionsPipelineService(
             run {
                 val runID = URL(build.url).path.split("/").last()
                 val url =
-                    "${pipeline.url}$urlSuffix/$runID"
+                    "${pipeline.githubApiUrl}$urlSuffix/$runID"
                 logger.info("Get build details - Sending request to [$url] with entity [$entity]")
                 var responseEntity: ResponseEntity<WorkflowRuns>
 
@@ -239,36 +240,50 @@ class GithubActionsPipelineService(
 
     private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
         val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
+
+        val latestTimestamp = runs.first().headCommit.timestamp
+        val lastRun = runs.last()
+        val previousRunBeforeLastRun = buildRepository.getPreviousBuild(
+            pipeline.id,
+            lastRun.getBuildTimestamp(lastRun.headCommit.timestamp),
+            lastRun.headBranch
+        )?.changeSets?.first()?.timestamp
+        val previousZonedDateTime = previousRunBeforeLastRun?.let {
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
+        }
+        val totalCommits = githubActionsCommitService.getCommitsBetweenBuilds(
+            previousZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
+            latestTimestamp,
+            branch = lastRun.headBranch,
+            pipeline = pipeline,
+        )
+
         runs.forEachIndexed { index, run ->
+            val runTimeStamp = run.headCommit.timestamp.toTimestamp()
             val previousBuild = buildRepository.getPreviousBuild(
                 pipeline.id,
                 run.getBuildTimestamp(run.createdAt),
                 run.headBranch
-            )?.timestamp
-            val previousZonedDateTime = previousBuild?.let {
-                ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
-            }
+            )?.changeSets?.first()?.timestamp
             val lastTimeStamp = when (index) {
-                runs.lastIndex -> previousZonedDateTime
+                runs.lastIndex -> previousRunBeforeLastRun
                 else -> {
-                    val toEpochSecond = runs[index + 1].headCommit.timestamp
-                    if (previousZonedDateTime == null) toEpochSecond
-                    else maxOf(toEpochSecond, previousZonedDateTime)
+                    val toEpochSecond = runs[index + 1].headCommit.timestamp.toTimestamp()
+                    if (previousBuild == null) toEpochSecond
+                    else maxOf(toEpochSecond, previousBuild)
                 }
             }
-            val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-                lastTimeStamp?.plus(OFFSET, ChronoUnit.SECONDS),
-                run.headCommit.timestamp,
-                branch = run.headBranch,
-                pipeline = pipeline
-            )
+            val commits = when (lastTimeStamp) {
+                null -> totalCommits.filter { it.timestamp <= runTimeStamp }
+                else -> totalCommits.filter { it.timestamp in (lastTimeStamp + 1)..runTimeStamp }
+            }
             map[run] = commits
         }
         return map.toMap()
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
-        val url = "${pipeline.url}$urlSuffix?per_page=1"
+        val url = "${pipeline.githubApiUrl}$urlSuffix?per_page=1"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")
@@ -280,6 +295,6 @@ class GithubActionsPipelineService(
         const val urlSummarySuffix = "/actions/runs?per_page=1"
         const val urlSuffix = "/actions/runs"
         const val defaultMaxPerPage = 100
-        const val OFFSET: Long = 1
+        const val COMMIT_OFFSET: Long = 1
     }
 }
