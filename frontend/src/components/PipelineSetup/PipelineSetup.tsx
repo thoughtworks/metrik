@@ -99,7 +99,7 @@ const PipelineSetup: FC<{
 						}}>
 						<Text css={groupTitleStyles}>Pipeline Details</Text>
 						<Row gutter={24} wrap={false} align={"bottom"}>
-							<Col span={4}>
+							<Col span={6}>
 								<Item
 									label="Pipeline Tool"
 									name="type"
@@ -113,6 +113,9 @@ const PipelineSetup: FC<{
 									<Select>
 										<Option value={PipelineTool.JENKINS}>{PipelineTool.JENKINS}</Option>
 										<Option value={PipelineTool.BAMBOO}>{PipelineTool.BAMBOO}</Option>
+										<Option value={PipelineTool.GITHUB_ACTIONS}>
+											{PipelineTool.GITHUB_ACTIONS}
+										</Option>
 									</Select>
 								</Item>
 							</Col>

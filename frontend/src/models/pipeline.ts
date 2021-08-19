@@ -1,4 +1,5 @@
 export enum PipelineTool {
 	BAMBOO = "BAMBOO",
 	JENKINS = "JENKINS",
+	GITHUB_ACTIONS = "GITHUB_ACTIONS",
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 internal class GlobalExceptionHandlerTest {
-    lateinit var globalExceptionHandler: GlobalExceptionHandler
+    private lateinit var globalExceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {

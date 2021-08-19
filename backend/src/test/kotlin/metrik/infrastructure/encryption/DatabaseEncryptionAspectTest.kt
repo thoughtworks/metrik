@@ -1,41 +1,35 @@
 package metrik.infrastructure.encryption
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.Called
+import io.mockk.every
+import io.mockk.verify
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
-import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
 @SpringBootTest
 internal class DatabaseEncryptionAspectTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
-    @MockBean
+    @MockkBean
     private lateinit var encryptionService: AESEncryptionService
 
     @BeforeEach
     fun setUp() {
-        `when`(encryptionService.encrypt(anyString())).thenReturn("encrypted")
-        `when`(encryptionService.decrypt(anyString())).thenReturn("decrypted")
+        every { encryptionService.encrypt(any()) } returns "encrypted"
+        every { encryptionService.decrypt(any()) } returns "decrypted"
 
-        val collectionName = "pipeline"
-        mongoTemplate.dropCollection(collectionName)
+        mongoTemplate.dropCollection("pipeline")
     }
 
     @Test
@@ -45,8 +39,8 @@ internal class DatabaseEncryptionAspectTest {
 
         val pipelineSaved = mongoTemplate.save(Pipeline(username = username, credential = credential))
 
-        verify(encryptionService, times(1)).encrypt(username)
-        verify(encryptionService, times(1)).encrypt(credential)
+        verify(exactly = 1) { encryptionService.encrypt(username) }
+        verify(exactly = 1) { encryptionService.encrypt(credential) }
         assertThat(pipelineSaved.username).isEqualTo("encrypted")
         assertThat(pipelineSaved.credential).isEqualTo("encrypted")
     }
@@ -55,8 +49,7 @@ internal class DatabaseEncryptionAspectTest {
     fun `should not encrypt data before call save() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.save(Build())
 
-        verify(encryptionService, never()).encrypt(anyString())
-        verify(encryptionService, never()).encrypt(anyString())
+        verify { encryptionService wasNot Called }
     }
 
     @Test
@@ -69,8 +62,8 @@ internal class DatabaseEncryptionAspectTest {
             Pipeline::class.java
         ).toList()
 
-        verify(encryptionService, times(1)).encrypt(username)
-        verify(encryptionService, times(1)).encrypt(credential)
+        verify(exactly = 1) { encryptionService.encrypt(username) }
+        verify(exactly = 1) { encryptionService.encrypt(credential) }
         assertThat(pipelinesSaved[0].username).isEqualTo("encrypted")
         assertThat(pipelinesSaved[0].credential).isEqualTo("encrypted")
     }
@@ -82,8 +75,7 @@ internal class DatabaseEncryptionAspectTest {
             Build::class.java
         ).toList()
 
-        verify(encryptionService, never()).encrypt(anyString())
-        verify(encryptionService, never()).encrypt(anyString())
+        verify { encryptionService wasNot Called }
     }
 
     @Test
@@ -99,7 +91,7 @@ internal class DatabaseEncryptionAspectTest {
             Pipeline::class.java
         )
 
-        verify(encryptionService, times(2)).decrypt("encrypted")
+        verify(exactly = 2) { encryptionService.decrypt("encrypted") }
         assertThat(pipelinesRetrieved[0].username).isEqualTo("decrypted")
         assertThat(pipelinesRetrieved[0].credential).isEqualTo("decrypted")
     }
@@ -113,7 +105,7 @@ internal class DatabaseEncryptionAspectTest {
             Build::class.java
         )
 
-        verify(encryptionService, times(0)).decrypt(anyString())
+        verify { encryptionService wasNot Called }
     }
 
     @Test
@@ -129,7 +121,7 @@ internal class DatabaseEncryptionAspectTest {
             Pipeline::class.java
         )
 
-        verify(encryptionService, times(2)).decrypt("encrypted")
+        verify(exactly = 2) { encryptionService.decrypt("encrypted") }
         assertThat(pipelineRetrieved!!.username).isEqualTo("decrypted")
         assertThat(pipelineRetrieved.credential).isEqualTo("decrypted")
     }
@@ -143,7 +135,7 @@ internal class DatabaseEncryptionAspectTest {
             Pipeline::class.java
         )
 
-        verify(encryptionService, times(0)).decrypt(anyString())
+        verify { encryptionService wasNot Called }
     }
 
     @Test
@@ -153,6 +145,6 @@ internal class DatabaseEncryptionAspectTest {
             Pipeline::class.java
         )
 
-        verify(encryptionService, times(0)).decrypt(anyString())
+        verify { encryptionService wasNot Called }
     }
 }

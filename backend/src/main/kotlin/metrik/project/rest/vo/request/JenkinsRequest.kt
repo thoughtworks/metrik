@@ -33,7 +33,6 @@ class JenkinsVerificationRequest(
     val username: String,
     @field:NotBlank(message = "Credential cannot be null or empty")
     val credential: String,
-
     url: String
 ) : PipelineVerificationRequest(url, PipelineType.JENKINS.toString()) {
     override fun toPipeline() = with(this) {

@@ -1,5 +1,9 @@
 package metrik.metrics.rest
 
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import metrik.metrics.domain.calculator.ChangeFailureRateCalculator
 import metrik.metrics.domain.calculator.DeploymentFrequencyCalculator
 import metrik.metrics.domain.calculator.LeadTimeForChangeCalculator
@@ -14,169 +18,148 @@ import metrik.project.domain.repository.BuildRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 internal class MetricsApplicationServiceTest {
-
-    @Mock
+    @MockK
     private lateinit var changeFailureRateCalculator: ChangeFailureRateCalculator
-
-    @Mock
+    @MockK
     private lateinit var leadTimeForChangeCalculator: LeadTimeForChangeCalculator
-
-    @Mock
+    @MockK
     private lateinit var meanTimeToRestoreCalculator: MeanTimeToRestoreCalculator
-
-    @Mock
+    @MockK
     private lateinit var deploymentFrequencyCalculator: DeploymentFrequencyCalculator
-
-    @Mock
+    @MockK
     private lateinit var buildRepository: BuildRepository
 
-    @InjectMocks
+    @InjectMockKs(overrideValues = true)
     private lateinit var metricsApplicationService: MetricsApplicationService
+
+    private val pipelineId = "pipelineId"
+    private val stage = "stage"
+    private val pipelineStages = listOf(PipelineStageRequest(pipelineId, stage))
+    private val targetStage = mapOf(Pair(pipelineId, stage))
+    private val startOfFirstPeriod = 1622649600000L
+    private val endOfFirstPeriod = 1623859199999L
+    private val startOfSecondPeriod = 1623859200000L
+    private val endOfSecondPeriod = 1624987108485L
+    private val periodLengthInDays = 28
+    private val expectedBuilds = emptyList<Build>()
+    private val unit = CalculationPeriod.Fortnightly
+    private val unit2 = CalculationPeriod.Monthly
+
+    @BeforeEach
+    fun setUp() {
+        every { buildRepository.getAllBuilds(targetStage.keys) } returns expectedBuilds
+        every {
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 7
+        every { deploymentFrequencyCalculator.calculateLevel(7, periodLengthInDays) } returns LEVEL.ELITE
+        every {
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        } returns 3
+        every {
+            deploymentFrequencyCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 4
+        every {
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 2.0
+        every { leadTimeForChangeCalculator.calculateLevel(2.0) } returns LEVEL.LOW
+        every {
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        } returns 1.0
+        every {
+            leadTimeForChangeCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 3.0
+        every { leadTimeForChangeCalculator.calculateLevel(2.0) } returns LEVEL.HIGH
+        every {
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 2.25
+        every { meanTimeToRestoreCalculator.calculateLevel(2.25) } returns LEVEL.HIGH
+        every {
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        } returns 1.8
+        every {
+            meanTimeToRestoreCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 5.7
+        every {
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 0.5
+        every { changeFailureRateCalculator.calculateLevel(0.5) } returns LEVEL.LOW
+        every {
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfFirstPeriod,
+                endOfFirstPeriod,
+                targetStage
+            )
+        } returns 0.4
+        every {
+            changeFailureRateCalculator.calculateValue(
+                expectedBuilds,
+                startOfSecondPeriod,
+                endOfSecondPeriod,
+                targetStage
+            )
+        } returns 0.6
+        every { changeFailureRateCalculator.calculateLevel(0.5) } returns LEVEL.HIGH
+    }
 
     @Test
     fun `should return correct metric response`() {
-        val pipelineId = "pipelineId"
-        val stage = "stage"
-        val pipelineStages = listOf(PipelineStageRequest(pipelineId, stage))
-        val targetStage = mapOf(Pair(pipelineId, stage))
-        val startOfFirstPeriod = 1622649600000L
-        val endOfFirstPeriod = 1623859199999L
-        val startOfSecondPeriod = 1623859200000L
-        val endOfSecondPeriod = 1624987108485L
-        val periodLengthInDays = 28
-        val expectedBuilds = emptyList<Build>()
-        val unit = CalculationPeriod.Fortnightly
-        val unit2 = CalculationPeriod.Monthly
-
-        `when`(buildRepository.getAllBuilds(targetStage.keys)).thenReturn(expectedBuilds)
-
-        `when`(
-            deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(7)
-        `when`(deploymentFrequencyCalculator.calculateLevel(7, periodLengthInDays)).thenReturn(LEVEL.ELITE)
-        `when`(
-            deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfFirstPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(3)
-        `when`(
-            deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
-                startOfSecondPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(4)
-
-        `when`(
-            leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(2.0)
-        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.LOW)
-        `when`(
-            leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfFirstPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(1.0)
-        `when`(
-            leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
-                startOfSecondPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(3.0)
-        `when`(leadTimeForChangeCalculator.calculateLevel(2.0)).thenReturn(LEVEL.HIGH)
-
-        `when`(
-            meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(2.25)
-        `when`(meanTimeToRestoreCalculator.calculateLevel(2.25)).thenReturn(LEVEL.HIGH)
-        `when`(
-            meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfFirstPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(1.8)
-        `when`(
-            meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
-                startOfSecondPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(5.7)
-
-        `when`(
-            changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(0.5)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.LOW)
-        `when`(
-            changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
-                startOfFirstPeriod,
-                endOfFirstPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(0.4)
-        `when`(
-            changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
-                startOfSecondPeriod,
-                endOfSecondPeriod,
-                targetStage
-            )
-        )
-            .thenReturn(0.6)
-        `when`(changeFailureRateCalculator.calculateLevel(0.5)).thenReturn(LEVEL.HIGH)
-
         val fourKeyMetricsResponse = metricsApplicationService.calculateFourKeyMetrics(
             pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit
         )

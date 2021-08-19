@@ -1,6 +1,8 @@
 package metrik.project.domain.repository
 
-import metrik.MockitoHelper.anyObject
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.verify
 import metrik.project.domain.model.Pipeline
 import metrik.project.exception.PipelineNotFoundException
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,12 +10,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.eq
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.argThat
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -21,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @Import(PipelineRepository::class)
 internal class PipelineRepositoryTest {
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var mongoTemplate: MongoTemplate
 
     @Autowired
@@ -34,8 +31,10 @@ internal class PipelineRepositoryTest {
 
     @Test
     fun `should return Pipeline when findById() called given pipelineId exist in repo`() {
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(
-            Pipeline(id = pipelineId, username = username, credential = credential)
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns Pipeline(
+            id = pipelineId,
+            username = username,
+            credential = credential
         )
 
         val pipeline = pipelineRepository.findById(pipelineId)
@@ -45,19 +44,17 @@ internal class PipelineRepositoryTest {
 
     @Test
     fun `should throw PipelineNotFoundException exception when findById() called given pipelineId not exist in repo`() {
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns null
 
         assertThrows<PipelineNotFoundException> { pipelineRepository.findById(pipelineId) }
     }
 
     @Test
     fun `should return pipeline when findByIdAndProjectId() called given the pipeline exist`() {
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(
-            Pipeline(
-                id = pipelineId,
-                username = username,
-                credential = credential
-            )
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns Pipeline(
+            id = pipelineId,
+            username = username,
+            credential = credential
         )
 
         val pipeline = pipelineRepository.findByIdAndProjectId(pipelineId, projectId)
@@ -67,7 +64,7 @@ internal class PipelineRepositoryTest {
 
     @Test
     fun `should throw PipelineNotFoundException exception when findByIdAndProjectId() called given pipelineId not exist in repo`() {
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns null
 
         assertThrows<PipelineNotFoundException> { pipelineRepository.findByIdAndProjectId(pipelineId, projectId) }
     }
@@ -75,42 +72,42 @@ internal class PipelineRepositoryTest {
     @Test
     fun `should return pipeline when findByNameAndProjectId() called given pipelineExist`() {
         val pipeline = Pipeline(id = pipelineId, username = username, credential = credential)
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(pipeline)
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns pipeline
         assertEquals(pipelineRepository.findByNameAndProjectId("pipelineName", "projectId"), pipeline)
     }
 
     @Test
     fun `should return null when findByNameAndProjectId() called given name with projectId not exist in repo`() {
-        `when`(mongoTemplate.findOne(anyObject(), eq(Pipeline::class.java))).thenReturn(null)
+        every { mongoTemplate.hint(Pipeline::class).findOne<Pipeline>(any(), any()) } returns null
         assertNull(pipelineRepository.findByNameAndProjectId("name", "projectId"))
     }
 
     @Test
     fun `should invoke mongoTemplate to delete when deleteById() called`() {
         pipelineRepository.deleteById(pipelineId)
-        verify(mongoTemplate).remove(anyObject(), eq(Pipeline::class.java))
+        verify(exactly = 1) { mongoTemplate.remove(any(), Pipeline::class.java) }
     }
 
     @Test
     fun `should return Pipeline when save() called`() {
         val pipeline = Pipeline(id = pipelineId, username = username, credential = credential)
-        `when`(mongoTemplate.save<Pipeline>(anyObject())).thenReturn(pipeline)
+        every { mongoTemplate.hint(Pipeline::class).save<Pipeline>(pipeline) } returns pipeline
 
         pipelineRepository.save(pipeline)
-        verify(mongoTemplate).save<Pipeline>(
-            argThat {
-                assertEquals(pipeline.id, it.id)
-                assertEquals(pipeline.name, it.name)
-                true
-            }
-        )
+        verify {
+            mongoTemplate.save<Pipeline>(withArg {
+                assertEquals("pipelineId", it.id)
+                assertEquals("", it.name)
+            })
+
+        }
     }
 
     @Test
     fun `should return all Pipelines when saveAll() called`() {
         val pipeline = Pipeline(id = pipelineId, username = username, credential = credential)
         val pipelineList = listOf(pipeline)
-        `when`(mongoTemplate.insert<Pipeline>(anyObject(), eq(Pipeline::class.java))).thenReturn(pipelineList)
+        every { mongoTemplate.insert<Pipeline>(any(), Pipeline::class.java) } returns pipelineList
 
         val result = pipelineRepository.saveAll(pipelineList)
 
@@ -120,10 +117,14 @@ internal class PipelineRepositoryTest {
 
     @Test
     fun `should invoke mongoTemplate to find when findByProjectId() called`() {
-        `when`(mongoTemplate.find(anyObject(), eq(Pipeline::class.java))).thenReturn(
-            listOf(Pipeline(id = pipelineId, username = username, credential = credential))
+        every { mongoTemplate.find(any(), Pipeline::class.java) } returns listOf(
+            Pipeline(
+                id = pipelineId,
+                username = username,
+                credential = credential
+            )
         )
         pipelineRepository.findByProjectId("projectId")
-        verify(mongoTemplate).find(anyObject(), eq(Pipeline::class.java))
+        verify { mongoTemplate.find(any(), Pipeline::class.java) }
     }
 }

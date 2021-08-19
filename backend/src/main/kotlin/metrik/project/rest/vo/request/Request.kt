@@ -29,7 +29,7 @@ abstract class PipelineRequest(
     val url: String,
     @field:EnumConstraint(
         acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
-        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS"
+        message = "Allowed types: JENKINS, BAMBOO, GITHUB_ACTIONS"
     )
     var type: String
 ) {
@@ -44,14 +44,14 @@ abstract class PipelineRequest(
 @JsonSubTypes(
     JsonSubTypes.Type(value = BambooVerificationRequest::class, name = "BAMBOO"),
     JsonSubTypes.Type(value = JenkinsVerificationRequest::class, name = "JENKINS"),
-    JsonSubTypes.Type(value = GithubActionVerificationRequest::class, name = "GITHUB_ACTIONS")
+    JsonSubTypes.Type(value = GithubActionsVerificationRequest::class, name = "GITHUB_ACTIONS")
 )
 abstract class PipelineVerificationRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
     @field:EnumConstraint(
         acceptedValues = ["JENKINS", "BAMBOO", "GITHUB_ACTIONS"],
-        message = "type only allow JENKINS, BAMBOO and GITHUB_ACTIONS"
+        message = "Allowed types: JENKINS, BAMBOO, GITHUB_ACTIONS"
     )
     val type: String,
 ) {

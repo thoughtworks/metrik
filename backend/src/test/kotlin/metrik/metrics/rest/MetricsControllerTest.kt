@@ -1,6 +1,8 @@
 package metrik.metrics.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
 import metrik.metrics.domain.model.CalculationPeriod
 import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics
@@ -9,10 +11,8 @@ import metrik.metrics.rest.vo.MetricsInfo
 import metrik.metrics.rest.vo.MetricsQueryRequest
 import metrik.metrics.rest.vo.PipelineStageRequest
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -24,7 +24,7 @@ internal class MetricsControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockkBean
     private lateinit var metricsApplicationService: MetricsApplicationService
 
     @Test
@@ -47,14 +47,14 @@ internal class MetricsControllerTest {
             changeFailureRate = metrics,
             meanTimeToRestore = metrics
         )
-        `when`(
+        every {
             metricsApplicationService.calculateFourKeyMetrics(
                 requestBody.pipelineStages,
                 requestBody.startTime,
                 requestBody.endTime,
                 requestBody.unit,
             )
-        ).thenReturn(expectedResponse)
+        } returns expectedResponse
 
         mockMvc.perform(
             post("/api/pipeline/metrics")
@@ -92,14 +92,14 @@ internal class MetricsControllerTest {
             changeFailureRate = metrics,
             meanTimeToRestore = metrics
         )
-        `when`(
+        every {
             metricsApplicationService.calculateFourKeyMetrics(
                 listOf(PipelineStageRequest(pipelineId, targetStage)),
                 startTime,
                 endTime,
                 metricUnit
             )
-        ).thenReturn(expectedResponse)
+        } returns expectedResponse
 
         mockMvc.perform(
             get("/api/pipeline/metrics")
