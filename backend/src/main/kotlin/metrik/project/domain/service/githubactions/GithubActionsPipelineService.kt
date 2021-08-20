@@ -143,7 +143,7 @@ class GithubActionsPipelineService(
         var ifRetrieving = true
         var pageIndex = 1
 
-        val totalResponseBody = BuildDetailDTO(mutableListOf())
+        val buildDetails = BuildDetailDTO(mutableListOf())
 
         while (ifRetrieving) {
 
@@ -163,7 +163,7 @@ class GithubActionsPipelineService(
 
                     ifRetrieving = buildsNeedToSync.size == maxPerPage
 
-                    totalResponseBody.workflowRuns.addAll(buildsNeedToSync)
+                    buildDetails.workflowRuns.addAll(buildsNeedToSync)
                     true
                 },
                 url
@@ -171,7 +171,7 @@ class GithubActionsPipelineService(
 
             pageIndex++
         }
-        return totalResponseBody
+        return buildDetails
     }
 
     private fun getInProgressBuildDetails(
@@ -179,7 +179,7 @@ class GithubActionsPipelineService(
         builds: List<Build>,
         entity: HttpEntity<String>
     ): MutableList<WorkflowRuns> {
-        val totalWorkflowRuns = mutableListOf<WorkflowRuns>()
+        val workflowRuns = mutableListOf<WorkflowRuns>()
 
         builds.forEach { build ->
             run {
@@ -198,11 +198,11 @@ class GithubActionsPipelineService(
                     url
                 )?.let { it.body!! }
 
-                response?.also { totalWorkflowRuns.add(it) }
+                response?.also { workflowRuns.add(it) }
             }
         }
 
-        return totalWorkflowRuns
+        return workflowRuns
     }
 
     fun <T> withApplicationException(action: () -> T, url: String): T? {
@@ -240,41 +240,41 @@ class GithubActionsPipelineService(
 
         runs.sortedByDescending { it.headCommit.timestamp }
 
-        val latestTimestamp = runs.first().headCommit.timestamp
+        val latestTimestampInRuns = runs.first().headCommit.timestamp
         val lastRun = runs.last()
         val previousRunBeforeLastRun = buildRepository.getPreviousBuild(
             pipeline.id,
             lastRun.getBuildTimestamp(lastRun.headCommit.timestamp),
             lastRun.headBranch
         )?.changeSets?.first()?.timestamp
-        val previousZonedDateTime = previousRunBeforeLastRun?.let {
+        val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
-        val totalCommits = githubActionsCommitService.getCommitsBetweenBuilds(
-            previousZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
-            latestTimestamp,
+        val allCommits = githubActionsCommitService.getCommitsBetweenBuilds(
+            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
+            latestTimestampInRuns,
             branch = lastRun.headBranch,
             pipeline = pipeline,
         )
 
         runs.forEachIndexed { index, run ->
-            val runTimeStamp = run.headCommit.timestamp.toTimestamp()
-            val previousBuild = buildRepository.getPreviousBuild(
+            val currentRunTimeStamp = run.headCommit.timestamp.toTimestamp()
+            val previousBuildInRepo = buildRepository.getPreviousBuild(
                 pipeline.id,
                 run.getBuildTimestamp(run.createdAt),
                 run.headBranch
             )?.changeSets?.first()?.timestamp
-            val lastTimeStamp = when (index) {
+            val lastRunTimeStamp = when (index) {
                 runs.lastIndex -> previousRunBeforeLastRun
                 else -> {
-                    val toEpochSecond = runs[index + 1].headCommit.timestamp.toTimestamp()
-                    if (previousBuild == null) toEpochSecond
-                    else maxOf(toEpochSecond, previousBuild)
+                    val previousRunTimeStamp = runs[index + 1].headCommit.timestamp.toTimestamp()
+                    if (previousBuildInRepo == null) previousRunTimeStamp
+                    else maxOf(previousRunTimeStamp, previousBuildInRepo)
                 }
             }
-            val commits = when (lastTimeStamp) {
-                null -> totalCommits.filter { it.timestamp <= runTimeStamp }
-                else -> totalCommits.filter { it.timestamp in (lastTimeStamp + 1)..runTimeStamp }
+            val commits = when (lastRunTimeStamp) {
+                null -> allCommits.filter { it.timestamp <= currentRunTimeStamp }
+                else -> allCommits.filter { it.timestamp in (lastRunTimeStamp + 1)..currentRunTimeStamp }
             }
             map[run] = commits
         }
