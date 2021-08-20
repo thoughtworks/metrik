@@ -51,17 +51,6 @@ internal class GithubActionsCommitServiceTest {
                 )
             )
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=2"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/empty-commit.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             sinceTimeStampZonedFormat,
             untilTimeStampZonedFormat,
@@ -84,17 +73,6 @@ internal class GithubActionsCommitServiceTest {
                 )
             )
 
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&page=2"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/empty-commit.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             untilTimeStamp = untilTimeStampZonedFormat,
             pipeline = githubActionsPipeline
@@ -111,17 +89,6 @@ internal class GithubActionsCommitServiceTest {
                 MockRestResponseCreators.withSuccess(
                     javaClass.getResource(
                         "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&sha=feature&page=2"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/empty-commit.json"
                     ).readText(),
                     MediaType.APPLICATION_JSON
                 )
@@ -167,17 +134,6 @@ internal class GithubActionsCommitServiceTest {
     @Test
     fun `should throw exception when the server responds 500 at any time`() {
         mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=2"))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
                 MockRestResponseCreators.withServerError()

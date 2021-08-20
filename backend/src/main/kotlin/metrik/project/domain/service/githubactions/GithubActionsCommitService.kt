@@ -67,10 +67,9 @@ class GithubActionsCommitService(
 
                     val commits = responseEntity.body!!
 
-                    when {
-                        commits.isEmpty() -> ifRetrieving = false
-                        else -> totalResponseBody.addAll(commits)
-                    }
+                    ifRetrieving = commits.size == defaultMaxPerPage
+
+                    totalResponseBody.addAll(commits)
                     true
                 },
                 url

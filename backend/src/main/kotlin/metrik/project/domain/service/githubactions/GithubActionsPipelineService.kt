@@ -163,10 +163,9 @@ class GithubActionsPipelineService(
                     val buildsNeedToSync = responseEntity.body!!.workflowRuns
                         .filter { it.getBuildTimestamp(it.createdAt) > latestTimestamp }
 
-                    when {
-                        buildsNeedToSync.isEmpty() -> ifRetrieving = false
-                        else -> totalResponseBody.workflowRuns.addAll(buildsNeedToSync)
-                    }
+                    ifRetrieving = buildsNeedToSync.size == maxPerPage
+
+                    totalResponseBody.workflowRuns.addAll(buildsNeedToSync)
                     true
                 },
                 url
