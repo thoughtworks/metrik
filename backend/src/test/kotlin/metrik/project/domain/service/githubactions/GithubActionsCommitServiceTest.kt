@@ -6,6 +6,7 @@ import io.mockk.junit5.MockKExtension
 import metrik.configuration.RestTemplateConfiguration
 import metrik.project.commit
 import metrik.project.credential
+import metrik.project.domain.model.Commit
 import metrik.project.githubActionsPipeline
 import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions
@@ -108,17 +109,6 @@ internal class GithubActionsCommitServiceTest {
         mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=2"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
                 MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND)
             )
 
@@ -128,7 +118,7 @@ internal class GithubActionsCommitServiceTest {
             pipeline = githubActionsPipeline
         )
 
-        Assertions.assertEquals(listOf(commit), commits)
+        Assertions.assertEquals(emptyList<Commit>(), commits)
     }
 
     @Test

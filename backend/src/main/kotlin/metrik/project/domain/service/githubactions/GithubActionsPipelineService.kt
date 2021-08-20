@@ -99,8 +99,6 @@ class GithubActionsPipelineService(
                     "[$totalBuildNumbersToSync] of them need to be synced"
             )
 
-            buildDetailResponse.workflowRuns.sortedByDescending { it.headCommit.timestamp }
-
             val mapToCommits = mapCommitToWorkflow(pipeline, buildDetailResponse.workflowRuns)
 
             val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
@@ -135,7 +133,7 @@ class GithubActionsPipelineService(
         }
     }
 
-    private fun getNewBuildDetails(
+    fun getNewBuildDetails(
         pipeline: Pipeline,
         latestTimestamp: Long,
         entity: HttpEntity<String>,
@@ -239,6 +237,8 @@ class GithubActionsPipelineService(
 
     private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
         val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
+
+        runs.sortedByDescending { it.headCommit.timestamp }
 
         val latestTimestamp = runs.first().headCommit.timestamp
         val lastRun = runs.last()

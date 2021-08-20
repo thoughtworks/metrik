@@ -8,6 +8,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.configuration.RestTemplateConfiguration
 import metrik.exception.ApplicationException
+import metrik.infrastructure.utlils.RequestUtil
 import metrik.project.branch
 import metrik.project.builds
 import metrik.project.commit
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -141,6 +143,36 @@ internal class GithubActionsPipelineServiceTest {
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(
                 ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        val map = mapOf(branch to mapOf(githubActionsWorkflow to listOf(commit)))
+
+        assertEquals(
+            githubActionsPipelineService.mapCommitToWorkflow(
+                githubActionsPipeline,
+                mutableListOf(githubActionsWorkflow)
+            ),
+            map
+        )
+    }
+
+    @Test
+    fun `should map one run to its commit given no previous build`() {
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineID,
+                currentTimeStamp,
+                branch
+            )
+        } returns null
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                null,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
@@ -313,68 +345,79 @@ internal class GithubActionsPipelineServiceTest {
         }
     }
 
-//    @Test
-//    fun `should sync all builds given first time synchronization and builds need to sync more than one page`() {
-//        every { buildRepository.getLatestBuild(pipelineID) } returns (null)
-//        every { buildRepository.getInProgressBuilds(pipelineID) } returns (emptyList())
-//        every {
-//            buildRepository.getPreviousBuild(
-//                pipelineID,
-//                any(),
-//                branch
-//            )
-//        } returns githubActionsBuild
-//        every {
-//            githubActionsCommitService.getCommitsBetweenBuilds(
-//                any(),
-//                any(),
-//                branch = branch,
-//                pipeline = githubActionsPipeline
-//            )
-//        } returns listOf(commit)
-//
-//        mockServer.expect(MockRestRequestMatchers.requestTo(getRunsFirstPagePipelineUrl))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    javaClass.getResource(
-//                        "/pipeline/githubactions/verify-pipeline/runs-verify2.json"
-//                    ).readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=1"))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    javaClass.getResource(
-//                        "/pipeline/githubactions/runs/runs1.json"
-//                    ).readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=100&page=2"))
-//            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-//            .andRespond(
-//                MockRestResponseCreators.withSuccess(
-//                    javaClass.getResource(
-//                        "/pipeline/githubactions/runs/runs2.json"
-//                    ).readText(),
-//                    MediaType.APPLICATION_JSON
-//                )
-//            )
-//
-//        githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
-//
-//        verify {
-//            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
-//            buildRepository.save(githubActionsBuild.copy(number = 1111111112, changeSets = emptyList()))
-//            buildRepository.save(githubActionsBuild.copy(number = 1111111113, changeSets = emptyList()))
-//            buildRepository.save(githubActionsBuild.copy(number = 1111111114, changeSets = emptyList()))
-//        }
-//    }
+    @Test
+    fun `should get all builds and builds need to sync more than one page`() {
+        val credential = githubActionsPipeline.credential
+        val headers = RequestUtil.buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
+        val entity = HttpEntity<String>(headers)
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=2&page=1"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs1.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=2&page=2"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/runs2.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        mockServer.expect(MockRestRequestMatchers.requestTo("$getRunsBaseUrl?per_page=2&page=3"))
+            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
+            .andRespond(
+                MockRestResponseCreators.withSuccess(
+                    javaClass.getResource(
+                        "/pipeline/githubactions/runs/empty-run.json"
+                    ).readText(),
+                    MediaType.APPLICATION_JSON
+                )
+            )
+
+        val workflow = WorkflowRuns(
+            1111111111,
+            "CI",
+            "master",
+            1,
+            "completed",
+            "success",
+            "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
+            headCommit = HeadCommit(
+                "3986a82cf9f852e9938f7e7984d1e95742854baa",
+                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")!!,
+            ),
+            createdAt = ZonedDateTime.parse("2021-08-11T11:11:01Z[UTC]")!!,
+            updatedAt = ZonedDateTime.parse("2021-08-11T11:11:17Z[UTC]")!!,
+        )
+        val buildDetails = BuildDetailDTO(
+            mutableListOf(
+                workflow,
+                workflow.copy(id = 1111111112),
+                workflow.copy(id = 1111111113),
+                workflow.copy(id = 1111111114)
+            )
+        )
+
+        assertEquals(
+            buildDetails,
+            githubActionsPipelineService.getNewBuildDetails(
+                githubActionsPipeline,
+                Long.MIN_VALUE,
+                entity,
+                2
+            )
+        )
+    }
 
     @Test
     fun `should sync and save all in-progress builds to databases`() {
