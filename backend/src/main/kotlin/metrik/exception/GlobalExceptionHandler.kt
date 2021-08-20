@@ -46,6 +46,12 @@ class GlobalExceptionHandler {
         return handlerErrorResponse(HttpStatus.BAD_REQUEST, message, ex)
     }
 
+    @ExceptionHandler(IndexOutOfBoundsException::class)
+    fun handleIndexOutOfBoundsException(ex: IndexOutOfBoundsException): ResponseEntity<ErrorResponse> {
+        val message = "argument type invalid"
+        return handlerErrorResponse(HttpStatus.BAD_REQUEST, message, ex)
+    }
+
     private fun handlerErrorResponse(
         httpStatus: HttpStatus,
         message: String?,
