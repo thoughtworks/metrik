@@ -37,13 +37,7 @@ class GithubActionsPipelineService(
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
-        val headers = RequestUtil.buildHeaders(
-            mapOf(
-                Pair("Authorization", "Bearer ${pipeline.credential}"),
-                Pair("Connection", "close")
-            )
-        )
-        val entity = HttpEntity<String>(headers)
+        val entity = getHttpHeader(pipeline)
 
         try {
             val url = "${pipeline.url}$urlSummarySuffix"
@@ -68,9 +62,7 @@ class GithubActionsPipelineService(
     @Synchronized
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
-        val credential = pipeline.credential
-        val headers = RequestUtil.buildHeaders(mapOf(Pair("Authorization", "Bearer $credential")))
-        val entity = HttpEntity<String>(headers)
+        val entity = getHttpHeader(pipeline)
 
         val progressCounter = AtomicInteger(0)
 
@@ -101,7 +93,7 @@ class GithubActionsPipelineService(
 
             val mapToCommits = mapCommitToWorkflow(pipeline, buildDetailResponse.workflowRuns)
 
-            val retrieveBuildDetails = buildDetailResponse.workflowRuns.map {
+            val builds = buildDetailResponse.workflowRuns.map {
 
                 val commits: List<Commit> = mapToCommits[it.headBranch]!![it]!!
                 val convertedBuild = it.convertToMetrikBuild(pipeline.id, commits)
@@ -125,7 +117,7 @@ class GithubActionsPipelineService(
                 "For Github Actions pipeline [${pipeline.id}] - Successfully synced [$totalBuildNumbersToSync] builds"
             )
 
-            return retrieveBuildDetails
+            return builds
         } catch (ex: HttpServerErrorException) {
             throw SynchronizationException("Connection to Github Actions is unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -174,6 +166,15 @@ class GithubActionsPipelineService(
         return buildDetails
     }
 
+    fun mapCommitToWorkflow(pipeline: Pipeline, workflows: MutableList<WorkflowRuns>):
+            Map<String, Map<WorkflowRuns, List<Commit>>> {
+        val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
+        workflows
+            .groupBy { it.headBranch }
+            .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
+        return workflowsNewMap.toMap()
+    }
+
     private fun getInProgressBuildDetails(
         pipeline: Pipeline,
         builds: List<Build>,
@@ -205,7 +206,7 @@ class GithubActionsPipelineService(
         return workflowRuns
     }
 
-    fun <T> withApplicationException(action: () -> T, url: String): T? {
+    private fun <T> withApplicationException(action: () -> T, url: String): T? {
         try {
             return action()
         } catch (clientErrorException: HttpClientErrorException) {
@@ -226,14 +227,15 @@ class GithubActionsPipelineService(
         }
     }
 
-    fun mapCommitToWorkflow(pipeline: Pipeline, workflows: MutableList<WorkflowRuns>):
-        Map<String, Map<WorkflowRuns, List<Commit>>> {
-            val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
-            workflows
-                .groupBy { it.headBranch }
-                .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
-            return workflowsNewMap.toMap()
-        }
+    private fun getHttpHeader(pipeline: Pipeline): HttpEntity<String> {
+        val headers = RequestUtil.buildHeaders(
+            mapOf(
+                Pair("Authorization", "Bearer ${pipeline.credential}"),
+                Pair("Connection", "close")
+            )
+        )
+        return HttpEntity(headers)
+    }
 
     private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
         val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
