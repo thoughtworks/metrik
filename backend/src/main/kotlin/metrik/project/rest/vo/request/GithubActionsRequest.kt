@@ -2,6 +2,7 @@ package metrik.project.rest.vo.request
 
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
+import java.net.URL
 import javax.validation.constraints.NotBlank
 
 class GithubActionsPipelineRequest(
@@ -15,9 +16,17 @@ class GithubActionsPipelineRequest(
         name = name,
         username = null,
         credential = credential,
-        url = url,
+        url = toGithubActionsUrl(url),
         type = PipelineType.valueOf(type)
     )
+
+    private fun toGithubActionsUrl(url: String) =
+        URL(url).path.split("/").let { "$apiRepo/${it[it.size - ownerIndex]}/${it.last()}" }
+
+    private companion object {
+        const val ownerIndex = 2
+        const val apiRepo = "https://api.github.com/repos"
+    }
 }
 
 class GithubActionsVerificationRequest(

@@ -39,6 +39,7 @@ data class CommitSummaryDTO(
             val date: ZonedDateTime
         )
     }
+
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun convertToMetrikCommit(pipelineId: String): Commit {
@@ -83,6 +84,12 @@ data class WorkflowRuns(
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime,
 ) {
+
+    data class HeadCommit(
+        val id: String,
+        val timestamp: ZonedDateTime
+    )
+
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun getBuildTimestamp(timestamp: ZonedDateTime): Long {
@@ -151,8 +158,3 @@ data class WorkflowRuns(
         }
     }
 }
-
-data class HeadCommit(
-    val id: String,
-    val timestamp: ZonedDateTime
-)

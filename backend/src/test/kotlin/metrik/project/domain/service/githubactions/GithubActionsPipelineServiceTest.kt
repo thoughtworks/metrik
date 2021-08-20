@@ -16,6 +16,7 @@ import metrik.project.currentTimeStamp
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.domain.service.githubactions.WorkflowRuns.HeadCommit
 import metrik.project.githubActionsBuild
 import metrik.project.githubActionsPipeline
 import metrik.project.githubActionsWorkflow

@@ -6,8 +6,8 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
-import metrik.project.domain.service.githubactions.HeadCommit
 import metrik.project.domain.service.githubactions.WorkflowRuns
+import metrik.project.domain.service.githubactions.WorkflowRuns.HeadCommit
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionsPipelineRequest
@@ -19,7 +19,7 @@ import org.mockito.kotlin.mock
 import java.time.ZonedDateTime
 
 const val pipelineID = "pipelineId"
-const val projectId = "projectId"
+const val projectID = "projectId"
 const val name = "pipeline"
 const val username = "username"
 const val credential = "credential"
@@ -49,7 +49,7 @@ val githubActionsWorkflow = WorkflowRuns(
 
 val jenkinsPipeline = Pipeline(
     id = pipelineID,
-    projectId = projectId,
+    projectId = projectID,
     name = name,
     username = username,
     credential = credential,
@@ -58,7 +58,7 @@ val jenkinsPipeline = Pipeline(
 )
 val bambooPipeline = Pipeline(
     id = pipelineID,
-    projectId = projectId,
+    projectId = projectID,
     name = name,
     username = username,
     credential = credential,
@@ -67,16 +67,15 @@ val bambooPipeline = Pipeline(
 )
 val githubActionsPipeline = Pipeline(
     id = pipelineID,
-    projectId = projectId,
+    projectId = projectID,
     name = name,
-    username = username,
     credential = credential,
     url = userInputURL,
     type = PipelineType.GITHUB_ACTIONS
 )
 val noopPipeline = Pipeline(
     id = pipelineID,
-    projectId = projectId,
+    projectId = projectID,
     name = name,
     username = username,
     credential = credential,
@@ -147,7 +146,7 @@ fun buildGithubActionsPipelineRequest() =
     GithubActionsPipelineRequest(
         name = "pipeline",
         credential = "credential",
-        url = "url"
+        url = "https://github.com/test_project/test_repo"
     )
 
 fun buildJenkinsPipelineVerificationRequest() = JenkinsVerificationRequest(
