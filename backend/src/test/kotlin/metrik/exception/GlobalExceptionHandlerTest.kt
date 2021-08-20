@@ -64,4 +64,18 @@ internal class GlobalExceptionHandlerTest {
         Assertions.assertEquals(400, errorResponse?.status)
         Assertions.assertEquals("argument type mismatch", errorResponse?.message)
     }
+
+    @Test
+    fun `should handle parse url index out of bound exception`(){
+        val responseEntity = globalExceptionHandler.handleIndexOutOfBoundsException(
+            Mockito.mock(IndexOutOfBoundsException::class.java)
+        )
+
+        val errorResponse = responseEntity.body
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.statusCode)
+        Assertions.assertEquals(400, errorResponse?.status)
+        Assertions.assertEquals("argument type invalid", errorResponse?.message)
+    }
+
 }
