@@ -1,7 +1,7 @@
 package metrik.project.infrastructure.github.feign
 
-import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.CommitResponse
+import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,8 +19,8 @@ interface GithubFeignClient {
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @PathVariable("perPage") perPage: Int?,
-        @PathVariable("pageIndex") pageIndex: Int?
+        @PathVariable("perPage") perPage: Int? = null,
+        @PathVariable("pageIndex") pageIndex: Int? = null
     ): MultipleRunResponse
 
     @GetMapping("/{owner}/{repo}/actions/runs/{runId}")
@@ -36,12 +36,10 @@ interface GithubFeignClient {
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @PathVariable("since") since: String?,
-        @PathVariable("until") until: String?,
-        @PathVariable("branch") branch: String?,
-        @PathVariable("perPage") perPage: String?,
-        @PathVariable("pageIndex") pageIndex: String?,
-    ): CommitResponse
-
-
+        @PathVariable("since") since: String? = null,
+        @PathVariable("until") until: String? = null,
+        @PathVariable("branch") branch: String? = null,
+        @PathVariable("perPage") perPage: Int? = null,
+        @PathVariable("pageIndex") pageIndex: Int? = null,
+    ): List<CommitResponse>
 }

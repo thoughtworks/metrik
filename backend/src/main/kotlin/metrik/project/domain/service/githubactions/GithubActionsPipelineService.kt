@@ -167,13 +167,13 @@ class GithubActionsPipelineService(
     }
 
     fun mapCommitToWorkflow(pipeline: Pipeline, workflows: MutableList<WorkflowRuns>):
-            Map<String, Map<WorkflowRuns, List<Commit>>> {
-        val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
-        workflows
-            .groupBy { it.headBranch }
-            .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
-        return workflowsNewMap.toMap()
-    }
+        Map<String, Map<WorkflowRuns, List<Commit>>> {
+            val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
+            workflows
+                .groupBy { it.headBranch }
+                .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
+            return workflowsNewMap.toMap()
+        }
 
     private fun getInProgressBuildDetails(
         pipeline: Pipeline,

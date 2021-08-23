@@ -24,7 +24,7 @@ import java.time.ZonedDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(MockKExtension::class)
-internal class GithubActionsCommitServiceTest {
+internal class GithubCommitServiceTest {
 
     @SpyK
     private var restTemplate: RestTemplate = RestTemplateConfiguration().restTemplate()
