@@ -14,6 +14,7 @@ plugins {
 
 dependencies {
     ktlint("com.pinterest:ktlint:0.39.0")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 
@@ -163,4 +164,12 @@ val ktlintFormat = task<JavaExec>("ktlintFormat") {
     group = "formatting"
     main = "com.pinterest.ktlint.Main"
     args = listOf("-F", "src/**/*.kt")
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }
