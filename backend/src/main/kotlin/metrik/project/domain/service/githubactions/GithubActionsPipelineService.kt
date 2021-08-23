@@ -284,7 +284,7 @@ class GithubActionsPipelineService(
     }
 
     private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
-        val url = "${pipeline.url}$urlSuffix?per_page=1"
+        val url = "${pipeline.url}$urlSummarySuffix"
         logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
         val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
         logger.info("Get max build number - Response from [$url]: $response")
