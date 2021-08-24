@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 
 @FeignClient(
     value = "github-api",
@@ -14,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestHeader
 )
 interface GithubFeignClient {
 
-    @GetMapping("/{owner}/{repo}/actions/runs?per_page={perPage}&page={pageIndex}")
+    @GetMapping("/{owner}/{repo}/actions/runs")
     fun retrieveMultipleRuns(
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @PathVariable("perPage") perPage: Int? = null,
-        @PathVariable("pageIndex") pageIndex: Int? = null
+        @RequestParam("perPage", required = false) perPage: Int? = null,
+        @RequestParam("pageIndex", required = false) pageIndex: Int? = null
     ): MultipleRunResponse
 
     @GetMapping("/{owner}/{repo}/actions/runs/{runId}")
@@ -31,15 +32,15 @@ interface GithubFeignClient {
         @PathVariable("runId") runId: String,
     ): SingleRunResponse
 
-    @GetMapping("/{owner}/{repo}/commits?since={since}&until={until}&sha={branch}&per_page={perPage}&page={pageIndex}")
+    @GetMapping("/{owner}/{repo}/commits")
     fun retrieveCommits(
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @PathVariable("since") since: String? = null,
-        @PathVariable("until") until: String? = null,
-        @PathVariable("branch") branch: String? = null,
-        @PathVariable("perPage") perPage: Int? = null,
-        @PathVariable("pageIndex") pageIndex: Int? = null,
+        @RequestParam("since", required = false) since: String? = null,
+        @RequestParam("until", required = false) until: String? = null,
+        @RequestParam("branch", required = false) branch: String? = null,
+        @RequestParam("perPage", required = false) perPage: Int? = null,
+        @RequestParam("pageIndex", required = false) pageIndex: Int? = null,
     ): List<CommitResponse>
 }
