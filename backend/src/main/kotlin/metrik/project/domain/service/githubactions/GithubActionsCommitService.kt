@@ -1,19 +1,12 @@
 package metrik.project.domain.service.githubactions
 
-import metrik.infrastructure.utlils.RequestUtil
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.infrastructure.github.GithubClient
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
-import org.springframework.web.util.UriComponentsBuilder
-import java.net.URL
 import java.time.ZonedDateTime
 
 @Service
@@ -104,7 +97,6 @@ class GithubActionsCommitService(
             }
         }
     }
-
 
     private companion object {
         const val defaultMaxPerPage = 100

@@ -13,8 +13,7 @@ class GithubUtil {
         return Pair(owner, repo)
     }
 
-    fun getToken(token:String) = "$tokenPrefix $token"
-
+    fun getToken(token: String) = "$tokenPrefix $token"
 
     private companion object {
         const val ownerIndex = 2

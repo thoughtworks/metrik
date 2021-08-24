@@ -13,13 +13,10 @@ import metrik.project.infrastructure.github.GithubClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
 import java.net.URL
 import java.time.Instant
 import java.time.ZoneOffset
@@ -149,7 +146,6 @@ class GithubActionsPipelineService(
 //            logger.info("Get build details - Sending request to [$url] with entity [$entity]")
 //            var responseEntity: ResponseEntity<BuildDetailDTO>
 
-
 //                    responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
 //                    logger.info("Get build details - Response from [$url]: $responseEntity")
 
@@ -161,20 +157,19 @@ class GithubActionsPipelineService(
 
             totalRuns.addAll(runsNeedToSync)
 
-
             pageIndex++
         }
         return totalRuns
     }
 
     fun mapCommitToWorkflow(pipeline: Pipeline, runs: MutableList<GithubActionsRun>):
-            Map<String, Map<GithubActionsRun, List<Commit>>> {
-        val mapRunsToCommits: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
-        runs
-            .groupBy { it.branch }
-            .forEach { (branch, run) -> mapRunsToCommits[branch] = mapRunToCommits(pipeline, run) }
-        return mapRunsToCommits.toMap()
-    }
+        Map<String, Map<GithubActionsRun, List<Commit>>> {
+            val mapRunsToCommits: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
+            runs
+                .groupBy { it.branch }
+                .forEach { (branch, run) -> mapRunsToCommits[branch] = mapRunToCommits(pipeline, run) }
+            return mapRunsToCommits.toMap()
+        }
 
     private fun getInProgressRuns(
         pipeline: Pipeline,
@@ -198,7 +193,6 @@ class GithubActionsPipelineService(
 //                        logger.info("Get build details - Response from [$url]: $responseEntity")
 
                 run?.also { runs.add(it) }
-
             }
         }
 
@@ -281,7 +275,6 @@ class GithubActionsPipelineService(
         }
         return map.toMap()
     }
-
 
 //    private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
 //        val url = "${pipeline.url}$urlSummarySuffix"

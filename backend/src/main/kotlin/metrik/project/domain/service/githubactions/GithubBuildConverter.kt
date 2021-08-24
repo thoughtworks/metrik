@@ -18,20 +18,17 @@ class GithubBuildConverter {
         )
 
         try {
-
-            val status = run.getBuildExecutionStatus()
-
             val startTimeMillis = run.createdTimestamp.toTimestamp()
             val completedTimeMillis = run.updatedTimestamp.toTimestamp()
             val durationMillis: Long = completedTimeMillis - startTimeMillis
 
             val stage: List<Stage> =
-                when (status) {
+                when (run.buildStatus) {
                     Status.IN_PROGRESS, Status.OTHER -> emptyList()
                     else -> listOf(
                         Stage(
                             run.name,
-                            status,
+                            run.buildStatus,
                             startTimeMillis,
                             durationMillis,
                             0,
@@ -43,7 +40,7 @@ class GithubBuildConverter {
             val build = Build(
                 pipelineId,
                 run.id,
-                status,
+                run.buildStatus,
                 durationMillis,
                 startTimeMillis,
                 run.url,
@@ -82,5 +79,4 @@ class GithubBuildConverter {
             throw e
         }
     }
-
 }

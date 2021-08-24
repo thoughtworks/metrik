@@ -173,7 +173,6 @@ class GithubClientTest {
         )
     }
 
-
     @Test
     fun `should return null when the github return 404 not found status code`() {
         every {
@@ -223,7 +222,6 @@ class GithubClientTest {
             githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
         }
     }
-
 
     private companion object {
         const val token = "token"

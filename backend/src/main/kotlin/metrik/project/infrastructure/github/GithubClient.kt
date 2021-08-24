@@ -23,7 +23,6 @@ class GithubClient(
             githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
         }
         return runs?.let { run -> run.workflowRuns.map { MAPPER.mapToGithubActionsRun(it) } }
-
     }
 
     fun retrieveSingleRun(
@@ -52,7 +51,6 @@ class GithubClient(
         return commits?.map { MAPPER.mapToGithubActionsCommit(it) }
     }
 
-
     protected fun <T> withApplicationException(action: () -> T): T? =
         try {
             action()
@@ -62,5 +60,4 @@ class GithubClient(
                 else -> throw clientErrorException
             }
         }
-
 }

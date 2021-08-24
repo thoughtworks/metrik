@@ -18,8 +18,8 @@ import metrik.project.rest.vo.response.SyncProgress
 import org.mockito.kotlin.mock
 import java.time.ZonedDateTime
 
-const val pipelineID = "pipelineId"
-const val projectID = "projectId"
+const val pipelineId = "pipelineId"
+const val projectId = "projectId"
 const val name = "pipeline"
 const val username = "username"
 const val credential = "credential"
@@ -48,8 +48,8 @@ val githubActionsWorkflow = WorkflowRuns(
 )
 
 val jenkinsPipeline = Pipeline(
-    id = pipelineID,
-    projectId = projectID,
+    id = pipelineId,
+    projectId = projectId,
     name = name,
     username = username,
     credential = credential,
@@ -57,8 +57,8 @@ val jenkinsPipeline = Pipeline(
     type = PipelineType.JENKINS
 )
 val bambooPipeline = Pipeline(
-    id = pipelineID,
-    projectId = projectID,
+    id = pipelineId,
+    projectId = projectId,
     name = name,
     username = username,
     credential = credential,
@@ -66,16 +66,16 @@ val bambooPipeline = Pipeline(
     type = PipelineType.BAMBOO
 )
 val githubActionsPipeline = Pipeline(
-    id = pipelineID,
-    projectId = projectID,
+    id = pipelineId,
+    projectId = projectId,
     name = name,
     credential = credential,
     url = userInputURL,
     type = PipelineType.GITHUB_ACTIONS
 )
 val noopPipeline = Pipeline(
-    id = pipelineID,
-    projectId = projectID,
+    id = pipelineId,
+    projectId = projectId,
     name = name,
     username = username,
     credential = credential,
@@ -98,7 +98,7 @@ val commit = Commit(
 )
 
 val githubActionsBuild = Build(
-    pipelineId = pipelineID,
+    pipelineId = pipelineId,
     number = 1111111111,
     result = Status.SUCCESS,
     duration = 16000,

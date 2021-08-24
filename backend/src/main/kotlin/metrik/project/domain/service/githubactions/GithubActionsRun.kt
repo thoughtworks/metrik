@@ -21,7 +21,6 @@ enum class GithubActionsConclusion(val value: String?) {
     OTHER(null)
 }
 
-
 data class GithubActionsRun(
     val id: Int,
     val name: String,
@@ -33,8 +32,8 @@ data class GithubActionsRun(
     val createdTimestamp: ZonedDateTime,
     val updatedTimestamp: ZonedDateTime,
 ) {
-    fun getBuildExecutionStatus(): Status =
-        when {
+    val buildStatus: Status
+        get() = when {
             status == GithubActionsStatus.QUEUED.value || status == GithubActionsStatus.IN_PROGRESS.value ->
                 Status.IN_PROGRESS
             conclusion == GithubActionsConclusion.SUCCESS.value ->

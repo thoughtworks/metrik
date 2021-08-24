@@ -3,8 +3,8 @@ package metrik.project.rest.vo.request
 import io.mockk.junit5.MockKExtension
 import metrik.project.buildGithubActionsPipelineRequest
 import metrik.project.githubActionsPipeline
-import metrik.project.pipelineID
-import metrik.project.projectID
+import metrik.project.pipelineId
+import metrik.project.projectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ internal class GithubActionsPipelineRequestTest {
     @Test
     fun `should convert githubActions request to pipeline`() {
         val githubActionsPipelineRequest = buildGithubActionsPipelineRequest()
-        val pipeline = githubActionsPipelineRequest.toPipeline(projectID, pipelineID)
+        val pipeline = githubActionsPipelineRequest.toPipeline(projectId, pipelineId)
         assertEquals(pipeline, githubActionsPipeline)
     }
 
@@ -30,7 +30,7 @@ internal class GithubActionsPipelineRequestTest {
         assertThrows(
             IndexOutOfBoundsException::class.java
         ) {
-            githubActionsPipelineRequest.toPipeline(projectID, pipelineID)
+            githubActionsPipelineRequest.toPipeline(projectId, pipelineId)
         }
     }
 }
