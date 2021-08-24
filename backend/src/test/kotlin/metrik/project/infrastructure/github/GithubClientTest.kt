@@ -13,8 +13,13 @@ import metrik.project.infrastructure.github.feign.response.CommitResponse.Commit
 import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import java.time.ZonedDateTime
 
 @ExtendWith(MockKExtension::class)
@@ -32,7 +37,7 @@ class GithubClientTest {
             githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
         } returns SingleRunResponse(
             id = 123,
-            name = "234",
+            name = "CI-Pipeline",
             headBranch = "master",
             runNumber = 23456,
             status = "completed",
@@ -52,12 +57,14 @@ class GithubClientTest {
             run,
             GithubActionsRun(
                 id = 123,
+                name = "CI-Pipeline",
                 status = "completed",
                 conclusion = "SUCCESS",
                 url = "12345",
                 branch = "master",
-                ZonedDateTime.parse("2021-08-17T12:23:25Z"),
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")
+                commitTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                createdTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
             )
         )
     }
@@ -70,7 +77,7 @@ class GithubClientTest {
             listOf(
                 SingleRunResponse(
                     id = 123,
-                    name = "234",
+                    name = "CI-pipeline",
                     headBranch = "master",
                     runNumber = 23456,
                     status = "completed",
@@ -85,7 +92,7 @@ class GithubClientTest {
                 ),
                 SingleRunResponse(
                     id = 456,
-                    name = "456",
+                    name = "test",
                     headBranch = "master",
                     runNumber = 23457,
                     status = "completed",
@@ -108,21 +115,25 @@ class GithubClientTest {
             listOf(
                 GithubActionsRun(
                     id = 123,
+                    name = "CI-pipeline",
                     status = "completed",
                     conclusion = "SUCCESS",
                     url = "12345",
                     branch = "master",
-                    ZonedDateTime.parse("2021-08-17T12:23:25Z"),
-                    ZonedDateTime.parse("2021-08-17T12:23:25Z")
+                    commitTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                    createdTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                    updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
                 ),
                 GithubActionsRun(
                     id = 456,
+                    name = "test",
                     status = "completed",
                     conclusion = "FAILURE",
                     url = "12345",
                     branch = "master",
-                    ZonedDateTime.parse("2021-08-17T12:23:25Z"),
-                    ZonedDateTime.parse("2021-08-17T12:23:25Z")
+                    commitTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                    createdTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+                    updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
                 )
             )
         )
@@ -161,6 +172,58 @@ class GithubClientTest {
             )
         )
     }
+
+
+    @Test
+    fun `should return null when the github return 404 not found status code`() {
+        every {
+            githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+
+        every {
+            githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+
+        every {
+            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+
+        assertNull(githubClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex))
+        assertNull(githubClient.retrieveSingleRun(token, owner, repo, runId))
+        assertNull(githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex))
+    }
+
+    @Test
+    fun `should throw corresponding exception when the github return status code other than 404`() {
+        every {
+            githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+        } throws HttpClientErrorException(HttpStatus.BAD_REQUEST)
+
+        every {
+            githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
+
+        every {
+            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+        } throws HttpClientErrorException(HttpStatus.FORBIDDEN)
+
+        assertThrows(
+            HttpClientErrorException::class.java
+        ) {
+            githubClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+        }
+        assertThrows(
+            HttpServerErrorException::class.java
+        ) {
+            githubClient.retrieveSingleRun(token, owner, repo, runId)
+        }
+        assertThrows(
+            HttpClientErrorException::class.java
+        ) {
+            githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+        }
+    }
+
 
     private companion object {
         const val token = "token"

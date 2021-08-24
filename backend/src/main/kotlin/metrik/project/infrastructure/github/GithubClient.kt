@@ -4,7 +4,9 @@ import metrik.project.domain.service.githubactions.GithubActionsRun
 import metrik.project.domain.service.githubactions.GithubCommit
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.mapper.GithubActionsRunMapper.Companion.MAPPER
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 
 @Component
 class GithubClient(
@@ -16,9 +18,12 @@ class GithubClient(
         repo: String,
         perPage: Int? = null,
         pageIndex: Int? = null
-    ): List<GithubActionsRun> {
-        val runs = githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
-        return runs.workflowRuns.map { MAPPER.mapToGithubActionsRun(it) }
+    ): List<GithubActionsRun>? {
+        val runs = withApplicationException {
+            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+        }
+        return runs?.let { run -> run.workflowRuns.map { MAPPER.mapToGithubActionsRun(it) } }
+
     }
 
     fun retrieveSingleRun(
@@ -26,8 +31,10 @@ class GithubClient(
         owner: String,
         repo: String,
         runId: String
-    ): GithubActionsRun =
-        MAPPER.mapToGithubActionsRun(githubFeignClient.retrieveSingleRun(token, owner, repo, runId))
+    ): GithubActionsRun? =
+        withApplicationException {
+            MAPPER.mapToGithubActionsRun(githubFeignClient.retrieveSingleRun(token, owner, repo, runId))
+        }
 
     fun retrieveCommits(
         token: String,
@@ -38,8 +45,22 @@ class GithubClient(
         branch: String? = null,
         perPage: Int? = null,
         pageIndex: Int? = null
-    ): List<GithubCommit> {
-        val commits = githubFeignClient.retrieveCommits(token, owner, repo, since, until, branch, perPage, pageIndex)
-        return commits.map { MAPPER.mapToGithubActionsCommit(it) }
+    ): List<GithubCommit>? {
+        val commits = withApplicationException {
+            githubFeignClient.retrieveCommits(token, owner, repo, since, until, branch, perPage, pageIndex)
+        }
+        return commits?.map { MAPPER.mapToGithubActionsCommit(it) }
     }
+
+
+    protected fun <T> withApplicationException(action: () -> T): T? =
+        try {
+            action()
+        } catch (clientErrorException: HttpClientErrorException) {
+            when (clientErrorException.statusCode) {
+                HttpStatus.NOT_FOUND -> null
+                else -> throw clientErrorException
+            }
+        }
+
 }

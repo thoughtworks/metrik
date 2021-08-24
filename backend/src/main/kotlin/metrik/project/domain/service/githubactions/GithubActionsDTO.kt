@@ -10,24 +10,6 @@ import metrik.project.domain.model.Status
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 
-enum class GithubActionsStatus(val value: String) {
-    COMPLETED("completed"),
-    QUEUED("queued"),
-    IN_PROGRESS("in_progress")
-}
-
-enum class GithubActionsConclusion(val value: String?) {
-    FAILURE("failure"),
-    CANCELLED("cancelled"),
-    SUCCESS("success"),
-    ACTION_REQUIRED("action_required"),
-    SKIPPED("skipped"),
-    STALE("stale"),
-    TIMED_OUT("timed_out"),
-    NEUTRAL("neutral"),
-    OTHER(null)
-}
-
 data class CommitSummaryDTO(
     val sha: String,
     val commit: CommitInfo

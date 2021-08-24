@@ -9,12 +9,12 @@ import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
+import metrik.project.infrastructure.github.GithubClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
@@ -29,21 +29,25 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
-    private var restTemplate: RestTemplate,
-    private var githubActionsCommitService: GithubActionsCommitService,
-    private var buildRepository: BuildRepository
+    private val githubActionsCommitService: GithubActionsCommitService,
+    private val buildRepository: BuildRepository,
+    private val githubUtil: GithubUtil,
+    private val githubBuildConverter: GithubBuildConverter,
+    private val githubClient: GithubClient
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
-        val entity = getHttpHeader(pipeline)
+        val token = githubUtil.getToken(pipeline.credential)
+        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
 
         try {
-            val url = "${pipeline.url}$urlSummarySuffix"
-            logger.info("Github Actions verification - Sending request to [$url] with entity [$entity]")
-            val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
-            logger.info("Github Actions verification - Response from [$url]: $responseEntity")
+//            val url = "${pipeline.url}$urlSummarySuffix"
+//            logger.info("Github Actions verification - Sending request to [$url] with entity [$entity]")
+//            val responseEntity = restTemplate.exchange<String>(url, HttpMethod.GET, entity)
+//            logger.info("Github Actions verification - Response from [$url]: $responseEntity")
+            githubClient.retrieveMultipleRuns(token, owner, repo)
         } catch (ex: HttpServerErrorException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -62,11 +66,11 @@ class GithubActionsPipelineService(
     @Synchronized
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
-        val entity = getHttpHeader(pipeline)
+//        val entity = getHttpHeader(pipeline)
 
         val progressCounter = AtomicInteger(0)
 
-        val maxBuildNumber = getMaxBuildNumber(pipeline, entity)
+//        val maxBuildNumber = getMaxBuildNumber(pipeline, entity)
 
         try {
 
@@ -77,26 +81,25 @@ class GithubActionsPipelineService(
                 else -> latestBuild.timestamp
             }
 
-            val buildDetailResponse = getNewBuildDetails(pipeline, latestTimestamp, entity)
+            val newRuns = getNewRuns(pipeline, latestTimestamp)
 
             val inProgressBuilds = buildRepository.getInProgressBuilds(pipeline.id)
-            val inProgressBuildDetailResponse = getInProgressBuildDetails(pipeline, inProgressBuilds, entity)
+            val inProgressRuns = getInProgressRuns(pipeline, inProgressBuilds)
 
-            buildDetailResponse.workflowRuns.addAll(inProgressBuildDetailResponse)
+            newRuns.addAll(inProgressRuns)
 
-            val totalBuildNumbersToSync = buildDetailResponse.workflowRuns.size
+            val totalBuildNumbersToSync = newRuns.size
 
             logger.info(
-                "For Github Actions pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                    "[$totalBuildNumbersToSync] of them need to be synced"
+                "For Github Actions pipeline [${pipeline.id}] - " + "[$totalBuildNumbersToSync] need to be synced"
             )
 
-            val mapToCommits = mapCommitToWorkflow(pipeline, buildDetailResponse.workflowRuns)
+            val mapToCommits = mapCommitToWorkflow(pipeline, newRuns)
 
-            val builds = buildDetailResponse.workflowRuns.map {
+            val builds = newRuns.map {
 
-                val commits: List<Commit> = mapToCommits[it.headBranch]!![it]!!
-                val convertedBuild = it.convertToMetrikBuild(pipeline.id, commits)
+                val commits: List<Commit> = mapToCommits[it.branch]!![it]!!
+                val convertedBuild = githubBuildConverter.convertToBuild(it, pipeline.id, commits)
 
                 buildRepository.save(convertedBuild)
 
@@ -125,85 +128,81 @@ class GithubActionsPipelineService(
         }
     }
 
-    fun getNewBuildDetails(
+    fun getNewRuns(
         pipeline: Pipeline,
         latestTimestamp: Long,
-        entity: HttpEntity<String>,
         maxPerPage: Int = defaultMaxPerPage
-    ): BuildDetailDTO {
+    ): MutableList<GithubActionsRun> {
+
+        val token = githubUtil.getToken(pipeline.credential)
+        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
 
         var ifRetrieving = true
         var pageIndex = 1
 
-        val buildDetails = BuildDetailDTO(mutableListOf())
+        val totalRuns = mutableListOf<GithubActionsRun>()
 
         while (ifRetrieving) {
 
-            val url =
-                "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
+//            val url = "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
 
-            logger.info("Get build details - Sending request to [$url] with entity [$entity]")
-            var responseEntity: ResponseEntity<BuildDetailDTO>
+//            logger.info("Get build details - Sending request to [$url] with entity [$entity]")
+//            var responseEntity: ResponseEntity<BuildDetailDTO>
 
-            withApplicationException(
-                {
-                    responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
-                    logger.info("Get build details - Response from [$url]: $responseEntity")
 
-                    val buildsNeedToSync = responseEntity.body!!.workflowRuns
-                        .filter { it.getBuildTimestamp(it.createdAt) > latestTimestamp }
+//                    responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
+//                    logger.info("Get build details - Response from [$url]: $responseEntity")
 
-                    ifRetrieving = buildsNeedToSync.size == maxPerPage
+            val runs = githubClient.retrieveMultipleRuns(token, owner, repo, maxPerPage, pageIndex) ?: break
 
-                    buildDetails.workflowRuns.addAll(buildsNeedToSync)
-                    true
-                },
-                url
-            ) ?: break
+            val runsNeedToSync = runs.filter { it.createdTimestamp.toTimestamp() > latestTimestamp }
+
+            ifRetrieving = runsNeedToSync.size == maxPerPage
+
+            totalRuns.addAll(runsNeedToSync)
+
 
             pageIndex++
         }
-        return buildDetails
+        return totalRuns
     }
 
-    fun mapCommitToWorkflow(pipeline: Pipeline, workflows: MutableList<WorkflowRuns>):
-        Map<String, Map<WorkflowRuns, List<Commit>>> {
-            val workflowsNewMap: MutableMap<String, Map<WorkflowRuns, List<Commit>>> = mutableMapOf()
-            workflows
-                .groupBy { it.headBranch }
-                .forEach { (branch, workflow) -> workflowsNewMap[branch] = mapRunToCommits(pipeline, workflow) }
-            return workflowsNewMap.toMap()
-        }
+    fun mapCommitToWorkflow(pipeline: Pipeline, runs: MutableList<GithubActionsRun>):
+            Map<String, Map<GithubActionsRun, List<Commit>>> {
+        val mapRunsToCommits: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
+        runs
+            .groupBy { it.branch }
+            .forEach { (branch, run) -> mapRunsToCommits[branch] = mapRunToCommits(pipeline, run) }
+        return mapRunsToCommits.toMap()
+    }
 
-    private fun getInProgressBuildDetails(
+    private fun getInProgressRuns(
         pipeline: Pipeline,
         builds: List<Build>,
-        entity: HttpEntity<String>
-    ): MutableList<WorkflowRuns> {
-        val workflowRuns = mutableListOf<WorkflowRuns>()
+    ): MutableList<GithubActionsRun> {
+
+        val token = githubUtil.getToken(pipeline.credential)
+        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
+
+        val runs = mutableListOf<GithubActionsRun>()
 
         builds.forEach { build ->
             run {
-                val runID = URL(build.url).path.split("/").last()
-                val url =
-                    "${pipeline.url}$urlSuffix/$runID"
-                logger.info("Get build details - Sending request to [$url] with entity [$entity]")
-                var responseEntity: ResponseEntity<WorkflowRuns>
+                val runId = URL(build.url).path.split("/").last()
+//                val url = "${pipeline.url}$urlSuffix/$runId"
+//                logger.info("Get build details - Sending request to [$url] with entity [$entity]")
+//                var responseEntity: ResponseEntity<WorkflowRuns>
 
-                val response = withApplicationException(
-                    {
-                        responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
-                        logger.info("Get build details - Response from [$url]: $responseEntity")
-                        responseEntity
-                    },
-                    url
-                )?.let { it.body!! }
+                val run = githubClient.retrieveSingleRun(token, owner, repo, runId)
+//                        responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity)
+//                        logger.info("Get build details - Response from [$url]: $responseEntity")
 
-                response?.also { workflowRuns.add(it) }
+                run?.also { runs.add(it) }
+
             }
         }
 
-        return workflowRuns
+        return runs
     }
 
     private fun <T> withApplicationException(action: () -> T, url: String): T? {
@@ -237,17 +236,17 @@ class GithubActionsPipelineService(
         return HttpEntity(headers)
     }
 
-    private fun mapRunToCommits(pipeline: Pipeline, runs: List<WorkflowRuns>): Map<WorkflowRuns, List<Commit>> {
-        val map: MutableMap<WorkflowRuns, List<Commit>> = mutableMapOf()
+    private fun mapRunToCommits(pipeline: Pipeline, runs: List<GithubActionsRun>): Map<GithubActionsRun, List<Commit>> {
+        val map: MutableMap<GithubActionsRun, List<Commit>> = mutableMapOf()
 
-        runs.sortedByDescending { it.headCommit.timestamp }
+        runs.sortedByDescending { it.commitTimeStamp }
 
-        val latestTimestampInRuns = runs.first().headCommit.timestamp
+        val latestTimestampInRuns = runs.first().commitTimeStamp
         val lastRun = runs.last()
         val previousRunBeforeLastRun = buildRepository.getPreviousBuild(
             pipeline.id,
-            lastRun.getBuildTimestamp(lastRun.headCommit.timestamp),
-            lastRun.headBranch
+            lastRun.commitTimeStamp.toTimestamp(),
+            lastRun.branch
         )?.changeSets?.first()?.timestamp
         val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
@@ -255,21 +254,21 @@ class GithubActionsPipelineService(
         val allCommits = githubActionsCommitService.getCommitsBetweenBuilds(
             previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
             latestTimestampInRuns,
-            branch = lastRun.headBranch,
+            branch = lastRun.branch,
             pipeline = pipeline,
         )
 
         runs.forEachIndexed { index, run ->
-            val currentRunTimeStamp = run.headCommit.timestamp.toTimestamp()
+            val currentRunTimeStamp = run.commitTimeStamp.toTimestamp()
             val previousBuildInRepo = buildRepository.getPreviousBuild(
                 pipeline.id,
-                run.getBuildTimestamp(run.createdAt),
-                run.headBranch
+                run.createdTimestamp.toTimestamp(),
+                run.branch
             )?.changeSets?.first()?.timestamp
             val lastRunTimeStamp = when (index) {
                 runs.lastIndex -> previousRunBeforeLastRun
                 else -> {
-                    val previousRunTimeStamp = runs[index + 1].headCommit.timestamp.toTimestamp()
+                    val previousRunTimeStamp = runs[index + 1].commitTimeStamp.toTimestamp()
                     if (previousBuildInRepo == null) previousRunTimeStamp
                     else maxOf(previousRunTimeStamp, previousBuildInRepo)
                 }
@@ -283,18 +282,18 @@ class GithubActionsPipelineService(
         return map.toMap()
     }
 
-    private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
-        val url = "${pipeline.url}$urlSummarySuffix"
-        logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
-        val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
-        logger.info("Get max build number - Response from [$url]: $response")
-        val buildSummaryDTO = response.body!!
-        return buildSummaryDTO.totalCount
-    }
+
+//    private fun getMaxBuildNumber(pipeline: Pipeline, entity: HttpEntity<String>): Int {
+//        val url = "${pipeline.url}$urlSummarySuffix"
+//        logger.info("Get max build number - Sending request to [$url] with entity [$entity]")
+//        val response = restTemplate.exchange<BuildSummaryDTO>(url, HttpMethod.GET, entity)
+//        logger.info("Get max build number - Response from [$url]: $response")
+//        val buildSummaryDTO = response.body!!
+//        return buildSummaryDTO.totalCount
+//    }
 
     private companion object {
         const val urlSuffix = "/actions/runs"
-        const val urlSummarySuffix = "$urlSuffix?per_page=1"
         const val defaultMaxPerPage = 100
         const val COMMIT_OFFSET: Long = 1
     }
