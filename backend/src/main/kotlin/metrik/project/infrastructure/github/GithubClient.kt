@@ -12,6 +12,14 @@ import org.springframework.web.client.HttpClientErrorException
 class GithubClient(
     private val githubFeignClient: GithubFeignClient
 ) {
+    fun verifyGithubUrl(
+        token: String,
+        owner: String,
+        repo: String,
+    ) {
+        githubFeignClient.retrieveMultipleRuns(token, owner, repo)
+    }
+
     fun retrieveMultipleRuns(
         token: String,
         owner: String,
@@ -51,7 +59,7 @@ class GithubClient(
         return commits?.map { MAPPER.mapToGithubActionsCommit(it) }
     }
 
-    protected fun <T> withApplicationException(action: () -> T): T? =
+    private fun <T> withApplicationException(action: () -> T): T? =
         try {
             action()
         } catch (clientErrorException: HttpClientErrorException) {

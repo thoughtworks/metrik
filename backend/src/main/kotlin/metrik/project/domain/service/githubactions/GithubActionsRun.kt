@@ -25,7 +25,7 @@ data class GithubActionsRun(
     val id: Int,
     val name: String,
     val status: String,
-    val conclusion: String,
+    val conclusion: String?,
     val url: String,
     val branch: String,
     val commitTimeStamp: ZonedDateTime,

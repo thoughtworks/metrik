@@ -212,7 +212,7 @@ exceptions:
   TooGenericExceptionCaught:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**',
-                '**/iosTest/**', '**SynchronizationApplicationService**', '**BambooDTO**', '**GithubActionsDTO**' ]
+                '**/iosTest/**', '**SynchronizationApplicationService**', '**BambooDTO**', '**GithubBuildConverter**' ]
     exceptionNames:
       - ArrayIndexOutOfBoundsException
       - Error

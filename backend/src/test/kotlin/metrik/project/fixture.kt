@@ -6,8 +6,7 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
-import metrik.project.domain.service.githubactions.WorkflowRuns
-import metrik.project.domain.service.githubactions.WorkflowRuns.HeadCommit
+import metrik.project.domain.service.githubactions.GithubActionsRun
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionsPipelineRequest
@@ -31,20 +30,16 @@ const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
 const val futureTimeStamp: Long = 1639185260779
 
-val githubActionsWorkflow = WorkflowRuns(
+val githubActionsRun = GithubActionsRun(
     id = 123,
     name = "234",
-    headBranch = "master",
-    runNumber = 23456,
+    branch = "master",
     status = "completed",
     conclusion = "SUCCESS",
     url = "12345",
-    headCommit = HeadCommit(
-        id = "1234",
-        timestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
-    ),
-    createdAt = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
-    updatedAt = ZonedDateTime.parse("2021-08-17T12:23:25Z")
+    commitTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+    createdTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
+    updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
 )
 
 val jenkinsPipeline = Pipeline(

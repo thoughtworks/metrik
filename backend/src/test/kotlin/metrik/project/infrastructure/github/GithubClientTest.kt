@@ -174,7 +174,20 @@ class GithubClientTest {
     }
 
     @Test
-    fun `should return null when the github return 404 not found status code`() {
+    fun `should throw exception when the github return 404 not found status code for verification`() {
+        every {
+            githubFeignClient.retrieveMultipleRuns(token, owner, repo)
+        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+
+        assertThrows(
+            HttpClientErrorException::class.java
+        ) {
+            githubClient.verifyGithubUrl(token, owner, repo)
+        }
+    }
+
+    @Test
+    fun `should return null when the github return 404 not found status code for non verification`() {
         every {
             githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)

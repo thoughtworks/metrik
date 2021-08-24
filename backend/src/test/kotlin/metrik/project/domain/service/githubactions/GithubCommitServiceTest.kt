@@ -1,56 +1,69 @@
 package metrik.project.domain.service.githubactions
 
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
-import metrik.configuration.RestTemplateConfiguration
 import metrik.project.commit
 import metrik.project.credential
 import metrik.project.domain.model.Commit
 import metrik.project.githubActionsPipeline
-import metrik.project.userInputURL
-import org.junit.jupiter.api.Assertions
+import metrik.project.infrastructure.github.GithubClient
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers
-import org.springframework.test.web.client.response.MockRestResponseCreators
-import org.springframework.web.client.HttpServerErrorException.InternalServerError
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.HttpServerErrorException
 import java.time.ZonedDateTime
 
-@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ExtendWith(MockKExtension::class)
 internal class GithubCommitServiceTest {
-
-    @SpyK
-    private var restTemplate: RestTemplate = RestTemplateConfiguration().restTemplate()
 
     @InjectMockKs
     private lateinit var githubActionsCommitService: GithubActionsCommitService
 
-    private lateinit var mockServer: MockRestServiceServer
+    @MockK(relaxed = true)
+    private lateinit var githubClient: GithubClient
+
+    @SpyK
+    private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
+
+    @MockK(relaxed = true)
+    private lateinit var githubUtil: GithubUtil
 
     @BeforeEach
     fun setUp() {
-        mockServer = MockRestServiceServer.createServer(restTemplate)
+        every {
+            githubUtil.getToken(githubActionsPipeline.credential)
+        } returns "Bearer credential"
+
+        every {
+            githubUtil.getOwnerRepoFromUrl(githubActionsPipeline.url)
+        } returns Pair("test_repo", "test_owner")
     }
 
     @Test
     fun `should retrieve commits between builds successfully`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        every {
+            githubClient.retrieveCommits(
+                any(),
+                any(),
+                any(),
+                sinceTimeStamp,
+                untilTimeStamp,
+                null,
+                any(),
+                any()
             )
+        } returns listOf(
+            GithubCommit(
+                "3986a82cf9f852e9938f7e7984d1e95742854baa",
+                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
+            )
+        )
 
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             sinceTimeStampZonedFormat,
@@ -58,42 +71,56 @@ internal class GithubCommitServiceTest {
             pipeline = githubActionsPipeline
         )
 
-        Assertions.assertEquals(listOf(commit), commits)
+        assertEquals(listOf(commit), commits)
     }
 
     @Test
     fun `should get all commits given since timestamp is not provided`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        every {
+            githubClient.retrieveCommits(
+                any(),
+                any(),
+                any(),
+                null,
+                untilTimeStamp,
+                null,
+                any(),
+                any()
             )
+        } returns listOf(
+            GithubCommit(
+                "3986a82cf9f852e9938f7e7984d1e95742854baa",
+                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
+            )
+        )
 
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             untilTimeStamp = untilTimeStampZonedFormat,
             pipeline = githubActionsPipeline
         )
 
-        Assertions.assertEquals(listOf(commit), commits)
+        assertEquals(listOf(commit), commits)
     }
 
     @Test
     fun `should get all commits in assigned branch`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?until=$untilTimeStamp&per_page=100&sha=feature&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withSuccess(
-                    javaClass.getResource(
-                        "/pipeline/githubactions/commits/commit1.json"
-                    ).readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        every {
+            githubClient.retrieveCommits(
+                any(),
+                any(),
+                any(),
+                null,
+                untilTimeStamp,
+                "feature",
+                any(),
+                any()
             )
+        } returns listOf(
+            GithubCommit(
+                "3986a82cf9f852e9938f7e7984d1e95742854baa",
+                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
+            )
+        )
 
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             untilTimeStamp = untilTimeStampZonedFormat,
@@ -101,16 +128,23 @@ internal class GithubCommitServiceTest {
             pipeline = githubActionsPipeline
         )
 
-        Assertions.assertEquals(listOf(commit), commits)
+        assertEquals(listOf(commit), commits)
     }
 
     @Test
     fun `should stop calling next page api when the current api call throw not found exception`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND)
+        every {
+            githubClient.retrieveCommits(
+                any(),
+                any(),
+                any(),
+                sinceTimeStamp,
+                untilTimeStamp,
+                null,
+                any(),
+                any()
             )
+        } returns null
 
         val commits = githubActionsCommitService.getCommitsBetweenBuilds(
             sinceTimeStampZonedFormat,
@@ -118,18 +152,25 @@ internal class GithubCommitServiceTest {
             pipeline = githubActionsPipeline
         )
 
-        Assertions.assertEquals(emptyList<Commit>(), commits)
+        assertEquals(emptyList<Commit>(), commits)
     }
 
     @Test
     fun `should throw exception when the server responds 500 at any time`() {
-        mockServer.expect(MockRestRequestMatchers.requestTo("$commitUrl?since=$sinceTimeStamp&until=$untilTimeStamp&per_page=100&page=1"))
-            .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
-            .andRespond(
-                MockRestResponseCreators.withServerError()
+        every {
+            githubClient.retrieveCommits(
+                any(),
+                any(),
+                any(),
+                sinceTimeStamp,
+                untilTimeStamp,
+                null,
+                any(),
+                any()
             )
+        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
 
-        Assertions.assertThrows(InternalServerError::class.java) {
+        assertThrows(HttpServerErrorException::class.java) {
             githubActionsCommitService.getCommitsBetweenBuilds(
                 sinceTimeStampZonedFormat,
                 untilTimeStampZonedFormat,
@@ -139,7 +180,6 @@ internal class GithubCommitServiceTest {
     }
 
     private companion object {
-        const val commitUrl = "$userInputURL/commits"
         const val sinceTimeStamp = "2021-08-10T01:46:31Z"
         const val untilTimeStamp = "2021-08-11T01:46:31Z"
         val sinceTimeStampZonedFormat: ZonedDateTime = ZonedDateTime.parse(sinceTimeStamp)!!
