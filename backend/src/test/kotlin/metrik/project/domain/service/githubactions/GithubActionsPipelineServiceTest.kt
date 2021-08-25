@@ -13,6 +13,7 @@ import metrik.project.builds
 import metrik.project.commit
 import metrik.project.credential
 import metrik.project.currentTimeStamp
+import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
@@ -156,7 +157,7 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should map one run to its commit given no previous build`() {
+    fun `should map one run to its commit given no previous build and commits are in correct time range`() {
         every {
             buildRepository.getPreviousBuild(
                 pipelineId,
@@ -175,6 +176,36 @@ internal class GithubActionsPipelineServiceTest {
         } returns listOf(commit)
 
         val map = mapOf(branch to mapOf(githubActionsRun to listOf(commit)))
+
+        assertEquals(
+            map,
+            githubActionsPipelineService.mapCommitToRun(
+                githubActionsPipeline,
+                mutableListOf(githubActionsRun)
+            )
+        )
+    }
+
+    @Test
+    fun `should map one run to its commit given no previous build and commits are not in correct time range`() {
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                currentTimeStamp,
+                branch
+            )
+        } returns null
+
+        every {
+            githubActionsCommitService.getCommitsBetweenBuilds(
+                null,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit.copy(timestamp = 1629856700010))
+
+        val map = mapOf(branch to mapOf(githubActionsRun to emptyList<Commit>()))
 
         assertEquals(
             map,
@@ -238,14 +269,16 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should map first run given no previous runs`() {
+    fun `should map first run given previous run does not have commits`() {
+        val build = githubActionsBuild.copy(changeSets = emptyList())
+
         every {
             buildRepository.getPreviousBuild(
                 pipelineId,
                 any(),
                 branch
             )
-        } returns null
+        } returns build
 
         every {
             githubActionsCommitService.getCommitsBetweenBuilds(

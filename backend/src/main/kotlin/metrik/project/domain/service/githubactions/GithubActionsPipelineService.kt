@@ -196,7 +196,7 @@ class GithubActionsPipelineService(
             pipeline.id,
             lastRun.commitTimeStamp.toTimestamp(),
             lastRun.branch
-        )?.changeSets?.first()?.timestamp
+        )?.let { it.changeSets.firstOrNull()?.timestamp }
         val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
@@ -213,7 +213,7 @@ class GithubActionsPipelineService(
                 pipeline.id,
                 run.createdTimestamp.toTimestamp(),
                 run.branch
-            )?.changeSets?.first()?.timestamp
+            )?.let { it.changeSets.firstOrNull()?.timestamp }
             val lastRunTimeStamp = when (index) {
                 runs.lastIndex -> previousRunBeforeLastRun
                 else -> {
