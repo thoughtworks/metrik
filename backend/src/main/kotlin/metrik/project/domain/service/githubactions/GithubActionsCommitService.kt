@@ -32,9 +32,12 @@ class GithubActionsCommitService(
         val allCommits = mutableListOf<GithubCommit>()
 
         while (ifRetrieving) {
-//            logger.info("Github Actions commits - Sending request to [$url] with entity [$entity]")
 
-//            logger.info("Github Actions commits - Response from [$url]: $responseEntity")
+            logger.info(
+                "Get Github Commits - " +
+                    "Sending request to Github Feign Client with owner: $owner, repo: $repo, " +
+                    "since: $sinceTimeStamp, until: $untilTimeStamp, branch: $branch, pageIndex: $pageIndex"
+            )
 
             val commits = githubClient.retrieveCommits(
                 token,

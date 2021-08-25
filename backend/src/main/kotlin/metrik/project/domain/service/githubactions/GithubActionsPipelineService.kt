@@ -131,11 +131,10 @@ class GithubActionsPipelineService(
 
         while (ifRetrieving) {
 
-//            val url = "${pipeline.url}$urlSuffix?per_page=$maxPerPage&page=$pageIndex"
-
-//            logger.info("Get build details - Sending request to [$url] with entity [$entity]")
-
-//            logger.info("Get build details - Response from [$url]: $responseEntity")
+            logger.info(
+                "Get Github Runs - " +
+                    "Sending request to Github Feign Client with owner: $owner, repo: $repo, pageIndex: $pageIndex"
+            )
 
             val runs = githubClient.retrieveMultipleRuns(token, owner, repo, maxPerPage, pageIndex) ?: break
 
@@ -172,11 +171,13 @@ class GithubActionsPipelineService(
         builds.forEach { build ->
             run {
                 val runId = URL(build.url).path.split("/").last()
-//                val url = "${pipeline.url}$urlSuffix/$runId"
-//                logger.info("Get build details - Sending request to [$url] with entity [$entity]")
+
+                logger.info(
+                    "Get Github Runs - " +
+                        "Sending request to Github Feign Client with owner: $owner, repo: $repo, runId: $runId"
+                )
 
                 val run = githubClient.retrieveSingleRun(token, owner, repo, runId)
-//              logger.info("Get build details - Response from [$url]: $responseEntity")
 
                 run?.also { runs.add(it) }
             }
