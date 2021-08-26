@@ -153,6 +153,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 }
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
+apply(from = "gradle/jacoco/jacoco.gradle")
 
 
 // ktlint
