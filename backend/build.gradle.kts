@@ -11,6 +11,7 @@ plugins {
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.spring") version "1.4.21"
     kotlin("kapt") version "1.4.21"
+    jacoco
 }
 
 dependencies {
@@ -152,7 +153,6 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 }
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
-apply(from = "gradle/jacoco/jacoco.gradle")
 
 
 // ktlint
@@ -176,4 +176,10 @@ compileKotlin.kotlinOptions {
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
+}
+
+tasks.jacocoTestReport {
+    reports {
+        csv.isEnabled = true
+    }
 }

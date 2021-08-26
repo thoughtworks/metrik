@@ -7,6 +7,8 @@
 [![Frontend test](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml)
 [![Publish release Docker image](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/build_release_docker_image.yaml)
 
+![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg)
 [![Release](https://img.shields.io/github/v/release/thoughtworks/metrik.svg?include_prereleases&style=flat)](https://github.com/thoughtworks/metrik/releases)
 
 <!-- PROJECT TITLE -->
