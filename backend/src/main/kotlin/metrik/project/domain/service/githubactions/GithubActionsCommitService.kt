@@ -9,7 +9,6 @@ import java.time.ZonedDateTime
 
 @Service
 class GithubActionsCommitService(
-    private val githubUtil: GithubUtil,
     private val githubClient: GithubClient,
     private val githubBuildConverter: GithubBuildConverter,
 ) {
@@ -23,9 +22,6 @@ class GithubActionsCommitService(
     ): List<Commit> {
         logger.info("Started sync for Github Actions commits [$pipeline]")
 
-        val token = githubUtil.getToken(pipeline.credential)
-        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
-
         var ifRetrieving = true
         var pageIndex = 1
 
@@ -35,14 +31,13 @@ class GithubActionsCommitService(
 
             logger.info(
                 "Get Github Commits - " +
-                    "Sending request to Github Feign Client with owner: $owner, repo: $repo, " +
+                    "Sending request to Github Feign Client with owner: ${pipeline.url}, " +
                     "since: $sinceTimeStamp, until: $untilTimeStamp, branch: $branch, pageIndex: $pageIndex"
             )
 
             val commits = githubClient.retrieveCommits(
-                token,
-                owner,
-                repo,
+                pipeline.url,
+                pipeline.credential,
                 sinceTimeStamp?.toString(),
                 untilTimeStamp.toString(),
                 branch,
