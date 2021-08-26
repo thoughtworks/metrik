@@ -20,8 +20,8 @@ interface GithubFeignClient {
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @RequestParam("perPage", required = false) perPage: Int? = null,
-        @RequestParam("pageIndex", required = false) pageIndex: Int? = null
+        @RequestParam("per_page", required = false) perPage: Int? = null,
+        @RequestParam("page", required = false) pageIndex: Int? = null
     ): MultipleRunResponse
 
     @GetMapping("/{owner}/{repo}/actions/runs/{runId}")
@@ -40,7 +40,7 @@ interface GithubFeignClient {
         @RequestParam("since", required = false) since: String? = null,
         @RequestParam("until", required = false) until: String? = null,
         @RequestParam("branch", required = false) branch: String? = null,
-        @RequestParam("perPage", required = false) perPage: Int? = null,
-        @RequestParam("pageIndex", required = false) pageIndex: Int? = null,
+        @RequestParam("per_page", required = false) perPage: Int? = null,
+        @RequestParam("page", required = false) pageIndex: Int? = null,
     ): List<CommitResponse>
 }
