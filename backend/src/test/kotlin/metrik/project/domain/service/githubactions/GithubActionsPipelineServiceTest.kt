@@ -1,5 +1,8 @@
 package metrik.project.domain.service.githubactions
 
+import feign.FeignException
+import feign.Request
+import feign.Response
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -32,9 +35,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import java.time.ZonedDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
@@ -56,6 +56,8 @@ internal class GithubActionsPipelineServiceTest {
     @SpyK
     private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
 
+    private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
+
     @Test
     fun `should successfully verify a pipeline given response is 200`() {
         justRun {
@@ -73,7 +75,10 @@ internal class GithubActionsPipelineServiceTest {
     fun `should throw exception when verify pipeline given response is 500`() {
         every {
             githubClient.verifyGithubUrl(any(), any())
-        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(500)
+        )
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
@@ -83,10 +88,13 @@ internal class GithubActionsPipelineServiceTest {
     }
 
     @Test
-    fun `should throw exception when verify pipeline given response is 400`() {
+    fun `should throw exception when verify pipeline given response is 404`() {
         every {
             githubClient.verifyGithubUrl(any(), any())
-        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(404)
+        )
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
@@ -808,7 +816,10 @@ internal class GithubActionsPipelineServiceTest {
         } returns listOf(commit)
         every {
             githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
-        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(500)
+        )
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
@@ -836,10 +847,16 @@ internal class GithubActionsPipelineServiceTest {
         } returns listOf(commit)
         every {
             githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
-        } throws HttpClientErrorException(HttpStatus.FORBIDDEN)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(403)
+        )
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
         }
     }
+
+    private fun buildFeignResponse(statusCode: Int) =
+        Response.builder().status(statusCode).request(dummyFeignRequest).build()
 }

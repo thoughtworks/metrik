@@ -1,5 +1,7 @@
 package metrik.project.domain.service.githubactions
 
+import feign.FeignException.FeignClientException
+import feign.FeignException.FeignServerException
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
@@ -12,8 +14,6 @@ import metrik.project.infrastructure.github.GithubClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import java.net.URL
 import java.time.Instant
 import java.time.ZoneOffset
@@ -35,9 +35,9 @@ class GithubActionsPipelineService(
 
         try {
             githubClient.verifyGithubUrl(pipeline.url, pipeline.credential)
-        } catch (ex: HttpServerErrorException) {
+        } catch (ex: FeignServerException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
-        } catch (ex: HttpClientErrorException) {
+        } catch (ex: FeignClientException) {
             throw PipelineConfigVerifyException("Verify failed")
         }
     }
@@ -105,9 +105,9 @@ class GithubActionsPipelineService(
             )
 
             return builds
-        } catch (ex: HttpServerErrorException) {
+        } catch (ex: FeignServerException) {
             throw SynchronizationException("Connection to Github Actions is unavailable")
-        } catch (ex: HttpClientErrorException) {
+        } catch (ex: FeignClientException) {
             throw SynchronizationException("Syncing Github Commits details failed")
         }
     }

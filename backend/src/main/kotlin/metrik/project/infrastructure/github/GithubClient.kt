@@ -1,12 +1,11 @@
 package metrik.project.infrastructure.github
 
+import feign.FeignException.NotFound
 import metrik.project.domain.service.githubactions.GithubActionsRun
 import metrik.project.domain.service.githubactions.GithubCommit
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.mapper.GithubActionsRunMapper.Companion.MAPPER
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException
 import java.net.URL
 
 @Component
@@ -78,11 +77,8 @@ class GithubClient(
     private fun <T> withApplicationException(action: () -> T): T? =
         try {
             action()
-        } catch (clientErrorException: HttpClientErrorException) {
-            when (clientErrorException.statusCode) {
-                HttpStatus.NOT_FOUND -> null
-                else -> throw clientErrorException
-            }
+        } catch (clientErrorException: NotFound) {
+            null
         }
 
     private companion object {

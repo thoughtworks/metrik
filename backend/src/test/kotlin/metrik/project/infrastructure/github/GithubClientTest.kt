@@ -1,5 +1,12 @@
 package metrik.project.infrastructure.github
 
+import feign.FeignException
+import feign.FeignException.BadRequest
+import feign.FeignException.Forbidden
+import feign.FeignException.InternalServerError
+import feign.FeignException.NotFound
+import feign.Request
+import feign.Response
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -17,9 +24,6 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import java.time.ZonedDateTime
 
 @ExtendWith(MockKExtension::class)
@@ -30,6 +34,8 @@ class GithubClientTest {
 
     @MockK(relaxed = true)
     private lateinit var githubFeignClient: GithubFeignClient
+
+    private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
 
     @Test
     fun `should return single run when retrieve single run info from github`() {
@@ -177,10 +183,13 @@ class GithubClientTest {
     fun `should throw exception when the github return 404 not found status code for verification`() {
         every {
             githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo)
-        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(404)
+        )
 
         assertThrows(
-            HttpClientErrorException::class.java
+            NotFound::class.java
         ) {
             githubClient.verifyGithubUrl(url, token)
         }
@@ -190,15 +199,24 @@ class GithubClientTest {
     fun `should return null when the github return 404 not found status code for non verification`() {
         every {
             githubFeignClient.retrieveCommits("Bearer $token", owner, repo, perPage = perPage, pageIndex = pageIndex)
-        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(404)
+        )
 
         every {
             githubFeignClient.retrieveSingleRun("Bearer $token", owner, repo, runId)
-        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(404)
+        )
 
         every {
             githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo, perPage, pageIndex)
-        } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(404)
+        )
 
         assertNull(githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex))
         assertNull(githubClient.retrieveSingleRun(url, token, runId))
@@ -209,32 +227,44 @@ class GithubClientTest {
     fun `should throw corresponding exception when the github return status code other than 404`() {
         every {
             githubFeignClient.retrieveCommits("Bearer $token", owner, repo, perPage = perPage, pageIndex = pageIndex)
-        } throws HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(400)
+        )
 
         every {
             githubFeignClient.retrieveSingleRun("Bearer $token", owner, repo, runId)
-        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(500)
+        )
 
         every {
             githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo, perPage, pageIndex)
-        } throws HttpClientErrorException(HttpStatus.FORBIDDEN)
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(403)
+        )
 
         assertThrows(
-            HttpClientErrorException::class.java
+            BadRequest::class.java
         ) {
             githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex)
         }
         assertThrows(
-            HttpServerErrorException::class.java
+            InternalServerError::class.java
         ) {
             githubClient.retrieveSingleRun(url, token, runId)
         }
         assertThrows(
-            HttpClientErrorException::class.java
+            Forbidden::class.java
         ) {
             githubClient.retrieveMultipleRuns(url, token, perPage, pageIndex)
         }
     }
+
+    private fun buildFeignResponse(statusCode: Int) =
+        Response.builder().status(statusCode).request(dummyFeignRequest).build()
 
     private companion object {
         const val url = "https://api.github.com/test_owner/test_repo"
