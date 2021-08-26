@@ -39,7 +39,7 @@ interface GithubFeignClient {
         @PathVariable("repo") repo: String,
         @RequestParam("since", required = false) since: String? = null,
         @RequestParam("until", required = false) until: String? = null,
-        @RequestParam("branch", required = false) branch: String? = null,
+        @RequestParam("sha", required = false) branch: String? = null,
         @RequestParam("per_page", required = false) perPage: Int? = null,
         @RequestParam("page", required = false) pageIndex: Int? = null,
     ): List<CommitResponse>
