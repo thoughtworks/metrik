@@ -30,7 +30,6 @@ import metrik.project.stage
 import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
@@ -57,37 +56,23 @@ internal class GithubActionsPipelineServiceTest {
     @SpyK
     private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
 
-    @MockK(relaxed = true)
-    private lateinit var githubUtil: GithubUtil
-
-    @BeforeEach
-    fun setUp() {
-        every {
-            githubUtil.getToken(githubActionsPipeline.credential)
-        } returns "Bearer credential"
-
-        every {
-            githubUtil.getOwnerRepoFromUrl(githubActionsPipeline.url)
-        } returns Pair("test_repo", "test_owner")
-    }
-
     @Test
     fun `should successfully verify a pipeline given response is 200`() {
         justRun {
-            githubClient.verifyGithubUrl(any(), any(), any())
+            githubClient.verifyGithubUrl(any(), any())
         }
 
         githubActionsPipelineService.verifyPipelineConfiguration(githubActionsPipeline)
 
         verify {
-            githubClient.verifyGithubUrl(any(), any(), any())
+            githubClient.verifyGithubUrl(any(), any())
         }
     }
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
         every {
-            githubClient.verifyGithubUrl(any(), any(), any())
+            githubClient.verifyGithubUrl(any(), any())
         } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
 
         assertThrows(ApplicationException::class.java) {
@@ -100,7 +85,7 @@ internal class GithubActionsPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 400`() {
         every {
-            githubClient.verifyGithubUrl(any(), any(), any())
+            githubClient.verifyGithubUrl(any(), any())
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
 
         assertThrows(ApplicationException::class.java) {
@@ -326,7 +311,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns listOf(
             GithubActionsRun(
                 id = 1111111111,
@@ -370,19 +355,19 @@ internal class GithubActionsPipelineServiceTest {
         )
 
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), 2, 1)
+            githubClient.retrieveMultipleRuns(any(), any(), 2, 1)
         } returns listOf(
             runs[0],
             runs[1]
         )
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), 2, 2)
+            githubClient.retrieveMultipleRuns(any(), any(), 2, 2)
         } returns listOf(
             runs[2],
             runs[3]
         )
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), 2, 3)
+            githubClient.retrieveMultipleRuns(any(), any(), 2, 3)
         } returns emptyList()
 
         assertEquals(
@@ -415,7 +400,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns listOf(
             GithubActionsRun(
                 id = 1111111111,
@@ -483,10 +468,10 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns emptyList()
         every {
-            githubClient.retrieveSingleRun(any(), any(), any(), "1111111111")
+            githubClient.retrieveSingleRun(any(), any(), "1111111111")
         } returns GithubActionsRun(
             id = 1111111111,
             name = "CI",
@@ -527,7 +512,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns listOf(
             GithubActionsRun(
                 id = 1111111111,
@@ -564,7 +549,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         )
         every {
-            githubClient.retrieveSingleRun(any(), any(), any(), "1111111111")
+            githubClient.retrieveSingleRun(any(), any(), "1111111111")
         } returns GithubActionsRun(
             id = 1111111111,
             name = "CI",
@@ -637,7 +622,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns listOf(
             GithubActionsRun(
                 id = 1111111111,
@@ -713,13 +698,13 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns emptyList()
         every {
-            githubClient.retrieveSingleRun(any(), any(), any(), "1111111111")
+            githubClient.retrieveSingleRun(any(), any(), "1111111111")
         } returns null
         every {
-            githubClient.retrieveSingleRun(any(), any(), any(), "1111111112")
+            githubClient.retrieveSingleRun(any(), any(), "1111111112")
         } returns GithubActionsRun(
             id = 1111111112,
             name = "CI",
@@ -765,7 +750,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } returns listOf(
             GithubActionsRun(
                 id = 1111111111,
@@ -791,7 +776,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         )
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 2)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 2)
         } returns null
 
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
@@ -822,7 +807,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
 
         assertThrows(ApplicationException::class.java) {
@@ -850,15 +835,11 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns listOf(commit)
         every {
-            githubClient.retrieveMultipleRuns(any(), any(), any(), any(), 1)
+            githubClient.retrieveMultipleRuns(any(), any(), any(), 1)
         } throws HttpClientErrorException(HttpStatus.FORBIDDEN)
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
         }
-    }
-
-    private companion object {
-        const val getRunsBaseUrl = "$userInputURL/actions/runs"
     }
 }

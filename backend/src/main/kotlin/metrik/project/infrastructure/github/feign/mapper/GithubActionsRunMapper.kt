@@ -13,11 +13,6 @@ import org.mapstruct.factory.Mappers
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface GithubActionsRunMapper {
     @Mappings(
-        Mapping(target = "id", source = "id"),
-        Mapping(target = "name", source = "name"),
-        Mapping(target = "status", source = "status"),
-        Mapping(target = "conclusion", source = "conclusion"),
-        Mapping(target = "url", source = "url"),
         Mapping(target = "branch", source = "headBranch"),
         Mapping(target = "commitTimeStamp", source = "headCommit.timestamp"),
         Mapping(target = "createdTimestamp", source = "createdAt"),

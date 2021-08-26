@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger
 class GithubActionsPipelineService(
     private val githubActionsCommitService: GithubActionsCommitService,
     private val buildRepository: BuildRepository,
-    private val githubUtil: GithubUtil,
     private val githubBuildConverter: GithubBuildConverter,
     private val githubClient: GithubClient
 ) : PipelineService {
@@ -33,11 +32,9 @@ class GithubActionsPipelineService(
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
-        val token = githubUtil.getToken(pipeline.credential)
-        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
 
         try {
-            githubClient.verifyGithubUrl(token, owner, repo)
+            githubClient.verifyGithubUrl(pipeline.url, pipeline.credential)
         } catch (ex: HttpServerErrorException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -120,10 +117,6 @@ class GithubActionsPipelineService(
         latestTimestamp: Long,
         maxPerPage: Int = defaultMaxPerPage
     ): MutableList<GithubActionsRun> {
-
-        val token = githubUtil.getToken(pipeline.credential)
-        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
-
         var ifRetrieving = true
         var pageIndex = 1
 
@@ -133,10 +126,12 @@ class GithubActionsPipelineService(
 
             logger.info(
                 "Get Github Runs - " +
-                    "Sending request to Github Feign Client with owner: $owner, repo: $repo, pageIndex: $pageIndex"
+                    "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
 
-            val runs = githubClient.retrieveMultipleRuns(token, owner, repo, maxPerPage, pageIndex) ?: break
+            val runs = githubClient.retrieveMultipleRuns(
+                pipeline.url, pipeline.credential, maxPerPage, pageIndex
+            ) ?: break
 
             val runsNeedToSync = runs.filter { it.createdTimestamp.toTimestamp() > latestTimestamp }
 
@@ -162,10 +157,6 @@ class GithubActionsPipelineService(
         pipeline: Pipeline,
         builds: List<Build>,
     ): MutableList<GithubActionsRun> {
-
-        val token = githubUtil.getToken(pipeline.credential)
-        val (owner, repo) = githubUtil.getOwnerRepoFromUrl(pipeline.url)
-
         val runs = mutableListOf<GithubActionsRun>()
 
         builds.forEach { build ->
@@ -174,10 +165,10 @@ class GithubActionsPipelineService(
 
                 logger.info(
                     "Get Github Runs - " +
-                        "Sending request to Github Feign Client with owner: $owner, repo: $repo, runId: $runId"
+                        "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
                 )
 
-                val run = githubClient.retrieveSingleRun(token, owner, repo, runId)
+                val run = githubClient.retrieveSingleRun(pipeline.url, pipeline.credential, runId)
 
                 run?.also { runs.add(it) }
             }

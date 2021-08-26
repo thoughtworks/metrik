@@ -17,47 +17,42 @@ class GithubBuildConverter {
             "Github Actions converting: Started converting WorkflowRuns [$this] for pipeline [$pipelineId]"
         )
 
-        try {
-            val startTimeMillis = run.createdTimestamp.toTimestamp()
-            val completedTimeMillis = run.updatedTimestamp.toTimestamp()
-            val durationMillis: Long = completedTimeMillis - startTimeMillis
+        val startTimeMillis = run.createdTimestamp.toTimestamp()
+        val completedTimeMillis = run.updatedTimestamp.toTimestamp()
+        val durationMillis: Long = completedTimeMillis - startTimeMillis
 
-            val stage: List<Stage> =
-                when (run.buildStatus) {
-                    Status.IN_PROGRESS, Status.OTHER -> emptyList()
-                    else -> listOf(
-                        Stage(
-                            run.name,
-                            run.buildStatus,
-                            startTimeMillis,
-                            durationMillis,
-                            0,
-                            completedTimeMillis
-                        )
+        val stage: List<Stage> =
+            when (run.buildStatus) {
+                Status.IN_PROGRESS, Status.OTHER -> emptyList()
+                else -> listOf(
+                    Stage(
+                        run.name,
+                        run.buildStatus,
+                        startTimeMillis,
+                        durationMillis,
+                        0,
+                        completedTimeMillis
                     )
-                }
+                )
+            }
 
-            val build = Build(
-                pipelineId,
-                run.id,
-                run.buildStatus,
-                durationMillis,
-                startTimeMillis,
-                run.url,
-                run.branch,
-                stage,
-                commits
-            )
+        val build = Build(
+            pipelineId,
+            run.id,
+            run.buildStatus,
+            durationMillis,
+            startTimeMillis,
+            run.url,
+            run.branch,
+            stage,
+            commits
+        )
 
-            logger.info(
-                "Github Actions converting: Build converted result: [$build]"
-            )
+        logger.info(
+            "Github Actions converting: Build converted result: [$build]"
+        )
 
-            return build
-        } catch (e: RuntimeException) {
-            logger.error("Converting Github Actions DTO failed, DTO: [$this], exception: [$e]")
-            throw e
-        }
+        return build
     }
 
     fun convertToCommit(commit: GithubCommit, pipelineId: String): Commit {
@@ -65,18 +60,13 @@ class GithubBuildConverter {
             "Github Actions converting: Started converting CommitsDTO [$this] for pipeline [$pipelineId]"
         )
 
-        try {
-            val timestamp = commit.timestamp
-            val commitBuild = Commit(commit.id, timestamp.toTimestamp(), timestamp.toString())
+        val timestamp = commit.timestamp
+        val commitBuild = Commit(commit.id, timestamp.toTimestamp(), timestamp.toString())
 
-            logger.info(
-                "Github Actions converting: Commit converted result: [$commitBuild]"
-            )
+        logger.info(
+            "Github Actions converting: Commit converted result: [$commitBuild]"
+        )
 
-            return commitBuild
-        } catch (e: RuntimeException) {
-            logger.error("Converting Github Actions DTO failed, DTO: [$this], exception: [$e]")
-            throw e
-        }
+        return commitBuild
     }
 }

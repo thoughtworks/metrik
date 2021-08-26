@@ -6,13 +6,11 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import metrik.project.commit
-import metrik.project.credential
 import metrik.project.domain.model.Commit
 import metrik.project.githubActionsPipeline
 import metrik.project.infrastructure.github.GithubClient
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
@@ -31,25 +29,10 @@ internal class GithubCommitServiceTest {
     @SpyK
     private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
 
-    @MockK(relaxed = true)
-    private lateinit var githubUtil: GithubUtil
-
-    @BeforeEach
-    fun setUp() {
-        every {
-            githubUtil.getToken(githubActionsPipeline.credential)
-        } returns "Bearer credential"
-
-        every {
-            githubUtil.getOwnerRepoFromUrl(githubActionsPipeline.url)
-        } returns Pair("test_repo", "test_owner")
-    }
-
     @Test
     fun `should retrieve commits between builds successfully`() {
         every {
             githubClient.retrieveCommits(
-                any(),
                 any(),
                 any(),
                 sinceTimeStamp,
@@ -80,7 +63,6 @@ internal class GithubCommitServiceTest {
             githubClient.retrieveCommits(
                 any(),
                 any(),
-                any(),
                 null,
                 untilTimeStamp,
                 null,
@@ -106,7 +88,6 @@ internal class GithubCommitServiceTest {
     fun `should get all commits in assigned branch`() {
         every {
             githubClient.retrieveCommits(
-                any(),
                 any(),
                 any(),
                 null,
@@ -137,7 +118,6 @@ internal class GithubCommitServiceTest {
             githubClient.retrieveCommits(
                 any(),
                 any(),
-                any(),
                 sinceTimeStamp,
                 untilTimeStamp,
                 null,
@@ -159,7 +139,6 @@ internal class GithubCommitServiceTest {
     fun `should throw exception when the server responds 500 at any time`() {
         every {
             githubClient.retrieveCommits(
-                any(),
                 any(),
                 any(),
                 sinceTimeStamp,

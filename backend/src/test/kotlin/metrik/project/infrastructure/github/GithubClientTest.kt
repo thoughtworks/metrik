@@ -34,7 +34,7 @@ class GithubClientTest {
     @Test
     fun `should return single run when retrieve single run info from github`() {
         every {
-            githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+            githubFeignClient.retrieveSingleRun("Bearer $token", owner, repo, runId)
         } returns SingleRunResponse(
             id = 123,
             name = "CI-Pipeline",
@@ -51,7 +51,7 @@ class GithubClientTest {
             updatedAt = ZonedDateTime.parse("2021-08-17T12:23:25Z")
         )
 
-        val run = githubClient.retrieveSingleRun(token, owner, repo, runId)
+        val run = githubClient.retrieveSingleRun(url, token, runId)
 
         assertEquals(
             run,
@@ -72,7 +72,7 @@ class GithubClientTest {
     @Test
     fun `should return multiple runs when retrieve multiple runs from github`() {
         every {
-            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+            githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo, perPage, pageIndex)
         } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(
@@ -108,7 +108,7 @@ class GithubClientTest {
             )
         )
 
-        val runs = githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+        val runs = githubClient.retrieveMultipleRuns(url, token, perPage, pageIndex)
 
         assertEquals(
             runs,
@@ -142,7 +142,7 @@ class GithubClientTest {
     @Test
     fun `should return commits when retrieve commits from github`() {
         every {
-            githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+            githubFeignClient.retrieveCommits("Bearer $token", owner, repo, perPage = perPage, pageIndex = pageIndex)
         } returns listOf(
             CommitResponse(
                 sha = "123",
@@ -162,7 +162,7 @@ class GithubClientTest {
             )
         )
 
-        val commits = githubClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+        val commits = githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex)
 
         assertEquals(
             commits,
@@ -176,67 +176,68 @@ class GithubClientTest {
     @Test
     fun `should throw exception when the github return 404 not found status code for verification`() {
         every {
-            githubFeignClient.retrieveMultipleRuns(token, owner, repo)
+            githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo)
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
 
         assertThrows(
             HttpClientErrorException::class.java
         ) {
-            githubClient.verifyGithubUrl(token, owner, repo)
+            githubClient.verifyGithubUrl(url, token)
         }
     }
 
     @Test
     fun `should return null when the github return 404 not found status code for non verification`() {
         every {
-            githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+            githubFeignClient.retrieveCommits("Bearer $token", owner, repo, perPage = perPage, pageIndex = pageIndex)
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
 
         every {
-            githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+            githubFeignClient.retrieveSingleRun("Bearer $token", owner, repo, runId)
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
 
         every {
-            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+            githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo, perPage, pageIndex)
         } throws HttpClientErrorException(HttpStatus.NOT_FOUND)
 
-        assertNull(githubClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex))
-        assertNull(githubClient.retrieveSingleRun(token, owner, repo, runId))
-        assertNull(githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex))
+        assertNull(githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex))
+        assertNull(githubClient.retrieveSingleRun(url, token, runId))
+        assertNull(githubClient.retrieveMultipleRuns(url, token, perPage, pageIndex))
     }
 
     @Test
     fun `should throw corresponding exception when the github return status code other than 404`() {
         every {
-            githubFeignClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+            githubFeignClient.retrieveCommits("Bearer $token", owner, repo, perPage = perPage, pageIndex = pageIndex)
         } throws HttpClientErrorException(HttpStatus.BAD_REQUEST)
 
         every {
-            githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+            githubFeignClient.retrieveSingleRun("Bearer $token", owner, repo, runId)
         } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
 
         every {
-            githubFeignClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+            githubFeignClient.retrieveMultipleRuns("Bearer $token", owner, repo, perPage, pageIndex)
         } throws HttpClientErrorException(HttpStatus.FORBIDDEN)
 
         assertThrows(
             HttpClientErrorException::class.java
         ) {
-            githubClient.retrieveCommits(token, owner, repo, perPage = perPage, pageIndex = pageIndex)
+            githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex)
         }
         assertThrows(
             HttpServerErrorException::class.java
         ) {
-            githubClient.retrieveSingleRun(token, owner, repo, runId)
+            githubClient.retrieveSingleRun(url, token, runId)
         }
         assertThrows(
             HttpClientErrorException::class.java
         ) {
-            githubClient.retrieveMultipleRuns(token, owner, repo, perPage, pageIndex)
+            githubClient.retrieveMultipleRuns(url, token, perPage, pageIndex)
         }
     }
 
     private companion object {
+        const val url = "https://api.github.com/test_owner/test_repo"
         const val token = "token"
         const val owner = "test_owner"
         const val repo = "test_repo"
