@@ -56,6 +56,7 @@ jobs:
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
+          working-dir: ./backend
           jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
           generate-branches-badge: true
 
