@@ -71,6 +71,12 @@ jobs:
           message: 'doc: update test coverage badge'
           add: '*.svg'
 
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: jacoco-report
+          path: build/reports/jacoco/test/html
+
 ##     This step allow you to debug via SSH
 #      - name: Setup tmate session
 #        uses: mxschmitt/action-tmate@v3
