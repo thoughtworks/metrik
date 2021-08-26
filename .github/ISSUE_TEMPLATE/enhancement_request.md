@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Describe the context of ths enhancement**
+**Describe the context of this enhancement**
 A clear and concise description of what the context is. Ex. I'm always frustrated when [...]
 
 **Describe the solution you'd like**
