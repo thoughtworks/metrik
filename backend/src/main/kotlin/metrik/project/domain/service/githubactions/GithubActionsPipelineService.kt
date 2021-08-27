@@ -126,7 +126,7 @@ class GithubActionsPipelineService(
 
             logger.info(
                 "Get Github Runs - " +
-                    "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
+                        "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
 
             val runs = githubClient.retrieveMultipleRuns(
@@ -144,14 +144,15 @@ class GithubActionsPipelineService(
         return totalRuns
     }
 
-    fun mapCommitToRun(pipeline: Pipeline, runs: MutableList<GithubActionsRun>):
-        Map<String, Map<GithubActionsRun, List<Commit>>> {
-            val mapRunsToCommits: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
-            runs
-                .groupBy { it.branch }
-                .forEach { (branch, run) -> mapRunsToCommits[branch] = mapRunToCommits(pipeline, run) }
-            return mapRunsToCommits.toMap()
-        }
+    fun mapCommitToRun(
+        pipeline: Pipeline,
+        runs: MutableList<GithubActionsRun>
+    ): Map<String, Map<GithubActionsRun, List<Commit>>> {
+        val branchCommitsMap: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
+        runs.groupBy { it.branch }
+            .forEach { (branch, run) -> branchCommitsMap[branch] = mapRunToCommits(pipeline, run) }
+        return branchCommitsMap.toMap()
+    }
 
     private fun getInProgressRuns(
         pipeline: Pipeline,
@@ -165,7 +166,7 @@ class GithubActionsPipelineService(
 
                 logger.info(
                     "Get Github Runs - " +
-                        "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
+                            "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
                 )
 
                 val run = githubClient.retrieveSingleRun(pipeline.url, pipeline.credential, runId)

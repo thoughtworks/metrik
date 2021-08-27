@@ -20,7 +20,7 @@ class GithubActionsCommitService(
         branch: String? = null,
         pipeline: Pipeline
     ): List<Commit> {
-        logger.info("Started sync for Github Actions commits [$pipeline]")
+        logger.info("Started sync for Github Actions commits [${pipeline.url}]/[${branch}]")
 
         var ifRetrieving = true
         var pageIndex = 1

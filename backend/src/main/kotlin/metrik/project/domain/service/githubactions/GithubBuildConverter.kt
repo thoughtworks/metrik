@@ -13,7 +13,7 @@ class GithubBuildConverter {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun convertToBuild(run: GithubActionsRun, pipelineId: String, commits: List<Commit>): Build {
-        logger.info(
+        logger.debug(
             "Github Actions converting: Started converting WorkflowRuns [$this] for pipeline [$pipelineId]"
         )
 
@@ -48,7 +48,7 @@ class GithubBuildConverter {
             commits
         )
 
-        logger.info(
+        logger.debug(
             "Github Actions converting: Build converted result: [$build]"
         )
 
@@ -56,14 +56,14 @@ class GithubBuildConverter {
     }
 
     fun convertToCommit(commit: GithubCommit, pipelineId: String): Commit {
-        logger.info(
+        logger.debug(
             "Github Actions converting: Started converting CommitsDTO [$this] for pipeline [$pipelineId]"
         )
 
         val timestamp = commit.timestamp
         val commitBuild = Commit(commit.id, timestamp.toTimestamp(), timestamp.toString())
 
-        logger.info(
+        logger.debug(
             "Github Actions converting: Commit converted result: [$commitBuild]"
         )
 

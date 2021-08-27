@@ -121,7 +121,7 @@ class BuildRepository {
             .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)
-        logger.info(
+        logger.debug(
             "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
         )
         return result
@@ -140,7 +140,7 @@ class BuildRepository {
             .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
             .limit(1)
         val result = mongoTemplate.findOne<Build>(query, collectionName)
-        logger.info(
+        logger.debug(
             "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
         )
         return result
