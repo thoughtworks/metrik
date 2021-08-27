@@ -61,7 +61,7 @@
 产品现在支持/计划支持的CD工具清单
 - [x] Jenkins
 - [x] Bamboo
-- [ ] Github Actions
+- [x] Github Actions
 - [ ] CircleCI
 
   ...以及更多即将集成的产品

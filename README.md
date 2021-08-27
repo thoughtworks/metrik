@@ -58,7 +58,7 @@ For development teams who wants to measure their software delivery and operation
 List of CD tools the product supports now/plan to support
 - [x] Jenkins
 - [x] Bamboo
-- [ ] Github Actions
+- [x] Github Actions
 - [ ] CircleCI
 
   ...and more on the way
