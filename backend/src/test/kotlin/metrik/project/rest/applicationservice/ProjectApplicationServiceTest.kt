@@ -1,7 +1,13 @@
 package metrik.project.rest.applicationservice
 
-import metrik.MockitoHelper.anyObject
-import metrik.MockitoHelper.argThat
+import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.verify
 import metrik.project.buildJenkinsPipelineRequest
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -15,30 +21,23 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyList
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 internal class ProjectApplicationServiceTest {
-    @InjectMocks
+    @InjectMockKs(overrideValues = true)
     private lateinit var projectApplicationService: ProjectApplicationService
 
-    @Mock
+    @MockK
     private lateinit var pipelineApplicationService: PipelineApplicationService
 
-    @Mock
+    @RelaxedMockK
     private lateinit var projectRepository: ProjectRepository
 
-    @Mock
+    @RelaxedMockK
     private lateinit var pipelineRepository: PipelineRepository
 
-    @Mock
+    @RelaxedMockK
     private lateinit var buildRepository: BuildRepository
 
     private var projectId = "601a2d059deac2220dd0756b"
@@ -46,7 +45,7 @@ internal class ProjectApplicationServiceTest {
     private var expectedProject = Project(projectId, projectName)
     private var pipelineId = "501a2d059deac2220dd0756f"
     private var pipelineName = "pipeline name"
-    private var pipelineUrl = "htttp://localhost:8080/some-pipeline"
+    private var pipelineUrl = "http://localhost:8080/some-pipeline"
     private var pipelineUserName = "4km"
     private var pipelineCredential = "4km"
     private var expectedPipeline =
@@ -57,29 +56,30 @@ internal class ProjectApplicationServiceTest {
 
     @Test
     fun `test create project successfully`() {
-        `when`(projectRepository.existWithGivenName(projectName)).thenReturn(false)
-        `when`(projectRepository.save(anyObject())).thenReturn(expectedProject)
-        `when`(pipelineRepository.saveAll(anyList())).thenReturn(listOf(expectedPipeline))
+        every { projectRepository.existWithGivenName(projectName) } returns false
+        every { projectRepository.save(any()) } returns expectedProject
+        every { pipelineRepository.saveAll(any()) } returns listOf(expectedPipeline)
+
+        every { pipelineApplicationService.verifyPipelineConfiguration(any()) } just runs
 
         val pipeline = buildJenkinsPipelineRequest()
         val projectDetailResponse =
             projectApplicationService.createProject(ProjectRequest(projectName, pipeline))
 
         assertEquals(projectDetailResponse.id, projectId)
-        verify(pipelineApplicationService).verifyPipelineConfiguration(
-            argThat {
+        verify(exactly = 1) {
+            pipelineApplicationService.verifyPipelineConfiguration(withArg {
                 assertEquals(pipeline.url, it.url)
                 assertEquals(pipeline.username, it.username)
                 assertEquals(pipeline.credential, it.credential)
                 assertEquals(PipelineType.JENKINS, it.type)
-                true
-            }
-        )
+            })
+        }
     }
 
     @Test
     fun `create project will fail if project name already exist`() {
-        `when`(projectRepository.existWithGivenName(projectName)).thenReturn(true)
+        every { projectRepository.existWithGivenName(projectName) } returns true
 
         val exception = assertThrows<ProjectNameDuplicateException> {
             projectApplicationService.createProject(ProjectRequest(projectName, buildJenkinsPipelineRequest()))
@@ -91,8 +91,8 @@ internal class ProjectApplicationServiceTest {
 
     @Test
     fun `update project name`() {
-        `when`(projectRepository.findById(projectId)).thenReturn(expectedProject)
-        `when`(projectRepository.save(expectedProject)).thenReturn(expectedProject)
+        every { projectRepository.findById(projectId) } returns expectedProject
+        every { projectRepository.save(expectedProject) } returns expectedProject
 
         val newProjectName = "new project name"
         val updatedProject = projectApplicationService.updateProjectName(projectId, newProjectName)
@@ -102,20 +102,20 @@ internal class ProjectApplicationServiceTest {
 
     @Test
     fun `test delete project`() {
-        `when`(projectRepository.findById(projectId)).thenReturn(Project(projectId))
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(Pipeline(pipelineId, projectId)))
+        every { projectRepository.findById(projectId) } returns Project(projectId)
+        every { pipelineRepository.findByProjectId(projectId) } returns listOf(Pipeline(pipelineId, projectId))
 
         projectApplicationService.deleteProject(projectId)
 
-        verify(projectRepository, times(1)).deleteById(projectId)
-        verify(pipelineRepository, times(1)).deleteById(pipelineId)
-        verify(buildRepository, times(1)).clear(pipelineId)
+        verify(exactly = 1) { projectRepository.deleteById(projectId) }
+        verify(exactly = 1) { pipelineRepository.deleteById(pipelineId) }
+        verify(exactly = 1) { buildRepository.clear(pipelineId) }
     }
 
     @Test
     fun `test get pipeline details`() {
-        `when`(projectRepository.findById(projectId)).thenReturn(expectedProject)
-        `when`(pipelineRepository.findByProjectId(projectId)).thenReturn(listOf(expectedPipeline))
+        every { projectRepository.findById(projectId) } returns expectedProject
+        every { pipelineRepository.findByProjectId(projectId) } returns listOf(expectedPipeline)
 
         val projectDetailResponse = projectApplicationService.getProjectDetails(projectId)
 
@@ -127,7 +127,7 @@ internal class ProjectApplicationServiceTest {
 
     @Test
     fun `test get project list`() {
-        `when`(projectRepository.findAll()).thenReturn(listOf(expectedProject))
+        every { projectRepository.findAll() } returns listOf(expectedProject)
 
         val projects = projectApplicationService.getProjects()
 
