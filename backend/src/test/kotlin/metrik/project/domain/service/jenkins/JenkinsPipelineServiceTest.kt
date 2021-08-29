@@ -2,6 +2,10 @@ package metrik.project.domain.service.jenkins
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import metrik.exception.ApplicationException
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
@@ -10,17 +14,13 @@ import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.rest.vo.response.SyncProgress
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -42,18 +42,35 @@ internal class JenkinsPipelineServiceTest {
     @Autowired
     private lateinit var restTemplate: RestTemplate
 
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
     private val objectMapper = jacksonObjectMapper()
 
     private lateinit var mockServer: MockRestServiceServer
 
-    private val mockEmitCb = mock<(SyncProgress) -> Unit>()
+    private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
+
+    private val pipelineId = "fake pipeline"
 
     @BeforeEach
     fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        every { buildRepository.getAllBuilds("fake pipeline") } returns listOf(
+            Build(
+                stages = listOf(
+                    Stage(name = "clone"), Stage(name = "build"),
+                    Stage(name = "zzz"), Stage(name = "amazing")
+                )
+            ),
+            Build(
+                stages = listOf(
+                    Stage(name = "build"), Stage("good")
+                )
+            )
+        )
+        every { buildRepository.getByBuildNumber(any(), any()) } returns null
     }
 
     @Test
@@ -68,7 +85,7 @@ internal class JenkinsPipelineServiceTest {
                 withBadRequest()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
                 Pipeline(
                     id = "fake pipeline",
@@ -92,7 +109,7 @@ internal class JenkinsPipelineServiceTest {
                 withServerError()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
                 Pipeline(
                     id = "fake pipeline",
@@ -106,29 +123,14 @@ internal class JenkinsPipelineServiceTest {
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        val builds = listOf(
-            Build(
-                stages = listOf(
-                    Stage(name = "clone"), Stage(name = "build"),
-                    Stage(name = "zzz"), Stage(name = "amazing")
-                )
-            ),
-            Build(
-                stages = listOf(
-                    Stage(name = "build"), Stage("good")
-                )
-            )
-        )
-        `when`(buildRepository.getAllBuilds("fake pipeline")).thenReturn(builds)
-
         val result = jenkinsPipelineService.getStagesSortedByName("fake pipeline")
 
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals("amazing", result[0])
-        Assertions.assertEquals("build", result[1])
-        Assertions.assertEquals("clone", result[2])
-        Assertions.assertEquals("good", result[3])
-        Assertions.assertEquals("zzz", result[4])
+        assertEquals(5, result.size)
+        assertEquals("amazing", result[0])
+        assertEquals("build", result[1])
+        assertEquals("clone", result[2])
+        assertEquals("good", result[3])
+        assertEquals("zzz", result[4])
     }
 
     @Test
@@ -169,11 +171,11 @@ internal class JenkinsPipelineServiceTest {
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).save(allBuilds)
 
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        verify(exactly = 1) { buildRepository.save(allBuilds) }
         val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
-        verify(mockEmitCb).invoke(progress)
+        verify(exactly = 1) { mockEmitCb.invoke(progress) }
     }
 
     @Test
@@ -212,7 +214,7 @@ internal class JenkinsPipelineServiceTest {
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).save(allBuilds)
+        verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
     @Test
@@ -251,7 +253,7 @@ internal class JenkinsPipelineServiceTest {
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).save(allBuilds)
+        verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
     @Test
@@ -290,7 +292,7 @@ internal class JenkinsPipelineServiceTest {
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).save(allBuilds)
+        verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
     @Test
@@ -328,19 +330,17 @@ internal class JenkinsPipelineServiceTest {
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
             )
-        val mockEmitCb = mock<(SyncProgress) -> Unit>()
 
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-        val progress = SyncProgress("fake pipeline", "pipeline name", 1, 1)
 
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
-        verify(buildRepository, times(1)).save(allBuilds)
-        verify(mockEmitCb).invoke(progress)
+        verify(exactly = 1) { buildRepository.save(allBuilds) }
+        val progress = SyncProgress("fake pipeline", "pipeline name", 1, 1)
+        verify(exactly = 1) { mockEmitCb.invoke(progress) }
     }
 
     @Test
     fun `should return builds with previous status is building null or not exits in DB from Jenkins when syncBuilds() given pipeline ID`() {
-        val pipelineId = "fake pipeline"
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
@@ -356,10 +356,11 @@ internal class JenkinsPipelineServiceTest {
             url = baseUrl
         )
 
-        `when`(buildRepository.getByBuildNumber(pipelineId, 1)).thenReturn(
-            Build(pipelineId = pipelineId, number = 1, result = Status.IN_PROGRESS)
+        every { buildRepository.getByBuildNumber(pipelineId, 1) } returns Build(
+            pipelineId = pipelineId,
+            number = 1,
+            result = Status.IN_PROGRESS
         )
-
         mockServer.expect(requestTo(getBuildSummariesUrl))
             .andRespond(
                 withSuccess(

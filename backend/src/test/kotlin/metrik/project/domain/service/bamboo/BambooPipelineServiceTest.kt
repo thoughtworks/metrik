@@ -1,8 +1,10 @@
 package metrik.project.domain.service.bamboo
 
-import metrik.MockitoHelper
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.builds
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -10,19 +12,14 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.mockEmitCb
 import metrik.project.rest.vo.response.SyncProgress
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -42,8 +39,10 @@ internal class BambooPipelineServiceTest {
     @Autowired
     private lateinit var bambooPipelineService: BambooPipelineService
 
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var buildRepository: BuildRepository
+
+    private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 
     private val pipelineId = "1"
     private val credential = "fake-credential"
@@ -58,6 +57,22 @@ internal class BambooPipelineServiceTest {
     @BeforeEach
     fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
+
+        val builds = listOf(
+            Build(
+                stages = listOf(
+                    Stage(name = "clone"), Stage(name = "build"),
+                    Stage(name = "zzz"), Stage(name = "amazing")
+                )
+            ),
+            Build(
+                stages = listOf(
+                    Stage(name = "build"), Stage("good")
+                )
+            )
+        )
+        every { buildRepository.getAllBuilds(pipelineId) } returns builds
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
     }
 
     @Test
@@ -67,7 +82,7 @@ internal class BambooPipelineServiceTest {
                 MockRestResponseCreators.withServerError()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
         }
     }
@@ -80,23 +95,21 @@ internal class BambooPipelineServiceTest {
                 MockRestResponseCreators.withBadRequest()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
         }
     }
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        `when`(buildRepository.getAllBuilds(pipelineId)).thenReturn(builds)
-
         val result = bambooPipelineService.getStagesSortedByName(pipelineId)
 
-        Assertions.assertEquals(5, result.size)
-        Assertions.assertEquals("amazing", result[0])
-        Assertions.assertEquals("build", result[1])
-        Assertions.assertEquals("clone", result[2])
-        Assertions.assertEquals("good", result[3])
-        Assertions.assertEquals("zzz", result[4])
+        assertEquals(5, result.size)
+        assertEquals("amazing", result[0])
+        assertEquals("build", result[1])
+        assertEquals("clone", result[2])
+        assertEquals("good", result[3])
+        assertEquals("zzz", result[4])
     }
 
     @Test
@@ -112,7 +125,7 @@ internal class BambooPipelineServiceTest {
                 MockRestResponseCreators.withServerError()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         }
     }
@@ -130,7 +143,7 @@ internal class BambooPipelineServiceTest {
                 MockRestResponseCreators.withBadRequest()
             )
 
-        Assertions.assertThrows(ApplicationException::class.java) {
+        assertThrows(ApplicationException::class.java) {
             bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         }
     }
@@ -145,7 +158,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -173,7 +186,7 @@ internal class BambooPipelineServiceTest {
             changeSets = emptyList()
         )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -185,7 +198,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -214,7 +227,7 @@ internal class BambooPipelineServiceTest {
                 changeSets = emptyList()
             )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -228,7 +241,7 @@ internal class BambooPipelineServiceTest {
             name = pipelineName
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -268,10 +281,9 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        verify(buildRepository, times(1)).save(build)
-
+        verify(exactly = 1) { buildRepository.save(build) }
         val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
-        verify(mockEmitCb).invoke(progress)
+        verify(exactly = 1) { mockEmitCb.invoke(progress) }
     }
 
     @Test
@@ -283,7 +295,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -312,7 +324,7 @@ internal class BambooPipelineServiceTest {
                 changeSets = listOf()
             )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -324,7 +336,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -357,7 +369,7 @@ internal class BambooPipelineServiceTest {
                 changeSets = emptyList()
             )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -369,7 +381,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
             .andRespond(
@@ -398,7 +410,7 @@ internal class BambooPipelineServiceTest {
                 changeSets = listOf()
             )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -410,7 +422,7 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
 
-        `when`(buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1)).thenReturn(listOf(1))
+        every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
 
         mockServer.expect(MockRestRequestMatchers.requestTo(getBuildSummariesUrl))
             .andExpect { MockRestRequestMatchers.header("Authorization", credential) }
@@ -451,7 +463,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        verify(buildRepository, times(1)).save(build)
+        verify(exactly = 1) { buildRepository.save(build) }
     }
 
     @Test
@@ -483,6 +495,6 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        verify(buildRepository, never()).save(MockitoHelper.anyObject<Build>())
+        verify(exactly = 0) { buildRepository.save(ofType(Build::class)) }
     }
 }
