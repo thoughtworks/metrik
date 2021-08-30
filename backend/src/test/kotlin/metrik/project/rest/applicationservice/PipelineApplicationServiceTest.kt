@@ -16,6 +16,7 @@ import metrik.project.domain.repository.ProjectRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.factory.PipelineServiceFactory
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -87,19 +88,19 @@ internal class PipelineApplicationServiceTest {
         assertEquals(pipeline.type, result.type)
         verify(exactly = 1) { projectRepository.findById(projectId) }
         verify(exactly = 1) { pipelineServiceMock.verifyPipelineConfiguration(pipeline) }
-        // verify(exactly = 1) {
-        //     pipelineRepository.save(
-        //         withArg {
-        //             assertNotNull(it.id)
-        //             assertEquals(projectId, it.projectId)
-        //             assertEquals(pipeline.name, it.name)
-        //             assertEquals(pipeline.username, it.username)
-        //             assertEquals(pipeline.credential, it.credential)
-        //             assertEquals(pipeline.url, it.url)
-        //             assertEquals(pipeline.type, it.type)
-        //         }
-        //     )
-        // }
+        verify(exactly = 1) {
+            pipelineRepository.save(
+                withArg {
+                    assertNotNull(it.id)
+                    assertEquals(projectId, it.projectId)
+                    assertEquals(pipeline.name, it.name)
+                    assertEquals(pipeline.username, it.username)
+                    assertEquals(pipeline.credential, it.credential)
+                    assertEquals(pipeline.url, it.url)
+                    assertEquals(pipeline.type, it.type)
+                }
+            )
+        }
     }
 
     @Test
@@ -115,18 +116,19 @@ internal class PipelineApplicationServiceTest {
         verify(exactly = 1) { pipelineRepository.findByIdAndProjectId(pipeline.id, pipeline.projectId) }
         verify(exactly = 1) { pipelineRepository.findByNameAndProjectId(pipeline.name, pipeline.projectId) }
         verify(exactly = 1) { pipelineServiceMock.verifyPipelineConfiguration(pipeline) }
-        // verify(pipelineRepository).save(
-        //     argThat {
-        //         assertEquals(pipeline.projectId, it.projectId)
-        //         assertEquals(pipeline.id, it.id)
-        //         assertEquals(pipeline.name, it.name)
-        //         assertEquals(pipeline.username, it.username)
-        //         assertEquals(pipeline.credential, it.credential)
-        //         assertEquals(pipeline.url, it.url)
-        //         assertEquals(pipeline.type, it.type)
-        //         true
-        //     }
-        // )
+        verify(exactly = 1) {
+            pipelineRepository.save(
+                withArg {
+                    assertEquals(pipeline.projectId, it.projectId)
+                    assertEquals(pipeline.id, it.id)
+                    assertEquals(pipeline.name, it.name)
+                    assertEquals(pipeline.username, it.username)
+                    assertEquals(pipeline.credential, it.credential)
+                    assertEquals(pipeline.url, it.url)
+                    assertEquals(pipeline.type, it.type)
+                }
+            )
+        }
         assertEquals(pipeline.name, result.name)
         assertEquals(pipeline.url, result.url)
         assertEquals(pipeline.username, result.username)
