@@ -130,7 +130,7 @@ internal class GithubActionsPipelineServiceTest {
         } returns build
 
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
@@ -160,7 +160,7 @@ internal class GithubActionsPipelineServiceTest {
         } returns null
 
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 null,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
@@ -190,7 +190,7 @@ internal class GithubActionsPipelineServiceTest {
         } returns null
 
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 null,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
@@ -236,7 +236,7 @@ internal class GithubActionsPipelineServiceTest {
         val commit3 = commit.copy(timestamp = 1619098860779)
 
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
                 ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
@@ -274,8 +274,8 @@ internal class GithubActionsPipelineServiceTest {
         } returns build
 
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
-                untilTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
+                endTime = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
@@ -311,7 +311,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -400,7 +400,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -468,7 +468,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -512,7 +512,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -622,7 +622,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -698,7 +698,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -750,7 +750,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -807,7 +807,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,
@@ -838,7 +838,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         } returns githubActionsBuild
         every {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 any(),
                 any(),
                 branch = branch,

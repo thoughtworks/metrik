@@ -52,13 +52,12 @@ class GithubClient(
         since: String? = null,
         until: String? = null,
         branch: String? = null,
-        perPage: Int? = null,
         pageIndex: Int? = null
     ): List<GithubCommit>? {
         val commits = getOwnerRepoFromUrl(url).let { (owner, repo) ->
             withApplicationException {
                 githubFeignClient.retrieveCommits(
-                    getToken(token), owner, repo, since, until, branch, perPage, pageIndex
+                    getToken(token), owner, repo, since, until, branch, defaultMaxPerPage, pageIndex
                 )
             }
         }
@@ -84,5 +83,6 @@ class GithubClient(
     private companion object {
         const val ownerIndex = 2
         const val tokenPrefix = "Bearer"
+        const val defaultMaxPerPage = 100
     }
 }

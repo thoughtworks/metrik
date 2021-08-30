@@ -38,7 +38,6 @@ internal class GithubCommitServiceTest {
                 sinceTimeStamp,
                 untilTimeStamp,
                 null,
-                any(),
                 any()
             )
         } returns listOf(
@@ -48,7 +47,7 @@ internal class GithubCommitServiceTest {
             )
         )
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+        val commits = githubActionsCommitService.getCommitsBetweenTimePeriod(
             sinceTimeStampZonedFormat,
             untilTimeStampZonedFormat,
             pipeline = githubActionsPipeline
@@ -66,7 +65,6 @@ internal class GithubCommitServiceTest {
                 null,
                 untilTimeStamp,
                 null,
-                any(),
                 any()
             )
         } returns listOf(
@@ -76,8 +74,8 @@ internal class GithubCommitServiceTest {
             )
         )
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            untilTimeStamp = untilTimeStampZonedFormat,
+        val commits = githubActionsCommitService.getCommitsBetweenTimePeriod(
+            endTime = untilTimeStampZonedFormat,
             pipeline = githubActionsPipeline
         )
 
@@ -93,7 +91,6 @@ internal class GithubCommitServiceTest {
                 null,
                 untilTimeStamp,
                 "feature",
-                any(),
                 any()
             )
         } returns listOf(
@@ -103,8 +100,8 @@ internal class GithubCommitServiceTest {
             )
         )
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            untilTimeStamp = untilTimeStampZonedFormat,
+        val commits = githubActionsCommitService.getCommitsBetweenTimePeriod(
+            endTime = untilTimeStampZonedFormat,
             branch = "feature",
             pipeline = githubActionsPipeline
         )
@@ -121,12 +118,11 @@ internal class GithubCommitServiceTest {
                 sinceTimeStamp,
                 untilTimeStamp,
                 null,
-                any(),
                 any()
             )
         } returns null
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
+        val commits = githubActionsCommitService.getCommitsBetweenTimePeriod(
             sinceTimeStampZonedFormat,
             untilTimeStampZonedFormat,
             pipeline = githubActionsPipeline
@@ -144,13 +140,12 @@ internal class GithubCommitServiceTest {
                 sinceTimeStamp,
                 untilTimeStamp,
                 null,
-                any(),
                 any()
             )
         } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
 
         assertThrows(HttpServerErrorException::class.java) {
-            githubActionsCommitService.getCommitsBetweenBuilds(
+            githubActionsCommitService.getCommitsBetweenTimePeriod(
                 sinceTimeStampZonedFormat,
                 untilTimeStampZonedFormat,
                 pipeline = githubActionsPipeline

@@ -193,7 +193,7 @@ class GithubActionsPipelineService(
         val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
-        val allCommits = githubActionsCommitService.getCommitsBetweenBuilds(
+        val allCommits = githubActionsCommitService.getCommitsBetweenTimePeriod(
             previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
             latestTimestampInRuns,
             branch = lastRun.branch,
