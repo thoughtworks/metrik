@@ -10,7 +10,7 @@ import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
-import metrik.project.infrastructure.github.GithubClient
+import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -20,13 +20,15 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.streams.toList
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
     private val githubCommitService: GithubCommitService,
+    private val githubRunService: GithubRunService,
     private val buildRepository: BuildRepository,
     private val githubBuildConverter: GithubBuildConverter,
-    private val githubClient: GithubClient
+    private val githubFeignClient: GithubFeignClient
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
@@ -34,7 +36,9 @@ class GithubActionsPipelineService(
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
 
         try {
-            githubClient.verifyGithubUrl(pipeline.url, pipeline.credential)
+            val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
+            val token = getToken(pipeline.credential)
+            githubFeignClient.retrieveMultipleRuns(token, owner, repo)
         } catch (ex: FeignServerException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
         } catch (ex: FeignClientException) {
@@ -65,10 +69,13 @@ class GithubActionsPipelineService(
                 else -> latestBuild.timestamp
             }
 
-            val newRuns = getNewRuns(pipeline, latestTimestamp)
+            val newRuns = githubRunService.syncRunsByPage(pipeline, latestTimestamp)
 
-            val inProgressBuilds = buildRepository.getInProgressBuilds(pipeline.id)
-            val inProgressRuns = getInProgressRuns(pipeline, inProgressBuilds)
+            val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
+                .parallelStream()
+                .map { githubRunService.syncSingleRun(pipeline, it.url) }
+                .toList()
+                .filterNotNull()
 
             newRuns.addAll(inProgressRuns)
 
@@ -78,11 +85,11 @@ class GithubActionsPipelineService(
                 "For Github Actions pipeline [${pipeline.id}] - " + "[$totalBuildNumbersToSync] need to be synced"
             )
 
-            val mapToCommits = mapCommitToRun(pipeline, newRuns)
+            val branchRunCommitsMap = mapCommitToRun(pipeline, newRuns)
 
             val builds = newRuns.map {
 
-                val commits: List<Commit> = mapToCommits[it.branch]!![it]!!
+                val commits: List<Commit> = branchRunCommitsMap[it.branch]!![it]!!
                 val convertedBuild = githubBuildConverter.convertToBuild(it, pipeline.id, commits)
 
                 buildRepository.save(convertedBuild)
@@ -112,38 +119,6 @@ class GithubActionsPipelineService(
         }
     }
 
-    fun getNewRuns(
-        pipeline: Pipeline,
-        latestTimestamp: Long,
-        maxPerPage: Int = defaultMaxPerPage
-    ): MutableList<GithubActionsRun> {
-        var ifRetrieving = true
-        var pageIndex = 1
-
-        val totalRuns = mutableListOf<GithubActionsRun>()
-
-        while (ifRetrieving) {
-
-            logger.info(
-                "Get Github Runs - " +
-                        "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
-            )
-
-            val runs = githubClient.retrieveMultipleRuns(
-                pipeline.url, pipeline.credential, maxPerPage, pageIndex
-            ) ?: break
-
-            val runsNeedToSync = runs.filter { it.createdTimestamp.toTimestamp() > latestTimestamp }
-
-            ifRetrieving = runsNeedToSync.size == maxPerPage
-
-            totalRuns.addAll(runsNeedToSync)
-
-            pageIndex++
-        }
-        return totalRuns
-    }
-
     fun mapCommitToRun(
         pipeline: Pipeline,
         runs: MutableList<GithubActionsRun>
@@ -152,30 +127,6 @@ class GithubActionsPipelineService(
         runs.groupBy { it.branch }
             .forEach { (branch, run) -> branchCommitsMap[branch] = mapRunToCommits(pipeline, run) }
         return branchCommitsMap.toMap()
-    }
-
-    private fun getInProgressRuns(
-        pipeline: Pipeline,
-        builds: List<Build>,
-    ): MutableList<GithubActionsRun> {
-        val runs = mutableListOf<GithubActionsRun>()
-
-        builds.forEach { build ->
-            run {
-                val runId = URL(build.url).path.split("/").last()
-
-                logger.info(
-                    "Get Github Runs - " +
-                            "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
-                )
-
-                val run = githubClient.retrieveSingleRun(pipeline.url, pipeline.credential, runId)
-
-                run?.also { runs.add(it) }
-            }
-        }
-
-        return runs
     }
 
     private fun mapRunToCommits(pipeline: Pipeline, runs: List<GithubActionsRun>): Map<GithubActionsRun, List<Commit>> {
@@ -194,7 +145,7 @@ class GithubActionsPipelineService(
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
         val allCommits = githubCommitService.getCommitsBetweenTimePeriod(
-            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS)?.toTimestamp()?:0,
+            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS)?.toTimestamp() ?: 0,
             latestTimestampInRuns.toTimestamp(),
             branch = lastRun.branch,
             pipeline = pipeline,
@@ -225,7 +176,17 @@ class GithubActionsPipelineService(
     }
 
     private companion object {
-        const val defaultMaxPerPage = 100
         const val COMMIT_OFFSET: Long = 1
+        const val ownerIndex = 2
+        const val tokenPrefix = "Bearer"
+    }
+
+    private fun getToken(token: String) = "$tokenPrefix $token"
+
+    private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
+        val components = URL(url).path.split("/")
+        val owner = components[components.size - ownerIndex]
+        val repo = components.last()
+        return Pair(owner, repo)
     }
 }
