@@ -78,7 +78,7 @@ The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-k
    Or, you can find all history versions from our [image repository](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
 3. Run the container locally via the following command:
 ``` bash
-docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:latest
 ```
 *⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.*  
 *⚠️ The `latest` tag matches the most recent version of this repository. Thus using public.ecr.aws/j2s5d3z8/4-key-metrics:latest or public.ecr.aws/j2s5d3z8/4-key-metrics will ensure you are running the most up to date version of this image.*  
