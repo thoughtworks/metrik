@@ -3,7 +3,6 @@ package metrik.project.domain.repository
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
 import metrik.project.domain.service.githubactions.GithubCommit
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -13,12 +12,12 @@ import org.springframework.stereotype.Repository
 @Repository
 class CommitRepository {
     companion object {
-        private const val PROP_PIPELINEID: String = "pipelineId"
+        private const val PROP_PIPELINE_ID: String = "pipelineId"
+        private const val PROP_COMMIT_ID = "commitId"
     }
 
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
-    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     private val collectionName = "commit"
 
@@ -27,7 +26,7 @@ class CommitRepository {
         val query = Query()
         query.addCriteria(
             Criteria
-                .where(PROP_PIPELINEID).`is`(pipelineId)
+                .where(PROP_PIPELINE_ID).`is`(pipelineId)
         )
         val commits = mongoTemplate.find(
             query,
@@ -44,7 +43,7 @@ class CommitRepository {
     fun findByTimePeriod(pipelineId: String, startTimestamp: Long, endTimestamp: Long): List<Commit> {
         val query = Query().addCriteria(
             Criteria
-                .where(PROP_PIPELINEID).`is`(pipelineId)
+                .where(PROP_PIPELINE_ID).`is`(pipelineId)
         )
         val commits = mongoTemplate.find(
             query,
@@ -55,11 +54,12 @@ class CommitRepository {
         return commits.sortedBy { it.timestamp }.filter { it.timestamp in startTimestamp..endTimestamp }
     }
 
+
     fun hasDuplication(commits: List<GithubCommit>): Boolean {
         return commits.any {
             val query = Query().addCriteria(
                 Criteria
-                    .where("commitId").`is`(it.id)
+                    .where(PROP_COMMIT_ID).`is`(it.id)
             )
             mongoTemplate.findOne(query, Commit::class.java, collectionName) != null
         }
@@ -72,11 +72,11 @@ class CommitRepository {
     }
 
 
-    fun save(pipelineId: String, commit: Commit) {
+    private fun save(pipelineId: String, commit: Commit) {
         val query = Query().addCriteria(
             Criteria
-                .where(PROP_PIPELINEID).`is`(pipelineId)
-                .and("commitId").`is`(commit.commitId)
+                .where(PROP_PIPELINE_ID).`is`(pipelineId)
+                .and(PROP_COMMIT_ID).`is`(commit.commitId)
         )
         val found = mongoTemplate.findAndReplace(
             query,
