@@ -15,7 +15,7 @@ import java.net.URI
     url = "https://this-is-a-placeholder.com"
 )
 interface JenkinsFeignClient {
-    @GetMapping(path = arrayOf("/wfapi/"))
+    @GetMapping(path = ["/wfapi/"])
     @RequestLine("/wfapi/")
     fun verifyJenkinsUrl(
         baseUrl: URI,
@@ -23,9 +23,7 @@ interface JenkinsFeignClient {
     )
 
     @GetMapping(
-        path = arrayOf(
-            "api/json"
-        ),
+        path = ["api/json"],
     )
     fun retrieveBuildSummariesFromJenkins(
         baseUrl: URI,
@@ -37,7 +35,7 @@ interface JenkinsFeignClient {
 
     ): BuildSummaryCollectionDTO
 
-    @GetMapping(path = arrayOf("{buildSummaryNumber}/wfapi/describe"))
+    @GetMapping(path = ["{buildSummaryNumber}/wfapi/describe"])
     fun retrieveBuildDetailsFromJenkins(
         baseUrl: URI,
         @RequestHeader("Authorization") authorizationHeader: String,
