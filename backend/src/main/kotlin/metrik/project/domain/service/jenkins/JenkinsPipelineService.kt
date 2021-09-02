@@ -10,7 +10,6 @@ import metrik.project.infrastructure.jenkins.JenkinsClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
@@ -22,32 +21,16 @@ import kotlin.streams.toList
 
 @Service("jenkinsPipelineService")
 class JenkinsPipelineService(
-//    @Autowired private var restTemplate: RestTemplate,
     @Autowired private var buildRepository: BuildRepository,
     @Autowired private var jenkinsClient: JenkinsClient
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
-//        val headers = setAuthHeader(pipeline.username!!, pipeline.credential)
-//        val entity = HttpEntity<String>("", headers)
         val headers = getAuth(pipeline.username!!, pipeline.credential)
         val url = URI.create(pipeline.url)
         try {
             jenkinsClient.verifyJenkinsUrl(url, headers)
-//            val response = restTemplate.exchange<String>(
-//                "${pipeline.url}/wfapi/", HttpMethod.GET, entity
-//            )
-//            if (!response.statusCode.is2xxSuccessful) {
-//                logger.error(
-//                    """
-//                    Failed to verify pipeline config for [${pipeline.url}]
-//                    statusCode: ${response.statusCode}
-//                    responseBody: ${response.body}
-//                    """.trimIndent()
-//                )
-//                throw PipelineConfigVerifyException(response.body!!)
-//            }
         } catch (ex: HttpServerErrorException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
         } catch (ex: HttpClientErrorException) {
@@ -140,15 +123,10 @@ class JenkinsPipelineService(
         baseUrl: String,
         buildSummary: BuildSummaryDTO
     ): BuildDetailsDTO {
-//        val headers = setAuthHeader(username, credential)
-//        val entity = HttpEntity<String>(headers)
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
         val buildDetail =
             jenkinsClient.retrieveBuildDetailsFromJenkins(url, headers, buildSummary.number)
-//        val buildDetailResponse: ResponseEntity<BuildDetailsDTO> =
-//            restTemplate.exchange("$baseUrl/${buildSummary.number}/wfapi/describe", HttpMethod.GET, entity)
-//        return buildDetailResponse.body!!
         return buildDetail
     }
 
@@ -157,29 +135,10 @@ class JenkinsPipelineService(
         credential: String,
         baseUrl: String
     ): List<BuildSummaryDTO> {
-//        val headers = setAuthHeader(username, credential)
-//        val entity = HttpEntity<String>(headers)
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
         val allBuilds = jenkinsClient.retrieveBuildSummariesFromJenkins(url, headers)
-//        val allBuildsResponse: ResponseEntity<BuildSummaryCollectionDTO> =
-//            restTemplate.exchange(
-//                "$baseUrl/api/json?tree=allBuilds[building,number," +
-//                        "result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]",
-//                HttpMethod.GET,
-//                entity
-//            )
-//        return allBuildsResponse.body!!.allBuilds
         return allBuilds.allBuilds
-    }
-
-    private fun setAuthHeader(username: String, credential: String): HttpHeaders {
-        val headers = HttpHeaders()
-        val auth = "$username:$credential"
-        val encodedAuth = Base64.getEncoder().encodeToString(auth.toByteArray(Charset.forName("UTF-8")))
-        val authHeader = "Basic $encodedAuth"
-        headers.set("Authorization", authHeader)
-        return headers
     }
 
     private fun getAuth(username: String, credential: String): String {
@@ -188,5 +147,4 @@ class JenkinsPipelineService(
         val authHeader = "Basic $encodedAuth"
         return authHeader
     }
-
 }
