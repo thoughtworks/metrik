@@ -1,5 +1,6 @@
 package metrik.project
 
+import io.mockk.mockk
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
@@ -14,7 +15,6 @@ import metrik.project.rest.vo.request.GithubActionsVerificationRequest
 import metrik.project.rest.vo.request.JenkinsPipelineRequest
 import metrik.project.rest.vo.request.JenkinsVerificationRequest
 import metrik.project.rest.vo.response.SyncProgress
-import org.mockito.kotlin.mock
 import java.time.ZonedDateTime
 
 const val pipelineId = "pipelineId"
@@ -25,7 +25,7 @@ const val credential = "credential"
 const val url = "http://localhost:80"
 const val userInputURL = "https://api.github.com/repos/test_project/test_repo"
 const val branch = "master"
-val mockEmitCb = mock<(SyncProgress) -> Unit>()
+val mockEmitCb = mockk<(SyncProgress) -> Unit>()
 const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
 const val futureTimeStamp: Long = 1639185260779

@@ -1,15 +1,14 @@
 package metrik.project.rest
 
-import metrik.MockitoHelper.anyObject
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.justRun
 import metrik.exception.ApplicationException
 import metrik.project.rest.applicationservice.SynchronizationApplicationService
 import org.apache.logging.log4j.util.Strings
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
-import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE
@@ -25,7 +24,7 @@ internal class SynchronizationControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockkBean
     private lateinit var synchronizationApplicationService: SynchronizationApplicationService
 
     @Test
@@ -33,7 +32,7 @@ internal class SynchronizationControllerTest {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(projectId)).thenReturn(updatedTimestamp)
+        every { synchronizationApplicationService.synchronize(projectId) } returns updatedTimestamp
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -45,7 +44,7 @@ internal class SynchronizationControllerTest {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(eq(projectId), anyObject())).thenReturn(updatedTimestamp)
+        every { synchronizationApplicationService.synchronize(projectId, any()) } returns updatedTimestamp
 
         val mvcResult: MvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/sse-sync"))
             .andExpect(MockMvcResultMatchers.request().asyncStarted())
@@ -61,7 +60,7 @@ internal class SynchronizationControllerTest {
     fun `should return 500 when update all build data failed`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(projectId)).thenReturn(null)
+        justRun { synchronizationApplicationService.synchronize(projectId) }
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().is5xxServerError)
@@ -72,7 +71,7 @@ internal class SynchronizationControllerTest {
         val updatedTimestamp: Long = 12345
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenReturn(updatedTimestamp)
+        every { synchronizationApplicationService.getLastSyncTimestamp(projectId) } returns updatedTimestamp
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization/"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -83,7 +82,7 @@ internal class SynchronizationControllerTest {
     fun `should return null when last sync timestamp not exist`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenReturn(null)
+        every { synchronizationApplicationService.getLastSyncTimestamp(projectId) } returns null
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -94,11 +93,9 @@ internal class SynchronizationControllerTest {
     fun `should return 404 given project id not exist when synchronization`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.synchronize(projectId)).thenThrow(
-            ApplicationException(
-                HttpStatus.NOT_FOUND,
-                Strings.EMPTY
-            )
+        every { synchronizationApplicationService.synchronize(projectId) } throws ApplicationException(
+            HttpStatus.NOT_FOUND,
+            Strings.EMPTY
         )
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/project/$projectId/synchronization"))
@@ -109,11 +106,9 @@ internal class SynchronizationControllerTest {
     fun `should return 404 given project id not exist when get synchronization record`() {
         val projectId = "fake-project-id"
 
-        `when`(synchronizationApplicationService.getLastSyncTimestamp(projectId)).thenThrow(
-            ApplicationException(
-                HttpStatus.NOT_FOUND,
-                Strings.EMPTY
-            )
+        every { synchronizationApplicationService.getLastSyncTimestamp(projectId) } throws ApplicationException(
+            HttpStatus.NOT_FOUND,
+            Strings.EMPTY
         )
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/project/$projectId/synchronization"))

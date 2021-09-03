@@ -1,7 +1,9 @@
 package metrik.project.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import metrik.MockitoHelper.anyObject
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.justRun
 import metrik.project.buildJenkinsPipelineRequest
 import metrik.project.rest.applicationservice.ProjectApplicationService
 import metrik.project.rest.vo.request.BambooPipelineRequest
@@ -10,13 +12,9 @@ import metrik.project.rest.vo.response.PipelineResponse
 import metrik.project.rest.vo.response.ProjectDetailResponse
 import metrik.project.rest.vo.response.ProjectResponse
 import metrik.project.rest.vo.response.ProjectSummaryResponse
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -28,32 +26,25 @@ internal class ProjectControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockkBean
     private lateinit var projectApplicationService: ProjectApplicationService
 
     private val projectId = "projectId"
     private val pipelineId = "pipelineId"
     private val projectName = "projectName"
     private val pipelineName = "pipelineName"
-    private lateinit var projectDetailsResponse: ProjectDetailResponse
-
-    @BeforeEach
-    fun setUp() {
-        projectDetailsResponse = ProjectDetailResponse(
-            projectId,
-            projectName,
-            pipelines = listOf(PipelineResponse(pipelineId, pipelineName))
-        )
-    }
+    private val projectDetailsResponse = ProjectDetailResponse(
+        projectId,
+        projectName,
+        pipelines = listOf(PipelineResponse(pipelineId, pipelineName))
+    )
 
     @Test
     fun `should get projects successfully `() {
-        `when`(projectApplicationService.getProjects()).thenReturn(
-            listOf(
-                ProjectResponse(
-                    projectId,
-                    projectName
-                )
+        every { projectApplicationService.getProjects() } returns listOf(
+            ProjectResponse(
+                projectId,
+                projectName
             )
         )
 
@@ -67,8 +58,7 @@ internal class ProjectControllerTest {
 
     @Test
     fun `should get project details successfully `() {
-
-        `when`(projectApplicationService.getProjectDetails(projectId)).thenReturn(projectDetailsResponse)
+        every { projectApplicationService.getProjectDetails(projectId) } returns projectDetailsResponse
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/project/$projectId")
@@ -83,11 +73,9 @@ internal class ProjectControllerTest {
     @Test
     fun `should create project and pipeline `() {
         val projectRequest = ProjectRequest(projectName, buildJenkinsPipelineRequest())
-        `when`(projectApplicationService.createProject(anyObject())).thenReturn(
-            ProjectSummaryResponse(
-                "fake-id",
-                "fake-name"
-            )
+        every { projectApplicationService.createProject(any()) } returns ProjectSummaryResponse(
+            "fake-id",
+            "fake-name"
         )
 
         mockMvc.perform(
@@ -109,11 +97,9 @@ internal class ProjectControllerTest {
                 url = "url"
             )
         )
-        `when`(projectApplicationService.createProject(anyObject())).thenReturn(
-            ProjectSummaryResponse(
-                "fake-id",
-                "fake-name"
-            )
+        every { projectApplicationService.createProject(any()) } returns ProjectSummaryResponse(
+            "fake-id",
+            "fake-name"
         )
 
         mockMvc.perform(
@@ -128,8 +114,9 @@ internal class ProjectControllerTest {
     @Test
     fun `should update project name `() {
         val projectNewName = "projectNewName"
-        `when`(projectApplicationService.updateProjectName(projectId, projectNewName)).thenReturn(
-            ProjectResponse(projectId, projectNewName)
+        every { projectApplicationService.updateProjectName(projectId, projectNewName) } returns ProjectResponse(
+            projectId,
+            projectNewName
         )
 
         mockMvc.perform(
@@ -141,7 +128,7 @@ internal class ProjectControllerTest {
 
     @Test
     fun `should delete project `() {
-        Mockito.doNothing().`when`(projectApplicationService).deleteProject(projectId)
+        justRun { projectApplicationService.deleteProject(projectId) }
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/project/$projectId")
                 .contentType(MediaType.APPLICATION_JSON)
