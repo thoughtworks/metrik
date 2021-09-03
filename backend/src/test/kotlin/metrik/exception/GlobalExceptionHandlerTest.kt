@@ -1,9 +1,9 @@
 package metrik.exception
 
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
@@ -55,7 +55,7 @@ internal class GlobalExceptionHandlerTest {
     @Test
     fun `should handle parameter illegal exception`() {
         val responseEntity = globalExceptionHandler.handleParamIllegalException(
-            Mockito.mock(MethodArgumentTypeMismatchException::class.java)
+            mockk<MethodArgumentTypeMismatchException>()
         )
 
         val errorResponse = responseEntity.body
@@ -68,7 +68,7 @@ internal class GlobalExceptionHandlerTest {
     @Test
     fun `should handle parse url index out of bound exception`() {
         val responseEntity = globalExceptionHandler.handleIndexOutOfBoundsException(
-            Mockito.mock(IndexOutOfBoundsException::class.java)
+            mockk<IndexOutOfBoundsException>()
         )
 
         val errorResponse = responseEntity.body
