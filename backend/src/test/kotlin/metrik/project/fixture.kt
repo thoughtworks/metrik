@@ -25,7 +25,7 @@ const val credential = "credential"
 const val url = "http://localhost:80"
 const val userInputURL = "https://api.github.com/repos/test_project/test_repo"
 const val branch = "master"
-val mockEmitCb = mockk<(SyncProgress) -> Unit>()
+val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
 const val futureTimeStamp: Long = 1639185260779
