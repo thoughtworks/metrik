@@ -3,165 +3,181 @@ package metrik.project.domain.service.githubactions
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
-import metrik.project.commit
+import io.mockk.verify
+import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
+import metrik.project.domain.repository.CommitRepository
 import metrik.project.githubActionsPipeline
-import metrik.project.infrastructure.github.GithubClient
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
+import metrik.project.infrastructure.github.feign.GithubFeignClient
+import metrik.project.infrastructure.github.feign.response.CommitResponse
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpServerErrorException
 import java.time.ZonedDateTime
 
 @ExtendWith(MockKExtension::class)
 internal class GithubCommitServiceTest {
 
     @InjectMockKs
-    private lateinit var githubActionsCommitService: GithubActionsCommitService
+    private lateinit var githubCommitService: GithubCommitService
 
     @MockK(relaxed = true)
-    private lateinit var githubClient: GithubClient
+    private lateinit var githubFeignClient: GithubFeignClient
 
-    @SpyK
-    private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
+    @MockK(relaxed = true)
+    private lateinit var commitRepository: CommitRepository
 
     @Test
-    fun `should retrieve commits between builds successfully`() {
+    internal fun `should retrieve commit from GitHub given no records in DB already`() {
         every {
-            githubClient.retrieveCommits(
+            commitRepository.findByTimePeriod(
+                githubActionsPipeline.id,
+                startTimeStamp,
+                endTimeStamp
+            )
+        } returns emptyList()
+
+        every {
+            githubFeignClient.retrieveCommits(
+                authorizationHeader = any(),
+                owner = any(),
+                repo = any(),
+                since = startTimeStamp.toString(),
+                until = endTimeStamp.toString(),
+                branch = any(),
+                perPage = any(),
+                pageIndex = 1
+            )
+        } returns listOf(
+            CommitResponse(
+                "test sha", CommitResponse.CommitInfo(
+                    CommitResponse.CommitInfo.Committer(
+                        ZonedDateTime.now()
+                    )
+                )
+            )
+        )
+
+        val commitsBetweenTimePeriod =
+            githubCommitService.getCommitsBetweenTimePeriod(startTimeStamp, endTimeStamp, null, githubActionsPipeline)
+
+        assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
+        assertThat(commitsBetweenTimePeriod[0].pipelineId).isEqualTo(githubActionsPipeline.id)
+        assertThat(commitsBetweenTimePeriod[0].commitId).isEqualTo("test sha")
+    }
+
+    @Test
+    internal fun `should return records in DB without calling GitHub API given commits in DB already`() {
+        every { commitRepository.getTheLatestCommit(githubActionsPipeline.id) } returns Commit(timestamp = endTimeStamp + 1)
+        every {
+            commitRepository.findByTimePeriod(
+                githubActionsPipeline.id,
+                startTimeStamp,
+                endTimeStamp
+            )
+        } returns listOf(Commit())
+
+        val commitsBetweenTimePeriod =
+            githubCommitService.getCommitsBetweenTimePeriod(startTimeStamp, endTimeStamp, null, githubActionsPipeline)
+
+        verify(exactly = 0) {
+            githubFeignClient.retrieveCommits(
                 any(),
                 any(),
-                sinceTimeStamp,
-                untilTimeStamp,
-                null,
+                any(),
+                any(),
+                any(),
+                any(),
                 any(),
                 any()
             )
-        } returns listOf(
-            GithubCommit(
-                "3986a82cf9f852e9938f7e7984d1e95742854baa",
-                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
-            )
-        )
-
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            sinceTimeStampZonedFormat,
-            untilTimeStampZonedFormat,
-            pipeline = githubActionsPipeline
-        )
-
-        assertEquals(listOf(commit), commits)
+        }
+        assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
     }
+
 
     @Test
     fun `should get all commits given since timestamp is not provided`() {
         every {
-            githubClient.retrieveCommits(
-                any(),
-                any(),
-                null,
-                untilTimeStamp,
-                null,
-                any(),
-                any()
+            commitRepository.findByTimePeriod(
+                githubActionsPipeline.id,
+                startTimeStamp,
+                endTimeStamp
+            )
+        } returns emptyList()
+
+        every {
+            githubFeignClient.retrieveCommits(
+                authorizationHeader = any(), owner = any(), repo = any(), since = null, until = endTimeStamp.toString(),
+                branch = any(), perPage = any(), pageIndex = 1
             )
         } returns listOf(
-            GithubCommit(
-                "3986a82cf9f852e9938f7e7984d1e95742854baa",
-                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
+            CommitResponse(
+                "test sha", CommitResponse.CommitInfo(
+                    CommitResponse.CommitInfo.Committer(
+                        ZonedDateTime.now()
+                    )
+                )
             )
         )
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            untilTimeStamp = untilTimeStampZonedFormat,
-            pipeline = githubActionsPipeline
-        )
+        val commitsBetweenTimePeriod =
+            githubCommitService.getCommitsBetweenTimePeriod(0, endTimeStamp, null, githubActionsPipeline)
 
-        assertEquals(listOf(commit), commits)
+        assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
+        assertThat(commitsBetweenTimePeriod[0].pipelineId).isEqualTo(githubActionsPipeline.id)
+        assertThat(commitsBetweenTimePeriod[0].commitId).isEqualTo("test sha")
     }
 
     @Test
     fun `should get all commits in assigned branch`() {
         every {
-            githubClient.retrieveCommits(
-                any(),
-                any(),
-                null,
-                untilTimeStamp,
-                "feature",
-                any(),
-                any()
+            commitRepository.findByTimePeriod(
+                githubActionsPipeline.id,
+                startTimeStamp,
+                endTimeStamp
+            )
+        } returns emptyList()
+
+        every {
+            githubFeignClient.retrieveCommits(
+                authorizationHeader = any(),
+                owner = any(),
+                repo = any(),
+                since = any(),
+                until = endTimeStamp.toString(),
+                branch = "master",
+                perPage = any(),
+                pageIndex = 1
             )
         } returns listOf(
-            GithubCommit(
-                "3986a82cf9f852e9938f7e7984d1e95742854baa",
-                ZonedDateTime.parse("2021-08-11T01:46:31Z[UTC]")
+            CommitResponse(
+                "test sha", CommitResponse.CommitInfo(
+                    CommitResponse.CommitInfo.Committer(
+                        ZonedDateTime.now()
+                    )
+                )
             )
         )
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            untilTimeStamp = untilTimeStampZonedFormat,
-            branch = "feature",
-            pipeline = githubActionsPipeline
-        )
-
-        assertEquals(listOf(commit), commits)
-    }
-
-    @Test
-    fun `should stop calling next page api when the current api call throw not found exception`() {
-        every {
-            githubClient.retrieveCommits(
-                any(),
-                any(),
-                sinceTimeStamp,
-                untilTimeStamp,
-                null,
-                any(),
-                any()
+        val commitsBetweenTimePeriod =
+            githubCommitService.getCommitsBetweenTimePeriod(
+                startTimeStamp,
+                endTimeStamp,
+                "master",
+                githubActionsPipeline
             )
-        } returns null
 
-        val commits = githubActionsCommitService.getCommitsBetweenBuilds(
-            sinceTimeStampZonedFormat,
-            untilTimeStampZonedFormat,
-            pipeline = githubActionsPipeline
-        )
-
-        assertEquals(emptyList<Commit>(), commits)
-    }
-
-    @Test
-    fun `should throw exception when the server responds 500 at any time`() {
-        every {
-            githubClient.retrieveCommits(
-                any(),
-                any(),
-                sinceTimeStamp,
-                untilTimeStamp,
-                null,
-                any(),
-                any()
-            )
-        } throws HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)
-
-        assertThrows(HttpServerErrorException::class.java) {
-            githubActionsCommitService.getCommitsBetweenBuilds(
-                sinceTimeStampZonedFormat,
-                untilTimeStampZonedFormat,
-                pipeline = githubActionsPipeline
-            )
-        }
+        assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
+        assertThat(commitsBetweenTimePeriod[0].pipelineId).isEqualTo(githubActionsPipeline.id)
+        assertThat(commitsBetweenTimePeriod[0].commitId).isEqualTo("test sha")
     }
 
     private companion object {
-        const val sinceTimeStamp = "2021-08-10T01:46:31Z"
-        const val untilTimeStamp = "2021-08-11T01:46:31Z"
-        val sinceTimeStampZonedFormat: ZonedDateTime = ZonedDateTime.parse(sinceTimeStamp)!!
-        val untilTimeStampZonedFormat: ZonedDateTime = ZonedDateTime.parse(untilTimeStamp)!!
+        const val startTime = "2021-08-10T01:46:31Z"
+        const val endTime = "2021-08-11T01:46:31Z"
+        val startTimeStamp = ZonedDateTime.parse(startTime)!!.toTimestamp()
+        val endTimeStamp = ZonedDateTime.parse(endTime)!!.toTimestamp()
     }
 }

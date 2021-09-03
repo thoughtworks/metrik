@@ -168,7 +168,7 @@ class GithubClientTest {
             )
         )
 
-        val commits = githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex)
+        val commits = githubClient.retrieveCommits(url, token, pageIndex = pageIndex)
 
         assertEquals(
             commits,
@@ -218,7 +218,7 @@ class GithubClientTest {
             buildFeignResponse(404)
         )
 
-        assertNull(githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex))
+        assertNull(githubClient.retrieveCommits(url, token, pageIndex = pageIndex))
         assertNull(githubClient.retrieveSingleRun(url, token, runId))
         assertNull(githubClient.retrieveMultipleRuns(url, token, perPage, pageIndex))
     }
@@ -249,7 +249,7 @@ class GithubClientTest {
         assertThrows(
             BadRequest::class.java
         ) {
-            githubClient.retrieveCommits(url, token, perPage = perPage, pageIndex = pageIndex)
+            githubClient.retrieveCommits(url, token, pageIndex = pageIndex)
         }
         assertThrows(
             InternalServerError::class.java

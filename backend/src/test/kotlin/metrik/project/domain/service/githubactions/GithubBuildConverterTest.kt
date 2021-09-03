@@ -48,15 +48,6 @@ internal class GithubBuildConverterTest {
         assertEquals(build, githubBuildConverter.convertToBuild(run, pipelineId, commits))
     }
 
-    @Test
-    fun `should successfully convert GithubCommit to commit`() {
-        val githubCommit = GithubCommit(
-            "12345",
-            ZonedDateTime.parse("2021-08-17T12:23:25Z")
-        )
-
-        assertEquals(commit, githubBuildConverter.convertToCommit(githubCommit, pipelineId))
-    }
 
     private companion object {
         val run = GithubActionsRun(

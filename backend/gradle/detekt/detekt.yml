@@ -572,7 +572,7 @@ style:
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**', '**/LeadTimeForChangeCalculator**', '**/BuildRepository**', '**/apiTest/**' ]
     ignoreNumbers: [ '-1', '0', '1', '2' ]
     ignoreHashCodeFunction: true
-    ignorePropertyDeclaration: false
+    ignorePropertyDeclaration: true
     ignoreLocalVariableDeclaration: false
     ignoreConstantDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true

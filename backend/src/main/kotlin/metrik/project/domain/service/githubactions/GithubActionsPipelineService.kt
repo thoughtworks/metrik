@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
-    private val githubActionsCommitService: GithubActionsCommitService,
+    private val githubCommitService: GithubCommitService,
     private val buildRepository: BuildRepository,
     private val githubBuildConverter: GithubBuildConverter,
     private val githubClient: GithubClient
@@ -193,9 +193,9 @@ class GithubActionsPipelineService(
         val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
-        val allCommits = githubActionsCommitService.getCommitsBetweenBuilds(
-            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
-            latestTimestampInRuns,
+        val allCommits = githubCommitService.getCommitsBetweenTimePeriod(
+            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS)?.toTimestamp()?:0,
+            latestTimestampInRuns.toTimestamp(),
             branch = lastRun.branch,
             pipeline = pipeline,
         )

@@ -61,7 +61,7 @@
 产品现在支持/计划支持的CD工具清单
 - [x] Jenkins
 - [x] Bamboo
-- [ ] Github Actions
+- [x] Github Actions
 - [ ] CircleCI
 
   ...以及更多即将集成的产品
@@ -81,7 +81,7 @@
    或者，你可以从我们的[镜像库]中找到所有的历史版本(https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
 3. 通过以下命令在本地运行该容器：
 ``` bash
-docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:latest
 ```
 *⚠️ 我们使用80端口来访问该应用程序。如果80端口被你机器上运行的其他应用程序占用，你可以切换到任何其他端口。  
 *⚠️ `latest`标签匹配该仓库的最新版本。因此，使用 public.ecr.aws/j2s5d3z8/4-key-metrics:latest 或 public.ecr.aws/j2s5d3z8/4-key-metrics 将确保你运行的是这个镜像的最新版本*。

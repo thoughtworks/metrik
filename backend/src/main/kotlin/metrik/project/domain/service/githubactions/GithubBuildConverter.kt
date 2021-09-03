@@ -54,19 +54,4 @@ class GithubBuildConverter {
 
         return build
     }
-
-    fun convertToCommit(commit: GithubCommit, pipelineId: String): Commit {
-        logger.debug(
-            "Github Actions converting: Started converting CommitsDTO [$this] for pipeline [$pipelineId]"
-        )
-
-        val timestamp = commit.timestamp
-        val commitBuild = Commit(commit.id, timestamp.toTimestamp(), timestamp.toString())
-
-        logger.debug(
-            "Github Actions converting: Commit converted result: [$commitBuild]"
-        )
-
-        return commitBuild
-    }
 }
