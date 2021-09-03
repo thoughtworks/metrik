@@ -1,5 +1,6 @@
 package metrik.project.infrastructure.jenkins
 
+import feign.FeignException
 import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
 import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
 import metrik.project.infrastructure.jenkins.feign.JenkinsFeignClient
@@ -20,17 +21,25 @@ class JenkinsClient(
     fun retrieveBuildSummariesFromJenkins(
         url: URI,
         token: String
-    ): BuildSummaryCollectionDTO {
-        return jenkinsFeignClient.retrieveBuildSummariesFromJenkins(url, token)
-    }
+    ): BuildSummaryCollectionDTO? =
+        withApplicationException {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(url, token)
+        }
+
 
     fun retrieveBuildDetailsFromJenkins(
         url: URI,
         token: String,
         buildSummaryNumber: Int
-    ): BuildDetailsDTO {
-        return jenkinsFeignClient.retrieveBuildDetailsFromJenkins(
-            url, token, buildSummaryNumber
-        )
+    ): BuildDetailsDTO? = withApplicationException {
+        jenkinsFeignClient.retrieveBuildDetailsFromJenkins(url, token, buildSummaryNumber)
     }
+
+
+    private fun <T> withApplicationException(action: () -> T): T? =
+        try {
+            action()
+        } catch (clientErrorException: FeignException.NotFound) {
+            null
+        }
 }

@@ -125,9 +125,7 @@ class JenkinsPipelineService(
     ): BuildDetailsDTO {
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
-        val buildDetail =
-            jenkinsClient.retrieveBuildDetailsFromJenkins(url, headers, buildSummary.number)
-        return buildDetail
+        return jenkinsClient.retrieveBuildDetailsFromJenkins(url, headers, buildSummary.number)!!
     }
 
     private fun getBuildSummariesFromJenkins(
@@ -137,14 +135,12 @@ class JenkinsPipelineService(
     ): List<BuildSummaryDTO> {
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
-        val allBuilds = jenkinsClient.retrieveBuildSummariesFromJenkins(url, headers)
-        return allBuilds.allBuilds
+        return jenkinsClient.retrieveBuildSummariesFromJenkins(url, headers)!!.allBuilds
     }
 
     private fun getAuth(username: String, credential: String): String {
         val auth = "$username:$credential"
         val encodedAuth = Base64.getEncoder().encodeToString(auth.toByteArray(Charset.forName("UTF-8")))
-        val authHeader = "Basic $encodedAuth"
-        return authHeader
+        return "Basic $encodedAuth"
     }
 }
