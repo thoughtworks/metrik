@@ -45,11 +45,11 @@ internal class JenkinsPipelineServiceTest {
     @MockkBean(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
+    private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
+
     private val objectMapper = jacksonObjectMapper()
 
     private lateinit var mockServer: MockRestServiceServer
-
-    private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 
     private val pipelineId = "fake pipeline"
 

@@ -92,7 +92,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("io.rest-assured:rest-assured:4.4.0")
     testImplementation("io.rest-assured:json-path:4.4.0")
@@ -154,7 +153,6 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 apply(from = "gradle/git-hooks/install-git-hooks.gradle")
 apply(from = "gradle/jacoco/jacoco.gradle")
-
 
 // ktlint
 val outputDir = "${project.buildDir}/reports/ktlint/"
