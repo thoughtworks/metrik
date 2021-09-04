@@ -80,13 +80,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation("org.mapstruct:mapstruct:1.4.1.Final")
 
     configurations.compile {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
 
-    kapt("org.mapstruct:mapstruct-processor:1.4.1.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")

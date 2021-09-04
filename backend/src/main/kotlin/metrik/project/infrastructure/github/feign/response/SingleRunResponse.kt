@@ -2,6 +2,7 @@ package metrik.project.infrastructure.github.feign.response
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import metrik.project.domain.service.githubactions.GithubActionsRun
 import org.apache.logging.log4j.util.Strings
 import java.time.ZonedDateTime
 
@@ -22,4 +23,17 @@ data class SingleRunResponse(
         val id: String = Strings.EMPTY,
         val timestamp: ZonedDateTime = ZonedDateTime.now()
     )
+
+    fun toGithubActionsRun(): GithubActionsRun =
+        GithubActionsRun(
+            id = id,
+            name = name,
+            status = status,
+            conclusion = conclusion,
+            url = url,
+            branch = headBranch,
+            commitTimeStamp = headCommit.timestamp,
+            createdTimestamp = createdAt,
+            updatedTimestamp = updatedAt
+        )
 }

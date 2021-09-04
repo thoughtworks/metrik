@@ -6,7 +6,6 @@ import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.CommitRepository
 import metrik.project.infrastructure.github.feign.GithubFeignClient
-import metrik.project.infrastructure.github.feign.mapper.GithubActionsRunMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -116,7 +115,7 @@ class GithubCommitService(
                 )
             }
         }
-        return commits?.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsCommit(it) } ?: listOf()
+        return commits?.map { it.toGithubCommit() } ?: listOf()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
