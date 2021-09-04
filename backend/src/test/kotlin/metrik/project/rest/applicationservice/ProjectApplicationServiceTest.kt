@@ -68,12 +68,14 @@ internal class ProjectApplicationServiceTest {
 
         assertEquals(projectDetailResponse.id, projectId)
         verify(exactly = 1) {
-            pipelineApplicationService.verifyPipelineConfiguration(withArg {
-                assertEquals(pipeline.url, it.url)
-                assertEquals(pipeline.username, it.username)
-                assertEquals(pipeline.credential, it.credential)
-                assertEquals(PipelineType.JENKINS, it.type)
-            })
+            pipelineApplicationService.verifyPipelineConfiguration(
+                withArg {
+                    assertEquals(pipeline.url, it.url)
+                    assertEquals(pipeline.username, it.username)
+                    assertEquals(pipeline.credential, it.credential)
+                    assertEquals(PipelineType.JENKINS, it.type)
+                }
+            )
         }
     }
 
