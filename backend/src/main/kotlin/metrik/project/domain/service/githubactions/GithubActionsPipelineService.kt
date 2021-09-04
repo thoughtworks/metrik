@@ -11,6 +11,7 @@ import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
 import metrik.project.infrastructure.github.feign.GithubFeignClient
+import metrik.project.infrastructure.github.feign.TokenContextHolder
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -28,7 +29,8 @@ class GithubActionsPipelineService(
     private val githubRunService: GithubRunService,
     private val buildRepository: BuildRepository,
     private val githubBuildConverter: GithubBuildConverter,
-    private val githubFeignClient: GithubFeignClient
+    private val githubFeignClient: GithubFeignClient,
+    private val threadLocal: TokenContextHolder
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
@@ -37,8 +39,8 @@ class GithubActionsPipelineService(
 
         try {
             val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
-            val token = getToken(pipeline.credential)
-            githubFeignClient.retrieveMultipleRuns(token, owner, repo)
+            threadLocal.holder.set(pipeline.credential)
+            githubFeignClient.retrieveMultipleRuns(owner, repo)
                 ?: throw PipelineConfigVerifyException("Verify failed")
         } catch (ex: FeignServerException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
@@ -58,6 +60,8 @@ class GithubActionsPipelineService(
     @Synchronized
     override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
         logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
+
+        threadLocal.holder.set(pipeline.credential)
 
         val progressCounter = AtomicInteger(0)
 

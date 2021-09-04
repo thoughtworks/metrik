@@ -29,19 +29,19 @@ internal class GithubRunServiceTest {
 
     @Test
     internal fun `should keep syncing runs until meet timestamp limitation`() {
-        every { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 1) } returns MultipleRunResponse(
+        every { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 1) } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 10, 0, 0, 0, 0, ZoneId.systemDefault())),
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault())),
             )
         )
-        every { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 2) } returns MultipleRunResponse(
+        every { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 2) } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 8, 0, 0, 0, 0, ZoneId.systemDefault())),
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 7, 0, 0, 0, 0, ZoneId.systemDefault())),
             )
         )
-        every { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 3) } returns MultipleRunResponse(
+        every { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 3) } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 6, 0, 0, 0, 0, ZoneId.systemDefault())),
             )
@@ -54,14 +54,14 @@ internal class GithubRunServiceTest {
         )
 
         assertThat(syncedRuns.size).isEqualTo(3)
-        verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 1) }
-        verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 2) }
-        verify(exactly = 0) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 3) }
+        verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 1) }
+        verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 2) }
+        verify(exactly = 0) { githubFeignClient.retrieveMultipleRuns(any(), any(), 2, 3) }
     }
 
     @Test
     internal fun `should sync single run`() {
-        every { githubFeignClient.retrieveSingleRun(any(), any(), any(), any()) } returns SingleRunResponse(id = 1)
+        every { githubFeignClient.retrieveSingleRun(any(), any(), any()) } returns SingleRunResponse(id = 1)
 
         val run = githubRunService.syncSingleRun(testPipeline, "https://test.com/123")
 

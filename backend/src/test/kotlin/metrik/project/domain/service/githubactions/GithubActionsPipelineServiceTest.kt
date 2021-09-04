@@ -24,6 +24,7 @@ import metrik.project.githubActionsBuild
 import metrik.project.githubActionsPipeline
 import metrik.project.githubActionsRun
 import metrik.project.infrastructure.github.feign.GithubFeignClient
+import metrik.project.infrastructure.github.feign.TokenContextHolder
 import metrik.project.mockEmitCb
 import metrik.project.pipelineId
 import metrik.project.previousTimeStamp
@@ -51,6 +52,9 @@ internal class GithubActionsPipelineServiceTest {
 
     @MockK(relaxed = true)
     private lateinit var githubFeignClient: GithubFeignClient
+
+    @MockK(relaxed = true)
+    private lateinit var threadLocal: TokenContextHolder
 
     @SpyK
     private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
