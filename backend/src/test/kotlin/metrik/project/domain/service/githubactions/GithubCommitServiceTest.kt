@@ -40,7 +40,6 @@ internal class GithubCommitServiceTest {
 
         every {
             githubFeignClient.retrieveCommits(
-                authorizationHeader = any(),
                 owner = any(),
                 repo = any(),
                 since = startTimeStamp.toString(),
@@ -90,7 +89,6 @@ internal class GithubCommitServiceTest {
                 any(),
                 any(),
                 any(),
-                any(),
                 any()
             )
         }
@@ -109,7 +107,7 @@ internal class GithubCommitServiceTest {
 
         every {
             githubFeignClient.retrieveCommits(
-                authorizationHeader = any(), owner = any(), repo = any(), since = null, until = endTimeStamp.toString(),
+                owner = any(), repo = any(), since = null, until = endTimeStamp.toString(),
                 branch = any(), perPage = any(), pageIndex = 1
             )
         } returns listOf(
@@ -143,7 +141,6 @@ internal class GithubCommitServiceTest {
 
         every {
             githubFeignClient.retrieveCommits(
-                authorizationHeader = any(),
                 owner = any(),
                 repo = any(),
                 since = any(),

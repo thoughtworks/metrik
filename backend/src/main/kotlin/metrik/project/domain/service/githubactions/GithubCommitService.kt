@@ -13,7 +13,7 @@ import java.net.URL
 @Service
 class GithubCommitService(
     private val githubFeignClient: GithubFeignClient,
-    private val commitRepository: CommitRepository
+    private val commitRepository: CommitRepository,
 ) {
     private var logger = LoggerFactory.getLogger(javaClass.name)
     private val tokenPrefix = "Bearer"
@@ -46,7 +46,7 @@ class GithubCommitService(
 
         while (keepRetrieving) {
             val commitsFromGithub =
-                retrieveCommits(pipeline.url, pipeline.credential, startTimeStamp, endTimeStamp, branch, pageIndex)
+                retrieveCommits(pipeline.url, startTimeStamp, endTimeStamp, branch, pageIndex)
 
             allCommits.addAll(commitsFromGithub)
 
@@ -89,7 +89,6 @@ class GithubCommitService(
 
     private fun retrieveCommits(
         url: String,
-        token: String,
         startTimeStamp: Long,
         endTimeStamp: Long,
         branch: String? = null,
@@ -104,7 +103,6 @@ class GithubCommitService(
         val commits = with(githubFeignClient) {
             getOwnerRepoFromUrl(url).let { (owner, repo) ->
                 retrieveCommits(
-                    buildToken(token),
                     owner,
                     repo,
                     if (startTimeStamp == 0L) null else startTimeStamp.toString(),
@@ -125,6 +123,4 @@ class GithubCommitService(
         val repo = components.last()
         return Pair(owner, repo)
     }
-
-    private fun buildToken(token: String) = "$tokenPrefix $token"
 }

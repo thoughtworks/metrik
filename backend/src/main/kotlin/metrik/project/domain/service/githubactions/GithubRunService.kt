@@ -19,7 +19,6 @@ class GithubRunService(
         maxPerPage: Int = defaultMaxPerPage
     ): MutableList<GithubActionsRun> {
         val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
-        val token = getToken(pipeline.credential)
 
         val syncedRuns = mutableListOf<GithubActionsRun>()
         var keepRetrieving = true
@@ -30,7 +29,6 @@ class GithubRunService(
                     "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
             val syncedRunsFromCurrentPage = githubFeignClient.retrieveMultipleRuns(
-                token,
                 owner,
                 repo,
                 maxPerPage,
@@ -53,14 +51,13 @@ class GithubRunService(
     ): GithubActionsRun? {
         val runId = URL(runUrl).path.split("/").last()
         val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
-        val token = getToken(pipeline.credential)
 
         logger.info(
             "Get Github Runs - " +
                 "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
-        return githubFeignClient.retrieveSingleRun(token, owner, repo, runId)?.toGithubActionsRun()
+        return githubFeignClient.retrieveSingleRun(owner, repo, runId)?.toGithubActionsRun()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
