@@ -1,5 +1,6 @@
 package metrik.project.infrastructure.github.feign.response
 
+import metrik.project.domain.service.githubactions.GithubCommit
 import java.time.ZonedDateTime
 
 data class CommitResponse(
@@ -13,4 +14,7 @@ data class CommitResponse(
             val date: ZonedDateTime
         )
     }
+
+    fun toGithubCommit(): GithubCommit =
+        GithubCommit(id = sha, timestamp = commit.committer.date)
 }

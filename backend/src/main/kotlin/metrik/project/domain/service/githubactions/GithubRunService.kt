@@ -3,7 +3,6 @@ package metrik.project.domain.service.githubactions
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Pipeline
 import metrik.project.infrastructure.github.feign.GithubFeignClient
-import metrik.project.infrastructure.github.feign.mapper.GithubActionsRunMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -36,7 +35,7 @@ class GithubRunService(
                 repo,
                 maxPerPage,
                 pageIndex
-            )?.let { response -> response.workflowRuns.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsRun(it) } }
+            )?.let { response -> response.workflowRuns.map { it.toGithubActionsRun() } }
                 ?.filter { it.createdTimestamp.toTimestamp() > latestTimestamp } ?: listOf()
 
             keepRetrieving = syncedRunsFromCurrentPage.size == maxPerPage
@@ -61,11 +60,7 @@ class GithubRunService(
                 "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
-        return githubFeignClient.retrieveSingleRun(token, owner, repo, runId)?.let {
-            GithubActionsRunMapper.MAPPER.mapToGithubActionsRun(
-                it
-            )
-        }
+        return githubFeignClient.retrieveSingleRun(token, owner, repo, runId)?.toGithubActionsRun()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
