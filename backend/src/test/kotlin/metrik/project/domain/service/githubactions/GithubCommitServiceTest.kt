@@ -51,7 +51,8 @@ internal class GithubCommitServiceTest {
             )
         } returns listOf(
             CommitResponse(
-                "test sha", CommitResponse.CommitInfo(
+                "test sha",
+                CommitResponse.CommitInfo(
                     CommitResponse.CommitInfo.Committer(
                         ZonedDateTime.now()
                     )
@@ -96,7 +97,6 @@ internal class GithubCommitServiceTest {
         assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
     }
 
-
     @Test
     fun `should get all commits given since timestamp is not provided`() {
         every {
@@ -114,7 +114,8 @@ internal class GithubCommitServiceTest {
             )
         } returns listOf(
             CommitResponse(
-                "test sha", CommitResponse.CommitInfo(
+                "test sha",
+                CommitResponse.CommitInfo(
                     CommitResponse.CommitInfo.Committer(
                         ZonedDateTime.now()
                     )
@@ -153,7 +154,8 @@ internal class GithubCommitServiceTest {
             )
         } returns listOf(
             CommitResponse(
-                "test sha", CommitResponse.CommitInfo(
+                "test sha",
+                CommitResponse.CommitInfo(
                     CommitResponse.CommitInfo.Committer(
                         ZonedDateTime.now()
                     )

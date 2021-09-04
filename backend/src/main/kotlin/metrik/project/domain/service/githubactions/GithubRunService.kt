@@ -28,7 +28,7 @@ class GithubRunService(
         while (keepRetrieving) {
             logger.info(
                 "Get Github Runs - " +
-                        "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
+                    "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
             val syncedRunsFromCurrentPage = githubFeignClient.retrieveMultipleRuns(
                 token,
@@ -36,8 +36,8 @@ class GithubRunService(
                 repo,
                 maxPerPage,
                 pageIndex
-            ).let { response -> response.workflowRuns.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsRun(it) } }
-                .filter { it.createdTimestamp.toTimestamp() > latestTimestamp }
+            )?.let { response -> response.workflowRuns.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsRun(it) } }
+                ?.filter { it.createdTimestamp.toTimestamp() > latestTimestamp } ?: listOf()
 
             keepRetrieving = syncedRunsFromCurrentPage.size == maxPerPage
 
@@ -58,16 +58,13 @@ class GithubRunService(
 
         logger.info(
             "Get Github Runs - " +
-                    "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
+                "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
-        return try {
+        return githubFeignClient.retrieveSingleRun(token, owner, repo, runId)?.let {
             GithubActionsRunMapper.MAPPER.mapToGithubActionsRun(
-                githubFeignClient.retrieveSingleRun(token, owner, repo, runId)
+                it
             )
-        } catch (e: Exception) {
-            logger.error("Sync single Github Actions run failed, error: $e")
-            null
         }
     }
 

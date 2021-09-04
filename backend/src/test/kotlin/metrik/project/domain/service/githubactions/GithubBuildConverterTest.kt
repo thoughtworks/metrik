@@ -48,7 +48,6 @@ internal class GithubBuildConverterTest {
         assertEquals(build, githubBuildConverter.convertToBuild(run, pipelineId, commits))
     }
 
-
     private companion object {
         val run = GithubActionsRun(
             id = 123,

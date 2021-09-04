@@ -21,7 +21,6 @@ class CommitRepository {
 
     private val collectionName = "commit"
 
-
     fun getTheLatestCommit(pipelineId: String): Commit? {
         val query = Query()
         query.addCriteria(
@@ -54,7 +53,6 @@ class CommitRepository {
         return commits.sortedBy { it.timestamp }.filter { it.timestamp in startTimestamp..endTimestamp }
     }
 
-
     fun hasDuplication(commits: List<GithubCommit>): Boolean {
         return commits.any {
             val query = Query().addCriteria(
@@ -70,7 +68,6 @@ class CommitRepository {
             .map { Commit(commitId = it.id, timestamp = it.timestamp.toTimestamp(), pipelineId = pipelineId) }
             .forEach { save(pipelineId, it) }
     }
-
 
     private fun save(pipelineId: String, commit: Commit) {
         val query = Query().addCriteria(
@@ -88,4 +85,3 @@ class CommitRepository {
         }
     }
 }
-

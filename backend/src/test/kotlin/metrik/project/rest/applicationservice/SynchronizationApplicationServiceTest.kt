@@ -100,7 +100,8 @@ internal class SynchronizationApplicationServiceTest {
                 projectId,
                 withArg {
                     assertTrue(it > lastSyncTimestamp)
-                })
+                }
+            )
         }
     }
 

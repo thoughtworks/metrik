@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @FeignClient(
     value = "github-api",
-    url = "https://api.github.com/repos"
+    url = "https://api.github.com/repos",
+    decode404 = true
 )
 interface GithubFeignClient {
 
@@ -22,7 +23,7 @@ interface GithubFeignClient {
         @PathVariable("repo") repo: String,
         @RequestParam("per_page", required = false) perPage: Int? = null,
         @RequestParam("page", required = false) pageIndex: Int? = null
-    ): MultipleRunResponse
+    ): MultipleRunResponse?
 
     @GetMapping("/{owner}/{repo}/actions/runs/{runId}")
     fun retrieveSingleRun(
@@ -30,7 +31,7 @@ interface GithubFeignClient {
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("runId") runId: String,
-    ): SingleRunResponse
+    ): SingleRunResponse?
 
     @GetMapping("/{owner}/{repo}/commits")
     fun retrieveCommits(
@@ -42,5 +43,5 @@ interface GithubFeignClient {
         @RequestParam("sha", required = false) branch: String? = null,
         @RequestParam("per_page", required = false) perPage: Int? = null,
         @RequestParam("page", required = false) pageIndex: Int? = null,
-    ): List<CommitResponse>
+    ): List<CommitResponse>?
 }

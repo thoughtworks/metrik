@@ -26,7 +26,7 @@ class GithubCommitService(
         branch: String? = null,
         pipeline: Pipeline
     ): List<Commit> {
-        logger.info("Started sync for Github Actions commits [${pipeline.url}]/[${branch}]")
+        logger.info("Started sync for Github Actions commits [${pipeline.url}]/[$branch]")
 
         if (recordsExistInDb(pipeline, startTimeStamp, endTimeStamp)) {
             return commitRepository.findByTimePeriod(
@@ -38,7 +38,7 @@ class GithubCommitService(
 
         logger.info(
             "No records exist in DB, send API request, " +
-                    "time period: [${startTimeStamp.toLocalDateTime()}] to [${endTimeStamp.toLocalDateTime()}]"
+                "time period: [${startTimeStamp.toLocalDateTime()}] to [${endTimeStamp.toLocalDateTime()}]"
         )
 
         var keepRetrieving = true
@@ -79,8 +79,10 @@ class GithubCommitService(
     ): Boolean {
         val theLatestCommitInDB = commitRepository.getTheLatestCommit(pipeline.id)
         if (theLatestCommitInDB != null && theLatestCommitInDB.timestamp > endTimeStamp) {
-            logger.info("Commit records exist in DB, skip API request, " +
-                    "time period: [${startTimeStamp.toLocalDateTime()}] to [${endTimeStamp.toLocalDateTime()}]")
+            logger.info(
+                "Commit records exist in DB, skip API request, " +
+                    "time period: [${startTimeStamp.toLocalDateTime()}] to [${endTimeStamp.toLocalDateTime()}]"
+            )
             return true
         }
         return false
@@ -96,9 +98,9 @@ class GithubCommitService(
     ): List<GithubCommit> {
         logger.info(
             "Get Github Commits - " +
-                    "Sending request to Github Feign Client with owner: ${url}, " +
-                    "since: ${startTimeStamp.toLocalDateTime()}, until: ${endTimeStamp.toLocalDateTime()}, " +
-                    "branch: $branch, pageIndex: $pageIndex"
+                "Sending request to Github Feign Client with owner: $url, " +
+                "since: ${startTimeStamp.toLocalDateTime()}, until: ${endTimeStamp.toLocalDateTime()}, " +
+                "branch: $branch, pageIndex: $pageIndex"
         )
         val commits = with(githubFeignClient) {
             getOwnerRepoFromUrl(url).let { (owner, repo) ->
@@ -114,7 +116,7 @@ class GithubCommitService(
                 )
             }
         }
-        return commits.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsCommit(it) }
+        return commits?.map { GithubActionsRunMapper.MAPPER.mapToGithubActionsCommit(it) } ?: listOf()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {

@@ -39,6 +39,7 @@ class GithubActionsPipelineService(
             val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
             val token = getToken(pipeline.credential)
             githubFeignClient.retrieveMultipleRuns(token, owner, repo)
+                ?: throw PipelineConfigVerifyException("Verify failed")
         } catch (ex: FeignServerException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
         } catch (ex: FeignClientException) {
