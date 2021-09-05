@@ -1,7 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktlint: Configuration by configurations.creating
-
 plugins {
     idea
     application
@@ -10,15 +8,8 @@ plugins {
     id("io.gitlab.arturbosch.detekt").version("1.17.1")
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.spring") version "1.4.21"
-    kotlin("kapt") version "1.4.21"
     jacoco
 }
-
-dependencies {
-    ktlint("com.pinterest:ktlint:0.39.0")
-    implementation(kotlin("stdlib-jdk8"))
-}
-
 
 group = "metrik-backend"
 version = "0.0.1-SNAPSHOT"
@@ -39,7 +30,7 @@ dependencyManagement {
     }
 }
 
-// Configure Api test framework
+// apiTest sourceSets and configuration
 idea {
     module {
         sourceDirs = sourceDirs - file("src/apiTest/kotlin")
@@ -62,7 +53,10 @@ val apiTestImplementation by configurations.getting {
 
 configurations["apiTestImplementation"].extendsFrom(configurations.testImplementation.get())
 configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
-// End of Configure Api test framework
+// End of apiTest sourceSets and configuration
+
+// ktlint configuration
+val ktlintConfiguration: Configuration by configurations.creating
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -102,6 +96,8 @@ dependencies {
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")
     }
+
+    ktlintConfiguration("com.pinterest:ktlint:0.39.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -149,31 +145,35 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     finalizedBy(tasks.check)
 }
 
-apply(from = "gradle/git-hooks/install-git-hooks.gradle")
-apply(from = "gradle/jacoco/jacoco.gradle")
-
-// ktlint
+// ktlint tasks
 val outputDir = "${project.buildDir}/reports/ktlint/"
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
 
-val ktlintFormat = task<JavaExec>("ktlintFormat") {
+val ktlintCheck = task<JavaExec>("ktlintCheck") {
     inputs.files(inputFiles)
     outputs.dir(outputDir)
 
+    description = "Check Kotlin code style."
+    classpath = ktlintConfiguration
+    group = "verification"
+    main = "com.pinterest.ktlint.Main"
+    args = listOf("src/**/*.kt")
+}
+
+val ktlintFormat = task<JavaExec>("ktlintFormat") {
+    inputs.files(inputFiles)
+    outputs.dir(inputFiles)
+
     description = "Fix Kotlin code style deviations."
-    classpath = ktlint
-    group = "formatting"
+    classpath = ktlintConfiguration
+    group = "verification"
     main = "com.pinterest.ktlint.Main"
     args = listOf("-F", "src/**/*.kt")
 }
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
+// End of ktlint tasks
+
+apply(from = "gradle/git-hooks/install-git-hooks.gradle")
+apply(from = "gradle/jacoco/jacoco.gradle")
 
 tasks.jacocoTestReport {
     reports {
