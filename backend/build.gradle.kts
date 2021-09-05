@@ -6,8 +6,8 @@ plugins {
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("io.gitlab.arturbosch.detekt").version("1.17.1")
-    kotlin("jvm") version "1.4.21"
-    kotlin("plugin.spring") version "1.4.21"
+    kotlin("jvm") version "1.4.31"
+    kotlin("plugin.spring") version "1.4.31"
     jacoco
 }
 
@@ -97,7 +97,7 @@ dependencies {
         exclude("ch.qos.logback", "logback-classic")
     }
 
-    ktlintConfiguration("com.pinterest:ktlint:0.39.0")
+    ktlintConfiguration("com.pinterest:ktlint:0.42.1")
 }
 
 tasks.withType<KotlinCompile> {
