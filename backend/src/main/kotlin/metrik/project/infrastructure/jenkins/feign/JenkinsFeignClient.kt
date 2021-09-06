@@ -1,6 +1,5 @@
 package metrik.project.infrastructure.jenkins.feign
 
-import feign.RequestLine
 import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
 import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
 import org.springframework.cloud.openfeign.FeignClient
@@ -16,15 +15,12 @@ import java.net.URI
 )
 interface JenkinsFeignClient {
     @GetMapping(path = ["/wfapi/"])
-    @RequestLine("/wfapi/")
     fun verifyJenkinsUrl(
         baseUrl: URI,
-        @RequestHeader("Authorization") authorizationHeader: String,
+        @RequestHeader("Authorization") authorizationHeader: String
     )
 
-    @GetMapping(
-        path = ["api/json"],
-    )
+    @GetMapping(path = ["api/json"])
     fun retrieveBuildSummariesFromJenkins(
         baseUrl: URI,
         @RequestHeader("Authorization") authorizationHeader: String,
