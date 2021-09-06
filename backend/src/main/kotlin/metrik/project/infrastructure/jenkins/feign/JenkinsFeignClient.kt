@@ -33,12 +33,12 @@ interface JenkinsFeignClient {
             required = false
         ) tree: String = "allBuilds[building,number,result,timestamp,duration,url,changeSets[items[commitId,timestamp,msg,date]]]"
 
-    ): BuildSummaryCollectionDTO
+    ): BuildSummaryCollectionDTO?
 
     @GetMapping(path = ["{buildSummaryNumber}/wfapi/describe"])
     fun retrieveBuildDetailsFromJenkins(
         baseUrl: URI,
         @RequestHeader("Authorization") authorizationHeader: String,
         @PathVariable("buildSummaryNumber") buildSummaryNumber: Int
-    ): BuildDetailsDTO
+    ): BuildDetailsDTO?
 }

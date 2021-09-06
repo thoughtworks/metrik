@@ -3,7 +3,11 @@ package metrik.project.domain.service.jenkins
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
+import feign.FeignException
+import feign.Request
+import feign.Response
 import io.mockk.every
+import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import metrik.exception.ApplicationException
@@ -12,6 +16,9 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
+import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
+import metrik.project.infrastructure.jenkins.feign.JenkinsFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,41 +29,33 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
-import org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest
-import org.springframework.test.web.client.response.MockRestResponseCreators.withServerError
-import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestTemplate
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@ExtendWith(SpringExtension::class)
+@ExtendWith(SpringExtension::class, MockKExtension::class)
 @Import(JenkinsPipelineService::class, RestTemplate::class)
 @RestClientTest
 internal class JenkinsPipelineServiceTest {
     @Autowired
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
-    @Autowired
-    private lateinit var restTemplate: RestTemplate
+    @MockkBean(relaxed = true)
+    private lateinit var jenkinsFeignClient: JenkinsFeignClient
 
     @MockkBean(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
     private val objectMapper = jacksonObjectMapper()
 
-    private lateinit var mockServer: MockRestServiceServer
-
     private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 
     private val pipelineId = "fake pipeline"
 
+    private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
+
     @BeforeEach
     fun setUp() {
-        mockServer = MockRestServiceServer.createServer(restTemplate)
-
         every { buildRepository.getAllBuilds("fake pipeline") } returns listOf(
             Build(
                 stages = listOf(
@@ -78,13 +77,12 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
-
-        mockServer.expect(requestTo("$baseUrl/wfapi/"))
-            .andRespond(
-                withBadRequest()
-            )
-
+        every {
+            jenkinsFeignClient.verifyJenkinsUrl(any(), any())
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(400)
+        )
         assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
                 Pipeline(
@@ -102,13 +100,12 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
-
-        mockServer.expect(requestTo("$baseUrl/wfapi/"))
-            .andRespond(
-                withServerError()
-            )
-
+        every {
+            jenkinsFeignClient.verifyJenkinsUrl(any(), any())
+        } throws FeignException.errorStatus(
+            "GET",
+            buildFeignResponse(500)
+        )
         assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
                 Pipeline(
@@ -140,9 +137,6 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = pipelineId,
             username = username,
@@ -150,26 +144,32 @@ internal class JenkinsPipelineServiceTest {
             url = baseUrl,
             name = pipelineName
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
+
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
             )
+
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
@@ -183,29 +183,29 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
             username = username,
             credential = credential,
             url = baseUrl
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-3.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-3.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-3.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-3.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
@@ -222,35 +222,36 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
             username = username,
             credential = credential,
             url = baseUrl
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-4.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-4.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-4.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-4.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
                     .readText()
             )
+
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
@@ -261,29 +262,29 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
             username = username,
             credential = credential,
             url = baseUrl
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-5.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-5.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-5.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-5.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
@@ -300,9 +301,6 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuildDetailUrl = "$baseUrl/82/wfapi/describe"
         val pipeline = Pipeline(
             id = "fake pipeline",
             username = username,
@@ -310,20 +308,23 @@ internal class JenkinsPipelineServiceTest {
             url = baseUrl,
             name = "pipeline name"
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-1.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuildDetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-1.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
 
         val expectedBuilds: List<Build> =
             objectMapper.readValue(
@@ -344,45 +345,41 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val getBuildSummariesUrl = "$baseUrl/api/json?tree=allBuilds%5Bbuilding," +
-            "number,result,timestamp,duration,url,changeSets%5Bitems%5BcommitId,timestamp,msg,date%5D%5D%5D"
-        val getBuild1DetailUrl = "$baseUrl/1/wfapi/describe"
-        val getBuild2DetailUrl = "$baseUrl/2/wfapi/describe"
-        val mockServer = MockRestServiceServer.bindTo(restTemplate).ignoreExpectOrder(true).build()
         val pipeline = Pipeline(
             id = "fake pipeline",
             username = username,
             credential = credential,
             url = baseUrl
         )
-
         every { buildRepository.getByBuildNumber(pipelineId, 1) } returns Build(
             pipelineId = pipelineId,
             number = 1,
             result = Status.IN_PROGRESS
         )
-        mockServer.expect(requestTo(getBuildSummariesUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-summary-2.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
+        val buildSummaryCollectionDTO: BuildSummaryCollectionDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/jenkins/raw-build-summary-2.json")
+                    .readText()
             )
-        mockServer.expect(requestTo(getBuild1DetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
-        mockServer.expect(requestTo(getBuild2DetailUrl))
-            .andRespond(
-                withSuccess(
-                    javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json").readText(),
-                    MediaType.APPLICATION_JSON
-                )
-            )
+        val buildDetailsDTO: BuildDetailsDTO = objectMapper.readValue(
+            javaClass.getResource("/pipeline/jenkins/raw-build-detail-2.json")
+                .readText()
+        )
+
+        every {
+            jenkinsFeignClient.retrieveBuildSummariesFromJenkins(any(), any())
+        } returns buildSummaryCollectionDTO
+
+        every {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        } returns buildDetailsDTO
 
         jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
+        verify(exactly = 2) {
+            jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
+        }
     }
+
+    private fun buildFeignResponse(statusCode: Int) =
+        Response.builder().status(statusCode).request(dummyFeignRequest).build()
 }

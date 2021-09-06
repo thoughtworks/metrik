@@ -1,18 +1,18 @@
 package metrik.project.domain.service.jenkins
 
+import feign.FeignException.FeignClientException
+import feign.FeignException.FeignServerException
 import metrik.project.domain.model.*
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
 import metrik.project.domain.service.jenkins.dto.BuildSummaryDTO
 import metrik.project.exception.PipelineConfigVerifyException
-import metrik.project.infrastructure.jenkins.JenkinsClient
+import metrik.project.infrastructure.jenkins.feign.JenkinsFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import java.net.URI
 import java.nio.charset.Charset
 import java.util.*
@@ -22,7 +22,7 @@ import kotlin.streams.toList
 @Service("jenkinsPipelineService")
 class JenkinsPipelineService(
     @Autowired private var buildRepository: BuildRepository,
-    @Autowired private var jenkinsClient: JenkinsClient
+    @Autowired private var jenkinsFeignClient: JenkinsFeignClient
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
@@ -30,10 +30,10 @@ class JenkinsPipelineService(
         val headers = getAuth(pipeline.username!!, pipeline.credential)
         val url = URI.create(pipeline.url)
         try {
-            jenkinsClient.verifyJenkinsUrl(url, headers)
-        } catch (ex: HttpServerErrorException) {
+            jenkinsFeignClient.verifyJenkinsUrl(url, headers)
+        } catch (ex: FeignServerException) {
             throw PipelineConfigVerifyException("Verify website unavailable")
-        } catch (ex: HttpClientErrorException) {
+        } catch (ex: FeignClientException) {
             throw PipelineConfigVerifyException("Verify failed")
         }
     }
@@ -125,7 +125,8 @@ class JenkinsPipelineService(
     ): BuildDetailsDTO {
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
-        return jenkinsClient.retrieveBuildDetailsFromJenkins(url, headers, buildSummary.number)!!
+
+        return jenkinsFeignClient.retrieveBuildDetailsFromJenkins(url, headers, buildSummary.number)!!
     }
 
     private fun getBuildSummariesFromJenkins(
@@ -135,7 +136,8 @@ class JenkinsPipelineService(
     ): List<BuildSummaryDTO> {
         val headers = getAuth(username, credential)
         val url = URI.create(baseUrl)
-        return jenkinsClient.retrieveBuildSummariesFromJenkins(url, headers)!!.allBuilds
+
+        return jenkinsFeignClient.retrieveBuildSummariesFromJenkins(url, headers)!!.allBuilds
     }
 
     private fun getAuth(username: String, credential: String): String {
