@@ -116,7 +116,7 @@ internal class PipelineApplicationServiceTest {
         verify(exactly = 1) { pipelineRepository.findByIdAndProjectId(pipeline.id, pipeline.projectId) }
         verify(exactly = 1) { pipelineRepository.findByNameAndProjectId(pipeline.name, pipeline.projectId) }
         verify(exactly = 1) { pipelineServiceMock.verifyPipelineConfiguration(pipeline) }
-        verify {
+        verify(exactly = 1) {
             pipelineRepository.save(
                 withArg {
                     assertEquals(pipeline.projectId, it.projectId)
