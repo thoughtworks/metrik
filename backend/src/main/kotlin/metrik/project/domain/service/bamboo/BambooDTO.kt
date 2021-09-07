@@ -1,5 +1,6 @@
 package metrik.project.domain.service.bamboo.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Build
 import metrik.project.domain.model.Commit
@@ -8,10 +9,13 @@ import org.apache.logging.log4j.util.Strings
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildSummaryDTO(var results: BuildResultCollectionDTO)
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildResultCollectionDTO(val result: List<Result>)
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Result(
     val number: Int = 0,
     val buildNumber: Int = 0,
@@ -19,6 +23,7 @@ data class Result(
     val buildState: String? = Strings.EMPTY
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildDetailDTO(
     var state: String,
     var buildState: String,
@@ -89,8 +94,10 @@ data class BuildDetailDTO(
     }
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Stage(val stage: List<StageDTO>)
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class StageDTO(
     val name: String,
     val state: String?,
@@ -144,8 +151,10 @@ data class StageDTO(
     }
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class StageResults(val result: List<StageResultDetail>)
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class StageResultDetail(
     val buildStartedTime: ZonedDateTime?,
     var buildCompletedTime: ZonedDateTime?,
@@ -160,12 +169,14 @@ data class StageResultDetail(
     }
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ChangeSetDTO(val change: List<CommitDTO> = emptyList())
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class CommitDTO(val changesetId: String, val date: ZonedDateTime, val comment: String) {
     fun getDateTimestamp(): Long {
         return date.toTimestamp()
     }
 }
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Link(val href: String)
