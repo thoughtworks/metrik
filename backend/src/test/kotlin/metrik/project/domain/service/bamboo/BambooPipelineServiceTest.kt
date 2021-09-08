@@ -268,7 +268,6 @@ internal class BambooPipelineServiceTest {
                     Commit(
                         commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
                         date = "2020-06-29T02:41:31Z[UTC]",
-                        msg = "Create dc.txt",
                         timestamp = 1593398491000
                     )
                 )
@@ -421,7 +420,6 @@ internal class BambooPipelineServiceTest {
                     Commit(
                         commitId = "7cba897038ca321dac1c7e87855879194d3d6307",
                         date = "2020-06-29T02:41:31Z[UTC]",
-                        msg = "Create dc.txt",
                         timestamp = 1593398491000
                     )
                 )

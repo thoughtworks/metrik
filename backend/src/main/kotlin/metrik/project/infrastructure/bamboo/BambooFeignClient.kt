@@ -6,7 +6,6 @@ import feign.RequestTemplate
 import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
 import metrik.project.domain.service.bamboo.dto.BuildSummaryDTO
 import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -39,7 +38,6 @@ interface BambooFeignClient {
     ): BuildDetailDTO?
 }
 
-@Configuration
 class BambooFeignClientConfiguration : RequestInterceptor {
     override fun apply(template: RequestTemplate?) {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request

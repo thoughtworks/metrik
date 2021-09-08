@@ -59,7 +59,6 @@ val multiPipelineBuild1 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112348",
-            msg = "commit on 6th",
             timestamp = 1578281400000,
             date = "2021-01-6 00:00:00 +0800"
         )
@@ -98,7 +97,6 @@ val multiPipelineBuild2 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 7th",
             timestamp = 1578351600000,
             date = "2021-01-7 00:00:00 +0800"
         )
@@ -137,13 +135,11 @@ val multiPipelineBuild3 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 8th",
             timestamp = 1578474000000,
             date = "2021-01-8 00:00:00 +0800"
         ),
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112543",
-            msg = "commit on 8th",
             timestamp = 1578475800000,
             date = "2021-01-8 00:00:00 +0800"
         )
@@ -183,7 +179,6 @@ val multiPipelineBuild4 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 9th",
             timestamp = 1578531900000,
             date = "2021-01-9 00:00:00 +0800"
         )
@@ -222,7 +217,6 @@ val multiPipelineBuild5 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 10st",
             timestamp = 1578618000000,
             date = "2021-01-10 00:00:00 +0800"
         )
@@ -261,7 +255,6 @@ val multiPipelineBuild6 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 11nd",
             timestamp = 1578700800000,
             date = "2020-1-11 00:00:00 +0800"
         )
@@ -300,7 +293,6 @@ val multiPipelineBuild7 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 12th",
             timestamp = 1578783600000,
             date = "2020-1-12 00:00:00 +0800"
         )
@@ -339,7 +331,6 @@ val multiPipelineBuild8 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 13th",
             timestamp = 1578870000000,
             date = "2020-1-13 00:00:00 +0800"
         )
@@ -378,7 +369,6 @@ val multiPipelineBuild9 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 14th",
             timestamp = 1578960000000,
             date = "2020-1-14 00:00:00 +0800"
         )
@@ -417,7 +407,6 @@ val multiPipelineBuild10 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112348",
-            msg = "commit on 6th",
             timestamp = 1578281400000,
             date = "2021-01-6 00:00:00 +0800"
         )
@@ -456,7 +445,6 @@ val multiPipelineBuild11 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 7th",
             timestamp = 1578351600000,
             date = "2021-01-7 00:00:00 +0800"
         )
@@ -495,13 +483,11 @@ val multiPipelineBuild12 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 8th",
             timestamp = 1578474000000,
             date = "2021-01-8 00:00:00 +0800"
         ),
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112543",
-            msg = "commit on 8th",
             timestamp = 1578475800000,
             date = "2021-01-8 00:00:00 +0800"
         )
@@ -541,7 +527,6 @@ val multiPipelineBuild13 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112348",
-            msg = "commit on 9th",
             timestamp = 1578547800000,
             date = "2021-01-9 00:00:00 +0800"
         )
@@ -580,7 +565,6 @@ val multiPipelineBuild14 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 10th",
             timestamp = 1578618000000,
             date = "2021-01-10 00:00:00 +0800"
         )
@@ -619,7 +603,6 @@ val multiPipelineBuild15 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 11st",
             timestamp = 1578700800000,
             date = "2020-1-11 00:00:00 +0800"
         )

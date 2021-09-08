@@ -1,5 +1,6 @@
 package metrik.project.domain.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.apache.logging.log4j.util.Strings
 
 enum class Status {
@@ -22,11 +23,11 @@ data class Stage(
     }
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Commit(
     val commitId: String = Strings.EMPTY,
     val timestamp: Long = 0,
     val date: String = Strings.EMPTY,
-    val msg: String = Strings.EMPTY,
     val pipelineId: String? = null
 )
 
@@ -50,8 +51,8 @@ data class Build(
     ): Boolean {
         return stages.any {
             it.name == deployStageName &&
-                it.status == status &&
-                it.getStageDoneTime() in startTimestamp..endTimestamp
+                    it.status == status &&
+                    it.getStageDoneTime() in startTimestamp..endTimestamp
         }
     }
 
@@ -62,8 +63,8 @@ data class Build(
     ): Boolean {
         return stages.any {
             it.name == deployStageName &&
-                it.status == status &&
-                it.getStageDoneTime() < timestamp
+                    it.status == status &&
+                    it.getStageDoneTime() < timestamp
         }
     }
 

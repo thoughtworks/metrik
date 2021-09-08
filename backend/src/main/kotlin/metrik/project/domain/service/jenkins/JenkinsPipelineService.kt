@@ -100,7 +100,7 @@ class JenkinsPipelineService(
     private fun constructBuildCommits(buildSummary: BuildSummaryDTO): List<List<Commit>> {
         return buildSummary.changeSets.map { changeSetDTO ->
             changeSetDTO.items.map { commitDTO ->
-                Commit(commitDTO.commitId, commitDTO.timestamp, commitDTO.date, commitDTO.msg)
+                Commit(commitDTO.commitId, commitDTO.timestamp, commitDTO.date)
             }
         }
     }

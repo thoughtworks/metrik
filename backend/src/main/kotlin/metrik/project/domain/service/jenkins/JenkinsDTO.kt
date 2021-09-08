@@ -38,7 +38,7 @@ data class BuildSummaryDTO(
 data class ChangeSetDTO(val items: List<CommitDTO> = emptyList())
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class CommitDTO(val commitId: String, val timestamp: Long, val date: String, val msg: String)
+data class CommitDTO(val commitId: String, val timestamp: Long, val date: String)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildDetailsDTO(val stages: List<StageDTO> = emptyList())

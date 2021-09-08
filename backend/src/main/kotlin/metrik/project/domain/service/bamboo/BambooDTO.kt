@@ -82,7 +82,7 @@ data class BuildDetailDTO(
                 link.href,
                 stages = stages,
                 changeSets = changes.change.map {
-                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString(), it.comment)
+                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString())
                 }
             )
             logger.info("Bamboo converting: Build converted result: [$build]")
@@ -173,7 +173,7 @@ data class StageResultDetail(
 data class ChangeSetDTO(val change: List<CommitDTO> = emptyList())
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class CommitDTO(val changesetId: String, val date: ZonedDateTime, val comment: String) {
+data class CommitDTO(val changesetId: String, val date: ZonedDateTime) {
     fun getDateTimestamp(): Long {
         return date.toTimestamp()
     }

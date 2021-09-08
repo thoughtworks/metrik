@@ -50,7 +50,6 @@ val dfBuild1 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 31st",
             timestamp = 1609408800000,
             date = "2020-12-31 00:00:00 +0800"
         )
@@ -82,7 +81,6 @@ val dfBuild2 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 1st",
             timestamp = 1609466400000,
             date = "2021-01-01 10:00:00 +0800"
         )
@@ -114,7 +112,6 @@ val dfBuild3 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 1st",
             timestamp = 1609473600000,
             date = "2021-01-01 12:00:00 +0800"
         )

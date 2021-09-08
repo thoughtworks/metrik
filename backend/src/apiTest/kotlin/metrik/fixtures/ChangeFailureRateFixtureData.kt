@@ -50,7 +50,6 @@ val cfrBuild1 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 31st",
             timestamp = 1609408800000,
             date = "2020-12-31 00:00:00 +0800"
         )
@@ -89,7 +88,6 @@ val cfrBuild2 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112401",
-            msg = "commit on 2nd",
             timestamp = 1609545600000,
             date = "2021-01-2 00:00:00 +0800"
         )
@@ -128,7 +126,6 @@ val cfrBuild3 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112402",
-            msg = "commit on 5th Jan",
             timestamp = 1609804800000,
             date = "2021-01-5 00:00:00 +0800"
         )
@@ -167,7 +164,6 @@ val cfrBuild4 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112403",
-            msg = "commit on 6th",
             timestamp = 1609891200000,
             date = "2021-01-6 00:00:00 +0800"
         )
@@ -206,7 +202,6 @@ val cfrBuild5 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112404",
-            msg = "commit on 7th",
             timestamp = 1609977600000,
             date = "2021-01-7 00:00:00 +0800"
         )
@@ -245,7 +240,6 @@ val cfrBuild6 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112348",
-            msg = "commit on 11th",
             timestamp = 1610323200000,
             date = "2021-01-11 00:00:00 +0800"
         )
@@ -284,7 +278,6 @@ val cfrBuild7 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 15th",
             timestamp = 1610668800000,
             date = "2021-01-15 00:00:00 +0800"
         )
@@ -323,7 +316,6 @@ val cfrBuild8 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 16th",
             timestamp = 1610755200000,
             date = "2021-01-16 00:00:00 +0800"
         )
@@ -362,7 +354,6 @@ val cfrBuild9 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 20th",
             timestamp = 1610755200000,
             date = "2021-01-20 00:00:00 +0800"
         )
@@ -401,7 +392,6 @@ val cfrBuild10 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 21st",
             timestamp = 1611187200000,
             date = "2021-01-21 00:00:00 +0800"
         )
@@ -440,7 +430,6 @@ val cfrBuild11 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 22nd",
             timestamp = 1611273600000,
             date = "2020-1-22 00:00:00 +0800"
         )
@@ -479,7 +468,6 @@ val cfrBuild12 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 28th",
             timestamp = 1611792000000,
             date = "2020-1-28 00:00:00 +0800"
         )

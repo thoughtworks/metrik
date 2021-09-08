@@ -88,7 +88,6 @@ val ltBuild1 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112345",
-            msg = "this is a message",
             timestamp = 1597852800000,
             date = "2020-08-20 00:00:00  +0800"
         )
@@ -120,7 +119,6 @@ val ltBuild2 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112345",
-            msg = "this is a message",
             timestamp = 1595613600000,
             date = "2020-07-25 02:00:00  +0800"
         )
@@ -152,7 +150,6 @@ val ltBuild3 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112345",
-            msg = "this is a message",
             timestamp = 1597852800000,
             date = "2020-08-20 00:00:00  +0800"
         )
@@ -209,7 +206,6 @@ val ltBuild5 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112345",
-            msg = "this is a message",
             timestamp = 1598284800000,
             date = "2020-08-20 00:00:00  +0800"
         )
@@ -266,21 +262,18 @@ val ltBuild7 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112345",
-            msg = "this is a message",
             timestamp = 1597852800000,
             date = "2020-08-20 00:00:00  +0800"
         ),
         Commit(
 
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112341",
-            msg = "this is a message",
             timestamp = 1597939200000,
             date = "2020-08-21 00:00:00  +0800"
         ),
         Commit(
 
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112342",
-            msg = "this is a message",
             timestamp = 1598284800000,
             date = "2020-08-25 00:00:00  +0800"
         )

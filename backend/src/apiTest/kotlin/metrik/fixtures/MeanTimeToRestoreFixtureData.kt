@@ -50,7 +50,6 @@ val mttrBuild1 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 31st",
             timestamp = 1577807999000,
             date = "2019-12-31 00:00:00 +0800"
         )
@@ -89,7 +88,6 @@ val mttrBuild2 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112401",
-            msg = "commit on 2nd",
             timestamp = 1577923200000,
             date = "2021-01-2 00:00:00 +0800"
         )
@@ -128,7 +126,6 @@ val mttrBuild3 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112402",
-            msg = "commit on 3rd Jan",
             timestamp = 1578009600000,
             date = "2021-01-3 00:00:00 +0800"
         )
@@ -167,7 +164,6 @@ val mttrBuild4 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112403",
-            msg = "commit on 4th",
             timestamp = 1578096000000,
             date = "2021-01-4 00:00:00 +0800"
         )
@@ -206,7 +202,6 @@ val mttrBuild5 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112404",
-            msg = "commit on 4th",
             timestamp = 1578100800000,
             date = "2021-01-4 00:00:00 +0800"
         )
@@ -245,7 +240,6 @@ val mttrBuild6 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112348",
-            msg = "commit on 6th",
             timestamp = 1578281400000,
             date = "2021-01-6 00:00:00 +0800"
         )
@@ -284,7 +278,6 @@ val mttrBuild7 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 7th",
             timestamp = 1578351600000,
             date = "2021-01-7 00:00:00 +0800"
         )
@@ -323,7 +316,6 @@ val mttrBuild8 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 7th",
             timestamp = 1578358800000,
             date = "2021-01-7 00:00:00 +0800"
         )
@@ -362,7 +354,6 @@ val mttrBuild9 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 9th",
             timestamp = 1578531900000,
             date = "2021-01-9 00:00:00 +0800"
         )
@@ -401,7 +392,6 @@ val mttrBuild10 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112405",
-            msg = "commit on 10st",
             timestamp = 1578618000000,
             date = "2021-01-10 00:00:00 +0800"
         )
@@ -440,7 +430,6 @@ val mttrBuild11 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 11nd",
             timestamp = 1578700800000,
             date = "2020-1-11 00:00:00 +0800"
         )
@@ -479,7 +468,6 @@ val mttrBuild12 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 12th",
             timestamp = 1578783600000,
             date = "2020-1-12 00:00:00 +0800"
         )
@@ -518,7 +506,6 @@ val mttrBuild13 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 13th",
             timestamp = 1578870000000,
             date = "2020-1-13 00:00:00 +0800"
         )
@@ -557,7 +544,6 @@ val mttrBuild14 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 14th",
             timestamp = 1578960000000,
             date = "2020-1-14 00:00:00 +0800"
         )
@@ -596,7 +582,6 @@ val mttrBuild15 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 15th",
             timestamp = 1579046400000,
             date = "2020-1-15 00:00:00 +0800"
         )
@@ -635,7 +620,6 @@ val mttrBuild16 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 16th",
             timestamp = 1579132800000,
             date = "2020-1-16 00:00:00 +0800"
         )
@@ -674,7 +658,6 @@ val mttrBuild17 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 17th",
             timestamp = 1579219200000,
             date = "2020-1-17 00:00:00 +0800"
         )
@@ -713,7 +696,6 @@ val mttrBuild18 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 18th",
             timestamp = 1579305600000,
             date = "2020-1-18 00:00:00 +0800"
         )
@@ -752,7 +734,6 @@ val mttrBuild19 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 19th",
             timestamp = 1579392000000,
             date = "2020-1-19 00:00:00 +0800"
         )
@@ -791,7 +772,6 @@ val mttrBuild20 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 20th",
             timestamp = 1579478400000,
             date = "2020-1-20 00:00:00 +0800"
         )
@@ -830,7 +810,6 @@ val mttrBuild21 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 21st",
             timestamp = 1579564800000,
             date = "2020-1-21 00:00:00 +0800"
         )
@@ -869,7 +848,6 @@ val mttrBuild22 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 22nd",
             timestamp = 1579651200000,
             date = "2020-1-22 00:00:00 +0800"
         )
@@ -908,7 +886,6 @@ val mttrBuild23 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 23rd",
             timestamp = 1579737600000,
             date = "2020-1-23 00:00:00 +0800"
         )
@@ -947,7 +924,6 @@ val mttrBuild24 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 24th",
             timestamp = 1579824000000,
             date = "2020-1-24 00:00:00 +0800"
         )
@@ -986,7 +962,6 @@ val mttrBuild25 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 25th",
             timestamp = 1579910400000,
             date = "2020-1-25 00:00:00 +0800"
         )
@@ -1025,7 +1000,6 @@ val mttrBuild26 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 3rd Feb",
             timestamp = 1580688000000,
             date = "2020-2-3 00:00:00 +0800"
         )
@@ -1064,7 +1038,6 @@ val mttrBuild27 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 4th Feb",
             timestamp = 1580774400000,
             date = "2020-2-4 00:00:00 +0800"
         )
@@ -1103,7 +1076,6 @@ val mttrBuild28 = Build(
     changeSets = listOf(
         Commit(
             commitId = "b9b775059d120a0dbf09fd40d2becea69a112400",
-            msg = "commit on 5th Feb",
             timestamp = 1580860800000,
             date = "2020-2-5 00:00:00 +0800"
         )
