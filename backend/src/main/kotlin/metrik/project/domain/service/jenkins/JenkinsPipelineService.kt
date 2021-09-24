@@ -5,8 +5,6 @@ import feign.FeignException.FeignServerException
 import metrik.project.domain.model.*
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
-import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
-import metrik.project.domain.service.jenkins.dto.BuildSummaryDTO
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.infrastructure.jenkins.feign.JenkinsFeignClient
 import metrik.project.rest.vo.response.SyncProgress

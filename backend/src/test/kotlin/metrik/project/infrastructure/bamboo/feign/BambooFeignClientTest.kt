@@ -1,10 +1,12 @@
 package metrik.project.infrastructure.bamboo.feign
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
-import metrik.project.domain.service.bamboo.dto.BuildSummaryDTO
+import metrik.project.domain.service.bamboo.BuildDetailDTO
+import metrik.project.domain.service.bamboo.BuildSummaryDTO
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -27,11 +29,13 @@ internal class BambooFeignClientTest(
 ) {
 
     private lateinit var mockServer: ClientAndServer
-    private val objectMapper = jacksonObjectMapper()
+    private lateinit var objectMapper: ObjectMapper
 
     @BeforeEach
     fun setUp() {
+        objectMapper = ObjectMapper().registerModule(KotlinModule())
         objectMapper.registerModule(JavaTimeModule())
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         mockServer = startClientAndServer(8787)
     }
 

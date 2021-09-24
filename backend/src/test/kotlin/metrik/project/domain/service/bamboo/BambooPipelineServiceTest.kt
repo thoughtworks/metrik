@@ -1,7 +1,9 @@
 package metrik.project.domain.service.bamboo
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import feign.FeignException
@@ -13,9 +15,8 @@ import io.mockk.verify
 import metrik.exception.ApplicationException
 import metrik.infrastructure.utlils.RequestUtil
 import metrik.project.domain.model.*
+import metrik.project.domain.model.Stage
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
-import metrik.project.domain.service.bamboo.dto.BuildSummaryDTO
 import metrik.project.infrastructure.bamboo.feign.BambooFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -44,7 +45,7 @@ internal class BambooPipelineServiceTest {
 
     private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 
-    private val objectMapper = jacksonObjectMapper()
+    private lateinit var objectMapper: ObjectMapper
 
     private val pipelineId = "1"
     private val credential = "fake-credential"
@@ -58,8 +59,9 @@ internal class BambooPipelineServiceTest {
 
     @BeforeEach
     fun setUp() {
+        objectMapper = ObjectMapper().registerModule(KotlinModule())
         objectMapper.registerModule(JavaTimeModule())
-
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         val builds = listOf(
             Build(
                 stages = listOf(
@@ -175,8 +177,9 @@ internal class BambooPipelineServiceTest {
         )
 
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
         every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         every {
             bambooFeignClient.getMaxBuildNumber(URI(urlForSummary), credential)
@@ -206,8 +209,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-6.json").readText())
@@ -241,8 +245,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -289,8 +294,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-3.json").readText())
@@ -324,8 +330,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-4.json").readText())
@@ -363,8 +370,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-5.json").readText())
@@ -398,8 +406,9 @@ internal class BambooPipelineServiceTest {
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-7.json").readText())

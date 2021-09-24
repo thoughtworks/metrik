@@ -1,7 +1,7 @@
 package metrik.project.infrastructure.jenkins.feign
 
-import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
-import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
+import metrik.project.domain.service.jenkins.BuildDetailsDTO
+import metrik.project.domain.service.jenkins.BuildSummaryCollectionDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

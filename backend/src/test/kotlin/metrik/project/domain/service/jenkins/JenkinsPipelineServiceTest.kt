@@ -1,6 +1,9 @@
 package metrik.project.domain.service.jenkins
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import feign.FeignException
@@ -16,8 +19,6 @@ import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.domain.service.jenkins.dto.BuildDetailsDTO
-import metrik.project.domain.service.jenkins.dto.BuildSummaryCollectionDTO
 import metrik.project.infrastructure.jenkins.feign.JenkinsFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.assertj.core.api.Assertions.assertThat
@@ -48,7 +49,7 @@ internal class JenkinsPipelineServiceTest {
 
     private val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 
-    private val objectMapper = jacksonObjectMapper()
+    private lateinit var objectMapper: ObjectMapper
 
     private val pipelineId = "fake pipeline"
 
@@ -56,6 +57,9 @@ internal class JenkinsPipelineServiceTest {
 
     @BeforeEach
     fun setUp() {
+        objectMapper = ObjectMapper().registerModule(KotlinModule())
+        objectMapper.registerModule(JavaTimeModule())
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         every { buildRepository.getAllBuilds("fake pipeline") } returns listOf(
             Build(
                 stages = listOf(

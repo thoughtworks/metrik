@@ -1,13 +1,10 @@
-package metrik.project.domain.service.jenkins.dto
+package metrik.project.domain.service.jenkins
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import metrik.project.domain.model.Status
 import org.apache.logging.log4j.util.Strings
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildSummaryDTO(
     val number: Int = 0,
     val result: String? = Strings.EMPTY,
@@ -34,16 +31,12 @@ data class BuildSummaryDTO(
     }
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class ChangeSetDTO(val items: List<CommitDTO> = emptyList())
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class CommitDTO(val commitId: String, val timestamp: Long, val date: String)
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class BuildDetailsDTO(val stages: List<StageDTO> = emptyList())
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class StageDTO(
     val name: String,
     val status: String?,

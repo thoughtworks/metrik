@@ -7,7 +7,6 @@ import metrik.project.domain.model.Build
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
-import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
 import metrik.project.infrastructure.bamboo.feign.BambooFeignClient
