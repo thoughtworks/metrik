@@ -16,7 +16,7 @@ import metrik.project.domain.model.*
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
 import metrik.project.domain.service.bamboo.dto.BuildSummaryDTO
-import metrik.project.infrastructure.bamboo.BambooFeignClient
+import metrik.project.infrastructure.bamboo.feign.BambooFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -50,10 +50,8 @@ internal class BambooPipelineServiceTest {
     private val credential = "fake-credential"
     private val baseUrl = "http://localhost:80"
     private val planKey = "fake-plan-key"
-    private val getBuildSummariesUrl = "$baseUrl/rest/api/latest/result/$planKey.json"
-    private val getBuildDetailsUrl =
-        "$baseUrl/rest/api/latest/result/$planKey-1.json?expand=changes.change,stages.stage.results"
     private val userInputURL = "http://localhost:80/browse/FKM-FKMS"
+    private val pipelineName = "TEST"
 
     private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
 
@@ -120,7 +118,8 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should throw exception when sync pipeline given response is 500`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
@@ -139,7 +138,8 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should throw exception when sync pipeline given response is 400`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
@@ -159,7 +159,8 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should sync builds given build has no stages`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
@@ -174,7 +175,7 @@ internal class BambooPipelineServiceTest {
         )
 
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
         every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
         every {
@@ -198,13 +199,14 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should sync builds given stage has no jobs`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -231,16 +233,15 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds and emit the progress event given both build and stage status are success`() {
-        val pipelineName = "pipeline name"
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
-            type = PipelineType.BAMBOO,
-            name = pipelineName
+            type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
 
@@ -281,13 +282,14 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should sync builds given both build and stage status are failed`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -315,13 +317,14 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should set build state to in progress when sync build given build contains stages of which status is unknown`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -353,13 +356,14 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should sync builds given both build and stage status are non-supported status`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -387,13 +391,14 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should sync builds given the build is marked as 'need sync' by buildRepository`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
+        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
                 "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
@@ -431,14 +436,16 @@ internal class BambooPipelineServiceTest {
     @Test
     fun `should be able to convert not started build which has no start time and complete time`() {
         val pipeline = Pipeline(
-            pipelineId,
+            id = pipelineId,
+            name = pipelineName,
             credential = credential,
             url = "$baseUrl/browse/$planKey",
             type = PipelineType.BAMBOO
         )
         val urlForSummary = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
-        val urlForDetails = "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-1.json?" +
-                "expand=changes.change,stages.stage.results"
+        val urlForDetails =
+            "${RequestUtil.getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$pipelineName-1.json?" +
+                    "expand=changes.change,stages.stage.results"
 
         val buildSummaryDTO: BuildSummaryDTO =
             objectMapper.readValue(javaClass.getResource("/pipeline/bamboo/raw-build-summary-8.json").readText())

@@ -92,6 +92,7 @@ dependencies {
     testImplementation("org.codehaus.groovy:groovy:3.0.8")
     testImplementation("org.codehaus.groovy:groovy-json:3.0.8")
     testImplementation("org.codehaus.groovy:groovy-xml:3.0.8")
+    testImplementation("org.mock-server:mockserver-junit-jupiter:5.11.1")
 
     configurations.testCompile {
         exclude("ch.qos.logback", "logback-classic")

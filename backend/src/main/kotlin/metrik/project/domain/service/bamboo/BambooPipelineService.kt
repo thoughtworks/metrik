@@ -10,7 +10,7 @@ import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.bamboo.dto.BuildDetailDTO
 import metrik.project.exception.PipelineConfigVerifyException
 import metrik.project.exception.SynchronizationException
-import metrik.project.infrastructure.bamboo.BambooFeignClient
+import metrik.project.infrastructure.bamboo.feign.BambooFeignClient
 import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -110,7 +110,7 @@ class BambooPipelineService(
         buildNumber: Int,
         credential: String
     ): BuildDetailDTO? {
-        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
+        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-${pipeline.name}-$buildNumber.json?" +
                 "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url]")
         try {
