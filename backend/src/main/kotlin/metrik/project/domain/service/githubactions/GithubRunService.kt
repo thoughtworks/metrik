@@ -29,6 +29,7 @@ class GithubRunService(
                     "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
             val syncedRunsFromCurrentPage = githubFeignClient.retrieveMultipleRuns(
+                pipeline.credential,
                 owner,
                 repo,
                 maxPerPage,
@@ -57,7 +58,7 @@ class GithubRunService(
                 "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
-        return githubFeignClient.retrieveSingleRun(owner, repo, runId)?.toGithubActionsRun()
+        return githubFeignClient.retrieveSingleRun(pipeline.credential, owner, repo, runId)?.toGithubActionsRun()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {

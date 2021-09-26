@@ -29,7 +29,7 @@ class GithubCommitService(
         val allCommits = mutableSetOf<GithubCommit>()
         while (keepRetrieving) {
             val commitsFromGithub =
-                retrieveCommits(pipeline.url, startTimeStamp, endTimeStamp, branch, pageIndex)
+                retrieveCommits(pipeline.credential, pipeline.url, startTimeStamp, endTimeStamp, branch, pageIndex)
 
             allCommits.addAll(commitsFromGithub)
 
@@ -48,6 +48,7 @@ class GithubCommitService(
     }
 
     private fun retrieveCommits(
+        credential: String,
         url: String,
         startTimeStamp: Long,
         endTimeStamp: Long,
@@ -63,6 +64,7 @@ class GithubCommitService(
         val commits = with(githubFeignClient) {
             getOwnerRepoFromUrl(url).let { (owner, repo) ->
                 retrieveCommits(
+                    credential,
                     owner,
                     repo,
                     if (startTimeStamp == 0L) null else startTimeStamp.toString(),
