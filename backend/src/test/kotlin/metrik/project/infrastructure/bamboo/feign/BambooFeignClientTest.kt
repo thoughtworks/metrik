@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.service.bamboo.BuildDetailDTO
-import metrik.project.domain.service.bamboo.BuildSummaryDTO
+import metrik.project.domain.service.bamboo.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -99,6 +98,94 @@ internal class BambooFeignClientTest(
         assertEquals(
             expectBuildDetailsDTO,
             buildDetail
+        )
+    }
+
+    @Test
+    fun `should get plan key while querying for deploy project`() {
+        val expectDeployProjectSummaryDTO: DeployProjectDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/bamboo/raw-deploy-project-summary.json")!!.readText()
+            )
+
+        mockServer.`when`(
+            request()
+                .withMethod("GET")
+                .withPath("/test/deploy/summary")
+                .withHeader("Authorization", "Bearer TestToken")
+        ).respond(
+            response()
+                .withStatusCode(200)
+                .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-project-summary.json")!!.readText())
+        )
+
+        val deployProjectSummary: DeployProjectDTO? =
+            bambooFeignClient.getDeploySummary(URI("http://localhost:8787/test/deploy/summary"), "TestToken")
+
+        assertEquals(
+            expectDeployProjectSummaryDTO.planKey.key,
+            deployProjectSummary!!.planKey.key
+        )
+        assertEquals(
+            expectDeployProjectSummaryDTO.environments[0].name,
+            deployProjectSummary.environments[0].name
+        )
+    }
+
+    @Test
+    fun `should get deploy results and serialize right`() {
+        val expectedDeployResultsDTO: DeployResultsDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/bamboo/raw-deploy-results.json")!!.readText()
+            )
+
+        mockServer.`when`(
+            request()
+                .withMethod("GET")
+                .withPath("/test/deploy/results")
+                .withHeader("Authorization", "Bearer TestToken")
+        ).respond(
+            response()
+                .withStatusCode(200)
+                .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-results.json")!!.readText())
+        )
+
+        val deployResultsDTO: DeployResultsDTO? =
+            bambooFeignClient.getDeployResults(URI("http://localhost:8787/test/deploy/results"), "TestToken")
+
+        assertEquals(
+            expectedDeployResultsDTO.results[0].deploymentVersionName,
+            deployResultsDTO!!.results[0].deploymentVersionName
+        )
+    }
+
+    @Test
+    fun `should return deploy version and serialize right`() {
+        val expectedDeploymentVersionBuildResultDTO: DeploymentVersionBuildResultDTO =
+            objectMapper.readValue(
+                javaClass.getResource("/pipeline/bamboo/raw-deploy-version.json")!!.readText()
+            )
+
+        mockServer.`when`(
+            request()
+                .withMethod("GET")
+                .withPath("/test/deploy/version")
+                .withHeader("Authorization", "Bearer TestToken")
+        ).respond(
+            response()
+                .withStatusCode(200)
+                .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-version.json")!!.readText())
+        )
+
+        val deploymentVersionBuildResult: DeploymentVersionBuildResultDTO? =
+            bambooFeignClient.getDeployVersion(URI("http://localhost:8787/test/deploy/version"), "TestToken")
+
+        assertEquals(
+            expectedDeploymentVersionBuildResultDTO.planResultKey.key,
+            deploymentVersionBuildResult!!.planResultKey.key
         )
     }
 

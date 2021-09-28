@@ -168,4 +168,53 @@ data class CommitDTO(val changesetId: String, val date: ZonedDateTime) {
     }
 }
 
+
+data class DeployProjectDTO(
+    val planKey: PlanKey,
+    val environments: List<Environment>
+)
+
+data class PlanKey(val key: String)
+
+data class Environment(
+    val id: Long,
+    val name: String,
+    val deploymentProjectId: Long
+)
+
+data class DeployResultsDTO(val results: List<DeployResult>)
+
+data class DeployResult(
+    val deploymentVersion: DeploymentVersion,
+    val deploymentVersionName: String? = Strings.EMPTY,
+    val id: Long,
+    val deploymentState: String? = Strings.EMPTY,
+    val lifeCycleState: String? = Strings.EMPTY,
+    val startedDate: ZonedDateTime?,
+    val finishedDate: ZonedDateTime?
+)
+
+data class DeploymentVersion(
+    val id: Long,
+    val name: String? = Strings.EMPTY,
+    val creationDate: ZonedDateTime?,
+    val planBranchName: String? = Strings.EMPTY
+
+)
+
+data class DeploymentVersionBuildResultDTO(
+    val deploymentVersion: DeploymentVersion,
+    val planResultKey: PlanResultKey
+)
+
+data class PlanResultKey(
+    val key: String,
+    val entityKey: EntityKey,
+    val resultNumber: Int
+)
+
+data class EntityKey(
+    val key: String
+)
+
 data class Link(val href: String)

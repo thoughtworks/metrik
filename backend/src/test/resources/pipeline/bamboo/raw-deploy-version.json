@@ -1,0 +1,30 @@
+{
+  "deploymentVersion": {
+    "id": 1835009,
+    "name": "release-1",
+    "creationDate": 1631501012686,
+    "creatorUserName": "devon",
+    "items": [],
+    "operations": {
+      "canView": true,
+      "canViewConfiguration": true,
+      "canEdit": true,
+      "canDelete": true,
+      "allowedToExecute": false,
+      "canExecute": false,
+      "allowedToCreateVersion": true,
+      "allowedToSetVersionStatus": true
+    },
+    "creatorDisplayName": "devonzhang",
+    "creatorGravatarUrl": "https://secure.gravatar.com/avatar/4459464f71cd17829d23981b93f6e155?r=g&s=24&d=mm",
+    "planBranchName": "master",
+    "ageZeroPoint": 1631501066173
+  },
+  "planResultKey": {
+    "key": "SEC-DEP-3",
+    "entityKey": {
+      "key": "SEC-DEP"
+    },
+    "resultNumber": 3
+  }
+}

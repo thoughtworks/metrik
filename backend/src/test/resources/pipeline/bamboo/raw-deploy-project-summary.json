@@ -1,0 +1,67 @@
+{
+  "id": 1736705,
+  "oid": "1atgs9hfrmm0x",
+  "key": {
+    "key": "1736705"
+  },
+  "name": "deploy-this",
+  "planKey": {
+    "key": "SEC-DEP"
+  },
+  "description": "",
+  "environments": [
+    {
+      "id": 1802241,
+      "key": {
+        "key": "1736705-1802241"
+      },
+      "name": "dev",
+      "description": "",
+      "deploymentProjectId": 1736705,
+      "operations": {
+        "canView": true,
+        "canViewConfiguration": true,
+        "canEdit": true,
+        "canDelete": true,
+        "allowedToExecute": true,
+        "canExecute": true,
+        "allowedToCreateVersion": false,
+        "allowedToSetVersionStatus": false
+      },
+      "position": 0,
+      "configurationState": "TASKED"
+    },
+    {
+      "id": 1802242,
+      "key": {
+        "key": "1736705-1802242"
+      },
+      "name": "staging",
+      "description": "",
+      "deploymentProjectId": 1736705,
+      "operations": {
+        "canView": true,
+        "canViewConfiguration": true,
+        "canEdit": true,
+        "canDelete": true,
+        "allowedToExecute": true,
+        "canExecute": true,
+        "allowedToCreateVersion": false,
+        "allowedToSetVersionStatus": false
+      },
+      "position": 1,
+      "configurationState": "TASKED"
+    }
+  ],
+  "operations": {
+    "canView": true,
+    "canViewConfiguration": true,
+    "canEdit": true,
+    "canDelete": true,
+    "allowedToExecute": false,
+    "canExecute": false,
+    "allowedToCreateVersion": true,
+    "allowedToSetVersionStatus": false
+  },
+  "repositorySpecsManaged": false
+}
