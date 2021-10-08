@@ -3,7 +3,7 @@ package metrik.metrics.domain.calculator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -35,7 +35,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return MTTR given all builds`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-1.json").readText()
         )
 
@@ -43,7 +43,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to uat"))
 
-        val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val mttr = meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertThat(mttr.toDouble() * MILLISECOND_TO_HOURS).isEqualTo(144000005.00)
     }
@@ -59,7 +59,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should contain first build given builds all failed before begin time`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-2.json").readText()
         )
 
@@ -68,7 +68,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val averageMTTR =
-            meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertThat(averageMTTR.toDouble() * MILLISECOND_TO_HOURS).isEqualTo(187201525.00)
     }
@@ -85,7 +85,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return NaN while all builds are success`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-3.json").readText()
         )
 
@@ -94,7 +94,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val averageMTTR =
-            meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(averageMTTR, Double.NaN)
     }
@@ -111,7 +111,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return NaN while all builds are failed`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-4.json").readText()
         )
 
@@ -120,7 +120,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val averageMTTR =
-            meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(averageMTTR, Double.NaN)
     }
@@ -134,7 +134,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return correct MTTR given last stage status is failed `() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-5.json").readText()
         )
 
@@ -143,7 +143,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val averageMTTR =
-            meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertThat(averageMTTR.toDouble()).isNaN
     }
@@ -160,7 +160,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return MTTR given all builds with one Aborted`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-6.json").readText()
         )
 
@@ -168,7 +168,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
-        val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val mttr = meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertThat(mttr.toDouble() * MILLISECOND_TO_HOURS).isEqualTo(144000005.00)
     }
@@ -185,7 +185,7 @@ internal class MeanTimeToRestoreCalculatorTest {
      */
     @Test
     fun `should return MTTR given all builds with some Aborted and others success`() {
-        val allBuilds: List<Build> = objectMapper.readValue(
+        val allExecutions: List<Execution> = objectMapper.readValue(
             this.javaClass.getResource("/calculator/builds-for-MTTR-case-7.json").readText()
         )
 
@@ -193,7 +193,7 @@ internal class MeanTimeToRestoreCalculatorTest {
         val endTimestamp = 1609689600000L // 2021.01.04
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
-        val mttr = meanTimeToRestoreCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+        val mttr = meanTimeToRestoreCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(mttr, Double.NaN)
     }

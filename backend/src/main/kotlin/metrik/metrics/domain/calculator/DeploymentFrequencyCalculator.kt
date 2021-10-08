@@ -1,7 +1,7 @@
 package metrik.metrics.domain.calculator
 
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.springframework.stereotype.Component
 
@@ -14,13 +14,13 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimestamp: Long,
         endTimestamp: Long,
         pipelineStagesMap: Map<String, String>
     ): Number {
         return pipelineStagesMap.map { entry ->
-            allBuilds.filter {
+            allExecutions.filter {
                 it.pipelineId == entry.key && !isInvalidBuild(
                     it,
                     startTimestamp,
@@ -45,25 +45,25 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
     }
 
     private fun isInvalidBuild(
-        currentBuild: Build,
+        currentExecution: Execution,
         startTimestamp: Long,
         endTimestamp: Long,
         targetStage: String
     ): Boolean {
-        return !isTargetStageWithinTimeRange(currentBuild, startTimestamp, endTimestamp, targetStage) ||
-            !isTargetStageSuccess(currentBuild, targetStage)
+        return !isTargetStageWithinTimeRange(currentExecution, startTimestamp, endTimestamp, targetStage) ||
+            !isTargetStageSuccess(currentExecution, targetStage)
     }
 
-    private fun isTargetStageSuccess(build: Build, targetStage: String) =
-        build.stages.find { stage -> stage.name == targetStage }?.status == Status.SUCCESS
+    private fun isTargetStageSuccess(execution: Execution, targetStage: String) =
+        execution.stages.find { stage -> stage.name == targetStage }?.status == Status.SUCCESS
 
     private fun isTargetStageWithinTimeRange(
-        build: Build,
+        execution: Execution,
         startTimestamp: Long,
         endTimestamp: Long,
         targetStage: String
     ): Boolean {
-        val stage = build.stages.find { it.name == targetStage }
+        val stage = execution.stages.find { it.name == targetStage }
         val deploymentFinishTimestamp = stage?.getStageDoneTime()
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp

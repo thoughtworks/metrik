@@ -13,7 +13,7 @@ import metrik.metrics.domain.model.LEVEL
 import metrik.metrics.domain.model.Metrics
 import metrik.metrics.exception.BadRequestException
 import metrik.metrics.rest.vo.PipelineStageRequest
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.repository.BuildRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -47,16 +47,16 @@ internal class MetricsApplicationServiceTest {
     private val startOfSecondPeriod = 1623859200000L
     private val endOfSecondPeriod = 1624987108485L
     private val periodLengthInDays = 28
-    private val expectedBuilds = emptyList<Build>()
+    private val expectedExecutions = emptyList<Execution>()
     private val unit = CalculationPeriod.Fortnightly
     private val unit2 = CalculationPeriod.Monthly
 
     @BeforeEach
     fun setUp() {
-        every { buildRepository.getAllBuilds(targetStage.keys) } returns expectedBuilds
+        every { buildRepository.getAllBuilds(targetStage.keys) } returns expectedExecutions
         every {
             deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -65,7 +65,7 @@ internal class MetricsApplicationServiceTest {
         every { deploymentFrequencyCalculator.calculateLevel(7, periodLengthInDays) } returns LEVEL.ELITE
         every {
             deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfFirstPeriod,
                 targetStage
@@ -73,7 +73,7 @@ internal class MetricsApplicationServiceTest {
         } returns 3
         every {
             deploymentFrequencyCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfSecondPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -81,7 +81,7 @@ internal class MetricsApplicationServiceTest {
         } returns 4
         every {
             leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -90,7 +90,7 @@ internal class MetricsApplicationServiceTest {
         every { leadTimeForChangeCalculator.calculateLevel(2.0) } returns LEVEL.LOW
         every {
             leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfFirstPeriod,
                 targetStage
@@ -98,7 +98,7 @@ internal class MetricsApplicationServiceTest {
         } returns 1.0
         every {
             leadTimeForChangeCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfSecondPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -107,7 +107,7 @@ internal class MetricsApplicationServiceTest {
         every { leadTimeForChangeCalculator.calculateLevel(2.0) } returns LEVEL.HIGH
         every {
             meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -116,7 +116,7 @@ internal class MetricsApplicationServiceTest {
         every { meanTimeToRestoreCalculator.calculateLevel(2.25) } returns LEVEL.HIGH
         every {
             meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfFirstPeriod,
                 targetStage
@@ -124,7 +124,7 @@ internal class MetricsApplicationServiceTest {
         } returns 1.8
         every {
             meanTimeToRestoreCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfSecondPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -132,7 +132,7 @@ internal class MetricsApplicationServiceTest {
         } returns 5.7
         every {
             changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfSecondPeriod,
                 targetStage
@@ -141,7 +141,7 @@ internal class MetricsApplicationServiceTest {
         every { changeFailureRateCalculator.calculateLevel(0.5) } returns LEVEL.LOW
         every {
             changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfFirstPeriod,
                 endOfFirstPeriod,
                 targetStage
@@ -149,7 +149,7 @@ internal class MetricsApplicationServiceTest {
         } returns 0.4
         every {
             changeFailureRateCalculator.calculateValue(
-                expectedBuilds,
+                expectedExecutions,
                 startOfSecondPeriod,
                 endOfSecondPeriod,
                 targetStage

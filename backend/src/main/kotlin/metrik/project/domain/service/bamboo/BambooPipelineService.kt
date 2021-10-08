@@ -3,7 +3,7 @@ package metrik.project.domain.service.bamboo
 import feign.FeignException.FeignClientException
 import feign.FeignException.FeignServerException
 import metrik.infrastructure.utlils.RequestUtil.getDomain
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
@@ -55,7 +55,7 @@ class BambooPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)

@@ -1,7 +1,7 @@
 package metrik.project
 
 import io.mockk.mockk
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -92,7 +92,7 @@ val commit = Commit(
     "2021-08-11T01:46:31Z[UTC]"
 )
 
-val githubActionsBuild = Build(
+val githubActionsExecution = Execution(
     pipelineId = pipelineId,
     number = 1111111111,
     result = Status.SUCCESS,
@@ -108,14 +108,14 @@ val githubActionsBuild = Build(
     )
 )
 
-val builds = listOf(
-    Build(
+val executions = listOf(
+    Execution(
         stages = listOf(
             Stage(name = "clone"), Stage(name = "build"),
             Stage(name = "zzz"), Stage(name = "amazing")
         )
     ),
-    Build(
+    Execution(
         stages = listOf(
             Stage(name = "build"), Stage("good")
         )

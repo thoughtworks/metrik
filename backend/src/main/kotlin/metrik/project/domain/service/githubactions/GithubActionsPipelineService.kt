@@ -3,7 +3,7 @@ package metrik.project.domain.service.githubactions
 import feign.FeignException.FeignClientException
 import feign.FeignException.FeignServerException
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.repository.BuildRepository
@@ -27,7 +27,7 @@ class GithubActionsPipelineService(
     private val githubCommitService: GithubCommitService,
     private val githubRunService: GithubRunService,
     private val buildRepository: BuildRepository,
-    private val githubBuildConverter: GithubBuildConverter,
+    private val githubExecutionConverter: GithubExecutionConverter,
     private val githubFeignClient: GithubFeignClient
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
@@ -55,7 +55,7 @@ class GithubActionsPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
 
         val progressCounter = AtomicInteger(0)
@@ -90,7 +90,7 @@ class GithubActionsPipelineService(
             val builds = newRuns.map {
 
                 val commits: List<Commit> = branchRunCommitsMap[it.branch]!![it]!!
-                val convertedBuild = githubBuildConverter.convertToBuild(it, pipeline.id, commits)
+                val convertedBuild = githubExecutionConverter.convertToBuild(it, pipeline.id, commits)
 
                 buildRepository.save(convertedBuild)
 

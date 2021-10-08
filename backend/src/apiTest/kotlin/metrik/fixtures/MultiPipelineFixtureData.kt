@@ -1,6 +1,6 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -26,7 +26,7 @@ val multiPipeline2 = Pipeline(
     type = PipelineType.JENKINS
 )
 
-val multiPipelineBuild1 = Build(
+val multiPipelineExecution1 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 1,
     duration = 621278,
@@ -64,7 +64,7 @@ val multiPipelineBuild1 = Build(
         )
     )
 )
-val multiPipelineBuild2 = Build(
+val multiPipelineExecution2 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 2,
     duration = 621278,
@@ -102,7 +102,7 @@ val multiPipelineBuild2 = Build(
         )
     )
 )
-val multiPipelineBuild3 = Build(
+val multiPipelineExecution3 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 3,
     duration = 621278,
@@ -146,7 +146,7 @@ val multiPipelineBuild3 = Build(
     )
 )
 
-val multiPipelineBuild4 = Build(
+val multiPipelineExecution4 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 4,
     duration = 621278,
@@ -184,7 +184,7 @@ val multiPipelineBuild4 = Build(
         )
     )
 )
-val multiPipelineBuild5 = Build(
+val multiPipelineExecution5 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 5,
     duration = 621278,
@@ -222,7 +222,7 @@ val multiPipelineBuild5 = Build(
         )
     )
 )
-val multiPipelineBuild6 = Build(
+val multiPipelineExecution6 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 6,
     duration = 40000,
@@ -260,7 +260,7 @@ val multiPipelineBuild6 = Build(
         )
     )
 )
-val multiPipelineBuild7 = Build(
+val multiPipelineExecution7 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 7,
     duration = 40000,
@@ -298,7 +298,7 @@ val multiPipelineBuild7 = Build(
         )
     )
 )
-val multiPipelineBuild8 = Build(
+val multiPipelineExecution8 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 8,
     duration = 40000,
@@ -336,7 +336,7 @@ val multiPipelineBuild8 = Build(
         )
     )
 )
-val multiPipelineBuild9 = Build(
+val multiPipelineExecution9 = Execution(
     pipelineId = "600a701221048076f92c4e43",
     number = 9,
     duration = 40000,
@@ -374,7 +374,7 @@ val multiPipelineBuild9 = Build(
         )
     )
 )
-val multiPipelineBuild10 = Build(
+val multiPipelineExecution10 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 10,
     duration = 621278,
@@ -412,7 +412,7 @@ val multiPipelineBuild10 = Build(
         )
     )
 )
-val multiPipelineBuild11 = Build(
+val multiPipelineExecution11 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 11,
     duration = 621278,
@@ -450,7 +450,7 @@ val multiPipelineBuild11 = Build(
         )
     )
 )
-val multiPipelineBuild12 = Build(
+val multiPipelineExecution12 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 12,
     duration = 621278,
@@ -494,7 +494,7 @@ val multiPipelineBuild12 = Build(
     )
 )
 
-val multiPipelineBuild13 = Build(
+val multiPipelineExecution13 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 13,
     duration = 621278,
@@ -532,7 +532,7 @@ val multiPipelineBuild13 = Build(
         )
     )
 )
-val multiPipelineBuild14 = Build(
+val multiPipelineExecution14 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 14,
     duration = 621278,
@@ -570,7 +570,7 @@ val multiPipelineBuild14 = Build(
         )
     )
 )
-val multiPipelineBuild15 = Build(
+val multiPipelineExecution15 = Execution(
     pipelineId = "601a2f129deac2220dd07570",
     number = 15,
     duration = 40000,
@@ -610,19 +610,19 @@ val multiPipelineBuild15 = Build(
 )
 
 val multiPipelineBuilds = listOf(
-    multiPipelineBuild1,
-    multiPipelineBuild2,
-    multiPipelineBuild3,
-    multiPipelineBuild4,
-    multiPipelineBuild5,
-    multiPipelineBuild6,
-    multiPipelineBuild7,
-    multiPipelineBuild8,
-    multiPipelineBuild9,
-    multiPipelineBuild10,
-    multiPipelineBuild11,
-    multiPipelineBuild12,
-    multiPipelineBuild13,
-    multiPipelineBuild14,
-    multiPipelineBuild15
+    multiPipelineExecution1,
+    multiPipelineExecution2,
+    multiPipelineExecution3,
+    multiPipelineExecution4,
+    multiPipelineExecution5,
+    multiPipelineExecution6,
+    multiPipelineExecution7,
+    multiPipelineExecution8,
+    multiPipelineExecution9,
+    multiPipelineExecution10,
+    multiPipelineExecution11,
+    multiPipelineExecution12,
+    multiPipelineExecution13,
+    multiPipelineExecution14,
+    multiPipelineExecution15
 )

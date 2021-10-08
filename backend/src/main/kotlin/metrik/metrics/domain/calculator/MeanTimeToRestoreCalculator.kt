@@ -1,7 +1,7 @@
 package metrik.metrics.domain.calculator
 
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import org.springframework.stereotype.Component
@@ -20,12 +20,12 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimestamp: Long,
         endTimestamp: Long,
         pipelineStagesMap: Map<String, String>
     ): Number {
-        val (totalTime, restoreTimes) = allBuilds
+        val (totalTime, restoreTimes) = allExecutions
             .groupBy { it.pipelineId }
             .map {
                 val selectedStages =
@@ -66,13 +66,13 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
     }
 
     private fun findSelectedStages(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimestamp: Long,
         endTimestamp: Long,
         targetStage: String?
     ): List<Stage> {
         if (targetStage == null) return emptyList()
-        val targetStages = allBuilds.asSequence()
+        val targetStages = allExecutions.asSequence()
             .flatMap { it.stages }
             .filter { it.name == targetStage }
             .filter { it.status in TARGET_STAGE_STATUS_LIST }

@@ -3,7 +3,7 @@ package metrik.metrics.domain.calculator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -37,12 +37,12 @@ internal class ChangeFailureRateCalculatorTest {
         val startTimestamp = 1609459200000L
         val endTimestamp = 1611994800000L
 
-        val mockBuildList: List<Build> =
+        val mockExecutionList: List<Execution> =
             objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-1.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
-                mockBuildList,
+                mockExecutionList,
                 startTimestamp,
                 endTimestamp,
                 pipelineStageMap
@@ -70,12 +70,12 @@ internal class ChangeFailureRateCalculatorTest {
         val startTimestamp = 1609459200000L
         val endTimestamp = 1611994800000L
 
-        val mockBuildList: List<Build> =
+        val mockExecutionList: List<Execution> =
             objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-2.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
-                mockBuildList,
+                mockExecutionList,
                 startTimestamp,
                 endTimestamp,
                 pipelineStageMap
@@ -98,12 +98,12 @@ internal class ChangeFailureRateCalculatorTest {
         val startTimestamp = 1611974800000L
         val endTimestamp = 1611974800000L
 
-        val mockBuildList: List<Build> =
+        val mockExecutionList: List<Execution> =
             objectMapper.readValue(this.javaClass.getResource("/calculator/builds-for-CFR-case-1.json").readText())
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
-                mockBuildList,
+                mockExecutionList,
                 startTimestamp,
                 endTimestamp,
                 mapOf(Pair("1", targetStage))
@@ -134,7 +134,7 @@ internal class ChangeFailureRateCalculatorTest {
 
         assertThat(
             changeFailureRateCalculator.calculateValue(
-                listOf(Build(pipelineId = "1")),
+                listOf(Execution(pipelineId = "1")),
                 startTimestamp,
                 endTimestamp,
                 mapOf()

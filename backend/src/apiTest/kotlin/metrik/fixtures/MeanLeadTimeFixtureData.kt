@@ -1,6 +1,6 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -62,7 +62,7 @@ val ltPipeline6 = Pipeline(
     type = PipelineType.JENKINS
 )
 
-val ltBuild1 = Build(
+val ltExecution1 = Execution(
     pipelineId = "6012505c42fbb8439fc08e17",
     number = 1,
     duration = 7200000,
@@ -93,7 +93,7 @@ val ltBuild1 = Build(
         )
     )
 )
-val ltBuild2 = Build(
+val ltExecution2 = Execution(
     pipelineId = "6012505c42fbb8439fc08e16",
     number = 1,
     duration = 7200000,
@@ -124,7 +124,7 @@ val ltBuild2 = Build(
         )
     )
 )
-val ltBuild3 = Build(
+val ltExecution3 = Execution(
     pipelineId = "6012505c42fbb8439fc08e15",
     number = 1,
     duration = 7200000,
@@ -155,7 +155,7 @@ val ltBuild3 = Build(
         )
     )
 )
-val ltBuild4 = Build(
+val ltExecution4 = Execution(
     pipelineId = "6012505c42fbb8439fc08e14",
     number = 1,
     duration = 7200000,
@@ -180,7 +180,7 @@ val ltBuild4 = Build(
     ),
     changeSets = emptyList()
 )
-val ltBuild5 = Build(
+val ltExecution5 = Execution(
     pipelineId = "6012505c42fbb8439fc08e13",
     number = 1,
     duration = 200,
@@ -211,7 +211,7 @@ val ltBuild5 = Build(
         )
     )
 )
-val ltBuild6 = Build(
+val ltExecution6 = Execution(
     pipelineId = "6012505c42fbb8439fc08e13",
     number = 2,
     duration = 200,
@@ -236,7 +236,7 @@ val ltBuild6 = Build(
     ),
     changeSets = emptyList()
 )
-val ltBuild7 = Build(
+val ltExecution7 = Execution(
     pipelineId = "6012505c42fbb8439fc08e12",
     number = 1,
     duration = 200,
@@ -289,11 +289,11 @@ val ltPipelines = listOf(
     ltPipeline6
 )
 val ltBuilds = listOf(
-    ltBuild1,
-    ltBuild2,
-    ltBuild3,
-    ltBuild4,
-    ltBuild5,
-    ltBuild6,
-    ltBuild7,
+    ltExecution1,
+    ltExecution2,
+    ltExecution3,
+    ltExecution4,
+    ltExecution5,
+    ltExecution6,
+    ltExecution7,
 )

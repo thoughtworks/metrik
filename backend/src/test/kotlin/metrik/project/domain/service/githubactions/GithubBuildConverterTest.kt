@@ -2,7 +2,7 @@ package metrik.project.domain.service.githubactions
 
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.junit5.MockKExtension
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 internal class GithubBuildConverterTest {
 
     @InjectMockKs
-    private lateinit var githubBuildConverter: GithubBuildConverter
+    private lateinit var githubExecutionConverter: GithubExecutionConverter
 
     @Test
     fun `should successfully convert run to build`() {
@@ -24,7 +24,7 @@ internal class GithubBuildConverterTest {
             commit
         )
 
-        val build = Build(
+        val execution = Execution(
             pipelineId = pipelineId,
             number = 123,
             result = Status.SUCCESS,
@@ -45,7 +45,7 @@ internal class GithubBuildConverterTest {
             changeSets = commits
         )
 
-        assertEquals(build, githubBuildConverter.convertToBuild(run, pipelineId, commits))
+        assertEquals(execution, githubExecutionConverter.convertToBuild(run, pipelineId, commits))
     }
 
     private companion object {

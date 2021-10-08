@@ -3,9 +3,9 @@ package metrik
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import metrik.base.ApiTestBase
-import metrik.fixtures.dfBuild1
-import metrik.fixtures.dfBuild2
-import metrik.fixtures.dfBuild3
+import metrik.fixtures.dfExecution1
+import metrik.fixtures.dfExecution2
+import metrik.fixtures.dfExecution3
 import metrik.fixtures.dfPipeline
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeAll
@@ -20,9 +20,9 @@ internal class DFCalculationApiTest : ApiTestBase() {
         mongoTemplate.save(dfPipeline)
         // init build data
         val buildCollectionName = "build"
-        mongoTemplate.save(dfBuild1, buildCollectionName)
-        mongoTemplate.save(dfBuild2, buildCollectionName)
-        mongoTemplate.save(dfBuild3, buildCollectionName)
+        mongoTemplate.save(dfExecution1, buildCollectionName)
+        mongoTemplate.save(dfExecution2, buildCollectionName)
+        mongoTemplate.save(dfExecution3, buildCollectionName)
     }
 
     @Test

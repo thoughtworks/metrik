@@ -1,6 +1,6 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -17,7 +17,7 @@ val cfrPipeline = Pipeline(
     type = PipelineType.JENKINS
 )
 
-val cfrBuild1 = Build(
+val cfrExecution1 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 1,
     duration = 40000,
@@ -55,7 +55,7 @@ val cfrBuild1 = Build(
         )
     )
 )
-val cfrBuild2 = Build(
+val cfrExecution2 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 2,
     duration = 40000,
@@ -93,7 +93,7 @@ val cfrBuild2 = Build(
         )
     )
 )
-val cfrBuild3 = Build(
+val cfrExecution3 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 3,
     duration = 50000,
@@ -131,7 +131,7 @@ val cfrBuild3 = Build(
         )
     )
 )
-val cfrBuild4 = Build(
+val cfrExecution4 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 4,
     duration = 40000,
@@ -169,7 +169,7 @@ val cfrBuild4 = Build(
         )
     )
 )
-val cfrBuild5 = Build(
+val cfrExecution5 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 5,
     duration = 621278,
@@ -207,7 +207,7 @@ val cfrBuild5 = Build(
         )
     )
 )
-val cfrBuild6 = Build(
+val cfrExecution6 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 6,
     duration = 621278,
@@ -245,7 +245,7 @@ val cfrBuild6 = Build(
         )
     )
 )
-val cfrBuild7 = Build(
+val cfrExecution7 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 7,
     duration = 621278,
@@ -283,7 +283,7 @@ val cfrBuild7 = Build(
         )
     )
 )
-val cfrBuild8 = Build(
+val cfrExecution8 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 8,
     duration = 621278,
@@ -321,7 +321,7 @@ val cfrBuild8 = Build(
         )
     )
 )
-val cfrBuild9 = Build(
+val cfrExecution9 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 9,
     duration = 621278,
@@ -359,7 +359,7 @@ val cfrBuild9 = Build(
         )
     )
 )
-val cfrBuild10 = Build(
+val cfrExecution10 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 10,
     duration = 621278,
@@ -397,7 +397,7 @@ val cfrBuild10 = Build(
         )
     )
 )
-val cfrBuild11 = Build(
+val cfrExecution11 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 11,
     duration = 40000,
@@ -435,7 +435,7 @@ val cfrBuild11 = Build(
         )
     )
 )
-val cfrBuild12 = Build(
+val cfrExecution12 = Execution(
     pipelineId = "6012505c42fbb8439fc08b21",
     number = 12,
     duration = 40000,
@@ -475,16 +475,16 @@ val cfrBuild12 = Build(
 )
 
 val cfrBuilds = listOf(
-    cfrBuild1,
-    cfrBuild2,
-    cfrBuild3,
-    cfrBuild4,
-    cfrBuild5,
-    cfrBuild6,
-    cfrBuild7,
-    cfrBuild8,
-    cfrBuild9,
-    cfrBuild10,
-    cfrBuild11,
-    cfrBuild12
+    cfrExecution1,
+    cfrExecution2,
+    cfrExecution3,
+    cfrExecution4,
+    cfrExecution5,
+    cfrExecution6,
+    cfrExecution7,
+    cfrExecution8,
+    cfrExecution9,
+    cfrExecution10,
+    cfrExecution11,
+    cfrExecution12
 )

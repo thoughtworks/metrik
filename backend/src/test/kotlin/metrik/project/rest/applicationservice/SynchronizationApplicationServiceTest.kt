@@ -8,7 +8,7 @@ import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
@@ -52,11 +52,11 @@ internal class SynchronizationApplicationServiceTest {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
-        val builds = listOf(Build())
+        val executions = listOf(Execution())
 
         every { projectRepository.findById(any()) } returns Project(projectId)
         every { pipelineRepository.findByProjectId(projectId) } returns listOf(pipeline)
-        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns builds
+        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns executions
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
@@ -76,13 +76,13 @@ internal class SynchronizationApplicationServiceTest {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
-        val builds = listOf(Build())
+        val executions = listOf(Execution())
         val lastSyncTimestamp = 1610668800000
 
         every { projectRepository.findById(projectId) } returns Project(projectId, "name", lastSyncTimestamp)
         every { pipelineRepository.findByProjectId(projectId) } returns listOf(pipeline)
         every { projectRepository.updateSynchronizationTime(any(), any()) } returns (lastSyncTimestamp + 1)
-        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns builds
+        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns executions
 
         val updateTimestamp = synchronizationApplicationService.synchronize(projectId)
 
@@ -135,13 +135,13 @@ internal class SynchronizationApplicationServiceTest {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
-        val builds = listOf(Build())
+        val executions = listOf(Execution())
 
         every { projectRepository.findById(projectId) } returns Project(projectId)
         every { pipelineRepository.findByProjectId(projectId) } returns listOf(
             Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
         )
-        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns builds
+        every { pipelineServiceMock.syncBuildsProgressively(any(), any()) } returns executions
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId)
 
@@ -163,7 +163,7 @@ internal class SynchronizationApplicationServiceTest {
         val projectId = "fake-project-id"
         val pipelineId = "fake-pipeline-id"
         val pipeline = Pipeline(id = pipelineId, type = PipelineType.BAMBOO)
-        val builds = listOf(Build())
+        val executions = listOf(Execution())
 
         val progress = SyncProgress(pipelineId, "pipeline name", 1, 1)
         val mockEmitCb = spyk<(SyncProgress) -> Unit>()
@@ -180,7 +180,7 @@ internal class SynchronizationApplicationServiceTest {
             )
         } answers {
             callbackCaptor.captured.invoke(progress)
-            builds
+            executions
         }
 
         val updatedTimestamp = synchronizationApplicationService.synchronize(projectId, mockEmitCb)

@@ -12,7 +12,7 @@ import io.mockk.verify
 import metrik.exception.ApplicationException
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.branch
-import metrik.project.builds
+import metrik.project.executions
 import metrik.project.commit
 import metrik.project.credential
 import metrik.project.currentTimeStamp
@@ -20,7 +20,7 @@ import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.githubActionsBuild
+import metrik.project.githubActionsExecution
 import metrik.project.githubActionsPipeline
 import metrik.project.githubActionsRun
 import metrik.project.infrastructure.github.feign.GithubFeignClient
@@ -53,7 +53,7 @@ internal class GithubActionsPipelineServiceTest {
     private lateinit var githubFeignClient: GithubFeignClient
 
     @SpyK
-    private var githubBuildConverter: GithubBuildConverter = GithubBuildConverter()
+    private var githubExecutionConverter: GithubExecutionConverter = GithubExecutionConverter()
 
     private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
 
@@ -100,7 +100,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
-        every { buildRepository.getAllBuilds(pipelineId) } returns (builds)
+        every { buildRepository.getAllBuilds(pipelineId) } returns (executions)
 
         val result = githubActionsPipelineService.getStagesSortedByName(pipelineId)
 
@@ -114,7 +114,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should map one run to its commits`() {
-        val build = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
+        val build = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
 
         every {
             buildRepository.getPreviousBuild(
@@ -206,9 +206,9 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should map multiple runs to their commits`() {
-        val buildFirst = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
-        val buildSecond = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = 1619098860779)))
-        val buildThird = githubActionsBuild.copy(changeSets = listOf(commit.copy(timestamp = 1618926060779)))
+        val buildFirst = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
+        val buildSecond = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = 1619098860779)))
+        val buildThird = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = 1618926060779)))
 
         val githubActionsRunSecond = githubActionsRun.copy(
             commitTimeStamp = ZonedDateTime.parse("2021-04-23T13:41:00.779Z")
@@ -258,7 +258,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should map first run given previous run does not have commits`() {
-        val build = githubActionsBuild.copy(changeSets = emptyList())
+        val build = githubActionsExecution.copy(changeSets = emptyList())
 
         every {
             buildRepository.getPreviousBuild(
@@ -302,7 +302,7 @@ internal class GithubActionsPipelineServiceTest {
                 any(),
                 branch
             )
-        } returns githubActionsBuild
+        } returns githubActionsExecution
         every {
             githubCommitService.getCommitsBetweenTimePeriod(
                 any(),
@@ -342,14 +342,14 @@ internal class GithubActionsPipelineServiceTest {
 
         verify {
             buildRepository.save(
-                githubActionsBuild.copy(
+                githubActionsExecution.copy(
                     result = Status.IN_PROGRESS,
                     stages = emptyList(),
                     changeSets = emptyList()
                 )
             )
             buildRepository.save(
-                githubActionsBuild.copy(
+                githubActionsExecution.copy(
                     result = Status.IN_PROGRESS,
                     stages = emptyList(),
                     number = 1111111112,
@@ -361,7 +361,7 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync and update all previous in-progress builds`() {
-        val build = githubActionsBuild.copy(result = Status.IN_PROGRESS, stages = emptyList())
+        val build = githubActionsExecution.copy(result = Status.IN_PROGRESS, stages = emptyList())
         every { buildRepository.getLatestBuild(pipelineId) } returns (build)
         every { buildRepository.getInProgressBuilds(pipelineId) } returns (listOf(build))
         every {
@@ -370,7 +370,7 @@ internal class GithubActionsPipelineServiceTest {
                 any(),
                 branch
             )
-        } returns githubActionsBuild
+        } returns githubActionsExecution
         every {
             githubCommitService.getCommitsBetweenTimePeriod(
                 any(),
@@ -399,7 +399,7 @@ internal class GithubActionsPipelineServiceTest {
         githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
-            buildRepository.save(githubActionsBuild.copy(changeSets = emptyList()))
+            buildRepository.save(githubActionsExecution.copy(changeSets = emptyList()))
         }
     }
 
@@ -524,7 +524,7 @@ internal class GithubActionsPipelineServiceTest {
                 any(),
                 branch
             )
-        } returns githubActionsBuild
+        } returns githubActionsExecution
         every {
             githubCommitService.getCommitsBetweenTimePeriod(
                 any(),
@@ -564,14 +564,14 @@ internal class GithubActionsPipelineServiceTest {
 
         verify {
             buildRepository.save(
-                githubActionsBuild.copy(
+                githubActionsExecution.copy(
                     result = Status.OTHER,
                     stages = emptyList(),
                     changeSets = emptyList()
                 )
             )
             buildRepository.save(
-                githubActionsBuild.copy(
+                githubActionsExecution.copy(
                     result = Status.OTHER,
                     stages = emptyList(),
                     number = 1111111112,

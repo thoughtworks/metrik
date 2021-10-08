@@ -3,7 +3,7 @@ package metrik.metrics.domain.calculator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +30,7 @@ internal class DeploymentFrequencyCalculatorTest {
      */
     @Test
     fun `should return DF given all builds with some Aborted and others success`() {
-        val allBuilds: List<Build> = jacksonObjectMapper().readValue(
+        val allExecutions: List<Execution> = jacksonObjectMapper().readValue(
             this.javaClass.getResource("/calculator/builds-for-DF-case-1.json").readText()
         )
 
@@ -39,7 +39,7 @@ internal class DeploymentFrequencyCalculatorTest {
         val targetStage = mapOf(Pair("1", "deploy to prod"), Pair("2", "deploy to prod"))
 
         val deploymentCount =
-            deploymentFrequencyCalculator.calculateValue(allBuilds, startTimestamp, endTimestamp, targetStage)
+            deploymentFrequencyCalculator.calculateValue(allExecutions, startTimestamp, endTimestamp, targetStage)
 
         assertEquals(deploymentCount, 2)
     }
@@ -56,14 +56,14 @@ internal class DeploymentFrequencyCalculatorTest {
         val startTimestamp = 1609286400000L // 2020-12-30
         val endTimestamp = 1612137600000L // 2021-02-01
 
-        val mockBuildList: List<Build> =
+        val mockExecutionList: List<Execution> =
             jacksonObjectMapper().readValue(
                 this.javaClass.getResource("/calculator/builds-for-DF-case-3.json").readText()
             )
 
         assertThat(
             deploymentFrequencyCalculator.calculateValue(
-                mockBuildList,
+                mockExecutionList,
                 startTimestamp,
                 endTimestamp,
                 targetStage

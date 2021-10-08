@@ -31,7 +31,7 @@ data class Commit(
     val pipelineId: String? = null
 )
 
-data class Build(
+data class Execution(
     val pipelineId: String = Strings.EMPTY,
     val number: Int = 0,
     val result: Status? = null,

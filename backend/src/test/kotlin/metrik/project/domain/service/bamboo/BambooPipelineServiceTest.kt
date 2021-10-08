@@ -62,20 +62,20 @@ internal class BambooPipelineServiceTest {
         objectMapper = ObjectMapper().registerModule(KotlinModule())
         objectMapper.registerModule(JavaTimeModule())
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        val builds = listOf(
-            Build(
+        val executions = listOf(
+            Execution(
                 stages = listOf(
                     Stage(name = "clone"), Stage(name = "build"),
                     Stage(name = "zzz"), Stage(name = "amazing")
                 )
             ),
-            Build(
+            Execution(
                 stages = listOf(
                     Stage(name = "build"), Stage("good")
                 )
             )
         )
-        every { buildRepository.getAllBuilds(pipelineId) } returns builds
+        every { buildRepository.getAllBuilds(pipelineId) } returns executions
         every { buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, 1) } returns listOf(1)
     }
 
@@ -189,14 +189,14 @@ internal class BambooPipelineServiceTest {
         } returns buildDetailsDTO
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build = Build(
+        val execution = Execution(
             pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1593398522798,
             url = "$baseUrl/rest/api/latest/result/$planKey-1",
             stages = emptyList(),
             changeSets = emptyList()
         )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -224,15 +224,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId, number = 1, result = Status.SUCCESS, duration = 0, timestamp = 1615882987191,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = emptyList(),
                 changeSets = emptyList()
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -261,8 +261,8 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId,
                 number = 1,
                 result = Status.SUCCESS,
@@ -279,7 +279,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
         val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
         verify(exactly = 1) { mockEmitCb.invoke(progress) }
     }
@@ -309,15 +309,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId, number = 1, result = Status.FAILED, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.FAILED, 1593398522566, 38, 0, 1593398522604)),
                 changeSets = listOf()
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -345,8 +345,8 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId,
                 number = 1,
                 result = Status.IN_PROGRESS,
@@ -357,7 +357,7 @@ internal class BambooPipelineServiceTest {
                 changeSets = emptyList()
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -385,15 +385,15 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId, number = 1, result = Status.OTHER, duration = 1133, timestamp = 1593398521665,
                 url = "$baseUrl/rest/api/latest/result/$planKey-1",
                 stages = listOf(Stage("Stage 1", Status.OTHER, 1593398522566, 38, 0, 1593398522604)),
                 changeSets = listOf()
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -421,8 +421,8 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        val build =
-            Build(
+        val execution =
+            Execution(
                 pipelineId = pipelineId,
                 number = 1,
                 result = Status.SUCCESS,
@@ -439,7 +439,7 @@ internal class BambooPipelineServiceTest {
                 )
             )
 
-        verify(exactly = 1) { buildRepository.save(build) }
+        verify(exactly = 1) { buildRepository.save(execution) }
     }
 
     @Test
@@ -467,7 +467,7 @@ internal class BambooPipelineServiceTest {
 
         bambooPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        verify(exactly = 0) { buildRepository.save(ofType(Build::class)) }
+        verify(exactly = 0) { buildRepository.save(ofType(Execution::class)) }
     }
 
     private fun buildFeignResponse(statusCode: Int) =

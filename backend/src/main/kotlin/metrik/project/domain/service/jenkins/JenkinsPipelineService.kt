@@ -45,7 +45,7 @@ class JenkinsPipelineService(
             .toList()
     }
 
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Build> {
+    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Jenkins pipeline [$pipeline.id]")
         val progressCounter = AtomicInteger(0)
 
@@ -64,7 +64,7 @@ class JenkinsPipelineService(
             val buildDetails =
                 getBuildDetailsFromJenkins(pipeline.username!!, pipeline.credential, pipeline.url, buildSummary)
 
-            val convertedBuild = Build(
+            val convertedExecution = Execution(
                 pipeline.id,
                 buildSummary.number,
                 buildSummary.getBuildExecutionStatus(),
@@ -84,7 +84,7 @@ class JenkinsPipelineService(
                 )
             )
             logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/${buildsNeedToSync.size}]")
-            convertedBuild
+            convertedExecution
         }.toList()
 
         buildRepository.save(builds)

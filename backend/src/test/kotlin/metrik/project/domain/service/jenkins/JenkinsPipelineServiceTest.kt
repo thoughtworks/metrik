@@ -14,7 +14,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
@@ -61,13 +61,13 @@ internal class JenkinsPipelineServiceTest {
         objectMapper.registerModule(JavaTimeModule())
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         every { buildRepository.getAllBuilds("fake pipeline") } returns listOf(
-            Build(
+            Execution(
                 stages = listOf(
                     Stage(name = "clone"), Stage(name = "build"),
                     Stage(name = "zzz"), Stage(name = "amazing")
                 )
             ),
-            Build(
+            Execution(
                 stages = listOf(
                     Stage(name = "build"), Stage("good")
                 )
@@ -168,7 +168,7 @@ internal class JenkinsPipelineServiceTest {
         } returns buildDetailsDTO
 
 
-        val expectedBuilds: List<Build> =
+        val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
@@ -176,7 +176,7 @@ internal class JenkinsPipelineServiceTest {
 
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedExecutions[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
         val progress = SyncProgress(pipelineId, pipelineName, 1, 1)
         verify(exactly = 1) { mockEmitCb.invoke(progress) }
@@ -211,13 +211,13 @@ internal class JenkinsPipelineServiceTest {
             jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
         } returns buildDetailsDTO
 
-        val expectedBuilds: List<Build> =
+        val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-3.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedExecutions[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
@@ -250,14 +250,14 @@ internal class JenkinsPipelineServiceTest {
             jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
         } returns buildDetailsDTO
 
-        val expectedBuilds: List<Build> =
+        val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-4.json")
                     .readText()
             )
 
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedExecutions[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
@@ -290,13 +290,13 @@ internal class JenkinsPipelineServiceTest {
             jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
         } returns buildDetailsDTO
 
-        val expectedBuilds: List<Build> =
+        val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-5.json")
                     .readText()
             )
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedExecutions[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
     }
 
@@ -330,7 +330,7 @@ internal class JenkinsPipelineServiceTest {
             jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
         } returns buildDetailsDTO
 
-        val expectedBuilds: List<Build> =
+        val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")
                     .readText()
@@ -338,7 +338,7 @@ internal class JenkinsPipelineServiceTest {
 
         val allBuilds = jenkinsPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedBuilds[0].pipelineId)
+        assertThat(allBuilds[0].pipelineId).isEqualTo(expectedExecutions[0].pipelineId)
         verify(exactly = 1) { buildRepository.save(allBuilds) }
         val progress = SyncProgress("fake pipeline", "pipeline name", 1, 1)
         verify(exactly = 1) { mockEmitCb.invoke(progress) }
@@ -355,7 +355,7 @@ internal class JenkinsPipelineServiceTest {
             credential = credential,
             url = baseUrl
         )
-        every { buildRepository.getByBuildNumber(pipelineId, 1) } returns Build(
+        every { buildRepository.getByBuildNumber(pipelineId, 1) } returns Execution(
             pipelineId = pipelineId,
             number = 1,
             result = Status.IN_PROGRESS

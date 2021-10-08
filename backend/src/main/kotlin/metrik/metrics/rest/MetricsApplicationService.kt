@@ -11,7 +11,7 @@ import metrik.metrics.exception.BadRequestException
 import metrik.metrics.rest.vo.FourKeyMetricsResponse
 import metrik.metrics.rest.vo.MetricsInfo
 import metrik.metrics.rest.vo.PipelineStageRequest
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.repository.BuildRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
@@ -94,14 +94,16 @@ class MetricsApplicationService {
     }
 
     private fun generateMetrics(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimeMillis: Long,
         endTimeMillis: Long,
         pipelineStagesMap: Map<String, String>,
         timeRangeByUnit: List<Pair<Long, Long>>,
         calculator: MetricsCalculator
     ): MetricsInfo {
-        val valueForWholeRange = calculator.calculateValue(allBuilds, startTimeMillis, endTimeMillis, pipelineStagesMap)
+        val valueForWholeRange = calculator.calculateValue(
+            allExecutions, startTimeMillis, endTimeMillis, pipelineStagesMap
+        )
         val summary = Metrics(
             valueForWholeRange,
             calculator.calculateLevel(valueForWholeRange),
@@ -111,14 +113,14 @@ class MetricsApplicationService {
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculateValue(allBuilds, it.first, it.second, pipelineStagesMap)
+                    calculator.calculateValue(allExecutions, it.first, it.second, pipelineStagesMap)
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)
     }
 
     private fun generateDeployFrequencyMetrics(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimeMillis: Long,
         endTimeMillis: Long,
         pipelineStagesMap: Map<String, String>,
@@ -128,7 +130,7 @@ class MetricsApplicationService {
     ): MetricsInfo {
         val days = getDuration(startTimeMillis, endTimeMillis)
         val deploymentCount = calculator.calculateValue(
-            allBuilds, startTimeMillis, endTimeMillis,
+            allExecutions, startTimeMillis, endTimeMillis,
             pipelineStagesMap
         )
 
@@ -143,7 +145,7 @@ class MetricsApplicationService {
         val details = timeRangeByUnit
             .map {
                 val valueForUnitRange =
-                    calculator.calculateValue(allBuilds, it.first, it.second, pipelineStagesMap)
+                    calculator.calculateValue(allExecutions, it.first, it.second, pipelineStagesMap)
                 Metrics(valueForUnitRange, it.first, it.second)
             }
         return MetricsInfo(summary, details)

@@ -1,7 +1,7 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class GithubBuildConverter {
+class GithubExecutionConverter {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
-    fun convertToBuild(run: GithubActionsRun, pipelineId: String, commits: List<Commit>): Build {
+    fun convertToBuild(run: GithubActionsRun, pipelineId: String, commits: List<Commit>): Execution {
         logger.debug(
             "Github Actions converting: Started converting WorkflowRuns [$this] for pipeline [$pipelineId]"
         )
@@ -36,7 +36,7 @@ class GithubBuildConverter {
                 )
             }
 
-        val build = Build(
+        val execution = Execution(
             pipelineId,
             run.id,
             run.buildStatus,
@@ -49,9 +49,9 @@ class GithubBuildConverter {
         )
 
         logger.debug(
-            "Github Actions converting: Build converted result: [$build]"
+            "Github Actions converting: Build converted result: [$execution]"
         )
 
-        return build
+        return execution
     }
 }

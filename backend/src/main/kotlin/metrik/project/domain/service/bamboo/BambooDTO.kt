@@ -1,7 +1,7 @@
 package metrik.project.domain.service.bamboo
 
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Status
 import org.apache.logging.log4j.util.Strings
@@ -56,7 +56,7 @@ data class BuildDetailDTO(
         }
     }
 
-    fun convertToMetrikBuild(pipelineId: String): Build? {
+    fun convertToMetrikBuild(pipelineId: String): Execution? {
         logger.info(
             "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
         )
@@ -68,7 +68,7 @@ data class BuildDetailDTO(
                 it.convertToMetrikBuildStage()
             }
 
-            val build = Build(
+            val execution = Execution(
                 pipelineId,
                 buildNumber,
                 getBuildExecutionStatus(),
@@ -80,8 +80,8 @@ data class BuildDetailDTO(
                     Commit(it.changesetId, it.getDateTimestamp(), it.date.toString())
                 }
             )
-            logger.info("Bamboo converting: Build converted result: [$build]")
-            return build
+            logger.info("Bamboo converting: Build converted result: [$execution]")
+            return execution
         } catch (e: RuntimeException) {
             logger.error("Converting Bamboo DTO failed, DTO: [$this], exception: [$e]")
             throw e

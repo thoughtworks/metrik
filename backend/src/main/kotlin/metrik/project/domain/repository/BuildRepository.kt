@@ -1,6 +1,6 @@
 package metrik.project.domain.repository
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,27 +32,27 @@ class BuildRepository {
 
     private val collectionName = "build"
 
-    fun save(builds: List<Build>) {
-        logger.info("Saving [${builds.size}] builds into DB")
-        builds.parallelStream().forEach {
+    fun save(executions: List<Execution>) {
+        logger.info("Saving [${executions.size}] builds into DB")
+        executions.parallelStream().forEach {
             save(it)
         }
     }
 
-    fun save(build: Build) {
+    fun save(execution: Execution) {
         val query = Query()
         query.addCriteria(
             Criteria
-                .where(PROP_PIPELINEID).`is`(build.pipelineId)
-                .and(PROP_NUMBER).`is`(build.number)
+                .where(PROP_PIPELINEID).`is`(execution.pipelineId)
+                .and(PROP_NUMBER).`is`(execution.number)
         )
         val found = mongoTemplate.findAndReplace(
             query,
-            build,
+            execution,
             collectionName
         )
         if (found == null) {
-            mongoTemplate.save(build, collectionName)
+            mongoTemplate.save(execution, collectionName)
         }
     }
 
@@ -62,40 +62,40 @@ class BuildRepository {
         mongoTemplate.remove(query, collectionName)
     }
 
-    fun getAllBuilds(pipelineIds: Collection<String>): List<Build> {
+    fun getAllBuilds(pipelineIds: Collection<String>): List<Execution> {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).`in`(pipelineIds))
-        val result = mongoTemplate.find<Build>(query, collectionName)
+        val result = mongoTemplate.find<Execution>(query, collectionName)
         logger.info("Query result size for builds in pipelines [$pipelineIds] is [${result.size}]")
         return result
     }
 
-    fun getAllBuilds(pipelineId: String): List<Build> {
+    fun getAllBuilds(pipelineId: String): List<Execution> {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId))
-        val result = mongoTemplate.find<Build>(query, collectionName)
+        val result = mongoTemplate.find<Execution>(query, collectionName)
         logger.info("Query result size for builds in pipeline [$pipelineId] is [${result.size}]")
         return result
     }
 
-    fun getByBuildNumber(pipelineId: String, number: Int): Build? {
+    fun getByBuildNumber(pipelineId: String, number: Int): Execution? {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_NUMBER).`is`(number))
-        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        val result = mongoTemplate.findOne<Execution>(query, collectionName)
         logger.info("Query result for build number [$number] in pipeline [$pipelineId] is [$result]")
         return result
     }
 
-    fun getByBuildStatus(pipelineId: String, status: Status): List<Build> {
+    fun getByBuildStatus(pipelineId: String, status: Status): List<Execution> {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_RESULT).`is`(status))
-        val result = mongoTemplate.find<Build>(query, collectionName)
+        val result = mongoTemplate.find<Execution>(query, collectionName)
         logger.info("Query result size for build status [$status] in pipeline [$pipelineId] is [${result.size}]")
         return result
     }
 
-    fun getMaxBuild(pipelineId: String): Build? {
+    fun getMaxBuild(pipelineId: String): Execution? {
         val query = Query
             .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
             .with(Sort.by(Sort.Direction.DESC, PROP_NUMBER))
             .limit(1)
-        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        val result = mongoTemplate.findOne<Execution>(query, collectionName)
         logger.info(
             "Query result the most recent build through build number in pipeline [$pipelineId] is [${result?.number}]"
         )
@@ -111,23 +111,23 @@ class BuildRepository {
         return listOf(needSyncBuildNumbers, syncStartIndex..maxBuildNumber).flatten()
     }
 
-    fun getInProgressBuilds(pipelineId: String, weeks: Long = twoWeeks): List<Build> =
+    fun getInProgressBuilds(pipelineId: String, weeks: Long = twoWeeks): List<Execution> =
         getByBuildStatus(pipelineId, Status.IN_PROGRESS)
             .filter { it.timestamp > ZonedDateTime.now().minusDays(weeks).toEpochSecond() }
 
-    fun getLatestBuild(pipelineId: String): Build? {
+    fun getLatestBuild(pipelineId: String): Execution? {
         val query = Query
             .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
             .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
             .limit(1)
-        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        val result = mongoTemplate.findOne<Execution>(query, collectionName)
         logger.debug(
             "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
         )
         return result
     }
 
-    fun getPreviousBuild(pipelineId: String, timestamp: Long, branch: String): Build? {
+    fun getPreviousBuild(pipelineId: String, timestamp: Long, branch: String): Execution? {
         val query = Query
             .query(
                 Criteria.where(PROP_PIPELINEID)
@@ -139,7 +139,7 @@ class BuildRepository {
             )
             .with(Sort.by(Sort.Direction.DESC, CREATED_TIMESTAMP))
             .limit(1)
-        val result = mongoTemplate.findOne<Build>(query, collectionName)
+        val result = mongoTemplate.findOne<Execution>(query, collectionName)
         logger.debug(
             "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
         )

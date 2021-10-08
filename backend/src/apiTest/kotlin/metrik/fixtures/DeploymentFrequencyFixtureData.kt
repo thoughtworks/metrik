@@ -1,6 +1,6 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -17,7 +17,7 @@ val dfPipeline = Pipeline(
     type = PipelineType.JENKINS
 )
 
-val dfBuild1 = Build(
+val dfExecution1 = Execution(
     pipelineId = "601cbb3425c1392117aa053b",
     number = 1,
     duration = 40000,
@@ -55,7 +55,7 @@ val dfBuild1 = Build(
         )
     )
 )
-val dfBuild2 = Build(
+val dfExecution2 = Execution(
     pipelineId = "601cbb3425c1392117aa053b",
     number = 1,
     duration = 40000,
@@ -86,7 +86,7 @@ val dfBuild2 = Build(
         )
     )
 )
-val dfBuild3 = Build(
+val dfExecution3 = Execution(
     pipelineId = "601cbb3425c1392117aa053b",
     number = 1,
     duration = 40000,

@@ -1,7 +1,7 @@
 package metrik.metrics.domain.calculator
 
 import metrik.metrics.domain.model.LEVEL
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.springframework.stereotype.Component
 
@@ -19,12 +19,12 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     }
 
     override fun calculateValue(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimestamp: Long,
         endTimestamp: Long,
         pipelineStagesMap: Map<String, String>
     ): Number {
-        val statusCountMap = allBuilds.groupBy { it.pipelineId }
+        val statusCountMap = allExecutions.groupBy { it.pipelineId }
             .map { getStatusCountMap(it.value, startTimestamp, endTimestamp, pipelineStagesMap[it.key]) }
             .stream().reduce(mutableMapOf(), this::mergeMap)
 
@@ -54,7 +54,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
     }
 
     private fun getStatusCountMap(
-        allBuilds: List<Build>,
+        allExecutions: List<Execution>,
         startTimestamp: Long,
         endTimestamp: Long,
         targetStage: String?
@@ -63,7 +63,7 @@ class ChangeFailureRateCalculator : MetricsCalculator {
             return emptyMap()
         }
 
-        return allBuilds.asSequence()
+        return allExecutions.asSequence()
             .flatMap {
                 it.stages.asSequence()
             }

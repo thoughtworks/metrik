@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Pipeline
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -47,7 +47,7 @@ internal class DatabaseEncryptionAspectTest {
 
     @Test
     fun `should not encrypt data before call save() method in mongoTemplate for non pipeline data`() {
-        mongoTemplate.save(Build())
+        mongoTemplate.save(Execution())
 
         verify { encryptionService wasNot Called }
     }
@@ -71,8 +71,8 @@ internal class DatabaseEncryptionAspectTest {
     @Test
     fun `should not encrypt data before call insert() method in mongoTemplate for non pipeline data`() {
         mongoTemplate.insert(
-            mutableListOf(Build()),
-            Build::class.java
+            mutableListOf(Execution()),
+            Execution::class.java
         ).toList()
 
         verify { encryptionService wasNot Called }
@@ -98,11 +98,11 @@ internal class DatabaseEncryptionAspectTest {
 
     @Test
     fun `should not decrypt data after call find() method in mongoTemplate for non pipeline data`() {
-        mongoTemplate.save(Build(pipelineId = "1"))
+        mongoTemplate.save(Execution(pipelineId = "1"))
 
         mongoTemplate.find(
             Query().addCriteria(Criteria.where("pipelineId").isEqualTo("1")),
-            Build::class.java
+            Execution::class.java
         )
 
         verify { encryptionService wasNot Called }
@@ -128,7 +128,7 @@ internal class DatabaseEncryptionAspectTest {
 
     @Test
     fun `should not decrypt data after call findOne() method in mongoTemplate for non pipeline data`() {
-        mongoTemplate.save(Build(pipelineId = "1"))
+        mongoTemplate.save(Execution(pipelineId = "1"))
 
         mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("projectId").isEqualTo("1")),

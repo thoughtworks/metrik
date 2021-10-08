@@ -1,6 +1,6 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Pipeline
 import metrik.project.domain.model.PipelineType
@@ -17,7 +17,7 @@ val mttrPipeline1 = Pipeline(
     type = PipelineType.JENKINS
 )
 
-val mttrBuild1 = Build(
+val mttrExecution1 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 1,
     duration = 40000,
@@ -55,7 +55,7 @@ val mttrBuild1 = Build(
         )
     )
 )
-val mttrBuild2 = Build(
+val mttrExecution2 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 2,
     duration = 40000,
@@ -93,7 +93,7 @@ val mttrBuild2 = Build(
         )
     )
 )
-val mttrBuild3 = Build(
+val mttrExecution3 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 3,
     duration = 50000,
@@ -131,7 +131,7 @@ val mttrBuild3 = Build(
         )
     )
 )
-val mttrBuild4 = Build(
+val mttrExecution4 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 4,
     duration = 40000,
@@ -169,7 +169,7 @@ val mttrBuild4 = Build(
         )
     )
 )
-val mttrBuild5 = Build(
+val mttrExecution5 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 5,
     duration = 621278,
@@ -207,7 +207,7 @@ val mttrBuild5 = Build(
         )
     )
 )
-val mttrBuild6 = Build(
+val mttrExecution6 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 6,
     duration = 621278,
@@ -245,7 +245,7 @@ val mttrBuild6 = Build(
         )
     )
 )
-val mttrBuild7 = Build(
+val mttrExecution7 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 7,
     duration = 621278,
@@ -283,7 +283,7 @@ val mttrBuild7 = Build(
         )
     )
 )
-val mttrBuild8 = Build(
+val mttrExecution8 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 8,
     duration = 621278,
@@ -321,7 +321,7 @@ val mttrBuild8 = Build(
         )
     )
 )
-val mttrBuild9 = Build(
+val mttrExecution9 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 9,
     duration = 621278,
@@ -359,7 +359,7 @@ val mttrBuild9 = Build(
         )
     )
 )
-val mttrBuild10 = Build(
+val mttrExecution10 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 10,
     duration = 621278,
@@ -397,7 +397,7 @@ val mttrBuild10 = Build(
         )
     )
 )
-val mttrBuild11 = Build(
+val mttrExecution11 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 11,
     duration = 40000,
@@ -435,7 +435,7 @@ val mttrBuild11 = Build(
         )
     )
 )
-val mttrBuild12 = Build(
+val mttrExecution12 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 12,
     duration = 40000,
@@ -473,7 +473,7 @@ val mttrBuild12 = Build(
         )
     )
 )
-val mttrBuild13 = Build(
+val mttrExecution13 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 13,
     duration = 40000,
@@ -511,7 +511,7 @@ val mttrBuild13 = Build(
         )
     )
 )
-val mttrBuild14 = Build(
+val mttrExecution14 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 14,
     duration = 40000,
@@ -549,7 +549,7 @@ val mttrBuild14 = Build(
         )
     )
 )
-val mttrBuild15 = Build(
+val mttrExecution15 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 15,
     duration = 40000,
@@ -587,7 +587,7 @@ val mttrBuild15 = Build(
         )
     )
 )
-val mttrBuild16 = Build(
+val mttrExecution16 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 16,
     duration = 40000,
@@ -625,7 +625,7 @@ val mttrBuild16 = Build(
         )
     )
 )
-val mttrBuild17 = Build(
+val mttrExecution17 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 17,
     duration = 40000,
@@ -663,7 +663,7 @@ val mttrBuild17 = Build(
         )
     )
 )
-val mttrBuild18 = Build(
+val mttrExecution18 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 18,
     duration = 40000,
@@ -701,7 +701,7 @@ val mttrBuild18 = Build(
         )
     )
 )
-val mttrBuild19 = Build(
+val mttrExecution19 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 19,
     duration = 40000,
@@ -739,7 +739,7 @@ val mttrBuild19 = Build(
         )
     )
 )
-val mttrBuild20 = Build(
+val mttrExecution20 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 20,
     duration = 40000,
@@ -777,7 +777,7 @@ val mttrBuild20 = Build(
         )
     )
 )
-val mttrBuild21 = Build(
+val mttrExecution21 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 21,
     duration = 40000,
@@ -815,7 +815,7 @@ val mttrBuild21 = Build(
         )
     )
 )
-val mttrBuild22 = Build(
+val mttrExecution22 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 22,
     duration = 40000,
@@ -853,7 +853,7 @@ val mttrBuild22 = Build(
         )
     )
 )
-val mttrBuild23 = Build(
+val mttrExecution23 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 23,
     duration = 40000,
@@ -891,7 +891,7 @@ val mttrBuild23 = Build(
         )
     )
 )
-val mttrBuild24 = Build(
+val mttrExecution24 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 24,
     duration = 40000,
@@ -929,7 +929,7 @@ val mttrBuild24 = Build(
         )
     )
 )
-val mttrBuild25 = Build(
+val mttrExecution25 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 25,
     duration = 40000,
@@ -967,7 +967,7 @@ val mttrBuild25 = Build(
         )
     )
 )
-val mttrBuild26 = Build(
+val mttrExecution26 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 26,
     duration = 40000,
@@ -1005,7 +1005,7 @@ val mttrBuild26 = Build(
         )
     )
 )
-val mttrBuild27 = Build(
+val mttrExecution27 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 27,
     duration = 40000,
@@ -1043,7 +1043,7 @@ val mttrBuild27 = Build(
         )
     )
 )
-val mttrBuild28 = Build(
+val mttrExecution28 = Execution(
     pipelineId = "6018c32f42fbb8439fc08b24",
     number = 28,
     duration = 40000,
@@ -1083,32 +1083,32 @@ val mttrBuild28 = Build(
 )
 
 val mttrBuilds = listOf(
-    mttrBuild1,
-    mttrBuild2,
-    mttrBuild3,
-    mttrBuild4,
-    mttrBuild5,
-    mttrBuild6,
-    mttrBuild7,
-    mttrBuild8,
-    mttrBuild9,
-    mttrBuild10,
-    mttrBuild11,
-    mttrBuild12,
-    mttrBuild13,
-    mttrBuild14,
-    mttrBuild15,
-    mttrBuild16,
-    mttrBuild17,
-    mttrBuild18,
-    mttrBuild19,
-    mttrBuild20,
-    mttrBuild21,
-    mttrBuild22,
-    mttrBuild23,
-    mttrBuild24,
-    mttrBuild25,
-    mttrBuild26,
-    mttrBuild27,
-    mttrBuild28,
+    mttrExecution1,
+    mttrExecution2,
+    mttrExecution3,
+    mttrExecution4,
+    mttrExecution5,
+    mttrExecution6,
+    mttrExecution7,
+    mttrExecution8,
+    mttrExecution9,
+    mttrExecution10,
+    mttrExecution11,
+    mttrExecution12,
+    mttrExecution13,
+    mttrExecution14,
+    mttrExecution15,
+    mttrExecution16,
+    mttrExecution17,
+    mttrExecution18,
+    mttrExecution19,
+    mttrExecution20,
+    mttrExecution21,
+    mttrExecution22,
+    mttrExecution23,
+    mttrExecution24,
+    mttrExecution25,
+    mttrExecution26,
+    mttrExecution27,
+    mttrExecution28,
 )

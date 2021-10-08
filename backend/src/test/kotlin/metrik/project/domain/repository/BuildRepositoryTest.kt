@@ -2,7 +2,7 @@ package metrik.project.domain.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.model.Build
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -41,16 +41,16 @@ internal class BuildRepositoryTest {
     fun `should save a bunch of build data`() {
         val collectionName = "build"
 
-        val buildsToSave: List<Build> =
+        val buildsToSave: List<Execution> =
             objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-3.json").readText())
 
         buildRepository.save(buildsToSave)
 
-        val builds: List<Build> = mongoTemplate.findAll(collectionName)
+        val executions: List<Execution> = mongoTemplate.findAll(collectionName)
 
-        assertThat(builds).hasSize(3)
+        assertThat(executions).hasSize(3)
 
-        val ids = builds.map { it.pipelineId }
+        val ids = executions.map { it.pipelineId }
 
         val expectedIds = buildsToSave.map { it.pipelineId }
 
@@ -60,16 +60,16 @@ internal class BuildRepositoryTest {
     @Test
     fun `should overwrite build data given data is already exist in DB`() {
         val collectionName = "build"
-        val firstBuild = Build(number = 1)
-        val secondBuild = Build(number = 2)
+        val firstExecution = Execution(number = 1)
+        val secondExecution = Execution(number = 2)
 
-        buildRepository.save(listOf(firstBuild))
-        buildRepository.save(listOf(firstBuild, secondBuild))
+        buildRepository.save(listOf(firstExecution))
+        buildRepository.save(listOf(firstExecution, secondExecution))
 
-        val builds: List<Build> = mongoTemplate.findAll(collectionName)
-        assertThat(builds).hasSize(2)
-        assertThat(builds.any { it.number == firstBuild.number }).isTrue
-        assertThat(builds.any { it.number == secondBuild.number }).isTrue
+        val executions: List<Execution> = mongoTemplate.findAll(collectionName)
+        assertThat(executions).hasSize(2)
+        assertThat(executions.any { it.number == firstExecution.number }).isTrue
+        assertThat(executions.any { it.number == secondExecution.number }).isTrue
     }
 
     @Test
@@ -78,12 +78,12 @@ internal class BuildRepositoryTest {
         val pipelineId1 = "fake-pipelineId1"
         val pipelineId2 = "fake-pipelineId2"
 
-        buildRepository.save(listOf(Build(pipelineId = pipelineId1), Build(pipelineId = pipelineId2)))
+        buildRepository.save(listOf(Execution(pipelineId = pipelineId1), Execution(pipelineId = pipelineId2)))
         buildRepository.clear(pipelineId1)
 
-        val builds: List<Build> = mongoTemplate.findAll(collectionName)
-        assertThat(builds.first().pipelineId).isEqualTo(pipelineId2)
-        assertThat(builds).hasSize(1)
+        val executions: List<Execution> = mongoTemplate.findAll(collectionName)
+        assertThat(executions.first().pipelineId).isEqualTo(pipelineId2)
+        assertThat(executions).hasSize(1)
     }
 
     @Test
@@ -91,9 +91,9 @@ internal class BuildRepositoryTest {
         val pipelineIds = listOf("1", "2")
         val collectionName = "build"
 
-        val buildsToSave: List<Build> = listOf(Build(pipelineId = "1"), Build(pipelineId = "2"))
+        val buildsToSaves: List<Execution> = listOf(Execution(pipelineId = "1"), Execution(pipelineId = "2"))
 
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertThat(buildRepository.getAllBuilds(pipelineIds)).hasSize(2)
     }
@@ -103,7 +103,7 @@ internal class BuildRepositoryTest {
         val pipelineId = "fake pipeline"
         val collectionName = "build"
 
-        val buildsToSave: List<Build> =
+        val buildsToSave: List<Execution> =
             objectMapper.readValue(this.javaClass.getResource("/repository/builds-for-build-repo-1.json").readText())
 
         buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
@@ -114,9 +114,9 @@ internal class BuildRepositoryTest {
     @Test
     fun `should find build by number given build is exist in DB`() {
         val pipelineId = "fake-id"
-        val firstBuild = Build(number = 1, pipelineId = pipelineId)
+        val firstExecution = Execution(number = 1, pipelineId = pipelineId)
 
-        buildRepository.save(listOf(firstBuild))
+        buildRepository.save(listOf(firstExecution))
 
         assertThat(buildRepository.getByBuildNumber(pipelineId, 1)).isNotNull
     }
@@ -124,9 +124,9 @@ internal class BuildRepositoryTest {
     @Test
     fun `should get null when find by number given build is not exist in DB`() {
         val pipelineId = "fake-id"
-        val firstBuild = Build(number = 1, pipelineId = pipelineId)
+        val firstExecution = Execution(number = 1, pipelineId = pipelineId)
 
-        buildRepository.save(listOf(firstBuild))
+        buildRepository.save(listOf(firstExecution))
 
         assertThat(buildRepository.getByBuildNumber(pipelineId, 2)).isNull()
     }
@@ -135,13 +135,13 @@ internal class BuildRepositoryTest {
     fun `should get builds with certain build status`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val buildsToSave = listOf(
-            Build(pipelineId, 1, Status.SUCCESS),
-            Build(pipelineId, 2, Status.SUCCESS),
-            Build(pipelineId, 5, Status.IN_PROGRESS)
+        val buildsToSaves = listOf(
+            Execution(pipelineId, 1, Status.SUCCESS),
+            Execution(pipelineId, 2, Status.SUCCESS),
+            Execution(pipelineId, 5, Status.IN_PROGRESS)
         )
 
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(2, buildRepository.getByBuildStatus(pipelineId, Status.SUCCESS).size)
         assertEquals(1, buildRepository.getByBuildStatus(pipelineId, Status.IN_PROGRESS).size)
@@ -152,9 +152,9 @@ internal class BuildRepositoryTest {
     fun `should get the build with biggest build number`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val buildsToSave = listOf(Build(pipelineId, 1), Build(pipelineId, 2), Build(pipelineId, 5))
+        val buildsToSaves = listOf(Execution(pipelineId, 1), Execution(pipelineId, 2), Execution(pipelineId, 5))
 
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(5, buildRepository.getMaxBuild(pipelineId)!!.number)
     }
@@ -163,14 +163,14 @@ internal class BuildRepositoryTest {
     fun `should get latest build`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val buildsToSave = listOf(
-            Build(pipelineId, 1, timestamp = 20201123),
-            Build(pipelineId, 2, timestamp = 20201122),
-            Build(pipelineId, 5, timestamp = 20191202),
-            Build(pipelineId, 6, timestamp = 0)
+        val buildsToSaves = listOf(
+            Execution(pipelineId, 1, timestamp = 20201123),
+            Execution(pipelineId, 2, timestamp = 20201122),
+            Execution(pipelineId, 5, timestamp = 20191202),
+            Execution(pipelineId, 6, timestamp = 0)
         )
 
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(1, buildRepository.getLatestBuild(pipelineId)!!.number)
     }
@@ -181,21 +181,21 @@ internal class BuildRepositoryTest {
         val collectionName = "build"
         val twoWeeks: Long = 14
         val now = ZonedDateTime.now().minusDays(twoWeeks).toEpochSecond()
-        val inProgressBuild = Build(
+        val inProgressExecution = Execution(
             pipelineId,
             1,
             result = Status.IN_PROGRESS,
             timestamp = now + 10
         )
-        val buildsToSave = listOf(
-            inProgressBuild,
-            Build(
+        val buildsToSaves = listOf(
+            inProgressExecution,
+            Execution(
                 pipelineId,
                 2,
                 result = Status.FAILED,
                 timestamp = now + 10
             ),
-            Build(
+            Execution(
                 pipelineId,
                 5,
                 result = Status.SUCCESS,
@@ -203,9 +203,9 @@ internal class BuildRepositoryTest {
             ),
         )
 
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
-        val builds = listOf(inProgressBuild)
+        val builds = listOf(inProgressExecution)
 
         assertEquals(builds, buildRepository.getInProgressBuilds(pipelineId))
     }
@@ -214,13 +214,13 @@ internal class BuildRepositoryTest {
     fun `should get all build numbers that need a data synchronization given the most recent build number in Jenkins and Bamboo`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val buildsToSave = listOf(
-            Build(pipelineId, 1, Status.SUCCESS),
-            Build(pipelineId, 2, Status.SUCCESS),
-            Build(pipelineId, 3, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
-            Build(pipelineId, 4, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(13).toEpochSecond())
+        val buildsToSaves = listOf(
+            Execution(pipelineId, 1, Status.SUCCESS),
+            Execution(pipelineId, 2, Status.SUCCESS),
+            Execution(pipelineId, 3, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond()),
+            Execution(pipelineId, 4, Status.IN_PROGRESS, timestamp = ZonedDateTime.now().minusDays(13).toEpochSecond())
         )
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         val givenMostRecentBuild = 8
         assertEquals(
@@ -233,35 +233,35 @@ internal class BuildRepositoryTest {
     fun `should get closest build given a timestamp`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val targetBuild =
-            Build(
+        val targetExecution =
+            Execution(
                 pipelineId,
                 3,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
                 branch = "master"
             )
-        val buildsToSave = listOf(
-            Build(
+        val buildsToSaves = listOf(
+            Execution(
                 pipelineId,
                 2,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
                 branch = "master"
             ),
-            Build(
+            Execution(
                 pipelineId,
                 1,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
                 branch = "master"
             ),
-            targetBuild
+            targetExecution
         )
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(
-            targetBuild,
+            targetExecution,
             buildRepository.getPreviousBuild(
                 pipelineId,
                 ZonedDateTime.now().minusDays(13).toEpochSecond(),
@@ -274,23 +274,23 @@ internal class BuildRepositoryTest {
     fun `should get build given no build is earlier`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val buildsToSave = listOf(
+        val buildsToSaves = listOf(
 
-            Build(
+            Execution(
                 pipelineId,
                 2,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
                 branch = "master"
             ),
-            Build(
+            Execution(
                 pipelineId,
                 1,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
                 branch = "master"
             ),
-            Build(
+            Execution(
                 pipelineId,
                 3,
                 Status.SUCCESS,
@@ -298,7 +298,7 @@ internal class BuildRepositoryTest {
                 branch = "master"
             )
         )
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertNull(
             buildRepository.getPreviousBuild(
@@ -313,35 +313,35 @@ internal class BuildRepositoryTest {
     fun `should get earlier build from correct branch`() {
         val pipelineId = "fake-id"
         val collectionName = "build"
-        val targetBuild =
-            Build(
+        val targetExecution =
+            Execution(
                 pipelineId,
                 3,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(14).toEpochSecond(),
                 branch = "master"
             )
-        val buildsToSave = listOf(
-            Build(
+        val buildsToSaves = listOf(
+            Execution(
                 pipelineId,
                 2,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(12).toEpochSecond(),
                 branch = "feature"
             ),
-            Build(
+            Execution(
                 pipelineId,
                 1,
                 Status.SUCCESS,
                 timestamp = ZonedDateTime.now().minusDays(15).toEpochSecond(),
                 branch = "feature"
             ),
-            targetBuild
+            targetExecution
         )
-        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+        buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
         assertEquals(
-            targetBuild,
+            targetExecution,
             buildRepository.getPreviousBuild(
                 pipelineId,
                 ZonedDateTime.now().minusDays(10).toEpochSecond(),
