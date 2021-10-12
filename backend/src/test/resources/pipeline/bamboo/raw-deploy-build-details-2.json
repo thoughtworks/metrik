@@ -1,0 +1,260 @@
+{
+  "expand": "changes,metadata,plan,vcsRevisions,artifacts,comments,labels,jiraIssues,variables,stages",
+  "link": {
+    "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-2",
+    "rel": "self"
+  },
+  "plan": {
+    "shortName": "deploy",
+    "shortKey": "DEP",
+    "type": "chain",
+    "enabled": true,
+    "link": {
+      "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+      "rel": "self"
+    },
+    "key": "SEC-DEP",
+    "name": "second - deploy",
+    "planKey": {
+      "key": "SEC-DEP"
+    }
+  },
+  "planName": "deploy",
+  "projectName": "second",
+  "buildResultKey": "SEC-DEP-2",
+  "lifeCycleState": "Finished",
+  "id": 1474563,
+  "buildStartedTime": "2021-09-13T02:32:55.331Z",
+  "prettyBuildStartedTime": "Mon, 13 Sep, 02:32 AM",
+  "buildCompletedTime": "2021-09-13T02:32:56.599Z",
+  "buildCompletedDate": "2021-09-13T02:32:56.599Z",
+  "prettyBuildCompletedTime": "Mon, 13 Sep, 02:32 AM",
+  "buildDurationInSeconds": 1,
+  "buildDuration": 1268,
+  "buildDurationDescription": "1 second",
+  "buildRelativeTime": "4 weeks ago",
+  "vcsRevisionKey": "7c54f87a96f2b201bfbe35bf019c7047e70ecf9b",
+  "vcsRevisions": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "buildTestSummary": "No tests found",
+  "successfulTestCount": 0,
+  "failedTestCount": 0,
+  "quarantinedTestCount": 0,
+  "skippedTestCount": 0,
+  "continuable": false,
+  "onceOff": false,
+  "restartable": false,
+  "notRunYet": false,
+  "finished": true,
+  "successful": true,
+  "buildReason": "Manual run by <a href=\"http://172.17.0.2:8085/browse/user/devon\">devonzhang</a>",
+  "reasonSummary": "Manual run by <a href=\"http://172.17.0.2:8085/browse/user/devon\">devonzhang</a>",
+  "specsResult": false,
+  "artifacts": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "comments": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "labels": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "jiraIssues": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "variables": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "stages": {
+    "size": 1,
+    "expand": "stage",
+    "start-index": 0,
+    "max-result": 1,
+    "stage": [
+      {
+        "expand": "results",
+        "name": "Default Stage",
+        "description": "",
+        "id": 1507330,
+        "lifeCycleState": "Finished",
+        "state": "Successful",
+        "displayClass": "Successful",
+        "displayMessage": "1 job passed",
+        "collapsedByDefault": false,
+        "manual": false,
+        "restartable": false,
+        "runnable": false,
+        "results": {
+          "size": 1,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 1,
+          "result": [
+            {
+              "link": {
+                "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-JOB1-2",
+                "rel": "self"
+              },
+              "plan": {
+                "shortName": "Default Job",
+                "shortKey": "DEP-JOB1",
+                "type": "job",
+                "enabled": true,
+                "link": {
+                  "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP-JOB1",
+                  "rel": "self"
+                },
+                "key": "SEC-DEP-JOB1",
+                "name": "second - deploy - Default Job",
+                "planKey": {
+                  "key": "SEC-DEP-JOB1"
+                }
+              },
+              "planName": "Default Job",
+              "projectName": "second",
+              "stage": "Default Stage",
+              "buildResultKey": "SEC-DEP-JOB1-2",
+              "lifeCycleState": "Finished",
+              "id": 1474564,
+              "buildStartedTime": "2021-09-13T02:32:56.450Z",
+              "prettyBuildStartedTime": "Mon, 13 Sep, 02:32 AM",
+              "buildCompletedTime": "2021-09-13T02:32:56.484Z",
+              "buildCompletedDate": "2021-09-13T02:32:56.484Z",
+              "prettyBuildCompletedTime": "Mon, 13 Sep, 02:32 AM",
+              "buildDurationInSeconds": 0,
+              "buildDuration": 34,
+              "buildDurationDescription": "< 1 second",
+              "buildRelativeTime": "4 weeks ago",
+              "queueStartedTime": "2021-09-13T02:32:55.295Z",
+              "prettyQueueStartedTime": "Mon, 13 Sep, 02:32 AM",
+              "queueTimeInSeconds": 0,
+              "queueDuration": 30,
+              "prettyQueueDuration": "< 1 sec",
+              "vcsUpdateStartedTime": "2021-09-13T02:32:55.325Z",
+              "prettyVcsUpdateStartedTime": "Mon, 13 Sep, 02:32 AM",
+              "vcsUpdateInSeconds": 1,
+              "vcsUpdateDuration": 1125,
+              "prettyVcsUpdateDuration": "1 sec",
+              "vcsRevisionKey": "7c54f87a96f2b201bfbe35bf019c7047e70ecf9b",
+              "vcsRevisions": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "buildTestSummary": "No tests found",
+              "successfulTestCount": 0,
+              "failedTestCount": 0,
+              "quarantinedTestCount": 0,
+              "skippedTestCount": 0,
+              "onceOff": false,
+              "buildReason": "Manual build",
+              "reasonSummary": "Manual run by <a href=\"http://172.17.0.2:8085/browse/user/devon\">devonzhang</a>",
+              "specsResult": false,
+              "artifacts": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "comments": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "labels": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "jiraIssues": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "variables": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "logFiles": [
+                "http://172.17.0.2:8085/download/SEC-DEP-JOB1/build_logs/plan-1114113-JOB1-2.log"
+              ],
+              "changes": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "testResults": {
+                "all": 0,
+                "successful": 0,
+                "failed": 0,
+                "newFailed": 0,
+                "existingFailed": 0,
+                "fixed": 0,
+                "quarantined": 0,
+                "skipped": 0
+              },
+              "metadata": {
+                "size": 42,
+                "start-index": 0,
+                "max-result": 42
+              },
+              "parent": {
+                "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-2",
+                "rel": "parent"
+              },
+              "key": "SEC-DEP-JOB1-2",
+              "planResultKey": {
+                "key": "SEC-DEP-JOB1-2",
+                "entityKey": {
+                  "key": "SEC-DEP-JOB1"
+                },
+                "resultNumber": 2
+              },
+              "state": "Successful",
+              "buildState": "Successful",
+              "number": 2,
+              "buildNumber": 2
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "changes": {
+    "size": 0,
+    "expand": "change",
+    "change": [],
+    "start-index": 0,
+    "max-result": 0
+  },
+  "metadata": {
+    "size": 3,
+    "start-index": 0,
+    "max-result": 3
+  },
+  "key": "SEC-DEP-2",
+  "planResultKey": {
+    "key": "SEC-DEP-2",
+    "entityKey": {
+      "key": "SEC-DEP"
+    },
+    "resultNumber": 2
+  },
+  "state": "Successful",
+  "buildState": "Successful",
+  "number": 2,
+  "buildNumber": 2
+}

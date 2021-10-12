@@ -56,6 +56,46 @@ data class BuildDetailDTO(
         }
     }
 
+    fun convertToMetricBuildWithDeploymentResult(
+        pipelineId: String,
+        deploymentResults: MutableMap<String, List<DeploymentResult>>
+    ): Execution? {
+        logger.info(
+            "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
+        )
+
+        val buildTimestamp = getBuildStartedTimestamp() ?: return null
+
+        try {
+            val deployStages = deploymentResults.flatMap { entry ->
+                entry.value.map {
+                    it.convertToMetricStage(entry.key)
+                }
+            }
+            val defaultStages = stages.stage.mapNotNull {
+                it.convertToMetrikBuildStage()
+            }
+            val stages = listOf(defaultStages, deployStages).flatten()
+            val build = Execution(
+                pipelineId,
+                buildNumber,
+                getBuildExecutionStatus(),
+                buildDuration,
+                buildTimestamp,
+                link.href,
+                stages = stages,
+                changeSets = changes.change.map {
+                    Commit(it.changesetId, it.getDateTimestamp(), it.date.toString())
+                }
+            )
+            logger.info("Bamboo converting: Build converted result: [$build]")
+            return build
+        } catch (e: RuntimeException) {
+            logger.error("Converting Bamboo DTO failed, DTO: [$this], exception: [$e]")
+            throw e
+        }
+    }
+
     fun convertToMetrikBuild(pipelineId: String): Execution? {
         logger.info(
             "Bamboo converting: Started converting BuildDetailDTO [$this] for pipeline [$pipelineId]"
@@ -182,17 +222,45 @@ data class Environment(
     val deploymentProjectId: Long
 )
 
-data class DeployResultsDTO(val results: List<DeployResult>)
+data class DeploymentResultsDTO(val results: List<DeploymentResult>)
 
-data class DeployResult(
+data class DeploymentResult(
     val deploymentVersion: DeploymentVersion,
     val deploymentVersionName: String? = Strings.EMPTY,
     val id: Long,
     val deploymentState: String? = Strings.EMPTY,
     val lifeCycleState: String? = Strings.EMPTY,
     val startedDate: ZonedDateTime?,
+    val queuedDate: ZonedDateTime?,
+    val executedDate: ZonedDateTime?,
     val finishedDate: ZonedDateTime?
-)
+) {
+    fun convertToMetricStage(environmentName: String): metrik.project.domain.model.Stage {
+        return metrik.project.domain.model.Stage(
+            name = environmentName,
+            status = getStageExecutionStatus(),
+            startTimeMillis = startedDate!!.toTimestamp(),
+            durationMillis = finishedDate!!.toTimestamp() - executedDate!!.toTimestamp(),
+            0,
+            completedTimeMillis = finishedDate.toTimestamp()
+        )
+    }
+
+    private fun getStageExecutionStatus(): Status {
+        return when (this.deploymentState) {
+            "SUCCESS" -> {
+                Status.SUCCESS
+            }
+            "FAILED" -> {
+                Status.FAILED
+            }
+            else -> {
+                Status.OTHER
+            }
+        }
+    }
+
+}
 
 data class DeploymentVersion(
     val id: Long,

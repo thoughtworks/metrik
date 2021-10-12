@@ -135,9 +135,9 @@ internal class BambooFeignClientTest(
 
     @Test
     fun `should get deploy results and serialize right`() {
-        val expectedDeployResultsDTO: DeployResultsDTO =
+        val expectedDeploymentResultsDTO: DeploymentResultsDTO =
             objectMapper.readValue(
-                javaClass.getResource("/pipeline/bamboo/raw-deploy-results.json")!!.readText()
+                javaClass.getResource("/pipeline/bamboo/raw-deploy-results-1.json")!!.readText()
             )
 
         mockServer.`when`(
@@ -149,15 +149,15 @@ internal class BambooFeignClientTest(
             response()
                 .withStatusCode(200)
                 .withHeader("Content-Type", "application/json; charset=utf-8")
-                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-results.json")!!.readText())
+                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-results-1.json")!!.readText())
         )
 
-        val deployResultsDTO: DeployResultsDTO? =
+        val deploymentResultsDTO: DeploymentResultsDTO? =
             bambooFeignClient.getDeployResults(URI("http://localhost:8787/test/deploy/results"), "TestToken")
 
         assertEquals(
-            expectedDeployResultsDTO.results[0].deploymentVersionName,
-            deployResultsDTO!!.results[0].deploymentVersionName
+            expectedDeploymentResultsDTO.results[0].deploymentVersionName,
+            deploymentResultsDTO!!.results[0].deploymentVersionName
         )
     }
 
@@ -165,7 +165,7 @@ internal class BambooFeignClientTest(
     fun `should return deploy version and serialize right`() {
         val expectedDeploymentVersionBuildResultDTO: DeploymentVersionBuildResultDTO =
             objectMapper.readValue(
-                javaClass.getResource("/pipeline/bamboo/raw-deploy-version.json")!!.readText()
+                javaClass.getResource("/pipeline/bamboo/raw-deploy-version-1.json")!!.readText()
             )
 
         mockServer.`when`(
@@ -177,11 +177,11 @@ internal class BambooFeignClientTest(
             response()
                 .withStatusCode(200)
                 .withHeader("Content-Type", "application/json; charset=utf-8")
-                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-version.json")!!.readText())
+                .withBody(javaClass.getResource("/pipeline/bamboo/raw-deploy-version-1.json")!!.readText())
         )
 
         val deploymentVersionBuildResult: DeploymentVersionBuildResultDTO? =
-            bambooFeignClient.getDeployVersion(URI("http://localhost:8787/test/deploy/version"), "TestToken")
+            bambooFeignClient.getDeployVersionInfo(URI("http://localhost:8787/test/deploy/version"), "TestToken")
 
         assertEquals(
             expectedDeploymentVersionBuildResultDTO.planResultKey.key,

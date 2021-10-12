@@ -45,10 +45,10 @@ interface BambooFeignClient {
     @GetMapping
     fun getDeployResults(
         baseUrl: URI, @RequestHeader("credential") credential: String
-    ): DeployResultsDTO?
+    ): DeploymentResultsDTO?
 
     @GetMapping
-    fun getDeployVersion(
+    fun getDeployVersionInfo(
         baseUrl: URI,
         @RequestHeader("credential") credential: String
     ): DeploymentVersionBuildResultDTO?

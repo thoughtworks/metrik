@@ -3,11 +3,10 @@ package metrik.project.domain.repository
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import metrik.project.domain.model.Execution
+import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -348,5 +347,93 @@ internal class BuildRepositoryTest {
                 branch = "master"
             )
         )
+    }
+
+    @Test
+    fun `should get latest deploy timestamp when it exists`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Execution(
+                pipelineId,
+                1,
+                timestamp = 20201123,
+                stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201123))
+            ),
+            Execution(
+                pipelineId,
+                2,
+                timestamp = 20201122,
+                stages = listOf(Stage(status = Status.SUCCESS, startTimeMillis = 20201122))
+            ),
+            Execution(
+                pipelineId,
+                5,
+                timestamp = 20201121,
+                stages = listOf(Stage(status = Status.FAILED, startTimeMillis = 20201121))
+            ),
+            Execution(
+                pipelineId,
+                6,
+                timestamp = 20201120,
+                stages = listOf(Stage(status = Status.OTHER, startTimeMillis = 20201120))
+            )
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(20201122, buildRepository.getLatestDeployTimestamp(pipelineId))
+    }
+
+    @Test
+    fun `should get earliest build timestamp when latest deploy timestamp not exist`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Execution(
+                pipelineId,
+                1,
+                timestamp = 20201123,
+                stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201123))
+            ),
+            Execution(
+                pipelineId,
+                2,
+                timestamp = 20201122,
+                stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201122))
+            ),
+            Execution(
+                pipelineId,
+                5,
+                timestamp = 20201121,
+                stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201121))
+            ),
+            Execution(
+                pipelineId,
+                6,
+                timestamp = 20201120,
+                stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201120))
+            )
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(20201120, buildRepository.getLatestDeployTimestamp(pipelineId))
+    }
+
+    @Test
+    fun `should get 0 when latest deploy timestamp and earliest build timestamp not exist`() {
+        val pipelineId = "fake-id"
+        val collectionName = "build"
+        val buildsToSave = listOf(
+            Execution(pipelineId, 1, stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201123))),
+            Execution(pipelineId, 2, stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201122))),
+            Execution(pipelineId, 5, stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201121))),
+            Execution(pipelineId, 6, stages = listOf(Stage(status = Status.IN_PROGRESS, startTimeMillis = 20201120)))
+        )
+
+        buildsToSave.forEach { mongoTemplate.save(it, collectionName) }
+
+        assertEquals(0, buildRepository.getLatestDeployTimestamp(pipelineId))
     }
 }

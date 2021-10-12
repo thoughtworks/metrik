@@ -1,0 +1,276 @@
+{
+  "expand": "changes,metadata,plan,vcsRevisions,artifacts,comments,labels,jiraIssues,variables,stages",
+  "link": {
+    "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-3",
+    "rel": "self"
+  },
+  "plan": {
+    "shortName": "deploy",
+    "shortKey": "DEP",
+    "type": "chain",
+    "enabled": true,
+    "link": {
+      "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+      "rel": "self"
+    },
+    "key": "SEC-DEP",
+    "name": "second - deploy",
+    "planKey": {
+      "key": "SEC-DEP"
+    }
+  },
+  "planName": "deploy",
+  "projectName": "second",
+  "buildResultKey": "SEC-DEP-3",
+  "lifeCycleState": "Finished",
+  "id": 1474565,
+  "buildStartedTime": "2021-09-13T02:35:09.343Z",
+  "prettyBuildStartedTime": "Mon, 13 Sep, 02:35 AM",
+  "buildCompletedTime": "2021-09-13T02:35:10.648Z",
+  "buildCompletedDate": "2021-09-13T02:35:10.648Z",
+  "prettyBuildCompletedTime": "Mon, 13 Sep, 02:35 AM",
+  "buildDurationInSeconds": 1,
+  "buildDuration": 1305,
+  "buildDurationDescription": "1 second",
+  "buildRelativeTime": "4 weeks ago",
+  "vcsRevisionKey": "42c1d1e4314ea05de253548ed4b42f81e4d2cd88",
+  "vcsRevisions": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "buildTestSummary": "No tests found",
+  "successfulTestCount": 0,
+  "failedTestCount": 0,
+  "quarantinedTestCount": 0,
+  "skippedTestCount": 0,
+  "continuable": false,
+  "onceOff": false,
+  "restartable": false,
+  "notRunYet": false,
+  "finished": true,
+  "successful": true,
+  "buildReason": "Changes by <a href=\"http://172.17.0.2:8085/users/viewUserSummary.action?currentUserName=devon\">devonzhang</a>",
+  "reasonSummary": "Changes by <a href=\"http://172.17.0.2:8085/users/viewUserSummary.action?currentUserName=devon\">devonzhang</a>",
+  "specsResult": false,
+  "artifacts": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "comments": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "labels": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "jiraIssues": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "variables": {
+    "size": 0,
+    "start-index": 0,
+    "max-result": 0
+  },
+  "stages": {
+    "size": 1,
+    "expand": "stage",
+    "start-index": 0,
+    "max-result": 1,
+    "stage": [
+      {
+        "expand": "results",
+        "name": "Default Stage",
+        "description": "",
+        "id": 1507331,
+        "lifeCycleState": "Finished",
+        "state": "Successful",
+        "displayClass": "Successful",
+        "displayMessage": "1 job passed",
+        "collapsedByDefault": false,
+        "manual": false,
+        "restartable": false,
+        "runnable": false,
+        "results": {
+          "size": 1,
+          "expand": "result",
+          "start-index": 0,
+          "max-result": 1,
+          "result": [
+            {
+              "link": {
+                "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-JOB1-3",
+                "rel": "self"
+              },
+              "plan": {
+                "shortName": "Default Job",
+                "shortKey": "DEP-JOB1",
+                "type": "job",
+                "enabled": true,
+                "link": {
+                  "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP-JOB1",
+                  "rel": "self"
+                },
+                "key": "SEC-DEP-JOB1",
+                "name": "second - deploy - Default Job",
+                "planKey": {
+                  "key": "SEC-DEP-JOB1"
+                }
+              },
+              "planName": "Default Job",
+              "projectName": "second",
+              "stage": "Default Stage",
+              "buildResultKey": "SEC-DEP-JOB1-3",
+              "lifeCycleState": "Finished",
+              "id": 1474566,
+              "buildStartedTime": "2021-09-13T02:35:10.541Z",
+              "prettyBuildStartedTime": "Mon, 13 Sep, 02:35 AM",
+              "buildCompletedTime": "2021-09-13T02:35:10.570Z",
+              "buildCompletedDate": "2021-09-13T02:35:10.570Z",
+              "prettyBuildCompletedTime": "Mon, 13 Sep, 02:35 AM",
+              "buildDurationInSeconds": 0,
+              "buildDuration": 29,
+              "buildDurationDescription": "< 1 second",
+              "buildRelativeTime": "4 weeks ago",
+              "queueStartedTime": "2021-09-13T02:35:09.308Z",
+              "prettyQueueStartedTime": "Mon, 13 Sep, 02:35 AM",
+              "queueTimeInSeconds": 0,
+              "queueDuration": 29,
+              "prettyQueueDuration": "< 1 sec",
+              "vcsUpdateStartedTime": "2021-09-13T02:35:09.337Z",
+              "prettyVcsUpdateStartedTime": "Mon, 13 Sep, 02:35 AM",
+              "vcsUpdateInSeconds": 1,
+              "vcsUpdateDuration": 1204,
+              "prettyVcsUpdateDuration": "1 sec",
+              "vcsRevisionKey": "42c1d1e4314ea05de253548ed4b42f81e4d2cd88",
+              "vcsRevisions": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "buildTestSummary": "No tests found",
+              "successfulTestCount": 0,
+              "failedTestCount": 0,
+              "quarantinedTestCount": 0,
+              "skippedTestCount": 0,
+              "onceOff": false,
+              "buildReason": "Code has changed",
+              "reasonSummary": "Code changes detected",
+              "specsResult": false,
+              "artifacts": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "comments": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "labels": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "jiraIssues": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "variables": {
+                "size": 0,
+                "start-index": 0,
+                "max-result": 0
+              },
+              "logFiles": [
+                "http://172.17.0.2:8085/download/SEC-DEP-JOB1/build_logs/plan-1114113-JOB1-3.log"
+              ],
+              "changes": {
+                "size": 1,
+                "start-index": 0,
+                "max-result": 1
+              },
+              "testResults": {
+                "all": 0,
+                "successful": 0,
+                "failed": 0,
+                "newFailed": 0,
+                "existingFailed": 0,
+                "fixed": 0,
+                "quarantined": 0,
+                "skipped": 0
+              },
+              "metadata": {
+                "size": 41,
+                "start-index": 0,
+                "max-result": 41
+              },
+              "parent": {
+                "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-3",
+                "rel": "parent"
+              },
+              "key": "SEC-DEP-JOB1-3",
+              "planResultKey": {
+                "key": "SEC-DEP-JOB1-3",
+                "entityKey": {
+                  "key": "SEC-DEP-JOB1"
+                },
+                "resultNumber": 3
+              },
+              "state": "Successful",
+              "buildState": "Successful",
+              "number": 3,
+              "buildNumber": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "changes": {
+    "size": 1,
+    "expand": "change",
+    "change": [
+      {
+        "expand": "files",
+        "author": "devonzhang <devonzhang1024@gmail.com>",
+        "userName": "devon",
+        "fullName": "devonzhang",
+        "comment": "add second echo",
+        "changesetId": "42c1d1e4314ea05de253548ed4b42f81e4d2cd88",
+        "commitUrl": "https://github.com/Devonzhang/Bamboo-test/commit/42c1d1e4314ea05de253548ed4b42f81e4d2cd88",
+        "date": "2021-09-13T02:33:56.000Z",
+        "files": {
+          "size": 1,
+          "start-index": 0,
+          "max-result": 1
+        }
+      }
+    ],
+    "start-index": 0,
+    "max-result": 1
+  },
+  "metadata": {
+    "size": 1,
+    "start-index": 0,
+    "max-result": 1
+  },
+  "key": "SEC-DEP-3",
+  "planResultKey": {
+    "key": "SEC-DEP-3",
+    "entityKey": {
+      "key": "SEC-DEP"
+    },
+    "resultNumber": 3
+  },
+  "state": "Successful",
+  "buildState": "Successful",
+  "number": 3,
+  "buildNumber": 3
+}

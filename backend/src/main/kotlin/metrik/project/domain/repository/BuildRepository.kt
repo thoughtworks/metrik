@@ -115,6 +115,21 @@ class BuildRepository {
         getByBuildStatus(pipelineId, Status.IN_PROGRESS)
             .filter { it.timestamp > ZonedDateTime.now().minusDays(weeks).toEpochSecond() }
 
+    fun getLatestDeployTimestamp(pipelineId: String): Long {
+        val query = Query
+            .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))
+        val result = mongoTemplate.find<Execution>(query, collectionName)
+        val latestDeployTimestamp =
+            result.flatMap { it.stages }.filter { it.status != Status.IN_PROGRESS }
+                .maxByOrNull { it.startTimeMillis }?.startTimeMillis
+        logger.debug(
+            "Query result the most recent deploy timestamp in pipeline [$pipelineId] is [${latestDeployTimestamp}]"
+        )
+        val earliestBuildTimestamp = result.minByOrNull { it.timestamp }?.timestamp ?: 0
+
+        return latestDeployTimestamp ?: earliestBuildTimestamp
+    }
+
     fun getLatestBuild(pipelineId: String): Execution? {
         val query = Query
             .query(Criteria.where(PROP_PIPELINEID).`is`(pipelineId))

@@ -1,0 +1,69 @@
+{
+  "expand": "results",
+  "size": 1,
+  "results": [
+    {
+      "deploymentVersion": {
+        "id": 1835009,
+        "name": "release-1",
+        "creationDate": 1631501012686,
+        "creatorUserName": "devon",
+        "items": [],
+        "operations": {
+          "canView": true,
+          "canViewConfiguration": true,
+          "canEdit": true,
+          "canDelete": true,
+          "allowedToExecute": false,
+          "canExecute": false,
+          "allowedToCreateVersion": true,
+          "allowedToSetVersionStatus": true
+        },
+        "creatorDisplayName": "devonzhang",
+        "creatorGravatarUrl": "https://secure.gravatar.com/avatar/4459464f71cd17829d23981b93f6e155?r=g&s=24&d=mm",
+        "planBranchName": "master",
+        "ageZeroPoint": 1631501066173
+      },
+      "deploymentVersionName": "release-1",
+      "id": 1998851,
+      "deploymentState": "SUCCESS",
+      "lifeCycleState": "FINISHED",
+      "startedDate": 1631501066171,
+      "queuedDate": 1631501066183,
+      "executedDate": 1631501066295,
+      "finishedDate": 1631501066302,
+      "reasonSummary": "Manual run by <a href=\"http://172.17.0.2:8085/browse/user/devon\">devonzhang</a>",
+      "key": {
+        "key": "1736705-1802242-1998851",
+        "entityKey": {
+          "key": "1736705-1802242"
+        },
+        "resultNumber": 1998851
+      },
+      "agent": {
+        "id": 1605633,
+        "name": "TEST2",
+        "type": "LOCAL",
+        "active": true,
+        "enabled": true,
+        "busy": false
+      },
+      "operations": {
+        "canView": true,
+        "canViewConfiguration": true,
+        "canEdit": true,
+        "canDelete": true,
+        "allowedToExecute": true,
+        "canExecute": false,
+        "cantExecuteReason": "Could not start deployment to staging as Bamboo could not find a license for this instance.",
+        "allowedToCreateVersion": false,
+        "allowedToSetVersionStatus": false
+      },
+      "logFiles": [
+        "http://localhost:8085/rest/api/latest/deployment-download/1802242/build_logs/1736705-1802242-1998851.log"
+      ]
+    }
+  ],
+  "start-index": 0,
+  "max-result": 1
+}

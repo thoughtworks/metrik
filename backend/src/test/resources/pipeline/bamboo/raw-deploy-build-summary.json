@@ -1,0 +1,200 @@
+{
+  "results": {
+    "size": 5,
+    "expand": "result",
+    "start-index": 0,
+    "max-result": 25,
+    "result": [
+      {
+        "link": {
+          "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-5",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "deploy",
+          "shortKey": "DEP",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+            "rel": "self"
+          },
+          "key": "SEC-DEP",
+          "name": "second - deploy",
+          "planKey": {
+            "key": "SEC-DEP"
+          }
+        },
+        "buildResultKey": "SEC-DEP-5",
+        "lifeCycleState": "Finished",
+        "id": 2424833,
+        "specsResult": false,
+        "key": "SEC-DEP-5",
+        "planResultKey": {
+          "key": "SEC-DEP-5",
+          "entityKey": {
+            "key": "SEC-DEP"
+          },
+          "resultNumber": 5
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 5,
+        "buildNumber": 5
+      },
+      {
+        "link": {
+          "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-4",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "deploy",
+          "shortKey": "DEP",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+            "rel": "self"
+          },
+          "key": "SEC-DEP",
+          "name": "second - deploy",
+          "planKey": {
+            "key": "SEC-DEP"
+          }
+        },
+        "buildResultKey": "SEC-DEP-4",
+        "lifeCycleState": "Finished",
+        "id": 2260993,
+        "specsResult": false,
+        "key": "SEC-DEP-4",
+        "planResultKey": {
+          "key": "SEC-DEP-4",
+          "entityKey": {
+            "key": "SEC-DEP"
+          },
+          "resultNumber": 4
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 4,
+        "buildNumber": 4
+      },
+      {
+        "link": {
+          "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-3",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "deploy",
+          "shortKey": "DEP",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+            "rel": "self"
+          },
+          "key": "SEC-DEP",
+          "name": "second - deploy",
+          "planKey": {
+            "key": "SEC-DEP"
+          }
+        },
+        "buildResultKey": "SEC-DEP-3",
+        "lifeCycleState": "Finished",
+        "id": 1474565,
+        "specsResult": false,
+        "key": "SEC-DEP-3",
+        "planResultKey": {
+          "key": "SEC-DEP-3",
+          "entityKey": {
+            "key": "SEC-DEP"
+          },
+          "resultNumber": 3
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 3,
+        "buildNumber": 3
+      },
+      {
+        "link": {
+          "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-2",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "deploy",
+          "shortKey": "DEP",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+            "rel": "self"
+          },
+          "key": "SEC-DEP",
+          "name": "second - deploy",
+          "planKey": {
+            "key": "SEC-DEP"
+          }
+        },
+        "buildResultKey": "SEC-DEP-2",
+        "lifeCycleState": "Finished",
+        "id": 1474563,
+        "specsResult": false,
+        "key": "SEC-DEP-2",
+        "planResultKey": {
+          "key": "SEC-DEP-2",
+          "entityKey": {
+            "key": "SEC-DEP"
+          },
+          "resultNumber": 2
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 2,
+        "buildNumber": 2
+      },
+      {
+        "link": {
+          "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP-1",
+          "rel": "self"
+        },
+        "plan": {
+          "shortName": "deploy",
+          "shortKey": "DEP",
+          "type": "chain",
+          "enabled": true,
+          "link": {
+            "href": "http://localhost:8085/rest/api/latest/plan/SEC-DEP",
+            "rel": "self"
+          },
+          "key": "SEC-DEP",
+          "name": "second - deploy",
+          "planKey": {
+            "key": "SEC-DEP"
+          }
+        },
+        "buildResultKey": "SEC-DEP-1",
+        "lifeCycleState": "Finished",
+        "id": 1474561,
+        "specsResult": false,
+        "key": "SEC-DEP-1",
+        "planResultKey": {
+          "key": "SEC-DEP-1",
+          "entityKey": {
+            "key": "SEC-DEP"
+          },
+          "resultNumber": 1
+        },
+        "state": "Successful",
+        "buildState": "Successful",
+        "number": 1,
+        "buildNumber": 1
+      }
+    ]
+  },
+  "expand": "results",
+  "link": {
+    "href": "http://localhost:8085/rest/api/latest/result/SEC-DEP",
+    "rel": "self"
+  }
+}
