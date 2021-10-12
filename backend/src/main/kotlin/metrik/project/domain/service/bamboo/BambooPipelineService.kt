@@ -33,7 +33,6 @@ class BambooPipelineService(
 
     override fun verifyPipelineConfiguration(pipeline: Pipeline) {
         logger.info("Started verification for Bamboo pipeline [$pipeline]")
-
         try {
             val url = getDomain(pipeline.url)
             logger.info("Bamboo verification - Sending request to [$url]")
@@ -109,7 +108,7 @@ class BambooPipelineService(
         buildNumber: Int,
         credential: String
     ): BuildDetailDTO? {
-        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-${pipeline.name}-$buildNumber.json?" +
+        val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
                 "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url]")
         try {
