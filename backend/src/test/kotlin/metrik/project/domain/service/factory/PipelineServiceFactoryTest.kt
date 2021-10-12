@@ -6,6 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.project.domain.model.PipelineType
+import metrik.project.domain.service.bamboo.BambooDeploymentPipelineService
 import metrik.project.domain.service.bamboo.BambooPipelineService
 import metrik.project.domain.service.githubactions.GithubActionsPipelineService
 import metrik.project.domain.service.jenkins.JenkinsPipelineService
@@ -25,6 +26,9 @@ internal class PipelineServiceFactoryTest {
     private lateinit var githubActionsPipelineService: GithubActionsPipelineService
 
     @MockK
+    private lateinit var bambooDeploymentPipelineService: BambooDeploymentPipelineService
+
+    @MockK
     private lateinit var noopPipelineService: NoopPipelineService
 
     @InjectMockKs(overrideValues = true)
@@ -34,6 +38,7 @@ internal class PipelineServiceFactoryTest {
     fun setUp() {
         every { jenkinsPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { bambooPipelineService.getStagesSortedByName("id") } returns emptyList()
+        every { bambooDeploymentPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { githubActionsPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { noopPipelineService.getStagesSortedByName("id") } returns emptyList()
     }
@@ -42,6 +47,7 @@ internal class PipelineServiceFactoryTest {
     fun `should get corresponding service instance given a valid PipelineType`() {
         verify(exactly = 0) { jenkinsPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { bambooPipelineService.getStagesSortedByName("id") }
+        verify(exactly = 0) { bambooDeploymentPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { githubActionsPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { noopPipelineService.getStagesSortedByName("id") }
 
@@ -50,6 +56,8 @@ internal class PipelineServiceFactoryTest {
 
         pipelineServiceFactory.getService(PipelineType.BAMBOO).getStagesSortedByName("id")
         verify(exactly = 1) { bambooPipelineService.getStagesSortedByName("id") }
+        pipelineServiceFactory.getService(PipelineType.BAMBOO_DEPLOYMENT).getStagesSortedByName("id")
+        verify(exactly = 1) { bambooDeploymentPipelineService.getStagesSortedByName("id") }
 
         pipelineServiceFactory.getService(PipelineType.GITHUB_ACTIONS).getStagesSortedByName("id")
         verify(exactly = 1) { githubActionsPipelineService.getStagesSortedByName("id") }
