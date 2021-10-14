@@ -69,37 +69,37 @@ internal class BambooDeploymentPipelineServiceTest {
         pauseDurationMillis = 0,
         completedTimeMillis = 1631500510570
     )
-    private val stageDevSuccess1 = Stage(
-        name = "dev",
-        status = Status.SUCCESS,
-        startTimeMillis = 1631513979524000,
-        durationMillis = 43000,
-        pauseDurationMillis = 0,
-        completedTimeMillis = 1631513980345000
-    )
-    private val stageDevSuccess2 = Stage(
-        name = "dev",
-        status = Status.SUCCESS,
-        startTimeMillis = 1631501045640000,
-        durationMillis = 5000,
-        pauseDurationMillis = 0,
-        completedTimeMillis = 1631501046208000
-    )
     private val stageDevFailed = Stage(
         name = "dev",
         status = Status.FAILED,
-        startTimeMillis = 1631501012824000,
-        durationMillis = 122000,
+        startTimeMillis = 1631501012824,
+        durationMillis = 122,
         pauseDurationMillis = 0,
-        completedTimeMillis = 1631501013129000
+        completedTimeMillis = 1631501013129
+    )
+    private val stageDevSuccess1 = Stage(
+        name = "dev",
+        status = Status.SUCCESS,
+        startTimeMillis = 1631501045640,
+        durationMillis = 5,
+        pauseDurationMillis = 0,
+        completedTimeMillis = 1631501046208
     )
     private val stageStagingSuccess = Stage(
         name = "staging",
         status = Status.SUCCESS,
-        startTimeMillis = 1631501066171000,
-        durationMillis = 7000,
+        startTimeMillis = 1631501066171,
+        durationMillis = 7,
         pauseDurationMillis = 0,
-        completedTimeMillis = 1631501066302000
+        completedTimeMillis = 1631501066302
+    )
+    private val stageDevSuccess2 = Stage(
+        name = "dev",
+        status = Status.SUCCESS,
+        startTimeMillis = 1631513979524,
+        durationMillis = 43,
+        pauseDurationMillis = 0,
+        completedTimeMillis = 1631513980345
     )
     private val commit = Commit(
         commitId = "42c1d1e4314ea05de253548ed4b42f81e4d2cd88",
@@ -317,8 +317,9 @@ internal class BambooDeploymentPipelineServiceTest {
             bambooDeploymentPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
         }
     }
+
     @Test
-    fun `should throw exception when querying for build detail giving response other than 404`(){
+    fun `should throw exception when querying for build detail giving response other than 404`() {
         every {
             bambooFeignClient.getDeploySummary(any(), any())
         } throws FeignException.errorStatus(
@@ -346,7 +347,7 @@ internal class BambooDeploymentPipelineServiceTest {
 
         val result = bambooDeploymentPipelineService.syncBuildsProgressively(pipeline, mockEmitCb)
 
-        assertEquals(emptyList<Execution>(),result)
+        assertEquals(emptyList<Execution>(), result)
     }
 
     @Test
@@ -362,12 +363,11 @@ internal class BambooDeploymentPipelineServiceTest {
                 duration = 1305,
                 timestamp = 1631500509343,
                 url = "$baseUrl/rest/api/latest/result/$planKey-3",
-                stages = listOf(stageDefault, stageDevSuccess1, stageDevSuccess2, stageDevFailed, stageStagingSuccess),
+                stages = listOf(stageDefault, stageDevFailed, stageDevSuccess1, stageStagingSuccess, stageDevSuccess2),
                 changeSets = listOf(commit)
             )
         verify(exactly = 1) { buildRepository.save(build) }
     }
-
 
     private fun buildFeignResponse(statusCode: Int) =
         Response.builder().status(statusCode).request(dummyFeignRequest).build()

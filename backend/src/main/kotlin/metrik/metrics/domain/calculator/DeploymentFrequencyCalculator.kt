@@ -51,11 +51,11 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
         targetStage: String
     ): Boolean {
         return !isTargetStageWithinTimeRange(currentExecution, startTimestamp, endTimestamp, targetStage) ||
-            !isTargetStageSuccess(currentExecution, targetStage)
+                !isTargetStageSuccess(currentExecution, targetStage)
     }
 
     private fun isTargetStageSuccess(execution: Execution, targetStage: String) =
-        execution.stages.find { stage -> stage.name == targetStage }?.status == Status.SUCCESS
+        !execution.stages.none { it.name == targetStage && it.status == Status.SUCCESS }
 
     private fun isTargetStageWithinTimeRange(
         execution: Execution,

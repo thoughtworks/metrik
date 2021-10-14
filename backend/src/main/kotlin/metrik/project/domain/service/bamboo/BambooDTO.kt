@@ -75,7 +75,7 @@ data class BuildDetailDTO(
             val defaultStages = stages.stage.mapNotNull {
                 it.convertToMetrikBuildStage()
             }
-            val stages = listOf(defaultStages, deployStages).flatten()
+            val stages = listOf(defaultStages, deployStages).flatten().sortedBy { it.startTimeMillis }
             val build = Execution(
                 pipelineId,
                 buildNumber,
@@ -230,19 +230,19 @@ data class DeploymentResult(
     val id: Long,
     val deploymentState: String? = Strings.EMPTY,
     val lifeCycleState: String? = Strings.EMPTY,
-    val startedDate: ZonedDateTime?,
-    val queuedDate: ZonedDateTime?,
-    val executedDate: ZonedDateTime?,
-    val finishedDate: ZonedDateTime?
+    val startedDate: Long?,
+    val queuedDate: Long?,
+    val executedDate: Long?,
+    val finishedDate: Long?
 ) {
     fun convertToMetricStage(environmentName: String): metrik.project.domain.model.Stage {
         return metrik.project.domain.model.Stage(
             name = environmentName,
             status = getStageExecutionStatus(),
-            startTimeMillis = startedDate!!.toTimestamp(),
-            durationMillis = finishedDate!!.toTimestamp() - executedDate!!.toTimestamp(),
+            startTimeMillis = startedDate!!,
+            durationMillis = finishedDate!! - executedDate!!,
             0,
-            completedTimeMillis = finishedDate.toTimestamp()
+            completedTimeMillis = finishedDate
         )
     }
 

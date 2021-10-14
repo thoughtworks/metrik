@@ -148,7 +148,7 @@ class BambooDeploymentPipelineService(
             logger.info("Get deploy results - Sending request to [$url]")
             val deployResults = bambooFeignClient.getDeployResults(URI(url), pipeline.credential)
             logger.info("Get deploy results - Response from [$url]: $deployResults")
-            val resultKeys = deployResults?.results!!.filter { it.startedDate!!.toEpochSecond() > latestTimestamp }
+            val resultKeys = deployResults?.results!!.filter { it.startedDate!! > latestTimestamp }
                 .map { getDeploymentVersionPlanResultKey(pipeline, it.deploymentVersion.id) }
             resultKeys.map { it.split("-").last().toInt() }.toCollection(buildNeedToSyncNumbers)
         }
