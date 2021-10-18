@@ -1,15 +1,18 @@
 import {
+	BambooDeployedPipeline,
 	BambooPipeline,
+	GithubActions,
 	JenkinsPipeline,
 	Pipeline,
 	verifyPipelineUsingPost,
 } from "../../clients/pipelineApis";
-import React, { FC, useState } from "react";
+import React, { ChangeEvent, FC, useState } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
 import { PIPELINE_CONFIG, PIPELINE_TYPE_NOTE } from "../../utils/pipelineConfig/pipelineConfig";
 import { VerifyStatus } from "../../models/common";
 import { PipelineTool } from "../../models/pipeline";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -17,7 +20,14 @@ const { Item, useForm } = Form;
 
 type JenkinsFormValues = Omit<JenkinsPipeline, "id">;
 type BambooFormValues = Omit<BambooPipeline, "id">;
-export type FormValues = JenkinsFormValues | BambooFormValues;
+type GithubActionsFormValues = Omit<GithubActions, "id">;
+type BambooDeployedFormValues = Omit<BambooDeployedPipeline, "id">;
+
+export type FormValues =
+	| JenkinsFormValues
+	| BambooFormValues
+	| GithubActionsFormValues
+	| BambooDeployedFormValues;
 
 const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marginBottom: 12 });
 const backBtnStyles = css({ marginLeft: 8 });
@@ -31,7 +41,6 @@ const PipelineSetup: FC<{
 }> = ({ visible = true, onText = "Create", pipeline, onSubmit, onBack }) => {
 	const [loading, setLoading] = useState(false);
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
-
 	const [form] = useForm<FormValues>();
 
 	const shouldDisabledVerifyButton = (values: FormValues) => {
@@ -63,10 +72,12 @@ const PipelineSetup: FC<{
 
 	const onValuesChange = (changedValues: Partial<FormValues>, values: FormValues) => {
 		if (changedValues.type) {
+			console.log(changedValues.type);
 			const result = Object.keys(values).reduce((sum, key) => ({ ...sum, [key]: undefined }), {});
 			form.setFieldsValue({ ...result, type: changedValues.type });
 			setVerifyStatus(VerifyStatus.DEFAULT);
 		}
+		// console.log(form.getFieldsValue());
 	};
 
 	const onFinish = async (values: FormValues) => {
@@ -77,6 +88,14 @@ const PipelineSetup: FC<{
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleCheckBambooDeployment = (e: ChangeEvent<HTMLInputElement>, values: FormValues) => {
+		const result = Object.keys(values).reduce((sum, key) => ({ ...sum, [key]: undefined }), {});
+		e.target.checked
+			? form.setFieldsValue({ ...result, type: PipelineTool.BAMBOO_DEPLOYMENT })
+			: form.setFieldsValue({ ...result, type: PipelineTool.BAMBOO });
+		console.log(form.getFieldsValue());
 	};
 
 	return (
@@ -98,7 +117,7 @@ const PipelineSetup: FC<{
 							flexDirection: "column",
 						}}>
 						<Text css={groupTitleStyles}>Pipeline Details</Text>
-						<Row gutter={24} wrap={false} align={"bottom"}>
+						<Row gutter={24} wrap={false} align={"middle"}>
 							<Col span={6}>
 								<Item
 									label="Pipeline Tool"
@@ -119,6 +138,17 @@ const PipelineSetup: FC<{
 									</Select>
 								</Item>
 							</Col>
+							{(formValues.type === PipelineTool.BAMBOO ||
+								formValues.type === PipelineTool.BAMBOO_DEPLOYMENT) && (
+								<Col>
+									<label htmlFor="bambooDeployment">Bamboo deployment</label>
+									<input
+										id="bambooDeployment"
+										type="checkbox"
+										onChange={e => handleCheckBambooDeployment(e, formValues)}
+									/>
+								</Col>
+							)}
 						</Row>
 
 						{PIPELINE_TYPE_NOTE[formValues.type] && (
