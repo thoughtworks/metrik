@@ -21,7 +21,7 @@ data class ProjectRequest(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BambooPipelineRequest::class, name = "BAMBOO"),
-    JsonSubTypes.Type(value = BambooPipelineRequest::class, name = "BAMBOO_DEPLOYMENT"),
+    JsonSubTypes.Type(value = BambooDeploymentPipelineRequest::class, name = "BAMBOO_DEPLOYMENT"),
     JsonSubTypes.Type(value = JenkinsPipelineRequest::class, name = "JENKINS"),
     JsonSubTypes.Type(value = GithubActionsPipelineRequest::class, name = "GITHUB_ACTIONS")
 )
@@ -44,7 +44,7 @@ abstract class PipelineRequest(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BambooVerificationRequest::class, name = "BAMBOO"),
-    JsonSubTypes.Type(value = BambooVerificationRequest::class, name = "BAMBOO_DEPLOYMENT"),
+    JsonSubTypes.Type(value = BambooDeploymentVerificationRequest::class, name = "BAMBOO_DEPLOYMENT"),
     JsonSubTypes.Type(value = JenkinsVerificationRequest::class, name = "JENKINS"),
     JsonSubTypes.Type(value = GithubActionsVerificationRequest::class, name = "GITHUB_ACTIONS")
 )

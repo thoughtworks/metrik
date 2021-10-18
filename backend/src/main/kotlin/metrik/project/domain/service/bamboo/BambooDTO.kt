@@ -241,7 +241,7 @@ data class DeploymentResult(
             status = getStageExecutionStatus(),
             startTimeMillis = startedDate!!,
             durationMillis = finishedDate!! - executedDate!!,
-            0,
+            pauseDurationMillis = 0,
             completedTimeMillis = finishedDate
         )
     }
