@@ -17,7 +17,7 @@ export const BAMBOO_DEPLOYED_PIPELINE_CONFIG: PipelineConfig[] = [
 				span: 16,
 				name: "url",
 				label: "Build Plan URL",
-				placeholder: "e.g: http://bamboo_domain_name/browse/PROJECT-PLAN",
+				placeholder: "e.g: http://domain/deploy/viewDeploymentProjectEnvironments.action?id=ID",
 				tooltip: {
 					icon: <InfoCircleOutlined />,
 					title:

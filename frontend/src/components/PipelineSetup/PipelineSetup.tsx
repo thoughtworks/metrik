@@ -6,13 +6,12 @@ import {
 	Pipeline,
 	verifyPipelineUsingPost,
 } from "../../clients/pipelineApis";
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import { Alert, Button, Col, Divider, Form, Input, Row, Select, Typography } from "antd";
 import { css } from "@emotion/react";
 import { PIPELINE_CONFIG, PIPELINE_TYPE_NOTE } from "../../utils/pipelineConfig/pipelineConfig";
 import { VerifyStatus } from "../../models/common";
 import { PipelineTool } from "../../models/pipeline";
-import { CheckboxChangeEvent } from "antd/es/checkbox";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -42,6 +41,7 @@ const PipelineSetup: FC<{
 	const [loading, setLoading] = useState(false);
 	const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>(VerifyStatus.DEFAULT);
 	const [form] = useForm<FormValues>();
+	const [isBambooDeployment, setIsBambooDeployment] = useState<boolean>(false);
 
 	const shouldDisabledVerifyButton = (values: FormValues) => {
 		return (
@@ -72,7 +72,10 @@ const PipelineSetup: FC<{
 
 	const onValuesChange = (changedValues: Partial<FormValues>, values: FormValues) => {
 		if (changedValues.type) {
-			console.log(changedValues.type);
+			changedValues.type === PipelineTool.BAMBOO_DEPLOYMENT
+				? setIsBambooDeployment(true)
+				: setIsBambooDeployment(false);
+
 			const result = Object.keys(values).reduce((sum, key) => ({ ...sum, [key]: undefined }), {});
 			form.setFieldsValue({ ...result, type: changedValues.type });
 			setVerifyStatus(VerifyStatus.DEFAULT);
@@ -91,12 +94,19 @@ const PipelineSetup: FC<{
 	};
 
 	const handleCheckBambooDeployment = (e: ChangeEvent<HTMLInputElement>, values: FormValues) => {
+		setIsBambooDeployment(!isBambooDeployment);
 		const result = Object.keys(values).reduce((sum, key) => ({ ...sum, [key]: undefined }), {});
 		e.target.checked
 			? form.setFieldsValue({ ...result, type: PipelineTool.BAMBOO_DEPLOYMENT })
 			: form.setFieldsValue({ ...result, type: PipelineTool.BAMBOO });
 		console.log(form.getFieldsValue());
 	};
+
+	useEffect(() => {
+		if (form.getFieldsValue().type === PipelineTool.BAMBOO_DEPLOYMENT) {
+			setIsBambooDeployment(true);
+		}
+	}, [isBambooDeployment]);
 
 	return (
 		<Form
@@ -141,12 +151,13 @@ const PipelineSetup: FC<{
 							{(formValues.type === PipelineTool.BAMBOO ||
 								formValues.type === PipelineTool.BAMBOO_DEPLOYMENT) && (
 								<Col>
-									<label htmlFor="bambooDeployment">Bamboo deployment</label>
 									<input
 										id="bambooDeployment"
 										type="checkbox"
+										checked={isBambooDeployment}
 										onChange={e => handleCheckBambooDeployment(e, formValues)}
 									/>
+									<label htmlFor="bambooDeployment">Bamboo deployment</label>
 								</Col>
 							)}
 						</Row>
