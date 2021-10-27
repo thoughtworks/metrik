@@ -3,7 +3,7 @@ package metrik
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import metrik.base.ApiTestBase
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -21,7 +21,7 @@ internal class PipelineApiTest : ApiTestBase() {
     @BeforeAll
     fun setUpPipelineTestData() {
         mongoTemplate.save(
-            Pipeline(
+            PipelineConfiguration(
                 id = "601cbb3425c1392117aa053b",
                 projectId = "601cbae825c1392117aa0429",
                 name = "df",
@@ -32,7 +32,7 @@ internal class PipelineApiTest : ApiTestBase() {
             )
         )
         mongoTemplate.save(
-            Pipeline(
+            PipelineConfiguration(
                 id = "601cbae825c1392117aa0429",
                 projectId = "601cbae825c1392117aa0429",
                 name = "cfr",

@@ -3,7 +3,7 @@ package metrik.project
 import io.mockk.mockk
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
@@ -42,7 +42,7 @@ val githubActionsRun = GithubActionsRun(
     updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
 )
 
-val jenkinsPipeline = Pipeline(
+val jenkinsPipeline = PipelineConfiguration(
     id = pipelineId,
     projectId = projectId,
     name = name,
@@ -51,7 +51,7 @@ val jenkinsPipeline = Pipeline(
     url = url,
     type = PipelineType.JENKINS
 )
-val bambooPipeline = Pipeline(
+val bambooPipeline = PipelineConfiguration(
     id = pipelineId,
     projectId = projectId,
     name = name,
@@ -60,7 +60,7 @@ val bambooPipeline = Pipeline(
     url = url,
     type = PipelineType.BAMBOO
 )
-val githubActionsPipeline = Pipeline(
+val githubActionsPipeline = PipelineConfiguration(
     id = pipelineId,
     projectId = projectId,
     name = name,
@@ -68,7 +68,7 @@ val githubActionsPipeline = Pipeline(
     url = userInputURL,
     type = PipelineType.GITHUB_ACTIONS
 )
-val noopPipeline = Pipeline(
+val noopPipeline = PipelineConfiguration(
     id = pipelineId,
     projectId = projectId,
     name = name,
@@ -160,7 +160,7 @@ fun buildGithubActionsPipelineVerificationRequest() = GithubActionsVerificationR
     credential = "credential",
 )
 
-fun buildPipeline(type: PipelineType = PipelineType.NOT_SUPPORTED): Pipeline =
+fun buildPipeline(type: PipelineType = PipelineType.NOT_SUPPORTED): PipelineConfiguration =
     when (type) {
         PipelineType.JENKINS -> jenkinsPipeline.copy()
         PipelineType.BAMBOO -> bambooPipeline.copy()

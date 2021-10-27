@@ -2,12 +2,12 @@ package metrik.fixtures
 
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 
-val ltPipeline1 = Pipeline(
+val ltPipeline1 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e17",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt1",
@@ -16,7 +16,7 @@ val ltPipeline1 = Pipeline(
     url = "http://localhost:8001/job/4km-mlt1/",
     type = PipelineType.JENKINS
 )
-val ltPipeline2 = Pipeline(
+val ltPipeline2 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e16",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt2",
@@ -25,7 +25,7 @@ val ltPipeline2 = Pipeline(
     url = "http://localhost:8001/job/4km-mlt2/",
     type = PipelineType.JENKINS
 )
-val ltPipeline3 = Pipeline(
+val ltPipeline3 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e15",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt3",
@@ -34,7 +34,7 @@ val ltPipeline3 = Pipeline(
     url = "http://localhost:8001/job/4km-mlt3/",
     type = PipelineType.JENKINS
 )
-val ltPipeline4 = Pipeline(
+val ltPipeline4 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e14",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt4",
@@ -43,7 +43,7 @@ val ltPipeline4 = Pipeline(
     url = "http://localhost:8001/job/4km-mlt4/",
     type = PipelineType.JENKINS
 )
-val ltPipeline5 = Pipeline(
+val ltPipeline5 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e13",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt5",
@@ -52,7 +52,7 @@ val ltPipeline5 = Pipeline(
     url = "http://localhost:8001/job/4km-mlt5/",
     type = PipelineType.JENKINS
 )
-val ltPipeline6 = Pipeline(
+val ltPipeline6 = PipelineConfiguration(
     id = "6012505c42fbb8439fc08e12",
     projectId = "601cbae825c1392117aa0429",
     name = "mlt6",

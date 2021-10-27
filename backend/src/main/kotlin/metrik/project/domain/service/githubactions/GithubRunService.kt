@@ -1,7 +1,7 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -14,7 +14,7 @@ class GithubRunService(
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun syncRunsByPage(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         latestTimestamp: Long,
         maxPerPage: Int = defaultMaxPerPage
     ): MutableList<GithubActionsRun> {
@@ -47,7 +47,7 @@ class GithubRunService(
     }
 
     fun syncSingleRun(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         runUrl: String
     ): GithubActionsRun? {
         val runId = URL(runUrl).path.split("/").last()

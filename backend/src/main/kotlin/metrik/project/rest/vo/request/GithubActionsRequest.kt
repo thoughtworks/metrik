@@ -1,6 +1,6 @@
 package metrik.project.rest.vo.request
 
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import java.net.URL
 import javax.validation.constraints.NotBlank
@@ -10,7 +10,7 @@ class GithubActionsPipelineRequest(
     @field:NotBlank(message = "Credential cannot be empty") val credential: String,
     url: String
 ) : PipelineRequest(url, PipelineType.GITHUB_ACTIONS.toString()) {
-    override fun toPipeline(projectId: String, pipelineId: String) = Pipeline(
+    override fun toPipeline(projectId: String, pipelineId: String) = PipelineConfiguration(
         id = pipelineId,
         projectId = projectId,
         name = name,
@@ -33,7 +33,7 @@ class GithubActionsVerificationRequest(
     @field:NotBlank(message = "Credential cannot be null or empty") val credential: String,
     url: String
 ) : PipelineVerificationRequest(url, PipelineType.GITHUB_ACTIONS.toString()) {
-    override fun toPipeline() = Pipeline(
+    override fun toPipeline() = PipelineConfiguration(
         credential = credential,
         url = url,
         type = PipelineType.valueOf(type)

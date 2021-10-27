@@ -15,7 +15,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import metrik.exception.ApplicationException
 import metrik.project.domain.model.Execution
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
@@ -89,7 +89,7 @@ internal class JenkinsPipelineServiceTest {
         )
         assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
-                Pipeline(
+                PipelineConfiguration(
                     id = "fake pipeline",
                     username = username,
                     credential = credential,
@@ -112,7 +112,7 @@ internal class JenkinsPipelineServiceTest {
         )
         assertThrows(ApplicationException::class.java) {
             jenkinsPipelineService.verifyPipelineConfiguration(
-                Pipeline(
+                PipelineConfiguration(
                     id = "fake pipeline",
                     username = username,
                     credential = credential,
@@ -141,7 +141,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             username = username,
             credential = credential,
@@ -187,7 +187,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = "fake pipeline",
             username = username,
             credential = credential,
@@ -226,7 +226,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = "fake pipeline",
             username = username,
             credential = credential,
@@ -266,7 +266,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = "fake pipeline",
             username = username,
             credential = credential,
@@ -305,7 +305,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = "fake pipeline",
             username = username,
             credential = credential,
@@ -349,7 +349,7 @@ internal class JenkinsPipelineServiceTest {
         val username = "fake-user"
         val credential = "fake-credential"
         val baseUrl = "http://localhost"
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = "fake pipeline",
             username = username,
             credential = credential,

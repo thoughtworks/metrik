@@ -1,6 +1,6 @@
 package metrik.project.domain.repository
 
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.exception.PipelineNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,40 +16,40 @@ class PipelineRepository {
     private lateinit var mongoTemplate: MongoTemplate
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    fun findById(pipelineId: String): Pipeline {
+    fun findById(pipelineId: String): PipelineConfiguration {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId)
         )
 
-        val result = mongoTemplate.findOne(query, Pipeline::class.java)
+        val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
         logger.info("Query result for pipeline with ID [$pipelineId] is [$result]")
 
         return result ?: throw PipelineNotFoundException()
     }
 
-    fun findByIdAndProjectId(pipelineId: String, projectId: String): Pipeline {
+    fun findByIdAndProjectId(pipelineId: String, projectId: String): PipelineConfiguration {
         val query = Query().addCriteria(
             Criteria.where("id").isEqualTo(pipelineId).and("projectId").isEqualTo(projectId)
         )
-        val result = mongoTemplate.findOne(query, Pipeline::class.java)
+        val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
 
         logger.info("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is [$result]")
         return result ?: throw PipelineNotFoundException()
     }
 
-    fun findByNameAndProjectId(name: String, projectId: String): Pipeline? {
+    fun findByNameAndProjectId(name: String, projectId: String): PipelineConfiguration? {
         val query = Query().addCriteria(Criteria.where("name").`is`(name).and("projectId").`is`(projectId))
 
-        val result = mongoTemplate.findOne(query, Pipeline::class.java)
+        val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
 
         logger.info("Query result for pipeline with name [$name] and project ID [$projectId] is [$result]")
         return result
     }
 
-    fun findByProjectId(projectId: String): List<Pipeline> {
+    fun findByProjectId(projectId: String): List<PipelineConfiguration> {
         val query = Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId))
 
-        val result = mongoTemplate.find(query, Pipeline::class.java)
+        val result = mongoTemplate.find(query, PipelineConfiguration::class.java)
 
         logger.info("Query result size for pipeline with project ID [$projectId] is [${result.size}]")
         return result
@@ -57,14 +57,14 @@ class PipelineRepository {
 
     fun deleteById(pipelineId: String) {
         val query = Query().addCriteria(Criteria.where("id").isEqualTo(pipelineId))
-        mongoTemplate.remove(query, Pipeline::class.java)
+        mongoTemplate.remove(query, PipelineConfiguration::class.java)
     }
 
-    fun save(pipeline: Pipeline): Pipeline {
+    fun save(pipeline: PipelineConfiguration): PipelineConfiguration {
         return mongoTemplate.save(pipeline)
     }
 
-    fun saveAll(pipelines: List<Pipeline>): List<Pipeline> {
-        return mongoTemplate.insert(pipelines.toMutableList(), Pipeline::class.java).toList()
+    fun saveAll(pipelines: List<PipelineConfiguration>): List<PipelineConfiguration> {
+        return mongoTemplate.insert(pipelines.toMutableList(), PipelineConfiguration::class.java).toList()
     }
 }

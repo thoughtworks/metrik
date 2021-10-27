@@ -5,7 +5,7 @@ import feign.FeignException.FeignServerException
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
@@ -32,7 +32,7 @@ class GithubActionsPipelineService(
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
-    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+    override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         logger.info("Started verification for Github Actions pipeline [$pipeline]")
 
         try {
@@ -55,7 +55,8 @@ class GithubActionsPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
+    : List<Execution> {
         logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
 
         val progressCounter = AtomicInteger(0)
@@ -120,7 +121,7 @@ class GithubActionsPipelineService(
     }
 
     fun mapCommitToRun(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         runs: MutableList<GithubActionsRun>
     ): Map<String, Map<GithubActionsRun, List<Commit>>> {
         val branchCommitsMap: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
@@ -129,7 +130,8 @@ class GithubActionsPipelineService(
         return branchCommitsMap.toMap()
     }
 
-    private fun mapRunToCommits(pipeline: Pipeline, runs: List<GithubActionsRun>): Map<GithubActionsRun, List<Commit>> {
+    private fun mapRunToCommits(pipeline: PipelineConfiguration, runs: List<GithubActionsRun>)
+    : Map<GithubActionsRun, List<Commit>> {
         val map: MutableMap<GithubActionsRun, List<Commit>> = mutableMapOf()
 
         runs.sortedByDescending { it.commitTimeStamp }

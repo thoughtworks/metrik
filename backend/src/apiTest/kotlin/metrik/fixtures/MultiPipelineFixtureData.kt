@@ -2,12 +2,12 @@ package metrik.fixtures
 
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 
-val multiPipeline1 = Pipeline(
+val multiPipeline1 = PipelineConfiguration(
     id = "600a701221048076f92c4e43",
     projectId = "601cbae825c1392117aa0429",
     name = "multiPipeline1",
@@ -16,7 +16,7 @@ val multiPipeline1 = Pipeline(
     url = "http://localhost:8001/job/4km-multi-pipeline-test-1/",
     type = PipelineType.JENKINS
 )
-val multiPipeline2 = Pipeline(
+val multiPipeline2 = PipelineConfiguration(
     id = "601a2f129deac2220dd07570",
     projectId = "601cbae825c1392117aa0429",
     name = "multiPipeline2",

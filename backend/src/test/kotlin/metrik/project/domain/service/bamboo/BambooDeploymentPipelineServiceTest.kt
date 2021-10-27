@@ -54,7 +54,7 @@ internal class BambooDeploymentPipelineServiceTest {
     private val deploymentProjectId = "1736705"
     private val pipelineName = "TEST"
     private val latestDeployTimestamp: Long = 1630501012686
-    private val pipeline = Pipeline(
+    private val pipeline = PipelineConfiguration(
         id = pipelineId,
         name = pipelineName,
         credential = credential,
@@ -252,7 +252,7 @@ internal class BambooDeploymentPipelineServiceTest {
         )
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooDeploymentPipelineService.verifyPipelineConfiguration(
-                Pipeline(
+                PipelineConfiguration(
                     credential = credential,
                     url = userInputURL
                 )
@@ -270,7 +270,7 @@ internal class BambooDeploymentPipelineServiceTest {
         )
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooDeploymentPipelineService.verifyPipelineConfiguration(
-                Pipeline(
+                PipelineConfiguration(
                     credential = credential,
                     url = userInputURL
                 )
@@ -329,7 +329,7 @@ internal class BambooDeploymentPipelineServiceTest {
 
         Assertions.assertThrows(ApplicationException::class.java) {
             bambooDeploymentPipelineService.syncBuildsProgressively(
-                Pipeline(
+                PipelineConfiguration(
                     credential = credential,
                     url = userInputURL
                 ),

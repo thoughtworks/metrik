@@ -1,6 +1,6 @@
 package metrik.infrastructure.encryption
 
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
@@ -66,7 +66,7 @@ class DatabaseEncryptionAspect {
     private lateinit var encryptionService: AESEncryptionService
 
     @Before(value = "execution(* org.springframework.data.mongodb.core.MongoTemplate.save(..)) && args(pipeline)")
-    fun encryptBeforeSavingToDB(pipeline: Pipeline) {
+    fun encryptBeforeSavingToDB(pipeline: PipelineConfiguration) {
         pipeline.username = encryptionService.encrypt(pipeline.username)
         pipeline.credential = encryptionService.encrypt(pipeline.credential)!!
     }
@@ -76,11 +76,11 @@ class DatabaseEncryptionAspect {
             "args(pipelines, entityClass)"
     )
     fun <T> encryptBeforeSavingToDB(pipelines: ArrayList<T>, entityClass: Class<T>) {
-        if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
+        if (!entityClass.isAssignableFrom(PipelineConfiguration::class.java)) {
             return
         }
         pipelines.forEach {
-            it as Pipeline
+            it as PipelineConfiguration
             it.username = encryptionService.encrypt(it.username)
             it.credential = encryptionService.encrypt(it.credential)!!
         }
@@ -92,11 +92,11 @@ class DatabaseEncryptionAspect {
         returning = "pipelines"
     )
     fun <T> decryptAfterRetrievingFromDB(query: Query, entityClass: Class<T>, pipelines: List<*>) {
-        if (!entityClass.isAssignableFrom(Pipeline::class.java)) {
+        if (!entityClass.isAssignableFrom(PipelineConfiguration::class.java)) {
             return
         }
         pipelines.forEach {
-            it as Pipeline
+            it as PipelineConfiguration
             it.username = encryptionService.decrypt(it.username)
             it.credential = encryptionService.decrypt(it.credential)!!
         }
@@ -106,7 +106,7 @@ class DatabaseEncryptionAspect {
         pointcut = "execution(* org.springframework.data.mongodb.core.MongoTemplate.findOne(..))",
         returning = "pipeline"
     )
-    fun decryptAfterRetrievingFromDB(pipeline: Pipeline?) {
+    fun decryptAfterRetrievingFromDB(pipeline: PipelineConfiguration?) {
         if (pipeline != null) {
             pipeline.username = encryptionService.decrypt(pipeline.username)
             pipeline.credential = encryptionService.decrypt(pipeline.credential)!!

@@ -3,7 +3,7 @@ package metrik.project.domain.service.bamboo
 import feign.FeignException
 import metrik.infrastructure.utlils.RequestUtil.getDomain
 import metrik.project.domain.model.Execution
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
@@ -30,7 +30,7 @@ class BambooDeploymentPipelineService(
 
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+    override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         logger.info("Started verification for Bamboo pipeline [$pipeline]")
 
         try {
@@ -46,7 +46,8 @@ class BambooDeploymentPipelineService(
     }
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
+    : List<Execution> {
         logger.info("Started data sync for Bamboo deployment pipeline [$pipeline.id]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)
@@ -108,7 +109,7 @@ class BambooDeploymentPipelineService(
             .sortedBy { it.toUpperCase() }
             .toList()
 
-    private fun getPlanKeyAndEnvironments(pipeline: Pipeline): Pair<String, List<Environment>> {
+    private fun getPlanKeyAndEnvironments(pipeline: PipelineConfiguration): Pair<String, List<Environment>> {
         val deployProjectId = pipeline.url.split("id=").last()
         val url = "${getDomain(pipeline.url)}/rest/api/latest/deploy/project/$deployProjectId"
         logger.info("Get plan key and deploy environments - Sending request to [$url]")
@@ -118,7 +119,7 @@ class BambooDeploymentPipelineService(
     }
 
     private fun getDeploymentResultsForBuild(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         environmentList: List<Environment>,
         buildResultKey: String
     ): MutableMap<String, List<DeploymentResult>> {
@@ -138,7 +139,7 @@ class BambooDeploymentPipelineService(
     }
 
     private fun getNewDeploymentResultRelatedBuildNumbers(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         environmentList: List<Environment>,
         latestTimestamp: Long
     ): List<Int> {
@@ -155,7 +156,7 @@ class BambooDeploymentPipelineService(
         return buildNeedToSyncNumbers.toList()
     }
 
-    private fun getDeploymentVersionPlanResultKey(pipeline: Pipeline, versionId: Long): String {
+    private fun getDeploymentVersionPlanResultKey(pipeline: PipelineConfiguration, versionId: Long): String {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/deploy/version/$versionId/build-result"
         logger.info("Get deploy version information - Sending request to [$url]")
         val deploymentVersionBuildResultDTO =
@@ -163,7 +164,7 @@ class BambooDeploymentPipelineService(
         return deploymentVersionBuildResultDTO!!.planResultKey.key
     }
 
-    private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, credential: String): Int {
+    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Int {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
         logger.info("Get max build number - Sending request to [$url]")
         val summaryDTO = bambooFeignClient.getMaxBuildNumber(URI(url), credential)
@@ -173,7 +174,7 @@ class BambooDeploymentPipelineService(
     }
 
     private fun getBuildDetails(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         planKey: String,
         buildNumber: Int,
         credential: String

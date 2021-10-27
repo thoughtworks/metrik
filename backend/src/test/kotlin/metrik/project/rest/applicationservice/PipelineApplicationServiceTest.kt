@@ -7,7 +7,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.metrics.exception.BadRequestException
 import metrik.project.buildPipeline
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
 import metrik.project.domain.repository.BuildRepository
@@ -61,7 +61,7 @@ internal class PipelineApplicationServiceTest {
     fun `should throw BadRequestException when createPipeline() called given pipeline name already exist`() {
         val pipeline = buildPipeline()
         val projectId = pipeline.projectId
-        val pipelineInDB = Pipeline()
+        val pipelineInDB = PipelineConfiguration()
         every { pipelineRepository.findByNameAndProjectId(pipeline.name, projectId) } returns pipelineInDB
 
         val exception = assertThrows<BadRequestException> { pipelineApplicationService.createPipeline(pipeline) }
@@ -139,7 +139,7 @@ internal class PipelineApplicationServiceTest {
     @Test
     fun `should throw Exception when updatePipeline() with pipeline name already exist`() {
         val pipeline = buildPipeline()
-        val pipelineInDB = Pipeline()
+        val pipelineInDB = PipelineConfiguration()
         every { pipelineRepository.findByNameAndProjectId(pipeline.name, pipeline.projectId) } returns pipelineInDB
 
         val exception = assertThrows<BadRequestException> { pipelineApplicationService.updatePipeline(pipeline) }
@@ -193,9 +193,9 @@ internal class PipelineApplicationServiceTest {
         val pipeline1StageName = "pipeline1StageName"
         val pipeline2StageName = "pipeline2StageName"
         val pipeline3StageName = "pipeline3StageName"
-        val pipeline1 = Pipeline(pipeline1Id, projectId, pipeline1Name)
-        val pipeline2 = Pipeline(pipeline2Id, projectId, pipeline2Name)
-        val pipeline3 = Pipeline(pipeline3Id, projectId, pipeline3Name)
+        val pipeline1 = PipelineConfiguration(pipeline1Id, projectId, pipeline1Name)
+        val pipeline2 = PipelineConfiguration(pipeline2Id, projectId, pipeline2Name)
+        val pipeline3 = PipelineConfiguration(pipeline3Id, projectId, pipeline3Name)
         val expectedProject = Project(projectId, projectName)
 
         every { projectRepository.findById(projectId) } returns expectedProject

@@ -1,6 +1,6 @@
 package metrik.project.rest.vo.request
 
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import javax.validation.constraints.NotBlank
 
@@ -9,9 +9,9 @@ class BambooPipelineRequest(
     @field:NotBlank(message = "Credential cannot be empty") val credential: String,
     url: String
 ) : PipelineRequest(url, PipelineType.BAMBOO.toString()) {
-    override fun toPipeline(projectId: String, pipelineId: String): Pipeline {
+    override fun toPipeline(projectId: String, pipelineId: String): PipelineConfiguration {
         return with(this) {
-            Pipeline(
+            PipelineConfiguration(
                 id = pipelineId,
                 projectId = projectId,
                 name = name,
@@ -29,7 +29,7 @@ class BambooVerificationRequest(
     url: String
 ) : PipelineVerificationRequest(url, PipelineType.BAMBOO.toString()) {
     override fun toPipeline() = with(this) {
-        Pipeline(
+        PipelineConfiguration(
             username = null,
             credential = credential,
             url = url,

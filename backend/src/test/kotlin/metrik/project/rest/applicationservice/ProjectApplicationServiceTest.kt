@@ -9,7 +9,7 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import metrik.project.buildJenkinsPipelineRequest
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
 import metrik.project.domain.repository.BuildRepository
@@ -49,7 +49,7 @@ internal class ProjectApplicationServiceTest {
     private var pipelineUserName = "4km"
     private var pipelineCredential = "4km"
     private var expectedPipeline =
-        Pipeline(
+        PipelineConfiguration(
             pipelineId, projectId, pipelineName, pipelineUserName,
             pipelineCredential, pipelineUrl, PipelineType.JENKINS
         )
@@ -105,7 +105,7 @@ internal class ProjectApplicationServiceTest {
     @Test
     fun `test delete project`() {
         every { projectRepository.findById(projectId) } returns Project(projectId)
-        every { pipelineRepository.findByProjectId(projectId) } returns listOf(Pipeline(pipelineId, projectId))
+        every { pipelineRepository.findByProjectId(projectId) } returns listOf(PipelineConfiguration(pipelineId, projectId))
 
         projectApplicationService.deleteProject(projectId)
 

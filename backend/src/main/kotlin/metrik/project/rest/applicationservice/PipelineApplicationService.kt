@@ -1,7 +1,7 @@
 package metrik.project.rest.applicationservice
 
 import metrik.metrics.exception.BadRequestException
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
@@ -21,13 +21,13 @@ class PipelineApplicationService(
 ) {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    fun verifyPipelineConfiguration(pipeline: Pipeline) {
+    fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         logger.info("Started verification for pipeline [$pipeline]")
 
         pipelineServiceFactory.getService(pipeline.type).verifyPipelineConfiguration(pipeline)
     }
 
-    fun createPipeline(pipeline: Pipeline): Pipeline {
+    fun createPipeline(pipeline: PipelineConfiguration): PipelineConfiguration {
         verifyProjectExist(pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
         verifyPipelineConfiguration(pipeline)
@@ -35,7 +35,7 @@ class PipelineApplicationService(
     }
 
     private fun verifyPipelineNameNotDuplicate(
-        pipeline: Pipeline
+        pipeline: PipelineConfiguration
     ) {
         val foundPipeline = pipelineRepository.findByNameAndProjectId(pipeline.name, pipeline.projectId)
         if (foundPipeline != null && foundPipeline.id != pipeline.id) {
@@ -43,7 +43,7 @@ class PipelineApplicationService(
         }
     }
 
-    fun updatePipeline(pipeline: Pipeline): Pipeline {
+    fun updatePipeline(pipeline: PipelineConfiguration): PipelineConfiguration {
         verifyProjectExist(pipeline.projectId)
         verifyPipelineExist(pipeline.id, pipeline.projectId)
         verifyPipelineNameNotDuplicate(pipeline)
@@ -52,7 +52,7 @@ class PipelineApplicationService(
         return pipelineRepository.save(pipeline)
     }
 
-    fun getPipeline(projectId: String, pipelineId: String): Pipeline {
+    fun getPipeline(projectId: String, pipelineId: String): PipelineConfiguration {
         verifyProjectExist(projectId)
         return pipelineRepository.findByIdAndProjectId(pipelineId, projectId)
     }

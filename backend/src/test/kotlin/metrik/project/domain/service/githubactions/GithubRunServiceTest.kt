@@ -6,7 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
@@ -25,7 +25,7 @@ internal class GithubRunServiceTest {
     private lateinit var githubFeignClient: GithubFeignClient
 
     private val testPipeline =
-        Pipeline(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
+        PipelineConfiguration(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
 
     @Test
     internal fun `should keep syncing runs until meet timestamp limitation`() {

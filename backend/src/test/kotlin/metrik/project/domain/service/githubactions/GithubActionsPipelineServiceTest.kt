@@ -17,7 +17,7 @@ import metrik.project.commit
 import metrik.project.credential
 import metrik.project.currentTimeStamp
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.githubActionsExecution
@@ -77,7 +77,7 @@ internal class GithubActionsPipelineServiceTest {
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
-                Pipeline(credential = credential, url = userInputURL)
+                PipelineConfiguration(credential = credential, url = userInputURL)
             )
         }
     }
@@ -93,7 +93,7 @@ internal class GithubActionsPipelineServiceTest {
 
         assertThrows(ApplicationException::class.java) {
             githubActionsPipelineService.verifyPipelineConfiguration(
-                Pipeline(credential = credential, url = userInputURL)
+                PipelineConfiguration(credential = credential, url = userInputURL)
             )
         }
     }

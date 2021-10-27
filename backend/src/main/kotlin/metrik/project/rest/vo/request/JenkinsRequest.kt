@@ -1,6 +1,6 @@
 package metrik.project.rest.vo.request
 
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import javax.validation.constraints.NotBlank
 
@@ -13,9 +13,9 @@ class JenkinsPipelineRequest(
     val credential: String,
     url: String
 ) : PipelineRequest(url, PipelineType.JENKINS.toString()) {
-    override fun toPipeline(projectId: String, pipelineId: String): Pipeline {
+    override fun toPipeline(projectId: String, pipelineId: String): PipelineConfiguration {
         return with(this) {
-            Pipeline(
+            PipelineConfiguration(
                 id = pipelineId,
                 projectId = projectId,
                 name = name,
@@ -36,7 +36,7 @@ class JenkinsVerificationRequest(
     url: String
 ) : PipelineVerificationRequest(url, PipelineType.JENKINS.toString()) {
     override fun toPipeline() = with(this) {
-        Pipeline(
+        PipelineConfiguration(
             username = username,
             credential = credential,
             url = url,

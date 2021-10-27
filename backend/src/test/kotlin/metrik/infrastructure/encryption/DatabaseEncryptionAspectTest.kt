@@ -5,7 +5,7 @@ import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
 import metrik.project.domain.model.Execution
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,7 +37,7 @@ internal class DatabaseEncryptionAspectTest {
         val username = "mock-username"
         val credential = "mock-credential"
 
-        val pipelineSaved = mongoTemplate.save(Pipeline(username = username, credential = credential))
+        val pipelineSaved = mongoTemplate.save(PipelineConfiguration(username = username, credential = credential))
 
         verify(exactly = 1) { encryptionService.encrypt(username) }
         verify(exactly = 1) { encryptionService.encrypt(credential) }
@@ -58,8 +58,8 @@ internal class DatabaseEncryptionAspectTest {
         val credential = "mock-credential"
 
         val pipelinesSaved = mongoTemplate.insert(
-            mutableListOf(Pipeline(username = username, credential = credential)),
-            Pipeline::class.java
+            mutableListOf(PipelineConfiguration(username = username, credential = credential)),
+            PipelineConfiguration::class.java
         ).toList()
 
         verify(exactly = 1) { encryptionService.encrypt(username) }
@@ -84,11 +84,11 @@ internal class DatabaseEncryptionAspectTest {
         val credential = "mock-credential"
         val projectId = "fake-project"
 
-        mongoTemplate.save(Pipeline(projectId = projectId, username = username, credential = credential))
+        mongoTemplate.save(PipelineConfiguration(projectId = projectId, username = username, credential = credential))
 
         val pipelinesRetrieved = mongoTemplate.find(
             Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId)),
-            Pipeline::class.java
+            PipelineConfiguration::class.java
         )
 
         verify(exactly = 2) { encryptionService.decrypt("encrypted") }
@@ -114,11 +114,11 @@ internal class DatabaseEncryptionAspectTest {
         val credential = "mock-credential"
         val projectId = "fake-project"
 
-        mongoTemplate.save(Pipeline(projectId = projectId, username = username, credential = credential))
+        mongoTemplate.save(PipelineConfiguration(projectId = projectId, username = username, credential = credential))
 
         val pipelineRetrieved = mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId)),
-            Pipeline::class.java
+            PipelineConfiguration::class.java
         )
 
         verify(exactly = 2) { encryptionService.decrypt("encrypted") }
@@ -132,7 +132,7 @@ internal class DatabaseEncryptionAspectTest {
 
         mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("projectId").isEqualTo("1")),
-            Pipeline::class.java
+            PipelineConfiguration::class.java
         )
 
         verify { encryptionService wasNot Called }
@@ -142,7 +142,7 @@ internal class DatabaseEncryptionAspectTest {
     fun `should not decrypt data after call findOne() method in mongoTemplate when it returns null`() {
         mongoTemplate.findOne(
             Query().addCriteria(Criteria.where("pipelineId").isEqualTo("1")),
-            Pipeline::class.java
+            PipelineConfiguration::class.java
         )
 
         verify { encryptionService wasNot Called }

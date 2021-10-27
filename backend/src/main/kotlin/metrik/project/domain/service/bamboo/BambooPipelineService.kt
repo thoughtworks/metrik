@@ -4,7 +4,7 @@ import feign.FeignException.FeignClientException
 import feign.FeignException.FeignServerException
 import metrik.infrastructure.utlils.RequestUtil.getDomain
 import metrik.project.domain.model.Execution
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
@@ -31,7 +31,7 @@ class BambooPipelineService(
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+    override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         logger.info("Started verification for Bamboo pipeline [$pipeline]")
         try {
             val url = getDomain(pipeline.url)
@@ -54,7 +54,8 @@ class BambooPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
+    : List<Execution> {
         logger.info("Started data sync for Bamboo pipeline [$pipeline.id]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)
@@ -103,7 +104,7 @@ class BambooPipelineService(
     }
 
     private fun getBuildDetails(
-        pipeline: Pipeline,
+        pipeline: PipelineConfiguration,
         planKey: String,
         buildNumber: Int,
         credential: String
@@ -131,7 +132,7 @@ class BambooPipelineService(
         }
     }
 
-    private fun getMaxBuildNumber(pipeline: Pipeline, planKey: String, credential: String): Int {
+    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Int {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
         logger.info("Get max build number - Sending request to [$url]")
         val summaryDTO = bambooFeignClient.getMaxBuildNumber(URI(url), credential)

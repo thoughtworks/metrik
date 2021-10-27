@@ -88,7 +88,7 @@ internal class BambooPipelineServiceTest {
             buildFeignResponse(500)
         )
         assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
+            bambooPipelineService.verifyPipelineConfiguration(PipelineConfiguration(credential = credential, url = userInputURL))
         }
     }
 
@@ -101,7 +101,7 @@ internal class BambooPipelineServiceTest {
             buildFeignResponse(400)
         )
         assertThrows(ApplicationException::class.java) {
-            bambooPipelineService.verifyPipelineConfiguration(Pipeline(credential = credential, url = userInputURL))
+            bambooPipelineService.verifyPipelineConfiguration(PipelineConfiguration(credential = credential, url = userInputURL))
         }
     }
 
@@ -119,7 +119,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should throw exception when sync pipeline given response is 500`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -139,7 +139,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should throw exception when sync pipeline given response is 400`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -160,7 +160,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should not save when build detail return null`(){
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -188,7 +188,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds given build has no stages`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -229,7 +229,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds given stage has no jobs`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -265,7 +265,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds and emit the progress event given both build and stage status are success`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -314,7 +314,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds given both build and stage status are failed`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -350,7 +350,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should set build state to in progress when sync build given build contains stages of which status is unknown`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -390,7 +390,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds given both build and stage status are non-supported status`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -426,7 +426,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should sync builds given the build is marked as 'need sync' by buildRepository`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,
@@ -472,7 +472,7 @@ internal class BambooPipelineServiceTest {
 
     @Test
     fun `should be able to convert not started build which has no start time and complete time`() {
-        val pipeline = Pipeline(
+        val pipeline = PipelineConfiguration(
             id = pipelineId,
             name = pipelineName,
             credential = credential,

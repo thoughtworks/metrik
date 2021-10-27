@@ -2,7 +2,7 @@ package metrik.project.rest.vo.request
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.rest.validation.EnumConstraint
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -34,7 +34,7 @@ abstract class PipelineRequest(
     )
     var type: String
 ) {
-    abstract fun toPipeline(projectId: String, pipelineId: String): Pipeline
+    abstract fun toPipeline(projectId: String, pipelineId: String): PipelineConfiguration
 }
 
 @JsonTypeInfo(
@@ -57,5 +57,5 @@ abstract class PipelineVerificationRequest(
     )
     val type: String,
 ) {
-    abstract fun toPipeline(): Pipeline
+    abstract fun toPipeline(): PipelineConfiguration
 }

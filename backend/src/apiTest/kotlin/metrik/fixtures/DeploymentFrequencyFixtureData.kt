@@ -2,12 +2,12 @@ package metrik.fixtures
 
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 
-val dfPipeline = Pipeline(
+val dfPipeline = PipelineConfiguration(
     id = "601cbb3425c1392117aa053b",
     projectId = "601cbae825c1392117aa0429",
     name = "df",

@@ -24,7 +24,7 @@ class JenkinsPipelineService(
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
-    override fun verifyPipelineConfiguration(pipeline: Pipeline) {
+    override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         val headers = getAuth(pipeline.username!!, pipeline.credential)
         val url = URI.create(pipeline.url)
         try {
@@ -45,7 +45,8 @@ class JenkinsPipelineService(
             .toList()
     }
 
-    override fun syncBuildsProgressively(pipeline: Pipeline, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
+    : List<Execution> {
         logger.info("Started data sync for Jenkins pipeline [$pipeline.id]")
         val progressCounter = AtomicInteger(0)
 

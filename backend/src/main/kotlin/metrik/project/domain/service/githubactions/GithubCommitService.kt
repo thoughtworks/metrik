@@ -3,7 +3,7 @@ package metrik.project.domain.service.githubactions
 import metrik.infrastructure.utlils.toLocalDateTime
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -20,7 +20,7 @@ class GithubCommitService(
         startTimeStamp: Long,
         endTimeStamp: Long,
         branch: String? = null,
-        pipeline: Pipeline
+        pipeline: PipelineConfiguration
     ): List<Commit> {
         logger.info("Started sync for Github Actions commits [${pipeline.url}]/[$branch]")
 

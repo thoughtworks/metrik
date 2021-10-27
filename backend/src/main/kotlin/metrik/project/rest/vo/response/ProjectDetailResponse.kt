@@ -1,7 +1,7 @@
 package metrik.project.rest.vo.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import metrik.project.domain.model.Pipeline
+import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Project
 import org.apache.logging.log4j.util.Strings
 
@@ -12,7 +12,7 @@ data class ProjectDetailResponse(
     var synchronizationTimestamp: Long? = null,
     var pipelines: List<PipelineResponse> = emptyList()
 ) {
-    constructor(project: Project, pipelines: List<Pipeline>) : this(
+    constructor(project: Project, pipelines: List<PipelineConfiguration>) : this(
         id = project.id,
         name = project.name,
         synchronizationTimestamp = project.synchronizationTimestamp,
