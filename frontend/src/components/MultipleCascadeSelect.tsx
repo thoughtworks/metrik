@@ -98,12 +98,14 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 }) => {
 	const prevOptions = usePrevious(options);
 	const [popupVisible, setPopupVisible] = useState(false);
-
 	const [cascadeValue, setCascadeValue] = useState<CascadeValue>(
 		valuesToCascadeValue(defaultValues)
 	);
+	const prevCascadeValue = usePrevious(cascadeValue);
 	const tags = Object.values(cascadeValue);
+	const prevTags = prevCascadeValue ? Object.values(prevCascadeValue) : [];
 	const checkedValues = tags.map(v => v.value);
+	const prevCheckedValues = prevTags.map(v => v.value);
 
 	const [visibleMap, setVisibleMap] = useState<{ [key: string]: boolean }>(
 		checkedValues.reduce(
@@ -149,13 +151,15 @@ export const MultipleCascadeSelect: FC<MultipleCascadeSelectProps> = ({
 	useEffect(() => {
 		setVisibleMap(state => ({
 			...state,
-			...checkedValues.reduce(
-				(res, item) => ({
-					...res,
-					[item]: true,
-				}),
-				{}
-			),
+			...checkedValues
+				.filter(value => !prevCheckedValues.includes(value))
+				.reduce(
+					(res, item) => ({
+						...res,
+						[item]: true,
+					}),
+					{}
+				),
 		}));
 		onChange && onChange(Object.values(cascadeValue));
 	}, [cascadeValue]);
