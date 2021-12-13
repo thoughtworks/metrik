@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 
 @FeignClient(
     value = "github-api",
@@ -53,7 +51,6 @@ interface GithubFeignClient {
 
 class GithubFeignClientConfiguration : RequestInterceptor {
     override fun apply(template: RequestTemplate?) {
-        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request
         val token = "Bearer " + template!!.headers()["credential"]!!.first()
         template.header("Authorization", token)
         template.removeHeader("credential")

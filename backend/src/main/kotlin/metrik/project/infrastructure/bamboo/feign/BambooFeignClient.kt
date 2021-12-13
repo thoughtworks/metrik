@@ -7,8 +7,6 @@ import metrik.project.domain.service.bamboo.*
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import java.net.URI
 
 @FeignClient(
@@ -56,7 +54,6 @@ interface BambooFeignClient {
 
 class BambooFeignClientConfiguration : RequestInterceptor {
     override fun apply(template: RequestTemplate?) {
-        (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)?.request
         val token = "Bearer " + template!!.headers()["credential"]!!.first()
         template.header("Authorization", token)
         template.removeHeader("credential")
