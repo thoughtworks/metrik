@@ -38,6 +38,8 @@ idea {
     }
 }
 
+ext["log4j2.version"] = "2.17.1"
+
 sourceSets {
     create("apiTest") {
         compileClasspath += sourceSets.main.get().output
