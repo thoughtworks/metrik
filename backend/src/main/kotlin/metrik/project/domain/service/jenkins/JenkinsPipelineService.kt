@@ -47,7 +47,7 @@ class JenkinsPipelineService(
 
     override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
     : List<Execution> {
-        logger.info("Started data sync for Jenkins pipeline [$pipeline.id]")
+        logger.info("Started data sync for Jenkins pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
         val progressCounter = AtomicInteger(0)
 
         val buildsNeedToSync = getBuildSummariesFromJenkins(pipeline.username!!, pipeline.credential, pipeline.url)
