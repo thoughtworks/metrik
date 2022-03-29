@@ -33,7 +33,8 @@ class GithubActionsPipelineService(
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
-        logger.info("Started verification for Github Actions pipeline [$pipeline]")
+        logger.info("Started verification for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
+                "type: ${pipeline.type}]")
 
         try {
             val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
@@ -57,7 +58,7 @@ class GithubActionsPipelineService(
     @Synchronized
     override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
     : List<Execution> {
-        logger.info("Started data sync for Github Actions pipeline [$pipeline.id]")
+        logger.info("Started data sync for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
 
         val progressCounter = AtomicInteger(0)
 

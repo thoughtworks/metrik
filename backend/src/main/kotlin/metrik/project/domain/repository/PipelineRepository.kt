@@ -33,7 +33,8 @@ class PipelineRepository {
         )
         val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
 
-        logger.info("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is [$result]")
+        logger.info("Query result for pipeline with project ID [$projectId] and ID [$pipelineId] is " +
+                "[name: ${result?.name}, url: ${result?.url}, type: ${result?.type}]")
         return result ?: throw PipelineNotFoundException()
     }
 

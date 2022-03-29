@@ -31,7 +31,8 @@ class BambooDeploymentPipelineService(
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
-        logger.info("Started verification for Bamboo pipeline [$pipeline]")
+        logger.info("Started verification for Bamboo pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
+                "type: ${pipeline.type}]")
 
         try {
             val url = getDomain(pipeline.url)
@@ -48,7 +49,7 @@ class BambooDeploymentPipelineService(
     @Synchronized
     override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
     : List<Execution> {
-        logger.info("Started data sync for Bamboo deployment pipeline [$pipeline.id]")
+        logger.info("Started data sync for Bamboo deployment pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)
 
