@@ -206,6 +206,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/ashishsoni123"><img src="https://avatars.githubusercontent.com/u/2226564?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ashish Soni</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=ashishsoni123" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/marcohutzsch1234"><img src="https://avatars.githubusercontent.com/u/39520486?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marco Hutzsch</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=marcohutzsch1234" title="Code">💻</a></td>
   </tr>
 </table>
 
