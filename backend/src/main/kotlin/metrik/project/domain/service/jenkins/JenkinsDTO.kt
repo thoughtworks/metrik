@@ -6,7 +6,7 @@ import org.apache.logging.log4j.util.Strings
 data class BuildSummaryCollectionDTO(var allBuilds: List<BuildSummaryDTO> = emptyList())
 
 data class BuildSummaryDTO(
-    val number: Int = 0,
+    val number: Long = 0,
     val result: String? = Strings.EMPTY,
     val duration: Long = 0,
     val timestamp: Long = 0,

@@ -43,8 +43,8 @@ internal class MetricsApplicationServiceTest {
     private val pipelineStages = listOf(PipelineStageRequest(pipelineId, stage))
     private val targetStage = mapOf(Pair(pipelineId, stage))
     private val startOfFirstPeriod = 1622649600000L
-    private val endOfFirstPeriod = 1623859199999L
-    private val startOfSecondPeriod = 1623859200000L
+    private val endOfFirstPeriod = 1623781799999L
+    private val startOfSecondPeriod = 1623781800000L
     private val endOfSecondPeriod = 1624987108485L
     private val periodLengthInDays = 28
     private val expectedExecutions = emptyList<Execution>()

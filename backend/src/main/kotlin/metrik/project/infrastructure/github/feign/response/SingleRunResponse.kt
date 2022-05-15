@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class SingleRunResponse(
-    val id: Int = 0,
+    val id: Long = 0,
     val name: String = Strings.EMPTY,
     val headBranch: String = Strings.EMPTY,
     val runNumber: Int = 0,

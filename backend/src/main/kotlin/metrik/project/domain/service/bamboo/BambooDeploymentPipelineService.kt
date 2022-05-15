@@ -60,7 +60,7 @@ class BambooDeploymentPipelineService(
             val deploymentNumbersToSync =
                 getNewDeploymentResultRelatedBuildNumbers(pipeline, environmentList, latestDeployTimestamp)
             val buildNumbersToSync = buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipeline.id, maxBuildNumber)
-            val allNeedToSync = mutableSetOf<Int>()
+            val allNeedToSync = mutableSetOf<Long>()
             allNeedToSync.addAll(deploymentNumbersToSync)
             allNeedToSync.addAll(buildNumbersToSync)
             logger.info(
@@ -143,8 +143,8 @@ class BambooDeploymentPipelineService(
         pipeline: PipelineConfiguration,
         environmentList: List<Environment>,
         latestTimestamp: Long
-    ): List<Int> {
-        val buildNeedToSyncNumbers = mutableSetOf<Int>()
+    ): List<Long> {
+        val buildNeedToSyncNumbers = mutableSetOf<Long>()
         for (environment in environmentList) {
             val url = "${getDomain(pipeline.url)}/rest/api/latest/deploy/environment/${environment.id}/results?expand"
             logger.info("Get deploy results - Sending request to [$url]")
@@ -152,7 +152,7 @@ class BambooDeploymentPipelineService(
             logger.info("Get deploy results - Response from [$url]: $deployResults")
             val resultKeys = deployResults?.results!!.filter { it.startedDate!! > latestTimestamp }
                 .map { getDeploymentVersionPlanResultKey(pipeline, it.deploymentVersion.id) }
-            resultKeys.map { it.split("-").last().toInt() }.toCollection(buildNeedToSyncNumbers)
+            resultKeys.map { it.split("-").last().toLong() }.toCollection(buildNeedToSyncNumbers)
         }
         return buildNeedToSyncNumbers.toList()
     }
@@ -165,7 +165,7 @@ class BambooDeploymentPipelineService(
         return deploymentVersionBuildResultDTO!!.planResultKey.key
     }
 
-    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Int {
+    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Long {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
         logger.info("Get max build number - Sending request to [$url]")
         val summaryDTO = bambooFeignClient.getMaxBuildNumber(URI(url), credential)
@@ -177,7 +177,7 @@ class BambooDeploymentPipelineService(
     private fun getBuildDetails(
         pipeline: PipelineConfiguration,
         planKey: String,
-        buildNumber: Int,
+        buildNumber: Long,
         credential: String
     ): BuildDetailDTO? {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
