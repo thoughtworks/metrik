@@ -32,14 +32,12 @@ interface LineChartProps {
 	yAxisDomain?: AxisDomain;
 }
 
-const lineUnit = 100;
 const yAxisWidth = 72;
-const minLengthForDisplayScrollBar = 10;
 
 const chartContainerStyle = css({
 	position: "relative",
 	height: 300,
-	"overflow-x": "auto",
+	overflowX: "visible",
 });
 
 const yAxisStyles = css({
@@ -79,31 +77,11 @@ export const LineChart: FC<LineChartProps> = ({
 	yAxisDomain,
 }) => {
 	const ref = useRef<HTMLDivElement>(null);
-	const scrollWidth = data.length ? lineUnit * (data.length - 1) + yAxisWidth : 0;
-	const [xAxisInterval, setXAxisInterval] = useState<"preserveEnd" | 0>(0);
-
-	useEffect(() => {
-		const adjustXAxisInterval = throttle(() => {
-			setXAxisInterval(
-				data.length < minLengthForDisplayScrollBar &&
-					(ref.current?.offsetWidth === undefined || ref.current?.offsetWidth / data.length <= 80)
-					? "preserveEnd"
-					: 0
-			);
-		}, 500);
-
-		adjustXAxisInterval();
-		window.addEventListener("resize", adjustXAxisInterval);
-
-		return () => {
-			window.removeEventListener("resize", adjustXAxisInterval);
-		};
-	}, []);
 
 	return (
 		<div ref={ref}>
 			<div css={yAxisStyles}>
-				<ResponsiveContainer width="100%" height="80%" id={"levelSvg"}>
+				<ResponsiveContainer width="100%" height="80%" id="levelSvg">
 					<RechartsLineChart
 						margin={{
 							top: 20,
@@ -123,9 +101,7 @@ export const LineChart: FC<LineChartProps> = ({
 			</div>
 
 			<div css={chartContainerStyle}>
-				<ResponsiveContainer
-					id={"chartSvg"}
-					width={data.length >= minLengthForDisplayScrollBar ? scrollWidth : "100%"}>
+				<ResponsiveContainer width="100%" height="80%" id="chartSvg">
 					<RechartsLineChart
 						data={data}
 						margin={{
@@ -141,7 +117,7 @@ export const LineChart: FC<LineChartProps> = ({
 							vertical={false}
 						/>
 						<XAxis
-							interval={xAxisInterval}
+							interval={0}
 							dataKey="startTimestamp"
 							stroke="#416180"
 							strokeWidth={0.5}
