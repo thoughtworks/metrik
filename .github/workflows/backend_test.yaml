@@ -85,8 +85,7 @@ jobs:
       - name: Upload Kover coverage reports
         uses: codecov/codecov-action@v2
         with:
-          name: jacoco-report
-          path: build/reports/kover/html/index.html
+          files: build/reports/kover/html/index.html
 
 ##     This step allow you to debug via SSH
 #      - name: Setup tmate session
