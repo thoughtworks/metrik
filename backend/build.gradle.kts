@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     application
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.6.21"
+    id("org.jetbrains.kotlinx.kover") version "0.5.0"
+    id("io.gitlab.arturbosch.detekt") version "1.20.0"
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    id("io.gitlab.arturbosch.detekt").version("1.17.1")
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.spring") version "1.4.31"
-    jacoco
 }
 
 group = "metrik-backend"
@@ -76,7 +76,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    
 
     configurations.compile {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
@@ -114,6 +113,45 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     outputs.upToDateWhen { false }
+}
+
+val coverageExclusion = listOf(
+    "metrik/Application**",
+    "**/applicationconfig**",
+    "**/dto/**",
+    "**/vo/**",
+    "**/model/**",
+    "**/rest/validation/**",
+    "**GlobalExceptionHandler**"
+)
+
+kover {
+    isDisabled = false
+    jacocoEngineVersion.set("0.8.8")
+    generateReportOnCheck = true
+    runAllTestsForProjectTask = false
+}
+
+tasks.koverMergedVerify {
+    includes = listOf("*")
+    excludes = coverageExclusion
+
+    rule {
+        name = "Minimal line coverage rate in percent"
+        bound {
+            minValue = 90
+            // valueType is kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE by default
+        }
+    }
+}
+
+tasks.test {
+    extensions.configure(kotlinx.kover.api.KoverTaskExtension::class) {
+        isDisabled = false
+        binaryReportFile.set(file("$buildDir/custom/result.bin"))
+        includes = listOf("*")
+        excludes = coverageExclusion
+    }
 }
 
 val apiTest = task<Test>("apiTest") {
@@ -175,12 +213,3 @@ val ktlintFormat = task<JavaExec>("ktlintFormat") {
     args = listOf("-F", "src/**/*.kt")
 }
 // End of ktlint tasks
-
-apply(from = "gradle/git-hooks/install-git-hooks.gradle")
-apply(from = "gradle/jacoco/jacoco.gradle")
-
-tasks.jacocoTestReport {
-    reports {
-        csv.isEnabled = true
-    }
-}
