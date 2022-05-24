@@ -5,8 +5,7 @@
 
 [![Backend test](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/backend_test.yaml)
 [![Frontend test](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml/badge.svg)](https://github.com/thoughtworks/metrik/actions/workflows/frontend_test.yaml)
-![Coverage](.github/badges/jacoco.svg)
-![Branches](.github/badges/branches.svg)
+[![codecov](https://codecov.io/gh/thoughtworks/metrik/branch/main/graph/badge.svg?token=KON1ADTCCD)](https://codecov.io/gh/thoughtworks/metrik)
 
 [![Release](https://img.shields.io/github/v/release/thoughtworks/metrik.svg?include_prereleases&style=flat)](https://github.com/thoughtworks/metrik/releases)
 
