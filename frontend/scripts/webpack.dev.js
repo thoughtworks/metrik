@@ -6,12 +6,14 @@ const devConfig = {
 	mode: "development",
 	devtool: "cheap-module-source-map",
 	devServer: {
-		disableHostCheck: true,
-		contentBase: OUTPUT_PATH,
+		allowedHosts: "all",
+		static: OUTPUT_PATH,
 		host: "localhost",
 		port: 2333,
 		hot: true,
-		overlay: true,
+		client: {
+			overlay: true,
+		},
 		open: true,
 		historyApiFallback: true,
 		proxy: {
