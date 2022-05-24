@@ -53,29 +53,40 @@ jobs:
         with:
           working-dir: ./backend
 
-      - name: Generate JaCoCo Badge
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          jacoco-csv-file: ./backend/build/reports/jacoco/test/jacocoTestReport.csv
-          generate-branches-badge: true
 
-      - name: Log coverage percentage
-        run: |
-          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-          echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
+#      Comment out for now. Since Kover does not generate jacoco.csv report today
+#
+#      - name: Generate Test Coverage Badge
+#        uses: emibcn/badge-action@v1.2.1
+#        with:
+#          label: coverage
+#          status: ''
+#          jacoco-csv-file: ./backend/build/reports/jacoco/test/jacocoTestReport.csv
+#          generate-branches-badge: true
+#
+#      - name: Generate JaCoCo Badge
+#        uses: cicirello/jacoco-badge-generator@v2
+#        with:
+#          jacoco-csv-file: ./backend/build/reports/jacoco/test/jacocoTestReport.csv
+#          generate-branches-badge: true
+#
+#      - name: Log coverage percentage
+#        run: |
+#          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+#          echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
+#
+#      - name: Commit and push the badge (if it changed)
+#        uses: EndBug/add-and-commit@v7
+#        with:
+#          default_author: github_actions
+#          message: 'doc: update test coverage badge'
+#          add: '*.svg'
 
-      - name: Commit and push the badge (if it changed)
-        uses: EndBug/add-and-commit@v7
-        with:
-          default_author: github_actions
-          message: 'doc: update test coverage badge'
-          add: '*.svg'
-
-      - name: Upload JaCoCo coverage report
-        uses: actions/upload-artifact@v2
+      - name: Upload Kover coverage reports
+        uses: codecov/codecov-action@v2
         with:
           name: jacoco-report
-          path: build/reports/jacoco/test/html
+          path: build/reports/kover/html/index.html
 
 ##     This step allow you to debug via SSH
 #      - name: Setup tmate session
