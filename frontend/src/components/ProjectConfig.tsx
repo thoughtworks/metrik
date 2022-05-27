@@ -11,6 +11,7 @@ interface ProjectConfigProps {
 	updatePipeline: (pipeline: Pipeline) => void;
 	addPipeline?: () => void;
 	deletePipeline?: (pipelineId: string) => void;
+	showReloadCTA?: boolean;
 }
 
 const ProjectConfig: FC<ProjectConfigProps> = ({
@@ -20,8 +21,10 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 	updatePipeline,
 	addPipeline,
 	deletePipeline,
+	showReloadCTA=false
 }) => {
 	return (
+		<div>
 		<Table<Pipeline>
 			tableLayout={"fixed"}
 			css={{
@@ -72,6 +75,11 @@ const ProjectConfig: FC<ProjectConfigProps> = ({
 				)}
 			/>
 		</Table>
+			{showReloadCTA ? (
+				<Button type={"primary"} size={"large"} style={{ display:"block", margin:"0 auto" }} onClick={() => location.reload()}>
+					Go to Dashboard
+				</Button>) : null}
+		</div>
 	);
 };
 
