@@ -79,9 +79,6 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 						displayed based on the following pipeline data.
 					</span>
 				</div>
-				<Button type={"primary"} size={"large"} onClick={() => location.reload()}>
-					Go to Dashboard
-				</Button>
 			</div>
 
 			{isProjectLoading ? (
@@ -119,6 +116,7 @@ const ConfigSuccess: FC<{ projectId: string }> = ({ projectId }) => {
 							pipelines={project.pipelines}
 							updatePipeline={handleUpdatePipeline}
 							addPipeline={handleAddPipeline}
+							showReloadCTA={true}
 						/>
 						<Modal
 							maskClosable={false}
