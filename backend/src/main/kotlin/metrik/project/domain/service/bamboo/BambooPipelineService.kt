@@ -107,7 +107,7 @@ class BambooPipelineService(
     private fun getBuildDetails(
         pipeline: PipelineConfiguration,
         planKey: String,
-        buildNumber: Int,
+        buildNumber: Long,
         credential: String
     ): BuildDetailDTO? {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
@@ -133,7 +133,7 @@ class BambooPipelineService(
         }
     }
 
-    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Int {
+    private fun getMaxBuildNumber(pipeline: PipelineConfiguration, planKey: String, credential: String): Long {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey.json"
         logger.info("Get max build number - Sending request to [$url]")
         val summaryDTO = bambooFeignClient.getMaxBuildNumber(URI(url), credential)

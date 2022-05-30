@@ -14,7 +14,7 @@ data class BuildResultCollectionDTO(val result: List<Result>)
 
 data class Result(
     val number: Int = 0,
-    val buildNumber: Int = 0,
+    val buildNumber: Long = 0,
     val state: String? = Strings.EMPTY,
     val buildState: String? = Strings.EMPTY
 )
@@ -23,7 +23,7 @@ data class BuildDetailDTO(
     var state: String,
     var buildState: String,
     var number: Int,
-    var buildNumber: Int,
+    var buildNumber: Long,
     var buildDuration: Long,
     var buildStartedTime: ZonedDateTime?,
     var link: Link,
