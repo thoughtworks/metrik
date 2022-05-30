@@ -207,6 +207,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ashishsoni123"><img src="https://avatars.githubusercontent.com/u/2226564?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ashish Soni</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=ashishsoni123" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/marcohutzsch1234"><img src="https://avatars.githubusercontent.com/u/39520486?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marco Hutzsch</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=marcohutzsch1234" title="Code">💻</a></td>
     <td align="center"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ikko Ashimine</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=eltociear" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/HE00L"><img src="https://avatars.githubusercontent.com/u/35286550?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HE00L</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=HE00L" title="Code">💻</a></td>
   </tr>
 </table>
 
