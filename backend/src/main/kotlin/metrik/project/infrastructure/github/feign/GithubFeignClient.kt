@@ -2,6 +2,7 @@ package metrik.project.infrastructure.github.feign
 
 import feign.RequestInterceptor
 import feign.RequestTemplate
+import metrik.project.infrastructure.github.feign.response.BranchResponse
 import metrik.project.infrastructure.github.feign.response.CommitResponse
 import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
@@ -47,7 +48,16 @@ interface GithubFeignClient {
         @RequestParam("per_page", required = false) perPage: Int? = null,
         @RequestParam("page", required = false) pageIndex: Int? = null,
     ): List<CommitResponse>?
+
+    @GetMapping("/{owner}/{repo}/branches")
+    fun retrieveBranches(
+        @RequestHeader("credential") credential: String,
+        @PathVariable("owner") owner: String,
+        @PathVariable("repo") repo: String,
+    ): List<BranchResponse>?
 }
+
+
 
 class GithubFeignClientConfiguration : RequestInterceptor {
     override fun apply(template: RequestTemplate?) {

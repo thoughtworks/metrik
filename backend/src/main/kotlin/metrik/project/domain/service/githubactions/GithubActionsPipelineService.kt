@@ -71,8 +71,14 @@ class GithubActionsPipelineService(
                 else -> latestBuild.timestamp
             }
 
-            val newRuns = githubRunService.syncRunsByPage(pipeline, latestTimestamp)
+            var newRuns = githubRunService.syncRunsByPage(pipeline, latestTimestamp)
 
+            val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
+            val branches = githubFeignClient.retrieveBranches(pipeline.credential, owner, repo)
+            val branchNames = branches?.map { it-> it.name }
+            if (branchNames != null) {
+                newRuns = newRuns.filter { branchNames.contains(it.branch) } as MutableList<GithubActionsRun>
+            }
             val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
                 .parallelStream()
                 .map { githubRunService.syncSingleRun(pipeline, it.url) }
