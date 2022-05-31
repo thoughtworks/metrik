@@ -25,6 +25,7 @@ import kotlin.streams.toList
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
     private val githubCommitService: GithubCommitService,
+    private val githubBranchService: GithubBranchService,
     private val githubRunService: GithubRunService,
     private val buildRepository: BuildRepository,
     private val githubExecutionConverter: GithubExecutionConverter,
@@ -73,12 +74,8 @@ class GithubActionsPipelineService(
 
             var newRuns = githubRunService.syncRunsByPage(pipeline, latestTimestamp)
 
-            val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
-            val branches = githubFeignClient.retrieveBranches(pipeline.credential, owner, repo)
-            val branchNames = branches?.map { it-> it.name }
-            if (branchNames != null) {
-                newRuns = newRuns.filter { branchNames.contains(it.branch) } as MutableList<GithubActionsRun>
-            }
+            val branches = githubBranchService.retrieveBranches(pipeline)
+            newRuns = newRuns.filter { branches.contains(it.branch) } as MutableList<GithubActionsRun>
             val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
                 .parallelStream()
                 .map { githubRunService.syncSingleRun(pipeline, it.url) }
