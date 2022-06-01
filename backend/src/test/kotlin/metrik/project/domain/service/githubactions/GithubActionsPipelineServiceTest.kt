@@ -27,6 +27,7 @@ import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.mockEmitCb
 import metrik.project.pipelineId
 import metrik.project.previousTimeStamp
+import metrik.project.rest.vo.response.SyncProgress
 import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -51,6 +52,9 @@ internal class GithubActionsPipelineServiceTest {
 
     @MockK(relaxed = true)
     private lateinit var githubFeignClient: GithubFeignClient
+
+    @MockK(relaxed = true)
+    private lateinit var githubBranchService: GithubBranchService
 
     @SpyK
     private var githubExecutionConverter: GithubExecutionConverter = GithubExecutionConverter()
@@ -358,6 +362,7 @@ internal class GithubActionsPipelineServiceTest {
             )
         }
     }
+
 
     @Test
     fun `should sync and update all previous in-progress builds`() {
