@@ -20,7 +20,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.streams.toList
 
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
@@ -29,7 +28,8 @@ class GithubActionsPipelineService(
     private val githubRunService: GithubRunService,
     private val buildRepository: BuildRepository,
     private val githubExecutionConverter: GithubExecutionConverter,
-    private val githubFeignClient: GithubFeignClient
+    private val githubFeignClient: GithubFeignClient,
+    private val githubActionsPipelineRunService:GithubActionsPipelineRunService
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
@@ -65,17 +65,12 @@ class GithubActionsPipelineService(
 
         try {
 
-            val latestTimestamp = when (
-                val latestBuild = buildRepository.getLatestBuild(pipeline.id)
-            ) {
-                null -> Long.MIN_VALUE
-                else -> latestBuild.timestamp
-            }
-
-            var newRuns = githubRunService.syncRunsByPage(pipeline, latestTimestamp)
+            var newRuns = githubActionsPipelineRunService.githubActionsRuns(pipeline)
 
             val branches = githubBranchService.retrieveBranches(pipeline)
+
             newRuns = newRuns.filter { branches.contains(it.branch) } as MutableList<GithubActionsRun>
+
             val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
                 .parallelStream()
                 .map { githubRunService.syncSingleRun(pipeline, it.url) }
@@ -123,6 +118,8 @@ class GithubActionsPipelineService(
             throw SynchronizationException("Syncing Github Commits details failed")
         }
     }
+
+
 
     fun mapCommitToRun(
         pipeline: PipelineConfiguration,
