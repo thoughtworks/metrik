@@ -62,7 +62,6 @@ class SynchronizationController {
                 throw(ex)
             }
         }
-
         return emitter
     }
 

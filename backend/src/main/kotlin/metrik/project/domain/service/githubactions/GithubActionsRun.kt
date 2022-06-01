@@ -22,7 +22,7 @@ enum class GithubActionsConclusion(val value: String?) {
 }
 
 data class GithubActionsRun(
-    val id: Int,
+    val id: Long,
     val name: String,
     val status: String,
     val conclusion: String?,

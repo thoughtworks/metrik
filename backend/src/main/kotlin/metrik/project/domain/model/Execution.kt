@@ -33,7 +33,7 @@ data class Commit(
 
 data class Execution(
     val pipelineId: String = Strings.EMPTY,
-    val number: Int = 0,
+    val number: Long = 0,
     val result: Status? = null,
     val duration: Long = 0,
     val timestamp: Long = 0,

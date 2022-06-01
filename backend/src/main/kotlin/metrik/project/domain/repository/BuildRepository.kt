@@ -76,7 +76,7 @@ class BuildRepository {
         return result
     }
 
-    fun getByBuildNumber(pipelineId: String, number: Int): Execution? {
+    fun getByBuildNumber(pipelineId: String, number: Long): Execution? {
         val query = Query.query(Criteria.where(PROP_PIPELINEID).isEqualTo(pipelineId).and(PROP_NUMBER).`is`(number))
         val result = mongoTemplate.findOne<Execution>(query, collectionName)
         logger.info("Query result for build number [$number] in pipeline [$pipelineId] is [$result]")
@@ -102,7 +102,7 @@ class BuildRepository {
         return result
     }
 
-    fun getBambooJenkinsBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Int): List<Int> {
+    fun getBambooJenkinsBuildNumbersNeedSync(pipelineId: String, maxBuildNumber: Long): List<Long> {
         val mostRecentBuildInDB = getMaxBuild(pipelineId)
         val syncStartIndex = (mostRecentBuildInDB?.number ?: 0) + 1
         val needSyncBuilds = getInProgressBuilds(pipelineId)

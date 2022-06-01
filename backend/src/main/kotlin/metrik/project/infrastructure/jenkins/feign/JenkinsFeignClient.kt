@@ -36,6 +36,6 @@ interface JenkinsFeignClient {
     fun retrieveBuildDetailsFromJenkins(
         baseUrl: URI,
         @RequestHeader("Authorization") authorizationHeader: String,
-        @PathVariable("buildSummaryNumber") buildSummaryNumber: Int
+        @PathVariable("buildSummaryNumber") buildSummaryNumber: Long
     ): BuildDetailsDTO?
 }

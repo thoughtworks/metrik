@@ -221,9 +221,9 @@ internal class BuildRepositoryTest {
         )
         buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
-        val givenMostRecentBuild = 8
+        val givenMostRecentBuild:Long = 8
         assertEquals(
-            listOf(4, 5, 6, 7, 8),
+            listOf(4L, 5L, 6L, 7L, 8L),
             buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild)
         )
     }
