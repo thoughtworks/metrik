@@ -36,8 +36,8 @@ const lineUnit = 100;
 const chartHeight = 300;
 const yAxisWidth = 72;
 const barWidth = 16;
-const yAxisScrollablePercentageHeight = "78%";
-const yAxisUnscrollablePercentageHeight = "83%";
+const yAxisScrollablePercentageHeight = "82%";
+const yAxisUnscrollablePercentageHeight = "88%";
 const minLengthForDisplayScrollBar = 10;
 
 const chartContainerStyle = (scrollable: boolean) =>
@@ -120,9 +120,12 @@ export const LineChart: FC<LineChartProps> = ({
 					<RechartsLineChart
 						margin={{
 							top: 20,
-							right: 30,
-							left: 20,
+							right: 0,
+							left: 0,
 							bottom: 20,
+						}}
+						style={{
+							transform: "translateX(20px)",
 						}}>
 						<YAxis
 							tickFormatter={yaxisFormatter}
