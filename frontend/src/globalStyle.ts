@@ -14,6 +14,9 @@ export const globalStyles = {
 	".fullscreen-dashboard-modal.ant-modal-wrap": {
 		overflow: "hidden",
 	},
+	".ant-progress-text": {
+		width: "auto",
+	},
 	"::-webkit-scrollbar": {
 		backgroundColor: "transparent",
 		width: "thin",
