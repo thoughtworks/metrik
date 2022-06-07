@@ -58,7 +58,7 @@ class GithubActionsPipelineService(
         val progressCounter = AtomicInteger(0)
 
         try {
-            val newRuns = pipelineRunService.getNewRuns(pipeline)
+            val newRuns = pipelineRunService.getNewRuns(pipeline, emitCb)
             val inProgressRuns = pipelineRunService.getInProgressRuns(pipeline)
             newRuns.addAll(inProgressRuns)
             val totalBuildNumbersToSync = newRuns.size
