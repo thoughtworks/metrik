@@ -3,6 +3,7 @@ package metrik.project.domain.service.githubactions
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import org.springframework.stereotype.Service
+import kotlin.streams.toList
 
 @Service("githubActionsPipelineRunService")
 class PipelineRunService(
