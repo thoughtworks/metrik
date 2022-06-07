@@ -20,7 +20,7 @@ object RequestUtil {
         var port = HTTP_PORT
         if (url.port != UNDEFINED_PORT) {
             port = url.port
-        } else if (url.protocol.toLowerCase() == "https") {
+        } else if (url.protocol.lowercase() == "https") {
             port = HTTPS_PORT
         }
         return "${url.protocol}://${url.host}:$port"

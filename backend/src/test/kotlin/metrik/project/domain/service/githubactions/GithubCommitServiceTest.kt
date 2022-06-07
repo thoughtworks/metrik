@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 internal class GithubCommitServiceTest {
 
     @InjectMockKs
-    private lateinit var githubCommitService: GithubCommitService
+    private lateinit var commitService: CommitService
 
     @MockK(relaxed = true)
     private lateinit var githubFeignClient: GithubFeignClient
@@ -41,7 +41,7 @@ internal class GithubCommitServiceTest {
         )
 
         val commitsBetweenTimePeriod =
-            githubCommitService.getCommitsBetweenTimePeriod(0, endTimeStamp, null, githubActionsPipeline)
+            commitService.getCommitsBetweenTimePeriod(0, endTimeStamp, null, githubActionsPipeline)
 
         assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
         assertThat(commitsBetweenTimePeriod[0].pipelineId).isEqualTo(githubActionsPipeline.id)
@@ -73,7 +73,7 @@ internal class GithubCommitServiceTest {
         )
 
         val commitsBetweenTimePeriod =
-            githubCommitService.getCommitsBetweenTimePeriod(
+            commitService.getCommitsBetweenTimePeriod(
                 startTimeStamp,
                 endTimeStamp,
                 "master",

@@ -2,7 +2,6 @@ package metrik.project.domain.repository
 
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
-import metrik.project.domain.service.githubactions.GithubCommit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -53,8 +52,8 @@ class CommitRepository {
         return commits.sortedBy { it.timestamp }.filter { it.timestamp in startTimestamp..endTimestamp }
     }
 
-    fun hasDuplication(commits: List<GithubCommit>): Boolean {
-        return commits.any {
+    fun hasDuplication(githubCommits: List<metrik.project.domain.service.githubactions.GithubCommit>): Boolean {
+        return githubCommits.any {
             val query = Query().addCriteria(
                 Criteria
                     .where(PROP_COMMIT_ID).`is`(it.id)
@@ -63,8 +62,8 @@ class CommitRepository {
         }
     }
 
-    fun save(pipelineId: String, allCommits: MutableList<GithubCommit>) {
-        allCommits.parallelStream()
+    fun save(pipelineId: String, allGithubCommits: MutableList<metrik.project.domain.service.githubactions.GithubCommit>) {
+        allGithubCommits.parallelStream()
             .map { Commit(commitId = it.id, timestamp = it.timestamp.toTimestamp(), pipelineId = pipelineId) }
             .forEach { save(pipelineId, it) }
     }

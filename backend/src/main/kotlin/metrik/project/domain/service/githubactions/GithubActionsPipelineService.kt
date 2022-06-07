@@ -17,7 +17,7 @@ import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
-class GithubPipelineService(
+class GithubActionsPipelineService(
     private val buildRepository: BuildRepository,
     private val executionConverter: ExecutionConverter,
     private val githubFeignClient: GithubFeignClient,
@@ -47,7 +47,7 @@ class GithubPipelineService(
             .flatMap { it.stages }
             .map { it.name }
             .distinct()
-            .sortedBy { it.toUpperCase() }
+            .sortedBy { it.lowercase() }
             .toList()
 
     @Synchronized

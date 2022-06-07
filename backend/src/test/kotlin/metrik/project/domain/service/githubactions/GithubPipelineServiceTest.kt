@@ -10,9 +10,7 @@ import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.*
-import metrik.project.domain.model.Commit
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
@@ -21,16 +19,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.time.ZonedDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
 @ExtendWith(MockKExtension::class)
-internal class PipelineServiceTest {
+internal class GithubPipelineServiceTest {
     @MockK(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
     @InjectMockKs
-    private lateinit var pipelineService: PipelineService
+    private lateinit var pipelineService: GithubActionsPipelineService
 
     @MockK(relaxed = true)
     private lateinit var commitService: CommitService
