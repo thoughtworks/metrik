@@ -26,7 +26,7 @@ class CommitService(
 
         var keepRetrieving = true
         var pageIndex = 1
-        val allGithubCommits = mutableSetOf<metrik.project.domain.service.githubactions.GithubCommit>()
+        val allGithubCommits = mutableSetOf<GithubCommit>()
         while (keepRetrieving) {
             val commitsFromGithub =
                 retrieveCommits(pipeline.credential, pipeline.url, startTimeStamp, endTimeStamp, branch, pageIndex)
@@ -54,7 +54,7 @@ class CommitService(
         endTimeStamp: Long,
         branch: String? = null,
         pageIndex: Int? = null
-    ): List<metrik.project.domain.service.githubactions.GithubCommit> {
+    ): List<GithubCommit> {
         logger.info(
             "Get Github Commits - " +
                     "Sending request to Github Feign Client with owner: $url, " +
