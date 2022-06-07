@@ -16,6 +16,7 @@ const devConfig = {
 		},
 		open: true,
 		historyApiFallback: true,
+		compress: false,
 		proxy: {
 			"/api": "http://localhost:9000",
 		},
