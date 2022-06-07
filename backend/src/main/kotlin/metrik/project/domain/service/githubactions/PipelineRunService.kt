@@ -2,6 +2,7 @@ package metrik.project.domain.service.githubactions
 
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.rest.vo.response.SyncProgress
 import org.springframework.stereotype.Service
 import kotlin.streams.toList
 
@@ -11,9 +12,9 @@ class PipelineRunService(
     private val runService:RunService,
     private val branchService: BranchService
 ) {
-    fun getNewRuns(pipeline:PipelineConfiguration): MutableList<GithubActionsRun> {
+    fun getNewRuns(pipeline:PipelineConfiguration, emitCb: (SyncProgress) -> Unit): MutableList<GithubActionsRun> {
         val latestTimestamp = getLatestBuildTimeStamp(pipeline)
-        var newRuns = runService.syncRunsByPage(pipeline, latestTimestamp)
+        val newRuns = runService.syncRunsByPage(pipeline, latestTimestamp, emitCb)
         val branches = branchService.retrieveBranches(pipeline)
         return newRuns.filter { branches.contains(it.branch) } as MutableList<GithubActionsRun>
     }

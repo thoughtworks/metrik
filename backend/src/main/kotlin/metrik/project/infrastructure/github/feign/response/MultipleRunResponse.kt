@@ -5,5 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(SnakeCaseStrategy::class)
 data class MultipleRunResponse(
-    val workflowRuns: List<SingleRunResponse>
+    val workflowRuns: List<SingleRunResponse>,
+    val totalCount: Int
 )
