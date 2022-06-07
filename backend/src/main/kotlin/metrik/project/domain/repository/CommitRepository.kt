@@ -2,6 +2,7 @@ package metrik.project.domain.repository
 
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
+import metrik.project.domain.service.githubactions.GithubCommit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -62,7 +63,7 @@ class CommitRepository {
         }
     }
 
-    fun save(pipelineId: String, allGithubCommits: MutableList<metrik.project.domain.service.githubactions.GithubCommit>) {
+    fun save(pipelineId: String, allGithubCommits: MutableList<GithubCommit>) {
         allGithubCommits.parallelStream()
             .map { Commit(commitId = it.id, timestamp = it.timestamp.toTimestamp(), pipelineId = pipelineId) }
             .forEach { save(pipelineId, it) }

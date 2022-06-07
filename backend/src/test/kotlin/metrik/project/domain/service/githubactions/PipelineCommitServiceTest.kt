@@ -1,16 +1,13 @@
 package metrik.project.domain.service.githubactions;
 
-import feign.Request
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.*
 import metrik.project.domain.model.Commit
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.infrastructure.github.feign.GithubFeignClient
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
