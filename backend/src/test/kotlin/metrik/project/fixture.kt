@@ -8,6 +8,7 @@ import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.domain.service.githubactions.GithubActionsRun
+import metrik.project.infrastructure.github.feign.response.BranchResponse
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.BambooVerificationRequest
 import metrik.project.rest.vo.request.GithubActionsPipelineRequest
@@ -30,7 +31,14 @@ const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
 const val futureTimeStamp: Long = 1639185260779
 
-val githubActionsRun = GithubActionsRun(
+val branch1 = BranchResponse(
+    "CI/CD pipeline"
+)
+val branch2 = BranchResponse(
+    "main"
+)
+
+val githubActionsRun1 = GithubActionsRun(
     id = 123,
     name = "234",
     branch = "master",
@@ -40,6 +48,18 @@ val githubActionsRun = GithubActionsRun(
     commitTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
     createdTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z"),
     updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
+)
+
+val githubActionsRun2 =  GithubActionsRun(
+    id = 1111111111,
+    name = "CI",
+    branch = "feature/CI pipeline",
+    status = "in_progress",
+    conclusion = null,
+    url = "http://localhost:80/test_project/test_repo/actions/runs/1111111111",
+    commitTimeStamp = ZonedDateTime.parse("2021-08-11T01:46:31Z"),
+    createdTimestamp = ZonedDateTime.parse("2021-08-11T11:11:01Z"),
+    updatedTimestamp = ZonedDateTime.parse("2021-08-11T11:11:17Z")
 )
 
 val jenkinsPipeline = PipelineConfiguration(

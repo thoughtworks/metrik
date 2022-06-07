@@ -41,7 +41,7 @@ class JenkinsPipelineService(
             .flatMap { it.stages }
             .map { it.name }
             .distinct()
-            .sortedBy { it.toUpperCase() }
+            .sortedBy { it.uppercase() }
             .toList()
     }
 

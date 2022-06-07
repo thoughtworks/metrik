@@ -76,7 +76,7 @@ class PipelineApplicationService(
                     pipelineServiceFactory.getService(it.type).getStagesSortedByName(it.id)
                 )
             }
-            .sortedBy { it.pipelineName.toUpperCase() }
+            .sortedBy { it.pipelineName.uppercase() }
     }
 
     private fun verifyProjectExist(projectId: String) =

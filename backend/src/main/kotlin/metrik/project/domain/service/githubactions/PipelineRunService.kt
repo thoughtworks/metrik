@@ -19,15 +19,13 @@ class PipelineRunService(
     }
 
     fun getInProgressRuns(
-        pipeline: PipelineConfiguration,
-        newRuns: MutableList<GithubActionsRun>
-    ) {
-        val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
+        pipeline: PipelineConfiguration
+    ): List<GithubActionsRun> {
+        return buildRepository.getInProgressBuilds(pipeline.id)
             .parallelStream()
             .map { runService.syncSingleRun(pipeline, it.url) }
             .toList()
             .filterNotNull()
-        newRuns.addAll(inProgressRuns)
     }
 
     private fun getLatestBuildTimeStamp(pipeline: PipelineConfiguration): Long {

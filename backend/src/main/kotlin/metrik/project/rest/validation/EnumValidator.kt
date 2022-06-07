@@ -8,14 +8,14 @@ class EnumValidator : ConstraintValidator<EnumConstraint, String> {
 
     override fun initialize(constraintAnnotation: EnumConstraint) {
         valueList = mutableListOf()
-        constraintAnnotation.acceptedValues.forEach { valueList.add(it.toUpperCase()) }
+        constraintAnnotation.acceptedValues.forEach { valueList.add(it.uppercase()) }
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
         return if (value.isNullOrBlank()) {
             false
         } else {
-            valueList.contains(value.toUpperCase())
+            valueList.contains(value.uppercase())
         }
     }
 }

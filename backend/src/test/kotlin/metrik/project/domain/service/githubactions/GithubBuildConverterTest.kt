@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 internal class GithubBuildConverterTest {
 
     @InjectMockKs
-    private lateinit var githubExecutionConverter: GithubExecutionConverter
+    private lateinit var executionConverter: ExecutionConverter
 
     @Test
     fun `should successfully convert run to build`() {
@@ -45,7 +45,7 @@ internal class GithubBuildConverterTest {
             changeSets = commits
         )
 
-        assertEquals(execution, githubExecutionConverter.convertToBuild(run, pipelineId, commits))
+        assertEquals(execution, executionConverter.convertToBuild(run, pipelineId, commits))
     }
 
     private companion object {
