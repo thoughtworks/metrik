@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import java.net.URL
 
 @Service
-class GithubBranchService(
+class BranchService(
     private val githubFeignClient: GithubFeignClient,
 ) {
     private var logger = LoggerFactory.getLogger(javaClass.name);

@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import metrik.project.*
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
@@ -25,7 +24,7 @@ internal class PipelineRunServiceTest {
     private lateinit var runService: RunService
 
     @MockK
-    private lateinit var githubBranchService: GithubBranchService
+    private lateinit var branchService: BranchService
 
     @Test
     fun `should get valid new runs`() {
@@ -36,7 +35,7 @@ internal class PipelineRunServiceTest {
             githubActionsRun2
         )
         every {
-            githubBranchService.retrieveBranches(any())
+            branchService.retrieveBranches(any())
         } returns listOf(
             "master",
             "feature/CD pipeline"
