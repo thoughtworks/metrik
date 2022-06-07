@@ -2,6 +2,7 @@ package metrik.project.domain.repository
 
 import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
+import metrik.project.domain.service.githubactions.GithubCommit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -18,7 +19,7 @@ import java.time.ZonedDateTime
 @DataMongoTest
 @ExtendWith(SpringExtension::class)
 @Import(CommitRepository::class)
-internal class GithubCommitRepositoryTest {
+internal class CommitRepositoryTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
@@ -90,7 +91,7 @@ internal class GithubCommitRepositoryTest {
             collectionName
         )
 
-        val commitsToCheck = (1..3).map { metrik.project.domain.service.githubactions.GithubCommit(it.toString(), ZonedDateTime.now()) }
+        val commitsToCheck = (1..3).map { GithubCommit(it.toString(), ZonedDateTime.now()) }
         assertTrue(commitRepository.hasDuplication(commitsToCheck))
     }
 
@@ -99,7 +100,7 @@ internal class GithubCommitRepositoryTest {
         val pipelineId = "test pipeline"
         mongoTemplate.save(Commit(pipelineId = pipelineId, commitId = "1"))
 
-        val commitsToSave = (1..3).map { metrik.project.domain.service.githubactions.GithubCommit(it.toString(), ZonedDateTime.now()) }
+        val commitsToSave = (1..3).map { GithubCommit(it.toString(), ZonedDateTime.now()) }
         commitRepository.save(pipelineId, commitsToSave.toMutableList())
 
         assertThat(mongoTemplate.findAll(Commit::class.java).size).isEqualTo(3)
