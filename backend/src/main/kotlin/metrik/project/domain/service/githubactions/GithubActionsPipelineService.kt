@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-
+import kotlin.streams.toList
 @Service("githubActionsPipelineService")
 class GithubActionsPipelineService(
     private val buildRepository: BuildRepository,
