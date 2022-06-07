@@ -17,12 +17,12 @@ import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineService")
-class GithubActionsPipelineService(
+class GithubPipelineService(
     private val buildRepository: BuildRepository,
-    private val githubExecutionConverter: GithubExecutionConverter,
+    private val executionConverter: ExecutionConverter,
     private val githubFeignClient: GithubFeignClient,
-    private val githubActionsPipelineRunService: GithubActionsPipelineRunService,
-    private val githubActionsPipelineCommitService: GithubActionsPipelineCommitService
+    private val pipelineRunService: PipelineRunService,
+    private val pipelineCommitService: PipelineCommitService
 ) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
 
@@ -31,7 +31,6 @@ class GithubActionsPipelineService(
             "Started verification for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
                     "type: ${pipeline.type}]"
         )
-
         try {
             val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
             githubFeignClient.retrieveMultipleRuns(pipeline.credential, owner, repo)
@@ -59,24 +58,19 @@ class GithubActionsPipelineService(
         val progressCounter = AtomicInteger(0)
 
         try {
-
-            var newRuns = githubActionsPipelineRunService.getNewRuns(pipeline)
-
-            githubActionsPipelineRunService.getProgressRuns(pipeline, newRuns)
-
+            val newRuns = pipelineRunService.getNewRuns(pipeline)
+            val inProgressRuns = pipelineRunService.getInProgressRuns(pipeline)
+            newRuns.addAll(inProgressRuns)
             val totalBuildNumbersToSync = newRuns.size
-
             logger.info(
                 "For Github Actions pipeline [${pipeline.id}] - " + "[$totalBuildNumbersToSync] need to be synced"
             )
 
-            val branchRunCommitsMap = githubActionsPipelineCommitService.mapCommitToRun(pipeline, newRuns)
+            val branchRunCommitsMap = pipelineCommitService.mapCommitToRun(pipeline, newRuns)
 
             val builds = newRuns.map {
-
                 val commits: List<Commit> = branchRunCommitsMap[it.branch]!![it]!!
-                val convertedBuild = githubExecutionConverter.convertToBuild(it, pipeline.id, commits)
-
+                val convertedBuild = executionConverter.convertToBuild(it, pipeline.id, commits)
                 buildRepository.save(convertedBuild)
 
                 emitCb(
@@ -91,11 +85,9 @@ class GithubActionsPipelineService(
                 logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/$totalBuildNumbersToSync]")
                 convertedBuild
             }
-
             logger.info(
                 "For Github Actions pipeline [${pipeline.id}] - Successfully synced [$totalBuildNumbersToSync] builds"
             )
-
             return builds
         } catch (ex: FeignServerException) {
             throw SynchronizationException("Connection to Github Actions is unavailable")
