@@ -10,6 +10,7 @@ import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
+import metrik.project.mockEmitCb
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,23 +34,27 @@ internal class RunServiceTest {
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 10, 0, 0, 0, 0, ZoneId.systemDefault())),
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault())),
-            )
+            ),
+            2
         )
         every { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 2) } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 8, 0, 0, 0, 0, ZoneId.systemDefault())),
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 7, 0, 0, 0, 0, ZoneId.systemDefault())),
-            )
+            ),
+            2
         )
         every { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 3) } returns MultipleRunResponse(
             listOf(
                 SingleRunResponse(createdAt = ZonedDateTime.of(2021, 1, 6, 0, 0, 0, 0, ZoneId.systemDefault())),
-            )
+            ),
+            1
         )
 
         val syncedRuns = runService.syncRunsByPage(
             testPipeline,
             ZonedDateTime.of(2021, 1, 7, 0, 0, 0, 0, ZoneId.systemDefault()).toTimestamp(),
+            mockEmitCb,
             2
         )
 
