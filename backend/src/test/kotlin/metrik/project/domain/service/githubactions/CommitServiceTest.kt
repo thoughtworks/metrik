@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.time.ZonedDateTime
 
 @ExtendWith(MockKExtension::class)
-internal class GithubCommitServiceTest {
+internal class CommitServiceTest {
 
     @InjectMockKs
     private lateinit var commitService: CommitService

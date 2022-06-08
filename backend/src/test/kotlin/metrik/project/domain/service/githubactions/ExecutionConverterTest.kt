@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.time.ZonedDateTime
 
 @ExtendWith(MockKExtension::class)
-internal class GithubBuildConverterTest {
+internal class ExecutionConverterTest {
 
     @InjectMockKs
     private lateinit var executionConverter: ExecutionConverter
