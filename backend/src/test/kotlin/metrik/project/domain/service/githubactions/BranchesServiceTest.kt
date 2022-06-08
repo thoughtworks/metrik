@@ -23,7 +23,7 @@ internal class BranchesServiceTest {
         PipelineConfiguration(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
 
     @Test
-    fun `should get all branches`() {
+    fun `should get all branches successfully when able to retrieve branches`() {
         every {
             githubFeignClient.retrieveBranches(
                 credential = any(), owner = any(), repo = any()
