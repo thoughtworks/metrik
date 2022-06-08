@@ -1,5 +1,6 @@
 package metrik.project.domain.service.githubactions
 
+import metrik.project.constant.GithubActionConstants
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.rest.vo.response.SyncProgress
@@ -37,8 +38,8 @@ class PipelineRunService(
                         pipeline.name,
                         progressCounter.incrementAndGet(),
                         numberOfInProgressRuns,
-                        2,
-                        3
+                        GithubActionConstants.stepNumberOfFetchingInProgressRuns,
+                        GithubActionConstants.totalNumberOfSteps
                     )
                 )
                 runService.syncSingleRun(pipeline, it.url)

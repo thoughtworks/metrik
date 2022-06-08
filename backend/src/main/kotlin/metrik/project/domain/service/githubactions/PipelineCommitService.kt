@@ -1,6 +1,7 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.toTimestamp
+import metrik.project.constant.GithubActionConstants
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
@@ -35,8 +36,8 @@ class PipelineCommitService(
                         pipeline.name,
                         progressCounter.incrementAndGet(),
                         numberOfBranches,
-                        3,
-                        3
+                        GithubActionConstants.stepNumberOfFetchingCommits,
+                        GithubActionConstants.totalNumberOfSteps,
                     )
                 )
                 branchCommitsMap[branch] = mapRunToCommits(pipeline, run)
