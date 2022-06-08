@@ -5,7 +5,7 @@ import metrik.project.domain.repository.BuildRepository
 import org.springframework.stereotype.Service
 import kotlin.streams.toList
 
-@Service("githubActionsPipelineRunService")
+@Service
 class PipelineRunService(
     private val buildRepository:BuildRepository,
     private val runService:RunService,

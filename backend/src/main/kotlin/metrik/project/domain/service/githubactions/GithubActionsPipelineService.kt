@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 
-@Service("githubActionsPipelineService")
+@Service
 class GithubActionsPipelineService(
     private val buildRepository: BuildRepository,
     private val executionConverter: ExecutionConverter,

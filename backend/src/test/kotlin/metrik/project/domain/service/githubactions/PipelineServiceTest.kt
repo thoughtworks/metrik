@@ -22,12 +22,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
 @ExtendWith(MockKExtension::class)
-internal class GithubPipelineServiceTest {
+internal class PipelineServiceTest {
     @MockK(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
     @InjectMockKs
-    private lateinit var pipelineService: GithubActionsPipelineService
+    private lateinit var githubActionsPipelineService: GithubActionsPipelineService
 
     @MockK(relaxed = true)
     private lateinit var commitService: CommitService
@@ -52,7 +52,7 @@ internal class GithubPipelineServiceTest {
 
     @Test
     fun `should successfully verify a pipeline given response is 200`() {
-        pipelineService.verifyPipelineConfiguration(githubActionsPipeline)
+        githubActionsPipelineService.verifyPipelineConfiguration(githubActionsPipeline)
 
         verify {
             githubFeignClient.retrieveMultipleRuns(any(), any(), any())
@@ -69,7 +69,7 @@ internal class GithubPipelineServiceTest {
         )
 
         assertThrows(ApplicationException::class.java) {
-            pipelineService.verifyPipelineConfiguration(
+            githubActionsPipelineService.verifyPipelineConfiguration(
                 PipelineConfiguration(credential = credential, url = userInputURL)
             )
         }
@@ -85,7 +85,7 @@ internal class GithubPipelineServiceTest {
         )
 
         assertThrows(ApplicationException::class.java) {
-            pipelineService.verifyPipelineConfiguration(
+            githubActionsPipelineService.verifyPipelineConfiguration(
                 PipelineConfiguration(credential = credential, url = userInputURL)
             )
         }
@@ -95,7 +95,7 @@ internal class GithubPipelineServiceTest {
     fun `should return sorted stage name lists when getStagesSortedByName() called`() {
         every { buildRepository.getAllBuilds(pipelineId) } returns (executions)
 
-        val result = pipelineService.getStagesSortedByName(pipelineId)
+        val result = githubActionsPipelineService.getStagesSortedByName(pipelineId)
 
         assertEquals(5, result.size)
         assertEquals("amazing", result[0])
@@ -114,7 +114,7 @@ internal class GithubPipelineServiceTest {
             "feature/CI pipeline" to mapOf(githubActionsRun2 to listOf(commit)
         ))
 
-        pipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
+        githubActionsPipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
         verify {
             buildRepository.save(

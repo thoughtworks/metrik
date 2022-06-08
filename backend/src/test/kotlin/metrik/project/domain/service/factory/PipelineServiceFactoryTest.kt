@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-internal class GithubPipelineServiceFactoryTest {
+internal class PipelineServiceFactoryTest {
     @MockK(relaxed = true)
     private lateinit var jenkinsPipelineService: JenkinsPipelineService
 
     @MockK(relaxed = true)
     private lateinit var bambooPipelineService: BambooPipelineService
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var githubActionsPipelineService: GithubActionsPipelineService
 
     @MockK

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class PipelineServiceFactory(
-    @Autowired private val jenkinsPipelineService: PipelineService,
-    @Autowired private val bambooPipelineService: PipelineService,
-    @Autowired private val githubActionsPipelineService: PipelineService,
-    @Autowired private val bambooDeploymentPipelineService: PipelineService,
-    @Autowired private val noopPipelineService: PipelineService
+    private val jenkinsPipelineService: PipelineService,
+    private val bambooPipelineService: PipelineService,
+    private val githubActionsPipelineService: PipelineService,
+    private val bambooDeploymentPipelineService: PipelineService,
+    private val noopPipelineService: PipelineService
 ) {
     fun getService(pipelineType: PipelineType): PipelineService {
         return when (pipelineType) {

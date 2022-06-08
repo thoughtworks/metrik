@@ -10,7 +10,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-@Service("githubActionsPipelineCommitsService")
+@Service
 class PipelineCommitService(
     private val buildRepository: BuildRepository,
     private val commitService:CommitService
