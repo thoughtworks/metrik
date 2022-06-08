@@ -2,7 +2,6 @@ package metrik.project.domain.service.factory
 
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.service.PipelineService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
