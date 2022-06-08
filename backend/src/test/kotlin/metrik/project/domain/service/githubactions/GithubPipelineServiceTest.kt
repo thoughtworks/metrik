@@ -109,7 +109,7 @@ internal class GithubPipelineServiceTest {
     fun `should sync and save all in-progress and completed-status builds to databases`() {
         every { pipelineRunService.getNewRuns(githubActionsPipeline, mockEmitCb ) } returns(mutableListOf( githubActionsRun1, githubActionsRun2))
         every { pipelineRunService.getInProgressRuns(githubActionsPipeline, mockEmitCb) } returns(listOf(githubActionsRun1, githubActionsRun2))
-        every { pipelineCommitService.mapCommitToRun(githubActionsPipeline,any()) } returns mapOf(
+        every { pipelineCommitService.mapCommitToRun(githubActionsPipeline,any(), mockEmitCb) } returns mapOf(
             "master" to mapOf(githubActionsRun1 to listOf(commit)),
             "feature/CI pipeline" to mapOf(githubActionsRun2 to listOf(commit)
         ))

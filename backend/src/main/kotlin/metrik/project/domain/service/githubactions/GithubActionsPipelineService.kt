@@ -66,7 +66,7 @@ class GithubActionsPipelineService(
                 "For Github Actions pipeline [${pipeline.id}] - " + "[$totalBuildNumbersToSync] need to be synced"
             )
 
-            val branchRunCommitsMap = pipelineCommitService.mapCommitToRun(pipeline, newRuns)
+            val branchRunCommitsMap = pipelineCommitService.mapCommitToRun(pipeline, newRuns, emitCb)
 
             val builds = newRuns.map {
                 val commits: List<Commit> = branchRunCommitsMap[it.branch]!![it]!!

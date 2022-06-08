@@ -4,11 +4,13 @@ import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.rest.vo.response.SyncProgress
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineCommitsService")
 class PipelineCommitService(
@@ -17,11 +19,28 @@ class PipelineCommitService(
 ) {
     fun mapCommitToRun(
         pipeline: PipelineConfiguration,
-        runs: MutableList<GithubActionsRun>
+        runs: MutableList<GithubActionsRun>,
+        emitCb: (SyncProgress) -> Unit
     ): Map<String, Map<GithubActionsRun, List<Commit>>> {
         val branchCommitsMap: MutableMap<String, Map<GithubActionsRun, List<Commit>>> = mutableMapOf()
-        runs.groupBy { it.branch }
-            .forEach { (branch, run) -> branchCommitsMap[branch] = mapRunToCommits(pipeline, run) }
+        val runsGroupedByBranch = runs.groupBy { it.branch }
+        val numberOfBranches = runsGroupedByBranch.size
+        val progressCounter = AtomicInteger(0)
+
+        runsGroupedByBranch
+            .forEach { (branch, run) ->
+                emitCb(
+                    SyncProgress(
+                        pipeline.id,
+                        pipeline.name,
+                        progressCounter.incrementAndGet(),
+                        numberOfBranches,
+                        3,
+                        3
+                    )
+                )
+                branchCommitsMap[branch] = mapRunToCommits(pipeline, run)
+            }
         return branchCommitsMap.toMap()
     }
 
