@@ -4,6 +4,7 @@ import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.rest.vo.response.SyncProgress
+import metrik.project.constant.GithubActionConstants
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -26,6 +27,8 @@ class RunService(
         val syncedRuns = mutableListOf<GithubActionsRun>()
         var keepRetrieving = true
         var pageIndex = 1
+        var totalNumberOfRuns = 0
+
         while (keepRetrieving) {
             logger.info(
                 "Get Github Runs - " +
@@ -38,7 +41,11 @@ class RunService(
                 maxPerPage,
                 pageIndex
             )
-            val totalNumberOfRuns = syncedRunsResponse?.totalCount ?: 0
+
+            if (pageIndex == 1) {
+                totalNumberOfRuns = syncedRunsResponse?.totalCount ?: 0
+            }
+
             val totalPages = ceil(totalNumberOfRuns.toDouble() / maxPerPage.toDouble()).toInt()
             val syncedRunsFromCurrentPage =
                 syncedRunsResponse?.let { response -> response.workflowRuns.map { it.toGithubActionsRun() } }
@@ -54,8 +61,8 @@ class RunService(
                     pipeline.name,
                     pageIndex,
                     totalPages,
-                    1,
-                    3
+                    GithubActionConstants.stepNumberOfFetchingNewRuns,
+                    GithubActionConstants.totalNumberOfSteps
                 )
             )
 
