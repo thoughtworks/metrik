@@ -4,6 +4,7 @@ import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.rest.vo.response.SyncProgress
 import org.springframework.stereotype.Service
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.streams.toList
 
 @Service("githubActionsPipelineRunService")
@@ -20,11 +21,28 @@ class PipelineRunService(
     }
 
     fun getInProgressRuns(
-        pipeline: PipelineConfiguration
+        pipeline: PipelineConfiguration,
+        emitCb: (SyncProgress) -> Unit
     ): List<GithubActionsRun> {
-        return buildRepository.getInProgressBuilds(pipeline.id)
+        val inProgressRuns = buildRepository.getInProgressBuilds(pipeline.id)
+        val numberOfInProgressRuns = inProgressRuns.size
+        val progressCounter = AtomicInteger(0)
+
+        return inProgressRuns
             .parallelStream()
-            .map { runService.syncSingleRun(pipeline, it.url) }
+            .map { it ->
+                emitCb(
+                    SyncProgress(
+                        pipeline.id,
+                        pipeline.name,
+                        progressCounter.incrementAndGet(),
+                        numberOfInProgressRuns,
+                        2,
+                        3
+                    )
+                )
+                runService.syncSingleRun(pipeline, it.url)
+            }
             .toList()
             .filterNotNull()
     }
