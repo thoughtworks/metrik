@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-internal class BranchesServiceTest {
+internal class BranchServiceTest {
     @InjectMockKs
     private lateinit var branchService: BranchService
 

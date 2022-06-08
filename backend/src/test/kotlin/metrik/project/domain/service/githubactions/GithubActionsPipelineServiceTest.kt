@@ -22,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "LargeClass")
 @ExtendWith(MockKExtension::class)
-internal class GithubPipelineServiceTest {
+internal class GithubActionsPipelineServiceTest {
     @MockK(relaxed = true)
     private lateinit var buildRepository: BuildRepository
 
