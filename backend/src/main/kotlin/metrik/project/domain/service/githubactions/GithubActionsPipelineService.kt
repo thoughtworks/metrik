@@ -73,15 +73,6 @@ class GithubActionsPipelineService(
                 val convertedBuild = executionConverter.convertToBuild(it, pipeline.id, commits)
                 buildRepository.save(convertedBuild)
 
-                emitCb(
-                    SyncProgress(
-                        pipeline.id,
-                        pipeline.name,
-                        progressCounter.incrementAndGet(),
-                        totalBuildNumbersToSync
-                    )
-                )
-
                 logger.info("[${pipeline.id}] sync progress: [${progressCounter.get()}/$totalBuildNumbersToSync]")
                 convertedBuild
             }
