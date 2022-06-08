@@ -17,6 +17,8 @@ export interface ProgressUpdateEvt {
 	pipelineName: string;
 	progress: number;
 	batchSize: number;
+	step?: number;
+	stepSize?: number;
 }
 
 export interface ProgressSummary {
@@ -49,7 +51,10 @@ export const SyncProgressContent: React.FC<SyncProgressContentProps> = ({ progre
 									100
 							)}
 							format={() =>
-								`${progressSummary[progressKey]?.progress}/${progressSummary[progressKey]?.batchSize}`
+								`${progressSummary[progressKey]?.progress}/${progressSummary[progressKey]?.batchSize}` +
+								(progressSummary[progressKey]?.stepSize
+									? `(Step ${progressSummary[progressKey]?.step}/${progressSummary[progressKey]?.stepSize})`
+									: "")
 							}
 						/>
 					</td>
