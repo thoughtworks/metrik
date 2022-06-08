@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import metrik.project.*
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
@@ -44,6 +45,7 @@ internal class PipelineRunServiceTest {
 
         Assertions.assertThat(validNewRuns.size).isEqualTo(1)
         Assertions.assertThat(validNewRuns[0]).isEqualTo(githubActionsRun1)
+        verify(exactly = 1) { mockEmitCb(any()) }
     }
 
     @Test
@@ -52,9 +54,10 @@ internal class PipelineRunServiceTest {
         every { buildRepository.getInProgressBuilds(pipelineId) } returns(listOf(build))
         every { runService.syncSingleRun(any(), any()) } returns(githubActionsRun2)
 
-        val inProgressRuns = pipelineRunService.getInProgressRuns(githubActionsPipeline)
+        val inProgressRuns = pipelineRunService.getInProgressRuns(githubActionsPipeline, mockEmitCb)
 
         Assertions.assertThat(inProgressRuns.size).isEqualTo(1)
         Assertions.assertThat(inProgressRuns).isEqualTo(listOf(githubActionsRun2))
+        verify(exactly = 1) { mockEmitCb(any()) }
     }
 }
