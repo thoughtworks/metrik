@@ -27,7 +27,7 @@ internal class PipelineRunServiceTest {
     private lateinit var branchService: BranchService
 
     @Test
-    fun `should get valid new runs`() {
+    fun `should get valid new runs successfully`() {
         every {
             runService.syncRunsByPage(any(), any(), any())
         } returns mutableListOf(
@@ -47,7 +47,7 @@ internal class PipelineRunServiceTest {
     }
 
     @Test
-    fun `should get in progress runs`() {
+    fun `should get in progress runs successfully`() {
         val build = githubActionsExecution.copy(result = Status.IN_PROGRESS, stages = emptyList())
         every { buildRepository.getInProgressBuilds(pipelineId) } returns(listOf(build))
         every { runService.syncSingleRun(any(), any()) } returns(githubActionsRun2)
