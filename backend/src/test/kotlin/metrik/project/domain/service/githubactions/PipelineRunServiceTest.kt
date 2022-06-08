@@ -40,7 +40,7 @@ internal class PipelineRunServiceTest {
             "master",
             "feature/CD pipeline"
         )
-        val validNewRuns = pipelineRunService.getNewRuns(githubActionsPipeline)
+        val validNewRuns = pipelineRunService.getNewRuns(githubActionsPipeline, mockEmitCb)
 
         Assertions.assertThat(validNewRuns.size).isEqualTo(1)
         Assertions.assertThat(validNewRuns[0]).isEqualTo(githubActionsRun1)
