@@ -45,7 +45,6 @@ internal class PipelineRunServiceTest {
 
         Assertions.assertThat(validNewRuns.size).isEqualTo(1)
         Assertions.assertThat(validNewRuns[0]).isEqualTo(githubActionsRun1)
-        verify(exactly = 1) { mockEmitCb(any()) }
     }
 
     @Test
@@ -58,6 +57,6 @@ internal class PipelineRunServiceTest {
 
         Assertions.assertThat(inProgressRuns.size).isEqualTo(1)
         Assertions.assertThat(inProgressRuns).isEqualTo(listOf(githubActionsRun2))
-        verify(exactly = 1) { mockEmitCb(any()) }
+        verify { mockEmitCb(any()) }
     }
 }

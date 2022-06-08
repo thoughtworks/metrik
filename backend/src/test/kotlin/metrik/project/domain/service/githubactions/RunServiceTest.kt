@@ -62,6 +62,7 @@ internal class RunServiceTest {
         verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 1) }
         verify(exactly = 1) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 2) }
         verify(exactly = 0) { githubFeignClient.retrieveMultipleRuns(any(), any(), any(), 2, 3) }
+        verify(exactly = 2) { mockEmitCb(any()) }
     }
 
     @Test
