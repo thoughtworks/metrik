@@ -36,30 +36,33 @@ export const SyncProgressContent: React.FC<SyncProgressContentProps> = ({ progre
 		<p>Waiting server response...</p>
 	) : (
 		<table>
-			{Object.keys(progressSummary).map(progressKey => (
-				<tr key={progressKey} css={tableRowStyles}>
-					<td>{progressSummary[progressKey]?.pipelineName}:</td>
-					<td>
-						<Progress
-							type="line"
-							strokeWidth={12}
-							size="small"
-							steps={50}
-							strokeColor="#D63F97"
-							percent={Math.floor(
-								(progressSummary[progressKey]?.progress / progressSummary[progressKey]?.batchSize) *
-									100
-							)}
-							format={() =>
-								`${progressSummary[progressKey]?.progress}/${progressSummary[progressKey]?.batchSize}` +
-								(progressSummary[progressKey]?.stepSize
-									? `(Step ${progressSummary[progressKey]?.step}/${progressSummary[progressKey]?.stepSize})`
-									: "")
-							}
-						/>
-					</td>
-				</tr>
-			))}
+			<tbody>
+				{Object.keys(progressSummary).map(progressKey => (
+					<tr key={progressKey} css={tableRowStyles}>
+						<td>{progressSummary[progressKey]?.pipelineName}:</td>
+						<td>
+							<Progress
+								type="line"
+								strokeWidth={12}
+								size="small"
+								steps={50}
+								strokeColor="#D63F97"
+								percent={Math.floor(
+									(progressSummary[progressKey]?.progress /
+										progressSummary[progressKey]?.batchSize) *
+										100
+								)}
+								format={() =>
+									`${progressSummary[progressKey]?.progress}/${progressSummary[progressKey]?.batchSize}` +
+									(progressSummary[progressKey]?.stepSize
+										? `(Step ${progressSummary[progressKey]?.step}/${progressSummary[progressKey]?.stepSize})`
+										: "")
+								}
+							/>
+						</td>
+					</tr>
+				))}
+			</tbody>
 		</table>
 	);
 };
