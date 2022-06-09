@@ -1,5 +1,6 @@
 package metrik.project.domain.service.githubactions
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -12,6 +13,7 @@ import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
 import metrik.project.mockEmitCb
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.time.ZoneId
@@ -24,6 +26,11 @@ internal class RunServiceTest {
 
     @MockK
     private lateinit var githubFeignClient: GithubFeignClient
+
+    @AfterEach
+    fun clear(){
+        clearAllMocks()
+    }
 
     private val testPipeline =
         PipelineConfiguration(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
