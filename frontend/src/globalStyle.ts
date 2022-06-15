@@ -30,4 +30,7 @@ export const globalStyles = {
 	"::-webkit-scrollbar-corner": {
 		backgroundColor: "transparent",
 	},
+	".ant-popover-arrow": {
+		display: "none",
+	},
 };
