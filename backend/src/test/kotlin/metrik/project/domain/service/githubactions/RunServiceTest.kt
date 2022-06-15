@@ -7,11 +7,11 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.infrastructure.utlils.toTimestamp
+import metrik.project.TestFixture.mockEmitCb
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.response.MultipleRunResponse
 import metrik.project.infrastructure.github.feign.response.SingleRunResponse
-import metrik.project.mockEmitCb
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -27,13 +27,13 @@ internal class RunServiceTest {
     @MockK
     private lateinit var githubFeignClient: GithubFeignClient
 
+    private val testPipeline =
+        PipelineConfiguration(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
+
     @AfterEach
     fun clear() {
         clearAllMocks()
     }
-
-    private val testPipeline =
-        PipelineConfiguration(id = "test pipeline", credential = "fake token", url = "https://test.com/test/test")
 
     @Test
     internal fun `should keep syncing runs until meet timestamp limitation`() {

@@ -14,10 +14,6 @@ internal class MeanTimeToRestoreCalculatorTest {
 
     private val objectMapper = jacksonObjectMapper()
 
-    companion object {
-        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
-    }
-
     @BeforeEach
     fun setUp() {
         meanTimeToRestoreCalculator = MeanTimeToRestoreCalculator()
@@ -242,5 +238,9 @@ internal class MeanTimeToRestoreCalculatorTest {
         val calculateLevel = meanTimeToRestoreCalculator.calculateLevel(Double.NaN)
 
         assertThat(calculateLevel).isEqualTo(LEVEL.INVALID)
+    }
+
+    companion object {
+        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
     }
 }

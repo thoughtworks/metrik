@@ -11,11 +11,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CommitRepository {
-    companion object {
-        private const val PROP_PIPELINE_ID: String = "pipelineId"
-        private const val PROP_COMMIT_ID = "commitId"
-    }
-
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
@@ -83,5 +78,10 @@ class CommitRepository {
         if (found == null) {
             mongoTemplate.save(commit, collectionName)
         }
+    }
+
+    companion object {
+        private const val PROP_PIPELINE_ID: String = "pipelineId"
+        private const val PROP_COMMIT_ID = "commitId"
     }
 }

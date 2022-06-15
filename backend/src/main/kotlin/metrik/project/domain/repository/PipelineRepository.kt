@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Component
 
+private const val ID = "id"
+private const val PROJECT_ID = "projectId"
+
 @Component
 class PipelineRepository {
     @Autowired
@@ -18,7 +21,7 @@ class PipelineRepository {
 
     fun findById(pipelineId: String): PipelineConfiguration {
         val query = Query().addCriteria(
-            Criteria.where("id").isEqualTo(pipelineId)
+            Criteria.where(ID).isEqualTo(pipelineId)
         )
 
         val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
@@ -29,7 +32,7 @@ class PipelineRepository {
 
     fun findByIdAndProjectId(pipelineId: String, projectId: String): PipelineConfiguration {
         val query = Query().addCriteria(
-            Criteria.where("id").isEqualTo(pipelineId).and("projectId").isEqualTo(projectId)
+            Criteria.where(ID).isEqualTo(pipelineId).and(PROJECT_ID).isEqualTo(projectId)
         )
         val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
 
@@ -41,7 +44,7 @@ class PipelineRepository {
     }
 
     fun findByNameAndProjectId(name: String, projectId: String): PipelineConfiguration? {
-        val query = Query().addCriteria(Criteria.where("name").`is`(name).and("projectId").`is`(projectId))
+        val query = Query().addCriteria(Criteria.where("name").`is`(name).and(PROJECT_ID).`is`(projectId))
 
         val result = mongoTemplate.findOne(query, PipelineConfiguration::class.java)
 
@@ -50,7 +53,7 @@ class PipelineRepository {
     }
 
     fun findByProjectId(projectId: String): List<PipelineConfiguration> {
-        val query = Query().addCriteria(Criteria.where("projectId").isEqualTo(projectId))
+        val query = Query().addCriteria(Criteria.where(PROJECT_ID).isEqualTo(projectId))
 
         val result = mongoTemplate.find(query, PipelineConfiguration::class.java)
 
@@ -59,7 +62,7 @@ class PipelineRepository {
     }
 
     fun deleteById(pipelineId: String) {
-        val query = Query().addCriteria(Criteria.where("id").isEqualTo(pipelineId))
+        val query = Query().addCriteria(Criteria.where(ID).isEqualTo(pipelineId))
         mongoTemplate.remove(query, PipelineConfiguration::class.java)
     }
 

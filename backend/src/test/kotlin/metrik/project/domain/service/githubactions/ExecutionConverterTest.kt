@@ -2,11 +2,11 @@ package metrik.project.domain.service.githubactions
 
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.junit5.MockKExtension
+import metrik.project.TestFixture.pipelineId
 import metrik.project.domain.model.Commit
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
-import metrik.project.pipelineId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

@@ -57,7 +57,10 @@ class BambooPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(
+        pipeline: PipelineConfiguration,
+        emitCb: (SyncProgress) -> Unit
+    ): List<Execution> {
         logger.info("Started data sync for Bamboo pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)

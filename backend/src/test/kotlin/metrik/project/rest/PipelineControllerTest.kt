@@ -4,11 +4,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.justRun
-import metrik.project.buildBambooPipelineRequest
-import metrik.project.buildBambooPipelineVerificationRequest
-import metrik.project.buildJenkinsPipelineRequest
-import metrik.project.buildJenkinsPipelineVerificationRequest
-import metrik.project.buildPipeline
+import metrik.project.TestFixture.buildBambooPipelineRequest
+import metrik.project.TestFixture.buildBambooPipelineVerificationRequest
+import metrik.project.TestFixture.buildJenkinsPipelineRequest
+import metrik.project.TestFixture.buildJenkinsPipelineVerificationRequest
+import metrik.project.TestFixture.buildPipeline
 import metrik.project.domain.model.PipelineType
 import metrik.project.rest.applicationservice.PipelineApplicationService
 import metrik.project.rest.vo.response.PipelineStagesResponse

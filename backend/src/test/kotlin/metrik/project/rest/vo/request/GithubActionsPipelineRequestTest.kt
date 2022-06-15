@@ -1,10 +1,10 @@
 package metrik.project.rest.vo.request
 
 import io.mockk.junit5.MockKExtension
-import metrik.project.buildGithubActionsPipelineRequest
-import metrik.project.githubActionsPipeline
-import metrik.project.pipelineId
-import metrik.project.projectId
+import metrik.project.TestFixture.buildGithubActionsPipelineRequest
+import metrik.project.TestFixture.githubActionsPipeline
+import metrik.project.TestFixture.pipelineId
+import metrik.project.TestFixture.projectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

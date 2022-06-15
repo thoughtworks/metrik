@@ -5,7 +5,7 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.githubActionsPipeline
+import metrik.project.TestFixture.githubActionsPipeline
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.response.CommitResponse
 import org.assertj.core.api.Assertions.assertThat

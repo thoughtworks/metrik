@@ -34,7 +34,10 @@ class SynchronizationApplicationService(
         pipelines.parallelStream().forEach {
             try {
                 pipelineServiceFactory.getService(it.type).syncBuildsProgressively(it, emitCb)
-            } catch (e: RuntimeException) {
+            } catch (
+                @Suppress("TooGenericExceptionCaught")
+                e: RuntimeException
+            ) {
                 logger.error("Synchronize failed for pipeline [${it.id} - ${it.name}], error: [$e]")
                 throw SynchronizationException("Synchronize failed")
             }

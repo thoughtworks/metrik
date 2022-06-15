@@ -8,11 +8,6 @@ import org.springframework.stereotype.Component
 @Component
 class DeploymentFrequencyCalculator : MetricsCalculator {
 
-    companion object {
-        private const val ONE_WEEK: Int = 7
-        private const val ONE_MONTH: Int = 30
-    }
-
     override fun calculateValue(
         allExecutions: List<Execution>,
         startTimestamp: Long,
@@ -67,5 +62,10 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
         val deploymentFinishTimestamp = stage?.getStageDoneTime()
 
         return deploymentFinishTimestamp in startTimestamp..endTimestamp
+    }
+
+    companion object {
+        private const val ONE_WEEK: Int = 7
+        private const val ONE_MONTH: Int = 30
     }
 }

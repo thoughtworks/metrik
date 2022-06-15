@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.6.21"
     id("org.jetbrains.kotlinx.kover") version "0.5.0"
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
-    id("org.springframework.boot") version "2.5.14"
+    id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -61,6 +61,7 @@ configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.
 val ktlintConfiguration: Configuration by configurations.creating
 
 dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.20.0")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -165,26 +166,10 @@ val apiTest = task<Test>("apiTest") {
 tasks.check { dependsOn(apiTest) }
 
 detekt {
-    toolVersion = "1.17.1"
-    input = files(
-        "src/main/kotlin",
-        "src/test/kotlin",
-        "src/apiTest/kotlin"
-    )
-    config = files("gradle/detekt/detekt.yml")
     buildUponDefaultConfig = true
-
-    reports {
-        xml.enabled = false
-        txt.enabled = false
-        html.enabled = true
-        html.destination = file("${buildDir}/reports/detekt/detekt.html")
-    }
-}
-
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    exclude("fourkeymetrics/Application.kt")
-    finalizedBy(tasks.check)
+    allRules = true
+    config = files("$projectDir/gradle/detekt/detekt.yml")
+    source = objects.fileCollection().from("src")
 }
 
 // ktlint tasks

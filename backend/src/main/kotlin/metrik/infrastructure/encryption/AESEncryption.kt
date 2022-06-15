@@ -91,7 +91,12 @@ class DatabaseEncryptionAspect {
             "args(query, entityClass)",
         returning = "pipelines"
     )
-    fun <T> decryptAfterRetrievingFromDB(query: Query, entityClass: Class<T>, pipelines: List<*>) {
+    fun <T> decryptAfterRetrievingFromDB(
+        @Suppress("UnusedPrivateMember")
+        query: Query,
+        entityClass: Class<T>,
+        pipelines: List<*>
+    ) {
         if (!entityClass.isAssignableFrom(PipelineConfiguration::class.java)) {
             return
         }

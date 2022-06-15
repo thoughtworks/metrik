@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import metrik.project.branch1
-import metrik.project.branch2
+import metrik.project.TestFixture.branch1
+import metrik.project.TestFixture.branch2
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import org.assertj.core.api.Assertions

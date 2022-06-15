@@ -38,6 +38,7 @@ interface GithubFeignClient {
     ): SingleRunResponse?
 
     @GetMapping("/{owner}/{repo}/commits")
+    @Suppress("LongParameterList")
     fun retrieveCommits(
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,

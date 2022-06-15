@@ -1,12 +1,12 @@
 package metrik.project.infrastructure.github.feign.response
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import metrik.project.domain.service.githubactions.GithubActionsRun
 import org.apache.logging.log4j.util.Strings
 import java.time.ZonedDateTime
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(SnakeCaseStrategy::class)
 data class SingleRunResponse(
     val id: Long = 0,
     val name: String = Strings.EMPTY,

@@ -7,17 +7,10 @@ import metrik.project.domain.model.Status
 import org.springframework.stereotype.Component
 import java.math.RoundingMode
 
+private const val PRECISION = 2
+
 @Component
 class MeanTimeToRestoreCalculator : MetricsCalculator {
-
-    companion object {
-        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
-        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
-        private const val NO_VALUE: Double = Double.NaN
-        private const val ONE_HOUR: Double = 1.00
-        private const val ONE_DAY: Double = 24.00
-        private const val ONE_WEEK: Double = 168.00
-    }
 
     override fun calculateValue(
         allExecutions: List<Execution>,
@@ -54,7 +47,7 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
 
         val hours = meanTimeToRestore
             .toBigDecimal()
-            .setScale(2, RoundingMode.HALF_UP)
+            .setScale(PRECISION, RoundingMode.HALF_UP)
             .toDouble()
 
         return when {
@@ -106,5 +99,14 @@ class MeanTimeToRestoreCalculator : MetricsCalculator {
             }
         }
         return Pair(totalTime, restoredTimes)
+    }
+
+    companion object {
+        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
+        private const val MILLISECOND_TO_HOURS: Double = 3600000.0
+        private const val NO_VALUE: Double = Double.NaN
+        private const val ONE_HOUR: Double = 1.00
+        private const val ONE_DAY: Double = 24.00
+        private const val ONE_WEEK: Double = 168.00
     }
 }

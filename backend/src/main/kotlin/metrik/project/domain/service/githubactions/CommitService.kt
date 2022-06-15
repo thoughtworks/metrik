@@ -46,7 +46,7 @@ class CommitService(
             )
         }
     }
-
+    @Suppress("LongParameterList")
     private fun retrieveCommits(
         credential: String,
         url: String,
@@ -79,10 +79,12 @@ class CommitService(
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
-        val ownerIndex = 2
         val components = URL(url).path.split("/")
         val owner = components[components.size - ownerIndex]
         val repo = components.last()
         return Pair(owner, repo)
+    }
+    private companion object {
+        const val ownerIndex = 2
     }
 }

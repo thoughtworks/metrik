@@ -114,6 +114,7 @@ internal class BambooDeploymentPipelineServiceTest {
     private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)
 
     @BeforeEach
+    @Suppress("LongMethod")
     fun setUp() {
         objectMapper = ObjectMapper().registerModule(KotlinModule())
         objectMapper.registerModule(JavaTimeModule())

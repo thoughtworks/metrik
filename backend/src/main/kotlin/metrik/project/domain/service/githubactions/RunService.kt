@@ -93,11 +93,8 @@ class RunService(
         return Pair(owner, repo)
     }
 
-    private fun getToken(token: String) = "$tokenPrefix $token"
-
     private companion object {
         const val ownerIndex = 2
-        const val tokenPrefix = "Bearer"
         const val defaultMaxPerPage = 100
     }
 }

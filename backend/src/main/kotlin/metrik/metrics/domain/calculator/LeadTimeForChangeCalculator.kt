@@ -5,13 +5,13 @@ import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.springframework.stereotype.Component
 
+private const val LOW = 30
+private const val MEDIUM = 7
+private const val HIGH = 1
+private const val ELITE = 0
+
 @Component
 class LeadTimeForChangeCalculator : MetricsCalculator {
-
-    companion object {
-        private const val EARLIEST_TIMESTAMP: Long = 0
-        private const val MILLI_SECONDS_FOR_ONE_DAY = 24 * 60 * 60 * 1000
-    }
 
     override fun calculateValue(
         allExecutions: List<Execution>,
@@ -58,16 +58,16 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         val leadTime: Double = value.toDouble()
 
         return when {
-            leadTime >= 30 -> {
+            leadTime >= LOW -> {
                 LEVEL.LOW
             }
-            leadTime >= 7 -> {
+            leadTime >= MEDIUM -> {
                 LEVEL.MEDIUM
             }
-            leadTime >= 1 -> {
+            leadTime >= HIGH -> {
                 LEVEL.HIGH
             }
-            leadTime >= 0 -> {
+            leadTime >= ELITE -> {
                 LEVEL.ELITE
             }
             else -> {
@@ -82,16 +82,16 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
     ): List<Long> {
         val buildsGroupedByEachDeployment: MutableMap<DeploymentTimestamp, List<Execution>> = mutableMapOf()
 
-        var buildIndex = 0
-        var fromIndex = 0
+        var buildIndex = ELITE
+        var fromIndex = ELITE
 
         while (buildIndex in buildsInScope.indices) {
             val deployStage = buildsInScope[buildIndex].findGivenStage(targetStage, Status.SUCCESS)
             if (deployStage != null) {
-                val buildsInOneDeployment: List<Execution> = buildsInScope.subList(fromIndex, buildIndex + 1)
+                val buildsInOneDeployment: List<Execution> = buildsInScope.subList(fromIndex, buildIndex + HIGH)
                 buildsGroupedByEachDeployment[DeploymentTimestamp(deployStage.getStageDoneTime())] =
                     buildsInOneDeployment
-                fromIndex = buildIndex + 1
+                fromIndex = buildIndex + HIGH
             }
             buildIndex++
         }
@@ -110,8 +110,13 @@ class LeadTimeForChangeCalculator : MetricsCalculator {
         val buildRangeStartTimestamp = firstSuccessfulDeploymentExecution?.timestamp ?: EARLIEST_TIMESTAMP
 
         return executionOrderByTimestampAscending.filter {
-            it.timestamp in (buildRangeStartTimestamp + 1)..buildRangeEndTimestamp
+            it.timestamp in (buildRangeStartTimestamp + HIGH)..buildRangeEndTimestamp
         }
+    }
+
+    companion object {
+        private const val EARLIEST_TIMESTAMP: Long = 0
+        private const val MILLI_SECONDS_FOR_ONE_DAY = 24 * 60 * 60 * 1000
     }
 }
 

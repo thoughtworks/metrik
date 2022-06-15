@@ -10,20 +10,20 @@ import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.commit
-import metrik.project.credential
+import metrik.project.TestFixture.commit
+import metrik.project.TestFixture.credential
+import metrik.project.TestFixture.executions
+import metrik.project.TestFixture.githubActionsExecution
+import metrik.project.TestFixture.githubActionsPipeline
+import metrik.project.TestFixture.githubActionsRun1
+import metrik.project.TestFixture.githubActionsRun2
+import metrik.project.TestFixture.mockEmitCb
+import metrik.project.TestFixture.pipelineId
+import metrik.project.TestFixture.userInputURL
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
-import metrik.project.executions
-import metrik.project.githubActionsExecution
-import metrik.project.githubActionsPipeline
-import metrik.project.githubActionsRun1
-import metrik.project.githubActionsRun2
 import metrik.project.infrastructure.github.feign.GithubFeignClient
-import metrik.project.mockEmitCb
-import metrik.project.pipelineId
-import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -39,12 +39,6 @@ internal class GithubActionsPipelineServiceTest {
     private lateinit var pipelineService: GithubActionsPipelineService
 
     @MockK(relaxed = true)
-    private lateinit var commitService: CommitService
-
-    @MockK(relaxed = true)
-    private lateinit var runService: RunService
-
-    @MockK(relaxed = true)
     private lateinit var githubFeignClient: GithubFeignClient
 
     @MockK(relaxed = true)
@@ -54,6 +48,7 @@ internal class GithubActionsPipelineServiceTest {
     private lateinit var pipelineRunService: PipelineRunService
 
     @SpyK
+    @Suppress("UnusedPrivateMember")
     private var executionConverter: ExecutionConverter = ExecutionConverter()
 
     private val dummyFeignRequest = Request.create(Request.HttpMethod.POST, "url", mapOf(), null, null, null)

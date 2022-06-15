@@ -18,10 +18,6 @@ internal class ChangeFailureRateCalculatorTest {
 
     private val objectMapper = jacksonObjectMapper()
 
-    companion object {
-        private const val PERCENTAGE_FACTOR = 100.0
-    }
-
     /**
      * test file: builds-for-CFR-case-1.json
      * build 1 : 1606780800000, SUCCESS (deploy to prod)
@@ -165,5 +161,9 @@ internal class ChangeFailureRateCalculatorTest {
     @Test
     fun `should return level invalid given invalid value  when calculate level`() {
         assertEquals(LEVEL.INVALID, changeFailureRateCalculator.calculateLevel(Double.NaN))
+    }
+
+    companion object {
+        private const val PERCENTAGE_FACTOR = 100.0
     }
 }

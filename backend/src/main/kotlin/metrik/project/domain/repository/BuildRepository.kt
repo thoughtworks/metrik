@@ -17,19 +17,10 @@ import java.time.ZonedDateTime
 @SuppressWarnings("TooManyFunctions")
 @Component
 class BuildRepository {
-    companion object {
-        private const val PROP_PIPELINEID: String = "pipelineId"
-        private const val PROP_NUMBER: String = "number"
-        private const val CREATED_TIMESTAMP: String = "timestamp"
-        private const val BRANCH: String = "branch"
-        private const val PROP_RESULT: String = "result"
-        private const val twoWeeks: Long = 14
-    }
-
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
-    private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
+    private var logger = LoggerFactory.getLogger(this.javaClass.name)
     private val collectionName = "build"
 
     fun save(executions: List<Execution>) {
@@ -159,5 +150,14 @@ class BuildRepository {
             "Query result the most recent build through timestamp in pipeline [$pipelineId] is [${result?.number}]"
         )
         return result
+    }
+
+    companion object {
+        private const val PROP_PIPELINEID: String = "pipelineId"
+        private const val PROP_NUMBER: String = "number"
+        private const val CREATED_TIMESTAMP: String = "timestamp"
+        private const val BRANCH: String = "branch"
+        private const val PROP_RESULT: String = "result"
+        private const val twoWeeks: Long = 14
     }
 }

@@ -52,6 +52,7 @@ internal class MetricsApplicationServiceTest {
     private val unit2 = CalculationPeriod.Monthly
 
     @BeforeEach
+    @Suppress("LongMethod")
     fun setUp() {
         every { buildRepository.getAllBuilds(targetStage.keys) } returns expectedExecutions
         every {
@@ -159,6 +160,7 @@ internal class MetricsApplicationServiceTest {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun `should return correct metric response`() {
         val fourKeyMetricsResponse = metricsApplicationService.calculateFourKeyMetrics(
             pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit

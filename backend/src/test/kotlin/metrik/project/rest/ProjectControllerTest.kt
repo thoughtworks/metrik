@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.justRun
-import metrik.project.buildJenkinsPipelineRequest
+import metrik.project.TestFixture.buildJenkinsPipelineRequest
 import metrik.project.rest.applicationservice.ProjectApplicationService
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.ProjectRequest

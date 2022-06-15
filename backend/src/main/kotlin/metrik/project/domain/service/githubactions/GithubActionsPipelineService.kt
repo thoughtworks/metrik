@@ -51,7 +51,10 @@ class GithubActionsPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): List<Execution> {
+    override fun syncBuildsProgressively(
+        pipeline: PipelineConfiguration,
+        emitCb: (SyncProgress) -> Unit
+    ): List<Execution> {
         logger.info("Started data sync for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
 
         val progressCounter = AtomicInteger(0)

@@ -6,7 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.metrics.exception.BadRequestException
-import metrik.project.buildPipeline
+import metrik.project.TestFixture.buildPipeline
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project

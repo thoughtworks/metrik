@@ -92,7 +92,7 @@ class MetricsApplicationService {
             throw BadRequestException("start time should be earlier than end time")
         }
     }
-
+    @Suppress("LongParameterList")
     private fun generateMetrics(
         allExecutions: List<Execution>,
         startTimeMillis: Long,
@@ -118,7 +118,7 @@ class MetricsApplicationService {
             }
         return MetricsInfo(summary, details)
     }
-
+    @Suppress("LongParameterList")
     private fun generateDeployFrequencyMetrics(
         allExecutions: List<Execution>,
         startTimeMillis: Long,

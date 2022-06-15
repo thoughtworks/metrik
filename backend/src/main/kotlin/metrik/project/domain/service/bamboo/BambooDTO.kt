@@ -90,7 +90,10 @@ data class BuildDetailDTO(
             )
             logger.info("Bamboo converting: Build converted result: [$build]")
             return build
-        } catch (e: RuntimeException) {
+        } catch (
+            @Suppress("TooGenericExceptionCaught")
+            e: RuntimeException
+        ) {
             logger.error("Converting Bamboo DTO failed, DTO: [$this], exception: [$e]")
             throw e
         }
@@ -122,7 +125,10 @@ data class BuildDetailDTO(
             )
             logger.info("Bamboo converting: Build converted result: [$execution]")
             return execution
-        } catch (e: RuntimeException) {
+        } catch (
+            @Suppress("TooGenericExceptionCaught")
+            e: RuntimeException
+        ) {
             logger.error("Converting Bamboo DTO failed, DTO: [$this], exception: [$e]")
             throw e
         }

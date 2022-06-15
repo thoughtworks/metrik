@@ -8,16 +8,6 @@ import org.springframework.stereotype.Component
 @Component
 class ChangeFailureRateCalculator : MetricsCalculator {
 
-    companion object {
-        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
-        private const val INVALID_VALUE = Double.NaN
-        private const val PERCENTAGE_FACTOR = 100.0
-
-        private const val LEVEL_ELITE_UPPER_LIMIT = 0.15 * PERCENTAGE_FACTOR
-        private const val LEVEL_HIGH_UPPER_LIMIT = 0.3 * PERCENTAGE_FACTOR
-        private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45 * PERCENTAGE_FACTOR
-    }
-
     override fun calculateValue(
         allExecutions: List<Execution>,
         startTimestamp: Long,
@@ -74,5 +64,15 @@ class ChangeFailureRateCalculator : MetricsCalculator {
             .filter { it.status in TARGET_STAGE_STATUS_LIST }
             .groupingBy { it.status }
             .eachCount()
+    }
+
+    companion object {
+        private val TARGET_STAGE_STATUS_LIST = listOf(Status.FAILED, Status.SUCCESS)
+        private const val INVALID_VALUE = Double.NaN
+        private const val PERCENTAGE_FACTOR = 100.0
+
+        private const val LEVEL_ELITE_UPPER_LIMIT = 0.15 * PERCENTAGE_FACTOR
+        private const val LEVEL_HIGH_UPPER_LIMIT = 0.3 * PERCENTAGE_FACTOR
+        private const val LEVEL_MEDIUM_UPPER_LIMIT = 0.45 * PERCENTAGE_FACTOR
     }
 }

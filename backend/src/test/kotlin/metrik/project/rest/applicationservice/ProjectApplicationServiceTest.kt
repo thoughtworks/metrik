@@ -8,7 +8,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
-import metrik.project.buildJenkinsPipelineRequest
+import metrik.project.TestFixture.buildJenkinsPipelineRequest
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Project
