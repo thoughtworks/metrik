@@ -70,10 +70,12 @@ const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = 
 			value: stageName,
 		})),
 	}));
+
 export interface Pipeline {
 	value: string;
 	childValue: string;
 }
+
 export interface FormValues {
 	duration: [moment.Moment, moment.Moment];
 	pipelines: Pipeline[];
@@ -106,6 +108,17 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	metricsResponse,
 }) => {
 	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
+	useEffect(() => {
+		const btn = document.getElementById("sync");
+		setInterval(() => {
+			setIsFullscreenVisible(true);
+			btn?.click();
+			const waitBar = document.getElementById("waitBar");
+			if (waitBar) {
+				waitBar.style.display = "none";
+			}
+		}, 1800000);
+	}, []);
 	const defaultValues = {
 		duration: [
 			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
@@ -204,6 +217,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	const hideFullscreen = (event: KeyboardEvent<HTMLElement>) => {
 		if (event.key === "Escape") {
 			setIsFullscreenVisible(false);
+			const waitBar = document.getElementById("waitBar");
+			if (waitBar) {
+				waitBar.style.display = "block";
+			}
 		}
 	};
 	const showFullscreen = () => {
@@ -233,11 +250,13 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						/>
 					</div>
 					<Popover
+						id="waitBar"
 						visible={syncInProgress}
 						placement="bottomRight"
 						content={<SyncProgressContent progressSummary={progressSummary} />}
 						trigger="click">
 						<Button
+							id="sync"
 							type="primary"
 							icon={<SyncOutlined />}
 							loading={syncInProgress}
