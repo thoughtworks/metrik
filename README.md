@@ -210,6 +210,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/HE00L"><img src="https://avatars.githubusercontent.com/u/35286550?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HE00L</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=HE00L" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ATPEEE"><img src="https://avatars.githubusercontent.com/u/72388996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ATPEEE</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=ATPEEE" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/LixingSun"><img src="https://avatars.githubusercontent.com/u/19371539?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sun Lixing</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=LixingSun" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/RoujingLiu"><img src="https://avatars.githubusercontent.com/u/94289697?v=4?s=100" width="100px;" alt=""/><br /><sub><b>RoujingLiu</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=RoujingLiu" title="Code">💻</a></td>
   </tr>
 </table>
 
