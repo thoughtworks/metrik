@@ -28,7 +28,7 @@ internal class RunServiceTest {
     private lateinit var githubFeignClient: GithubFeignClient
 
     @AfterEach
-    fun clear(){
+    fun clear() {
         clearAllMocks()
     }
 

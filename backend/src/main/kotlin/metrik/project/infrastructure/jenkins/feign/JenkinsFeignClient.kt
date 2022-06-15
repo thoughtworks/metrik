@@ -28,7 +28,7 @@ interface JenkinsFeignClient {
             "tree",
             required = false
         ) tree: String = "allBuilds[building,number,result,timestamp,duration,url," +
-                "changeSets[items[commitId,timestamp,msg,date]]]"
+            "changeSets[items[commitId,timestamp,msg,date]]]"
 
     ): BuildSummaryCollectionDTO?
 

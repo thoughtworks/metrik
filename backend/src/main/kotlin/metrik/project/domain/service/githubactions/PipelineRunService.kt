@@ -10,11 +10,11 @@ import kotlin.streams.toList
 
 @Service("githubActionsPipelineRunService")
 class PipelineRunService(
-    private val buildRepository:BuildRepository,
-    private val runService:RunService,
+    private val buildRepository: BuildRepository,
+    private val runService: RunService,
     private val branchService: BranchService
 ) {
-    fun getNewRuns(pipeline:PipelineConfiguration, emitCb: (SyncProgress) -> Unit): MutableList<GithubActionsRun> {
+    fun getNewRuns(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): MutableList<GithubActionsRun> {
         val latestTimestamp = getLatestBuildTimeStamp(pipeline)
         val newRuns = runService.syncRunsByPage(pipeline, latestTimestamp, emitCb)
         val branches = branchService.retrieveBranches(pipeline)

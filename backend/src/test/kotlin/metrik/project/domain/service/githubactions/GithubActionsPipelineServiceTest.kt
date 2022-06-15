@@ -10,11 +10,20 @@ import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.*
+import metrik.project.commit
+import metrik.project.credential
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.executions
+import metrik.project.githubActionsExecution
+import metrik.project.githubActionsPipeline
+import metrik.project.githubActionsRun1
+import metrik.project.githubActionsRun2
 import metrik.project.infrastructure.github.feign.GithubFeignClient
+import metrik.project.mockEmitCb
+import metrik.project.pipelineId
+import metrik.project.userInputURL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -43,7 +52,6 @@ internal class GithubActionsPipelineServiceTest {
 
     @MockK(relaxed = true)
     private lateinit var pipelineRunService: PipelineRunService
-
 
     @SpyK
     private var executionConverter: ExecutionConverter = ExecutionConverter()
@@ -107,12 +115,14 @@ internal class GithubActionsPipelineServiceTest {
 
     @Test
     fun `should sync and save all in-progress and completed-status builds to databases`() {
-        every { pipelineRunService.getNewRuns(githubActionsPipeline, mockEmitCb ) } returns(mutableListOf( githubActionsRun1, githubActionsRun2))
+        every { pipelineRunService.getNewRuns(githubActionsPipeline, mockEmitCb) } returns(mutableListOf(githubActionsRun1, githubActionsRun2))
         every { pipelineRunService.getInProgressRuns(githubActionsPipeline, mockEmitCb) } returns(listOf(githubActionsRun1, githubActionsRun2))
-        every { pipelineCommitService.mapCommitToRun(githubActionsPipeline,any(), mockEmitCb) } returns mapOf(
+        every { pipelineCommitService.mapCommitToRun(githubActionsPipeline, any(), mockEmitCb) } returns mapOf(
             "master" to mapOf(githubActionsRun1 to listOf(commit)),
-            "feature/CI pipeline" to mapOf(githubActionsRun2 to listOf(commit)
-        ))
+            "feature/CI pipeline" to mapOf(
+                githubActionsRun2 to listOf(commit)
+            )
+        )
 
         pipelineService.syncBuildsProgressively(githubActionsPipeline, mockEmitCb)
 
@@ -124,7 +134,7 @@ internal class GithubActionsPipelineServiceTest {
                     stages = emptyList(),
                     duration = 0,
                     timestamp = 1629203005000,
-                    url="12345",
+                    url = "12345",
                 )
             )
             buildRepository.save(
@@ -140,8 +150,8 @@ internal class GithubActionsPipelineServiceTest {
                     result = Status.OTHER,
                     stages = emptyList(),
                     duration = 0,
-                    timestamp=1629203005000,
-                    url="12345"
+                    timestamp = 1629203005000,
+                    url = "12345"
                 )
             )
             buildRepository.save(

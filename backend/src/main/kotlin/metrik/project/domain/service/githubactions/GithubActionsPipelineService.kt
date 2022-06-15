@@ -2,8 +2,8 @@ package metrik.project.domain.service.githubactions
 
 import feign.FeignException.FeignClientException
 import feign.FeignException.FeignServerException
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
@@ -29,7 +29,7 @@ class GithubActionsPipelineService(
     override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
         logger.info(
             "Started verification for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
-                    "type: ${pipeline.type}]"
+                "type: ${pipeline.type}]"
         )
         try {
             val (owner, repo) = getOwnerRepoFromUrl(pipeline.url)
@@ -51,8 +51,7 @@ class GithubActionsPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
-            : List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Github Actions pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
 
         val progressCounter = AtomicInteger(0)
@@ -86,7 +85,6 @@ class GithubActionsPipelineService(
             throw SynchronizationException("Syncing Github Commits details failed")
         }
     }
-
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {
         val components = URL(url).path.split("/")

@@ -6,9 +6,14 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import metrik.project.*
 import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.githubActionsExecution
+import metrik.project.githubActionsPipeline
+import metrik.project.githubActionsRun1
+import metrik.project.githubActionsRun2
+import metrik.project.mockEmitCb
+import metrik.project.pipelineId
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -30,7 +35,7 @@ internal class PipelineRunServiceTest {
     private lateinit var branchService: BranchService
 
     @AfterEach
-    fun clear(){
+    fun clear() {
         clearAllMocks()
     }
     @Test

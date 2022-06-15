@@ -123,7 +123,7 @@ class BuildRepository {
             result.flatMap { it.stages }.filter { it.status != Status.IN_PROGRESS }
                 .maxByOrNull { it.startTimeMillis }?.startTimeMillis
         logger.debug(
-            "Query result the most recent deploy timestamp in pipeline [$pipelineId] is [${latestDeployTimestamp}]"
+            "Query result the most recent deploy timestamp in pipeline [$pipelineId] is [$latestDeployTimestamp]"
         )
         val earliestBuildTimestamp = result.minByOrNull { it.timestamp }?.timestamp ?: 0
 

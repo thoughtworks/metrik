@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @Service("githubActionsPipelineCommitsService")
 class PipelineCommitService(
     private val buildRepository: BuildRepository,
-    private val commitService:CommitService
+    private val commitService: CommitService
 ) {
     fun mapCommitToRun(
         pipeline: PipelineConfiguration,
@@ -45,8 +45,7 @@ class PipelineCommitService(
         return branchCommitsMap.toMap()
     }
 
-    fun mapRunToCommits(pipeline: PipelineConfiguration, runs: List<GithubActionsRun>)
-            : Map<GithubActionsRun, List<Commit>> {
+    fun mapRunToCommits(pipeline: PipelineConfiguration, runs: List<GithubActionsRun>): Map<GithubActionsRun, List<Commit>> {
         val map: MutableMap<GithubActionsRun, List<Commit>> = mutableMapOf()
 
         val (previousRunBeforeLastRun, allCommits) = getCommitsBetweenPeriodPerBranch(runs, pipeline)

@@ -167,7 +167,6 @@ internal class JenkinsPipelineServiceTest {
             jenkinsFeignClient.retrieveBuildDetailsFromJenkins(any(), any(), any())
         } returns buildDetailsDTO
 
-
         val expectedExecutions: List<Execution> =
             objectMapper.readValue(
                 javaClass.getResource("/pipeline/jenkins/expected/builds-for-jenkins-1.json")

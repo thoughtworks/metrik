@@ -2,7 +2,11 @@ package metrik.project.domain.service.jenkins
 
 import feign.FeignException.FeignClientException
 import feign.FeignException.FeignServerException
-import metrik.project.domain.model.*
+import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
+import metrik.project.domain.model.PipelineConfiguration
+import metrik.project.domain.model.Stage
+import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.exception.PipelineConfigVerifyException
@@ -45,8 +49,7 @@ class JenkinsPipelineService(
             .toList()
     }
 
-    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
-    : List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Jenkins pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
         val progressCounter = AtomicInteger(0)
 

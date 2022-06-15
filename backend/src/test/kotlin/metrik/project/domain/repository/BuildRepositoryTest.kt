@@ -6,7 +6,9 @@ import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -221,7 +223,7 @@ internal class BuildRepositoryTest {
         )
         buildsToSaves.forEach { mongoTemplate.save(it, collectionName) }
 
-        val givenMostRecentBuild:Long = 8
+        val givenMostRecentBuild: Long = 8
         assertEquals(
             listOf(4L, 5L, 6L, 7L, 8L),
             buildRepository.getBambooJenkinsBuildNumbersNeedSync(pipelineId, givenMostRecentBuild)

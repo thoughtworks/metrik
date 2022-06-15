@@ -1,10 +1,10 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.toTimestamp
+import metrik.project.constant.GithubActionConstants
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.rest.vo.response.SyncProgress
-import metrik.project.constant.GithubActionConstants
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -32,7 +32,7 @@ class RunService(
         while (keepRetrieving) {
             logger.info(
                 "Get Github Runs - " +
-                        "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
+                    "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
             val syncedRunsResponse = githubFeignClient.retrieveMultipleRuns(
                 pipeline.credential,
@@ -80,7 +80,7 @@ class RunService(
 
         logger.info(
             "Get Github Runs - " +
-                    "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
+                "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
         return githubFeignClient.retrieveSingleRun(pipeline.credential, owner, repo, runId)?.toGithubActionsRun()

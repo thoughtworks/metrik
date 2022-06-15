@@ -32,8 +32,10 @@ class BambooPipelineService(
     private var logger = LoggerFactory.getLogger(this.javaClass.name)
 
     override fun verifyPipelineConfiguration(pipeline: PipelineConfiguration) {
-        logger.info("Started verification for Bamboo pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
-                "type: ${pipeline.type}]")
+        logger.info(
+            "Started verification for Bamboo pipeline [name: ${pipeline.name}, url: ${pipeline.url}, " +
+                "type: ${pipeline.type}]"
+        )
         try {
             val url = getDomain(pipeline.url)
             logger.info("Bamboo verification - Sending request to [$url]")
@@ -55,8 +57,7 @@ class BambooPipelineService(
             .toList()
 
     @Synchronized
-    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit)
-    : List<Execution> {
+    override fun syncBuildsProgressively(pipeline: PipelineConfiguration, emitCb: (SyncProgress) -> Unit): List<Execution> {
         logger.info("Started data sync for Bamboo pipeline [name: ${pipeline.name}, url: ${pipeline.url}]")
         val credential = pipeline.credential
         val progressCounter = AtomicInteger(0)
@@ -68,7 +69,7 @@ class BambooPipelineService(
 
             logger.info(
                 "For Bamboo pipeline [${pipeline.id}] - total build number is [$maxBuildNumber], " +
-                        "[${buildNumbersToSync.size}] of them need to be synced"
+                    "[${buildNumbersToSync.size}] of them need to be synced"
             )
 
             val retrieveBuildDetails = {
@@ -111,7 +112,7 @@ class BambooPipelineService(
         credential: String
     ): BuildDetailDTO? {
         val url = "${getDomain(pipeline.url)}/rest/api/latest/result/$planKey-$buildNumber.json?" +
-                "expand=changes.change,stages.stage.results"
+            "expand=changes.change,stages.stage.results"
         logger.info("Get build details - Sending request to [$url]")
         try {
             val buildDetailDTO: BuildDetailDTO? = bambooFeignClient.getBuildDetails(URI(url), credential)

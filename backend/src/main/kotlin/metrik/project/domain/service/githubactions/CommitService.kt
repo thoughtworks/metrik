@@ -57,9 +57,9 @@ class CommitService(
     ): List<GithubCommit> {
         logger.info(
             "Get Github Commits - " +
-                    "Sending request to Github Feign Client with owner: $url, " +
-                    "since: ${startTimeStamp.toLocalDateTime()}, until: ${endTimeStamp.toLocalDateTime()}, " +
-                    "branch: $branch, pageIndex: $pageIndex"
+                "Sending request to Github Feign Client with owner: $url, " +
+                "since: ${startTimeStamp.toLocalDateTime()}, until: ${endTimeStamp.toLocalDateTime()}, " +
+                "branch: $branch, pageIndex: $pageIndex"
         )
         val commits = with(githubFeignClient) {
             getOwnerRepoFromUrl(url).let { (owner, repo) ->

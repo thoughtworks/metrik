@@ -1,7 +1,7 @@
 package metrik.fixtures
 
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage

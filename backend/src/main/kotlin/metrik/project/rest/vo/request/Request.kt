@@ -52,7 +52,7 @@ abstract class PipelineVerificationRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
     @field:EnumConstraint(
-        acceptedValues = ["JENKINS", "BAMBOO","BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS"],
+        acceptedValues = ["JENKINS", "BAMBOO", "BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS"],
         message = "Allowed types: JENKINS, BAMBOO, BAMBOO_DEPLOYMENT, GITHUB_ACTIONS"
     )
     val type: String,

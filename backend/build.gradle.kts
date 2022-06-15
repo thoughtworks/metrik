@@ -7,8 +7,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.6.21"
     id("org.jetbrains.kotlinx.kover") version "0.5.0"
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
-    id("org.springframework.boot") version "2.4.1"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("org.springframework.boot") version "2.5.14"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
 group = "metrik-backend"
@@ -100,7 +100,7 @@ dependencies {
         exclude("ch.qos.logback", "logback-classic")
     }
 
-    ktlintConfiguration("com.pinterest:ktlint:0.42.1")
+    ktlintConfiguration("com.pinterest:ktlint:0.45.2")
 }
 
 tasks.withType<KotlinCompile> {
@@ -202,14 +202,14 @@ val ktlintCheck = task<JavaExec>("ktlintCheck") {
     args = listOf("src/**/*.kt")
 }
 
-val ktlintFormat = task<JavaExec>("ktlintFormat") {
+val ktlintFormat by tasks.creating(JavaExec::class) {
     inputs.files(inputFiles)
-    outputs.dir(inputFiles)
+    outputs.dir(outputDir)
 
+    group = "formatting"
     description = "Fix Kotlin code style deviations."
     classpath = ktlintConfiguration
-    group = "verification"
-    main = "com.pinterest.ktlint.Main"
+    mainClass.set("com.pinterest.ktlint.Main")
     args = listOf("-F", "src/**/*.kt")
 }
 // End of ktlint tasks

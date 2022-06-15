@@ -57,8 +57,6 @@ interface GithubFeignClient {
     ): List<BranchResponse>?
 }
 
-
-
 class GithubFeignClientConfiguration : RequestInterceptor {
     override fun apply(template: RequestTemplate?) {
         val token = "Bearer " + template!!.headers()["credential"]!!.first()

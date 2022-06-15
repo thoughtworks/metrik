@@ -1,4 +1,4 @@
-package metrik.project.domain.service.githubactions;
+package metrik.project.domain.service.githubactions
 
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
@@ -10,7 +10,7 @@ import java.net.URL
 class BranchService(
     private val githubFeignClient: GithubFeignClient,
 ) {
-    private var logger = LoggerFactory.getLogger(javaClass.name);
+    private var logger = LoggerFactory.getLogger(javaClass.name)
 
     fun retrieveBranches(
         pipeline: PipelineConfiguration
@@ -18,8 +18,8 @@ class BranchService(
 
         logger.info(
             "Get Github Branches - " +
-                    "Sending request to Github Feign Client with owner: ${pipeline.url}, " +
-                    "branch: ${pipeline.name}"
+                "Sending request to Github Feign Client with owner: ${pipeline.url}, " +
+                "branch: ${pipeline.name}"
         )
 
         val branches = with(githubFeignClient) {

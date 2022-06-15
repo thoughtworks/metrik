@@ -2,8 +2,8 @@ package metrik.project.domain.service.githubactions
 
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.junit5.MockKExtension
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import metrik.project.pipelineId

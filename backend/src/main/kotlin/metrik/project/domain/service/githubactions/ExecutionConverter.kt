@@ -1,8 +1,8 @@
 package metrik.project.domain.service.githubactions
 
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Stage
 import metrik.project.domain.model.Status
 import org.slf4j.LoggerFactory

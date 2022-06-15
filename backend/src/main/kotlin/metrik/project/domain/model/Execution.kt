@@ -51,8 +51,8 @@ data class Execution(
     ): Boolean {
         return stages.any {
             it.name == deployStageName &&
-                    it.status == status &&
-                    it.getStageDoneTime() in startTimestamp..endTimestamp
+                it.status == status &&
+                it.getStageDoneTime() in startTimestamp..endTimestamp
         }
     }
 
@@ -63,8 +63,8 @@ data class Execution(
     ): Boolean {
         return stages.any {
             it.name == deployStageName &&
-                    it.status == status &&
-                    it.getStageDoneTime() < timestamp
+                it.status == status &&
+                it.getStageDoneTime() < timestamp
         }
     }
 

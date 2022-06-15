@@ -13,8 +13,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import metrik.exception.ApplicationException
-import metrik.project.domain.model.*
+import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
+import metrik.project.domain.model.PipelineConfiguration
+import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
+import metrik.project.domain.model.Status
 import metrik.project.domain.repository.BuildRepository
 import metrik.project.infrastructure.bamboo.feign.BambooFeignClient
 import metrik.project.rest.vo.response.SyncProgress

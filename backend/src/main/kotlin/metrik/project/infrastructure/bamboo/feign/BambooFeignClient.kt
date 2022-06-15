@@ -3,7 +3,11 @@ package metrik.project.infrastructure.bamboo.feign
 import feign.Headers
 import feign.RequestInterceptor
 import feign.RequestTemplate
-import metrik.project.domain.service.bamboo.*
+import metrik.project.domain.service.bamboo.BuildDetailDTO
+import metrik.project.domain.service.bamboo.BuildSummaryDTO
+import metrik.project.domain.service.bamboo.DeployProjectDTO
+import metrik.project.domain.service.bamboo.DeploymentResultsDTO
+import metrik.project.domain.service.bamboo.DeploymentVersionBuildResultDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -42,7 +46,8 @@ interface BambooFeignClient {
 
     @GetMapping
     fun getDeployResults(
-        baseUrl: URI, @RequestHeader("credential") credential: String
+        baseUrl: URI,
+        @RequestHeader("credential") credential: String
     ): DeploymentResultsDTO?
 
     @GetMapping

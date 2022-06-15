@@ -1,8 +1,8 @@
 package metrik.project.domain.service.bamboo
 
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Status
 import org.apache.logging.log4j.util.Strings
 import org.slf4j.LoggerFactory
@@ -208,7 +208,6 @@ data class CommitDTO(val changesetId: String, val date: ZonedDateTime) {
     }
 }
 
-
 data class DeployProjectDTO(
     val planKey: PlanKey,
     val environments: List<Environment>
@@ -259,7 +258,6 @@ data class DeploymentResult(
             }
         }
     }
-
 }
 
 data class DeploymentVersion(

@@ -51,7 +51,7 @@ class DeploymentFrequencyCalculator : MetricsCalculator {
         targetStage: String
     ): Boolean {
         return !isTargetStageWithinTimeRange(currentExecution, startTimestamp, endTimestamp, targetStage) ||
-                !isTargetStageSuccess(currentExecution, targetStage)
+            !isTargetStageSuccess(currentExecution, targetStage)
     }
 
     private fun isTargetStageSuccess(execution: Execution, targetStage: String) =

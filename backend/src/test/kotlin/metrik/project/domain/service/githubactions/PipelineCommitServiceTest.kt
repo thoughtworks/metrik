@@ -5,9 +5,17 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import metrik.infrastructure.utlils.toTimestamp
-import metrik.project.*
+import metrik.project.branch
+import metrik.project.commit
+import metrik.project.currentTimeStamp
 import metrik.project.domain.model.Commit
 import metrik.project.domain.repository.BuildRepository
+import metrik.project.githubActionsExecution
+import metrik.project.githubActionsPipeline
+import metrik.project.githubActionsRun1
+import metrik.project.mockEmitCb
+import metrik.project.pipelineId
+import metrik.project.previousTimeStamp
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -54,7 +62,6 @@ class PipelineCommitServiceTest {
         )
         Assertions.assertEquals(map, actualMap)
     }
-
 
     @Test
     fun `should map one run to its commit given no previous build and commits are in correct time range`() {

@@ -1,8 +1,8 @@
 package metrik.project
 
 import io.mockk.mockk
-import metrik.project.domain.model.Execution
 import metrik.project.domain.model.Commit
+import metrik.project.domain.model.Execution
 import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.model.Stage
@@ -29,7 +29,6 @@ const val branch = "master"
 val mockEmitCb = mockk<(SyncProgress) -> Unit>(relaxed = true)
 const val currentTimeStamp: Long = 1629203005000
 const val previousTimeStamp: Long = 1619185260779
-const val futureTimeStamp: Long = 1639185260779
 
 val branch1 = BranchResponse(
     "CI/CD pipeline"
@@ -50,7 +49,7 @@ val githubActionsRun1 = GithubActionsRun(
     updatedTimestamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")
 )
 
-val githubActionsRun2 =  GithubActionsRun(
+val githubActionsRun2 = GithubActionsRun(
     id = 1111111111,
     name = "CI",
     branch = "feature/CI pipeline",

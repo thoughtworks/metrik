@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import metrik.project.domain.service.bamboo.*
+import metrik.project.domain.service.bamboo.BuildDetailDTO
+import metrik.project.domain.service.bamboo.BuildSummaryDTO
+import metrik.project.domain.service.bamboo.DeployProjectDTO
+import metrik.project.domain.service.bamboo.DeploymentResultsDTO
+import metrik.project.domain.service.bamboo.DeploymentVersionBuildResultDTO
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
