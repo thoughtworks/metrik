@@ -212,6 +212,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/LixingSun"><img src="https://avatars.githubusercontent.com/u/19371539?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sun Lixing</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=LixingSun" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/RoujingLiu"><img src="https://avatars.githubusercontent.com/u/94289697?v=4?s=100" width="100px;" alt=""/><br /><sub><b>RoujingLiu</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=RoujingLiu" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Ingridwyh090"><img src="https://avatars.githubusercontent.com/u/104956827?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ingridwyh090</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=Ingridwyh090" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
