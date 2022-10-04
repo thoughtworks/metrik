@@ -4,6 +4,7 @@ import metrik.project.exception.SynchronizationException
 import metrik.project.rest.applicationservice.SynchronizationApplicationService
 import metrik.project.rest.vo.response.SyncProgress
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,6 +18,8 @@ data class SynchronizationRecordResponse(val synchronizationTimestamp: Long?)
 
 private const val PROGRESS_UPDATE_EVENT = "PROGRESS_UPDATE_EVENT"
 private const val COMPLETE_STREAM_EVENT = "COMPLETE_STREAM_EVENT"
+private const val X_ACCEL_BUFFERING_HEADER = "X-Accel-Buffering"
+private const val X_ACCEL_BUFFERING_VALUE = "no"
 
 @RestController
 class SynchronizationController {
@@ -35,7 +38,7 @@ class SynchronizationController {
     }
 
     @GetMapping("/api/project/{projectId}/sse-sync")
-    fun sseSynchronization(@PathVariable projectId: String): SseEmitter {
+    fun sseSynchronization(@PathVariable projectId: String): ResponseEntity<SseEmitter> {
         val emitter = SseEmitter(SSE_CONNECTION_TIMEOUT)
         val emitCb: (SyncProgress) -> Unit =
             { progress ->
@@ -59,10 +62,16 @@ class SynchronizationController {
                 emitter.complete()
             } catch (ex: SynchronizationException) {
                 emitter.completeWithError(ex)
-                throw(ex)
+                throw (ex)
             }
         }
-        return emitter
+        return ResponseEntity(
+            emitter,
+            HttpHeaders().apply {
+                add(X_ACCEL_BUFFERING_HEADER, X_ACCEL_BUFFERING_VALUE)
+            },
+            HttpStatus.OK
+        )
     }
 
     @GetMapping("/api/project/{projectId}/synchronization")
