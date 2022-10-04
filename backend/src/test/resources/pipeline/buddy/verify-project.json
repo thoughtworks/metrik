@@ -1,0 +1,21 @@
+{
+  "url": "https://api.sls.io/workspaces/beta/projects/metrik",
+  "html_url": "https://sls.io/beta/metrik",
+  "name": "metrik",
+  "display_name": "metrik",
+  "status": "ACTIVE",
+  "create_date": "2022-09-15T06:14:12Z",
+  "created_by": {
+    "url": "https://api.sls.io/workspaces/beta/members/123664",
+    "html_url": "https://sls.io/beta/profile/123664",
+    "id": 123664,
+    "name": "razu",
+    "avatar_url": "https://sls.io/image-server/user/0/1/2/3/6/6/4/06dd8013152fe6af3fe59e4f89984ff0/w/32/32/AVATAR.png?ts=1597056370750",
+    "admin": false,
+    "workspace_owner": false
+  },
+  "http_repository": "https://sls.io/beta/metrik",
+  "ssh_repository": "buddy@sls.io:beta/metrik",
+  "default_branch": "main",
+  "update_default_branch_from_external": true
+}

@@ -8,6 +8,7 @@ import io.mockk.verify
 import metrik.project.domain.model.PipelineType
 import metrik.project.domain.service.bamboo.BambooDeploymentPipelineService
 import metrik.project.domain.service.bamboo.BambooPipelineService
+import metrik.project.domain.service.buddy.BuddyPipelineService
 import metrik.project.domain.service.githubactions.GithubActionsPipelineService
 import metrik.project.domain.service.jenkins.JenkinsPipelineService
 import org.junit.jupiter.api.BeforeEach
@@ -26,6 +27,9 @@ internal class GithubPipelineServiceFactoryTest {
     private lateinit var githubActionsPipelineService: GithubActionsPipelineService
 
     @MockK
+    private lateinit var buddyPipelineService: BuddyPipelineService
+
+    @MockK
     private lateinit var bambooDeploymentPipelineService: BambooDeploymentPipelineService
 
     @MockK
@@ -40,6 +44,7 @@ internal class GithubPipelineServiceFactoryTest {
         every { bambooPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { bambooDeploymentPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { githubActionsPipelineService.getStagesSortedByName("id") } returns emptyList()
+        every { buddyPipelineService.getStagesSortedByName("id") } returns emptyList()
         every { noopPipelineService.getStagesSortedByName("id") } returns emptyList()
     }
 
@@ -49,6 +54,7 @@ internal class GithubPipelineServiceFactoryTest {
         verify(exactly = 0) { bambooPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { bambooDeploymentPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { githubActionsPipelineService.getStagesSortedByName("id") }
+        verify(exactly = 0) { buddyPipelineService.getStagesSortedByName("id") }
         verify(exactly = 0) { noopPipelineService.getStagesSortedByName("id") }
 
         pipelineServiceFactory.getService(PipelineType.JENKINS).getStagesSortedByName("id")
@@ -61,6 +67,9 @@ internal class GithubPipelineServiceFactoryTest {
 
         pipelineServiceFactory.getService(PipelineType.GITHUB_ACTIONS).getStagesSortedByName("id")
         verify(exactly = 1) { githubActionsPipelineService.getStagesSortedByName("id") }
+
+        pipelineServiceFactory.getService(PipelineType.BUDDY).getStagesSortedByName("id")
+        verify(exactly = 1) { buddyPipelineService.getStagesSortedByName("id") }
 
         pipelineServiceFactory.getService(PipelineType.NOT_SUPPORTED).getStagesSortedByName("id")
         verify(exactly = 1) { noopPipelineService.getStagesSortedByName("id") }

@@ -3,12 +3,15 @@ package metrik.infrastructure.utlils
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.TimeZone
 
 fun ZonedDateTime.toTimestamp(): Long = this.toInstant().toEpochMilli()
+
+fun OffsetDateTime.toTimestamp(): Long = this.toInstant().toEpochMilli()
 
 fun LocalDateTime.toDefaultZoneEpochMill(): Long = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 

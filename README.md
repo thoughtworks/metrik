@@ -58,6 +58,7 @@ List of CD tools the product supports now/plan to support
 - [x] Jenkins
 - [x] Bamboo
 - [x] GitHub Actions
+- [x] Buddy
 - [ ] CircleCI
 
   ...and more on the way

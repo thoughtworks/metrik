@@ -62,6 +62,7 @@
 - [x] Jenkins
 - [x] Bamboo
 - [x] Github Actions
+- [x] Buddy
 - [ ] CircleCI
 
   ...以及更多即将集成的产品
