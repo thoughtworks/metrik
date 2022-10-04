@@ -145,6 +145,7 @@ const PipelineSetup: FC<{
 										<Option value={PipelineTool.GITHUB_ACTIONS}>
 											{PipelineTool.GITHUB_ACTIONS}
 										</Option>
+										<Option value={PipelineTool.BUDDY}>{PipelineTool.BUDDY}</Option>
 									</Select>
 								</Item>
 							</Col>
