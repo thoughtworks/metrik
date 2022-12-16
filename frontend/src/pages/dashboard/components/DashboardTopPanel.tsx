@@ -1,6 +1,6 @@
 import { EditableText } from "../../../components/EditableText";
-import { Button, Col, DatePicker, Form, Popover, Row, Select, Typography } from "antd";
-import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, Col, DatePicker, Dropdown, Form, Popover, Row, Select, Typography } from "antd";
+import { DownOutlined, FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
 import { css } from "@emotion/react";
@@ -61,6 +61,12 @@ const pipelineSettingStyles = css({
 	padding: "4px 24px 4px 0",
 });
 
+const autoSyncOverlayStyles = css({
+	padding: "10px",
+	backgroundColor: "white",
+	"&:hover": { backgroundColor: "grey" },
+});
+
 const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = []) =>
 	data.map((v: PipelineStages) => ({
 		label: v.pipelineName,
@@ -88,6 +94,11 @@ interface DashboardTopPanelProps {
 	metricsResponse: FourKeyMetrics;
 }
 
+interface AutoSyncOption {
+	period: number | null;
+	text: string;
+}
+
 const INPUT_FIELD_EXPLANATIONS = {
 	TIME_RANGE:
 		"The start and end date of the pipeline data sampling where four key metrics are analysed.",
@@ -102,12 +113,26 @@ const INPUT_FIELD_LABELS = {
 	PIPELINE_STAGE: "Pipeline/Stage",
 };
 
+const AUTO_SYNC_OPTIONS: AutoSyncOption[] = [
+	{ period: null, text: "off" },
+	{ period: 5, text: "5s" },
+	{ period: 10, text: "10s" },
+	{ period: 30, text: "30s" },
+	{ period: 60, text: "1m" },
+	{ period: 5 * 60, text: "5m" },
+	{ period: 30 * 60, text: "30m" },
+	{ period: 60 * 60, text: "1h" },
+	{ period: 3 * 60 * 60, text: "3h" },
+	{ period: 24 * 60 * 60, text: "1day" },
+];
+
 export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	projectId,
 	onApply,
 	metricsResponse,
 }) => {
 	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
+	const [autoSyncPeriod, setAutoSyncPeriod] = useState<AutoSyncOption>(AUTO_SYNC_OPTIONS[0]);
 	useEffect(() => {
 		const btn = document.getElementById("sync");
 		setInterval(() => {
@@ -228,6 +253,20 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	};
 	const durationTimestamps = getDurationTimestamps(formValues.duration);
 
+	const autoSyncOverlay = () => {
+		return (
+			<div>
+				{AUTO_SYNC_OPTIONS.map(o => {
+					return (
+						<div key={o.period} css={autoSyncOverlayStyles} onClick={() => setAutoSyncPeriod(o)}>
+							{o.text}
+						</div>
+					);
+				})}
+			</div>
+		);
+	};
+
 	return (
 		<section css={containerStyles} onKeyUp={event => hideFullscreen(event)}>
 			<div css={headerStyles}>
@@ -263,6 +302,12 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 							onClick={syncBuildsWithProgress}>
 							{syncInProgress ? "Synchronizing" : "Sync Data"}
 						</Button>
+						<Dropdown trigger={["click"]} overlay={autoSyncOverlay()}>
+							<Button type="primary" onClick={e => e.preventDefault()}>
+								{autoSyncPeriod.period && autoSyncPeriod.text}
+								<DownOutlined />
+							</Button>
+						</Dropdown>
 					</Popover>
 					<span css={fullScreenStyles} onClick={showFullscreen}>
 						<FullscreenOutlined css={fullScreenIconStyles} />
