@@ -115,6 +115,7 @@ const INPUT_FIELD_LABELS = {
 
 const AUTO_SYNC_OPTIONS: AutoSyncOption[] = [
 	{ period: null, text: "off" },
+	{ period: 1, text: "1s" },
 	{ period: 5, text: "5s" },
 	{ period: 10, text: "10s" },
 	{ period: 30, text: "30s" },
@@ -133,6 +134,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 }) => {
 	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
 	const [autoSyncPeriod, setAutoSyncPeriod] = useState<AutoSyncOption>(AUTO_SYNC_OPTIONS[0]);
+	const [autoSyncJob, setAutoSyncJob] = useState<NodeJS.Timeout | null>(null);
 	useEffect(() => {
 		const btn = document.getElementById("sync");
 		setInterval(() => {
@@ -144,6 +146,18 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 			}
 		}, 1800000);
 	}, []);
+	useEffect(() => {
+		if (autoSyncJob) {
+			clearInterval(autoSyncJob);
+		}
+		if (autoSyncPeriod.period) {
+			setAutoSyncJob(
+				setInterval(() => {
+					syncBuildsWithProgress();
+				}, autoSyncPeriod.period * 1000)
+			);
+		}
+	}, [autoSyncPeriod]);
 	const defaultValues = {
 		duration: [
 			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
