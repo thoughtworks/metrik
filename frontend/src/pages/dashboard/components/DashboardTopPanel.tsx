@@ -62,6 +62,7 @@ const pipelineSettingStyles = css({
 });
 
 const autoSyncOverlayStyles = css({
+	boxShadow: "2px 2px 3px black",
 	padding: "10px",
 	backgroundColor: "white",
 	"&:hover": { backgroundColor: "grey" },
@@ -311,13 +312,17 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						<Button
 							id="sync"
 							type="primary"
+							style={{ borderRadius: "2px 0px 0px 2px" }}
 							icon={<SyncOutlined />}
 							loading={syncInProgress}
 							onClick={syncBuildsWithProgress}>
 							{syncInProgress ? "Synchronizing" : "Sync Data"}
 						</Button>
 						<Dropdown trigger={["click"]} overlay={autoSyncOverlay()}>
-							<Button type="primary" onClick={e => e.preventDefault()}>
+							<Button
+								type="primary"
+								onClick={e => e.preventDefault()}
+								style={{ borderRadius: "0px 2px 2px 0px" }}>
 								{autoSyncPeriod.period && autoSyncPeriod.text}
 								<DownOutlined />
 							</Button>
