@@ -217,6 +217,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center"><a href="https://github.com/Ingridwyh090"><img src="https://avatars.githubusercontent.com/u/104956827?v=4?s=100" width="100px;" alt="Ingridwyh090"/><br /><sub><b>Ingridwyh090</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=Ingridwyh090" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/xloypaypa"><img src="https://avatars.githubusercontent.com/u/10886456?v=4?s=100" width="100px;" alt="xloypaypa"/><br /><sub><b>xloypaypa</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=xloypaypa" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/razubuddy"><img src="https://avatars.githubusercontent.com/u/51358366?v=4?s=100" width="100px;" alt="razu"/><br /><sub><b>razu</b></sub></a><br /><a href="https://github.com/thoughtworks/metrik/commits?author=razubuddy" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
