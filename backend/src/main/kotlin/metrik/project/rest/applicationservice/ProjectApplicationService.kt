@@ -31,9 +31,7 @@ class ProjectApplicationService {
     @Transactional
     fun createProject(projectRequest: ProjectRequest): ProjectSummaryResponse {
         val projectName = projectRequest.projectName
-        if (projectRepository.existWithGivenName(projectName)) {
-            throw ProjectNameDuplicateException()
-        }
+        verifyProjectNameNotDuplicate(projectName)
 
         val projectId = ObjectId().toString()
         val pipelineId = ObjectId().toString()
@@ -46,9 +44,16 @@ class ProjectApplicationService {
     }
 
     fun updateProjectName(projectId: String, projectName: String): ProjectResponse {
+        verifyProjectNameNotDuplicate(projectName)
         val project = projectRepository.findById(projectId)
         project.name = projectName
         return ProjectResponse(projectRepository.save(project))
+    }
+
+    private fun verifyProjectNameNotDuplicate(projectName: String) {
+        if (projectRepository.existWithGivenName(projectName)) {
+            throw ProjectNameDuplicateException()
+        }
     }
 
     fun getProjects(): List<ProjectResponse> {
