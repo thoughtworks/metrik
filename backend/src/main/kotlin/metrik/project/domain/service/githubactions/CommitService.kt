@@ -18,10 +18,10 @@ class CommitService(
     private val defaultMaxPerPage = 100
 
     fun getCommitsBetweenTimePeriod(
-            startTimeStamp: ZonedDateTime?,
-            endTimeStamp: ZonedDateTime,
-            branch: String? = null,
-            pipeline: PipelineConfiguration
+        startTimeStamp: ZonedDateTime?,
+        endTimeStamp: ZonedDateTime,
+        branch: String? = null,
+        pipeline: PipelineConfiguration
     ): List<Commit> {
         logger.info("Started sync for Github Actions commits [${pipeline.url}]/[$branch]")
 
@@ -59,7 +59,8 @@ class CommitService(
         logger.info(
             "Get Github Commits - " +
                 "Sending request to Github Feign Client with owner: $url, " +
-                "since: ${startTimeStamp?.toLocalDateTime() ?: 0L.toLocalDateTime()}, until: ${endTimeStamp.toLocalDateTime()}, " +
+                "since: ${startTimeStamp?.toLocalDateTime() ?: 0L.toLocalDateTime()}, " +
+                "until: ${endTimeStamp.toLocalDateTime()}, " +
                 "branch: $branch, pageIndex: $pageIndex"
         )
         val commits = with(githubFeignClient) {
