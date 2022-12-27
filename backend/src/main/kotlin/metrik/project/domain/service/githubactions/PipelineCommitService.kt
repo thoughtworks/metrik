@@ -87,7 +87,7 @@ class PipelineCommitService(
         val lastRun = runs.last()
         val previousBuild = buildRepository.getPreviousBuild(
             pipeline.id,
-            lastRun.createdTimestamp.toTimestamp(),
+            lastRun.commitTimeStamp.toTimestamp(),
             lastRun.branch
         )
         val previousRunBeforeLastRun = previousBuild?.let { it.changeSets.firstOrNull()?.timestamp ?: it.timestamp }
