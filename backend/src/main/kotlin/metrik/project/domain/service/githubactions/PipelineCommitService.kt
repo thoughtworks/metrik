@@ -94,9 +94,8 @@ class PipelineCommitService(
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
         val allCommits = commitService.getCommitsBetweenTimePeriod(
-            previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS)
-                ?.toTimestamp() ?: 0,
-            latestTimestampInRuns.toTimestamp(),
+                previousRunZonedDateTime?.plus(COMMIT_OFFSET, ChronoUnit.SECONDS),
+            latestTimestampInRuns,
             branch = lastRun.branch,
             pipeline = pipeline,
         )

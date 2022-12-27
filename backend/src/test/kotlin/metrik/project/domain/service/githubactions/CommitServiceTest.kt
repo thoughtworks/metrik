@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.TestFixture.githubActionsPipeline
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import metrik.project.infrastructure.github.feign.response.CommitResponse
@@ -12,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.time.ZonedDateTime
+import java.util.*
 
 @ExtendWith(MockKExtension::class)
 internal class CommitServiceTest {
@@ -41,7 +41,7 @@ internal class CommitServiceTest {
         )
 
         val commitsBetweenTimePeriod =
-            commitService.getCommitsBetweenTimePeriod(0, endTimeStamp, null, githubActionsPipeline)
+            commitService.getCommitsBetweenTimePeriod(null, endTimeStamp, null, githubActionsPipeline)
 
         assertThat(commitsBetweenTimePeriod.size).isEqualTo(1)
         assertThat(commitsBetweenTimePeriod[0].pipelineId).isEqualTo(githubActionsPipeline.id)
@@ -55,7 +55,7 @@ internal class CommitServiceTest {
                 credential = any(),
                 owner = any(),
                 repo = any(),
-                since = any(),
+                since = startTimeStamp.toString(),
                 until = endTimeStamp.toString(),
                 branch = "master",
                 perPage = any(),
@@ -88,7 +88,7 @@ internal class CommitServiceTest {
     private companion object {
         const val startTime = "2021-08-10T01:46:31Z"
         const val endTime = "2021-08-11T01:46:31Z"
-        val startTimeStamp = ZonedDateTime.parse(startTime)!!.toTimestamp()
-        val endTimeStamp = ZonedDateTime.parse(endTime)!!.toTimestamp()
+        val startTimeStamp = ZonedDateTime.parse(startTime)!!
+        val endTimeStamp = ZonedDateTime.parse(endTime)!!
     }
 }
