@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.TestFixture.branch
 import metrik.project.TestFixture.commit
 import metrik.project.TestFixture.currentTimeStamp
@@ -46,8 +45,8 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!.toTimestamp(),
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!.toTimestamp(),
+                ZonedDateTime.parse("2021-04-23T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
@@ -75,8 +74,8 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                startTimeStamp = 0,
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!.toTimestamp(),
+                startTimeStamp = null,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
@@ -106,8 +105,8 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                0,
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!.toTimestamp(),
+                null,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
@@ -153,8 +152,8 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!.toTimestamp(),
-                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!.toTimestamp(),
+                ZonedDateTime.parse("2021-04-20T13:41:01.779Z")!!,
+                ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
@@ -193,8 +192,8 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                startTimeStamp = 0,
-                endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!.toTimestamp(),
+                startTimeStamp = null,
+                endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
             )
