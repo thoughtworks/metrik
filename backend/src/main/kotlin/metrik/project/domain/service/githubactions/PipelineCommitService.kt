@@ -85,11 +85,12 @@ class PipelineCommitService(
 
         val latestTimestampInRuns = runs.first().commitTimeStamp
         val lastRun = runs.last()
-        val previousRunBeforeLastRun = buildRepository.getPreviousBuild(
+        val previousBuild = buildRepository.getPreviousBuild(
             pipeline.id,
-            lastRun.commitTimeStamp.toTimestamp(),
+            lastRun.createdTimestamp.toTimestamp(),
             lastRun.branch
-        )?.let { it.changeSets.firstOrNull()?.timestamp }
+        )
+        val previousRunBeforeLastRun = previousBuild?.let { it.changeSets.firstOrNull()?.timestamp ?: it.timestamp }
         val previousRunZonedDateTime = previousRunBeforeLastRun?.let {
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneOffset.UTC)
         }
