@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import metrik.infrastructure.utlils.toTimestamp
 import metrik.project.TestFixture.branch
 import metrik.project.TestFixture.commit
 import metrik.project.TestFixture.currentTimeStamp
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @ExtendWith(MockKExtension::class)
 class PipelineCommitServiceTest {
@@ -179,9 +181,44 @@ class PipelineCommitServiceTest {
     }
 
     @Test
-    fun `should map first run given previous run does not have commits`() {
-        val build = githubActionsExecution.copy(changeSets = emptyList())
+    fun `should map first run given previous run does not exist`() {
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                any(),
+                branch
+            )
+        } returns null
 
+        every {
+            commitService.getCommitsBetweenTimePeriod(
+                startTimeStamp = null,
+                endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit)
+
+        val map = mapOf(
+            branch to mapOf(
+                githubActionsRun1 to listOf(commit),
+            )
+        )
+
+        Assertions.assertEquals(
+            map,
+            pipelineCommitService.mapCommitToRun(
+                githubActionsPipeline,
+                mutableListOf(githubActionsRun1),
+                mockEmitCb
+            )
+        )
+    }
+
+    @Test
+    fun `should use previous run's timestamp when previous run does not have commits`() {
+        val previousDateTime = ZonedDateTime.parse("2021-04-20T13:41:01.779Z")
+        val build = githubActionsExecution.copy(timestamp = previousDateTime.toTimestamp(), changeSets = emptyList())
         every {
             buildRepository.getPreviousBuild(
                 pipelineId,
@@ -192,7 +229,7 @@ class PipelineCommitServiceTest {
 
         every {
             commitService.getCommitsBetweenTimePeriod(
-                startTimeStamp = null,
+                startTimeStamp = previousDateTime.plus(1, ChronoUnit.SECONDS),
                 endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
                 branch = branch,
                 pipeline = githubActionsPipeline
