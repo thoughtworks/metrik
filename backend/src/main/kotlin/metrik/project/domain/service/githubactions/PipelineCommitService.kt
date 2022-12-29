@@ -11,6 +11,8 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.Executors
+import java.util.concurrent.FutureTask
 import java.util.concurrent.atomic.AtomicInteger
 
 @Service("githubActionsPipelineCommitsService")
@@ -18,6 +20,9 @@ class PipelineCommitService(
     private val buildRepository: BuildRepository,
     private val commitService: CommitService
 ) {
+    private val defaultNumberOfBranchFetchConcurrency = 10
+    private val executorService = Executors.newFixedThreadPool(defaultNumberOfBranchFetchConcurrency)
+
     fun mapCommitToRun(
         pipeline: PipelineConfiguration,
         runs: MutableList<GithubActionsRun>,
@@ -28,8 +33,9 @@ class PipelineCommitService(
         val numberOfBranches = runsGroupedByBranch.size
         val progressCounter = AtomicInteger(0)
 
-        runsGroupedByBranch
-            .forEach { (branch, run) ->
+        val taskMap: MutableMap<String, FutureTask<Map<GithubActionsRun, List<Commit>>>> = mutableMapOf()
+        runsGroupedByBranch.forEach { (branch, run) ->
+            val branchTask = FutureTask {
                 emitCb(
                     SyncProgress(
                         pipeline.id,
@@ -40,8 +46,15 @@ class PipelineCommitService(
                         GithubActionConstants.totalNumberOfSteps,
                     )
                 )
-                branchCommitsMap[branch] = mapRunToCommits(pipeline, run)
+                mapRunToCommits(pipeline, run)
             }
+            taskMap[branch] = branchTask
+            executorService.submit(branchTask)
+        }
+        runsGroupedByBranch.forEach { (branch, _) ->
+            branchCommitsMap[branch] = taskMap[branch]!!.get()
+        }
+
         return branchCommitsMap.toMap()
     }
 
