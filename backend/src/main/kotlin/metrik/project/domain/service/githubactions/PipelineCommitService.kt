@@ -55,7 +55,7 @@ class PipelineCommitService(
             branchCommitsMap[branch] = taskMap[branch]!!.get()
         }
 
-        return cleanupExecutedCommot(pipeline, branchCommitsMap).toMap()
+        return cleanupExecutedCommit(pipeline, branchCommitsMap).toMap()
     }
 
     fun mapRunToCommits(
@@ -116,7 +116,7 @@ class PipelineCommitService(
         return Pair(previousRunBeforeLastRun, allCommits)
     }
 
-    private fun cleanupExecutedCommot(
+    private fun cleanupExecutedCommit(
         pipeline: PipelineConfiguration,
         branchCommitsMap: MutableMap<String, Map<GithubActionsRun, List<Commit>>>
     ): MutableMap<String, MutableMap<GithubActionsRun, List<Commit>>> {
