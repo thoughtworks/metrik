@@ -55,7 +55,7 @@ class PipelineCommitService(
             branchCommitsMap[branch] = taskMap[branch]!!.get()
         }
 
-        return branchCommitsMap.toMap()
+        return cleanupExecutedCommot(pipeline, branchCommitsMap).toMap()
     }
 
     fun mapRunToCommits(
@@ -114,6 +114,38 @@ class PipelineCommitService(
             pipeline = pipeline,
         )
         return Pair(previousRunBeforeLastRun, allCommits)
+    }
+
+    private fun cleanupExecutedCommot(
+        pipeline: PipelineConfiguration,
+        branchCommitsMap: MutableMap<String, Map<GithubActionsRun, List<Commit>>>
+    ): MutableMap<String, MutableMap<GithubActionsRun, List<Commit>>> {
+        val executedCommit = getAllExecutedCommitId(pipeline)
+
+        val fullMapOfRun = mutableMapOf<GithubActionsRun, List<Commit>>()
+        branchCommitsMap.values.forEach { fullMapOfRun.putAll(it) }
+
+        val allActionsRun = mutableListOf<GithubActionsRun>()
+        allActionsRun.addAll(fullMapOfRun.keys)
+        allActionsRun.sortBy { it.commitTimeStamp }
+
+        val result = mutableMapOf<String, MutableMap<GithubActionsRun, List<Commit>>>()
+        allActionsRun.forEach { run ->
+            val validCommitForCurrentRun = fullMapOfRun[run]!!.filter { !executedCommit.contains(it.commitId) }
+            val branchMap = result[run.branch] ?: mutableMapOf()
+            branchMap[run] = validCommitForCurrentRun
+            result[run.branch] = branchMap
+            executedCommit.addAll(validCommitForCurrentRun.map { it.commitId })
+        }
+        return result
+    }
+
+    private fun getAllExecutedCommitId(pipeline: PipelineConfiguration): MutableSet<String> {
+        val allChangeSets = this.buildRepository.getAllBuilds(pipelineId = pipeline.id)
+            .map { o -> o.changeSets.map { it.commitId } }
+        val allPreviousCommitId = mutableSetOf<String>()
+        allChangeSets.forEach { allPreviousCommitId.addAll(it) }
+        return allPreviousCommitId
     }
 
     private companion object {

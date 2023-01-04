@@ -11,6 +11,7 @@ import metrik.project.TestFixture.currentTimeStamp
 import metrik.project.TestFixture.githubActionsExecution
 import metrik.project.TestFixture.githubActionsPipeline
 import metrik.project.TestFixture.githubActionsRun1
+import metrik.project.TestFixture.githubActionsRun2
 import metrik.project.TestFixture.mockEmitCb
 import metrik.project.TestFixture.pipelineId
 import metrik.project.TestFixture.previousTimeStamp
@@ -128,9 +129,9 @@ class PipelineCommitServiceTest {
 
     @Test
     fun `should map multiple runs to their commits`() {
-        val buildFirst = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = previousTimeStamp)))
-        val buildSecond = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = 1619098860779)))
-        val buildThird = githubActionsExecution.copy(changeSets = listOf(commit.copy(timestamp = 1618926060779)))
+        val buildFirst = githubActionsExecution.copy(changeSets = listOf(commit.copy(commitId = "commit build 1", timestamp = previousTimeStamp)))
+        val buildSecond = githubActionsExecution.copy(changeSets = listOf(commit.copy(commitId = "commit build 2", timestamp = 1619098860779)))
+        val buildThird = githubActionsExecution.copy(changeSets = listOf(commit.copy(commitId = "commit build 3", timestamp = 1618926060779)))
 
         val githubActionsRun2 = githubActionsRun1.copy(
             commitTimeStamp = ZonedDateTime.parse("2021-04-23T13:41:00.779Z")
@@ -148,9 +149,9 @@ class PipelineCommitServiceTest {
             )
         } returns buildThird andThen buildFirst andThen buildSecond andThen buildThird
 
-        val commit1 = commit.copy(timestamp = 1629203005000)
-        val commit2 = commit.copy(timestamp = 1619185260779)
-        val commit3 = commit.copy(timestamp = 1619098860779)
+        val commit1 = commit.copy(commitId = "commit 1", timestamp = 1629203005000)
+        val commit2 = commit.copy(commitId = "commit 2", timestamp = 1619185260779)
+        val commit3 = commit.copy(commitId = "commit 3", timestamp = 1619098860779)
 
         every {
             commitService.getCommitsBetweenTimePeriod(
@@ -247,6 +248,102 @@ class PipelineCommitServiceTest {
             pipelineCommitService.mapCommitToRun(
                 githubActionsPipeline,
                 mutableListOf(githubActionsRun1),
+                mockEmitCb
+            )
+        )
+    }
+
+    @Test
+    fun `should not include commit which already handled by existing builds`() {
+        val previousDateTime = ZonedDateTime.parse("2021-04-20T13:41:01.779Z")
+        val commit1 = commit.copy(commitId = "commit1", timestamp = 1629203005000)
+        val commit2 = commit.copy(commitId = "commit2", timestamp = 1619185260779)
+        val commit3 = commit.copy(commitId = "commit3", timestamp = 1619098860779)
+
+        val build = githubActionsExecution.copy(timestamp = previousDateTime.toTimestamp(), changeSets = emptyList())
+        val historyBuild = githubActionsExecution.copy(timestamp = previousDateTime.minusDays(1).toTimestamp(), changeSets = listOf(commit3))
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                any(),
+                branch
+            )
+        } returns build
+        every {
+            buildRepository.getAllBuilds(pipelineId)
+        } returns listOf(historyBuild, build)
+
+        every {
+            commitService.getCommitsBetweenTimePeriod(
+                startTimeStamp = previousDateTime.plus(1, ChronoUnit.SECONDS),
+                endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit1, commit2, commit3)
+
+        val map = mapOf(
+            branch to mapOf(
+                githubActionsRun1 to listOf(commit1, commit2),
+            )
+        )
+
+        Assertions.assertEquals(
+            map,
+            pipelineCommitService.mapCommitToRun(
+                githubActionsPipeline,
+                mutableListOf(githubActionsRun1),
+                mockEmitCb
+            )
+        )
+    }
+
+    @Test
+    fun `should not include commit which already handled by another branch`() {
+        val previousDateTime = ZonedDateTime.parse("2021-04-20T13:41:01.779Z")
+        val commit1 = commit.copy(commitId = "commit1", timestamp = 1629203005000)
+        val commit2 = commit.copy(commitId = "commit2", timestamp = 1619185260779)
+        val commit3 = commit.copy(commitId = "commit3", timestamp = 1619098860779)
+
+        val build = githubActionsExecution.copy(timestamp = previousDateTime.toTimestamp(), changeSets = emptyList())
+        every {
+            buildRepository.getPreviousBuild(
+                pipelineId,
+                any(),
+                branch
+            )
+        } returns build
+
+        every {
+            commitService.getCommitsBetweenTimePeriod(
+                startTimeStamp = previousDateTime.plus(1, ChronoUnit.SECONDS),
+                endTimeStamp = ZonedDateTime.parse("2021-08-17T12:23:25Z")!!,
+                branch = branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit1, commit2, commit3)
+        every {
+            commitService.getCommitsBetweenTimePeriod(
+                startTimeStamp = any(),
+                endTimeStamp = any(),
+                branch = githubActionsRun2.branch,
+                pipeline = githubActionsPipeline
+            )
+        } returns listOf(commit3)
+
+        val map = mapOf(
+            branch to mapOf(
+                githubActionsRun1 to listOf(commit1, commit2),
+            ),
+            githubActionsRun2.branch to mapOf(
+                githubActionsRun2 to listOf(commit3)
+            )
+        )
+        Assertions.assertEquals(
+            map,
+            pipelineCommitService.mapCommitToRun(
+                githubActionsPipeline,
+                mutableListOf(githubActionsRun1, githubActionsRun2),
                 mockEmitCb
             )
         )
