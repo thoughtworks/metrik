@@ -20,7 +20,7 @@ class PipelineCommitService(
     private val buildRepository: BuildRepository,
     private val commitService: CommitService
 ) {
-    private val defaultNumberOfBranchFetchConcurrency = 10
+    private val defaultNumberOfBranchFetchConcurrency = 20
     private val executorService = Executors.newFixedThreadPool(defaultNumberOfBranchFetchConcurrency)
 
     fun mapCommitToRun(
@@ -36,6 +36,7 @@ class PipelineCommitService(
         val taskMap: MutableMap<String, FutureTask<Map<GithubActionsRun, List<Commit>>>> = mutableMapOf()
         runsGroupedByBranch.forEach { (branch, run) ->
             val branchTask = FutureTask {
+                val result = mapRunToCommits(pipeline, run)
                 emitCb(
                     SyncProgress(
                         pipeline.id,
@@ -46,7 +47,7 @@ class PipelineCommitService(
                         GithubActionConstants.totalNumberOfSteps,
                     )
                 )
-                mapRunToCommits(pipeline, run)
+                result
             }
             taskMap[branch] = branchTask
             executorService.submit(branchTask)
