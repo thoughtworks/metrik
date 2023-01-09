@@ -27,6 +27,7 @@ import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
 import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 import { MetricsUnit } from "../../../models/metrics";
 import { ProgressSummary, SyncProgressContent } from "./SyncProgressContent";
+import { useQuery } from "../../../hooks/useQuery";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -159,14 +160,33 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 			);
 		}
 	}, [autoSyncPeriod]);
-	const defaultValues = {
-		duration: [
-			moment(new Date(), dateFormatYYYYMMDD).startOf("day"),
-			moment(new Date(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month"),
-		] as any,
-		unit: "Fortnightly",
-		pipelines: [],
-	} as FormValues;
+	const query = useQuery();
+	const generateDefaultValueFromQuery = () => {
+		const fromDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
+			? moment(query.get("from"), dateFormatYYYYMMDD).startOf("day")
+			: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
+		const toDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
+			? moment(query.get("to"), dateFormatYYYYMMDD).endOf("day")
+			: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
+
+		const pipelines: Pipeline[] = [];
+		try {
+			const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
+			for (const now of paramPipelines) {
+				pipelines.push({ value: now.value, childValue: now.childValue });
+			}
+		} catch (ignore) {
+			console.error("pipeline param in url is not valid");
+		}
+
+		return {
+			duration: [fromDate, toDate],
+			unit: query.get("unit") === MetricsUnit.MONTHLY || "Fortnightly",
+			pipelines: pipelines,
+		} as FormValues;
+	};
+
+	const defaultValues = generateDefaultValueFromQuery();
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
@@ -345,7 +365,12 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						}
 						onApply && onApply(formValues);
 					}}
-					onValuesChange={(_, values) => setFormValues(values)}>
+					onValuesChange={(_, values) => {
+						if (isEmpty(values.pipelines)) {
+							return;
+						}
+						setFormValues(values);
+					}}>
 					<Row wrap={false} gutter={16} align={"bottom"}>
 						<Col css={{ minWidth: 260 }}>
 							<Form.Item
