@@ -82,6 +82,6 @@ class SynchronizationController {
     }
 
     companion object {
-        const val SSE_CONNECTION_TIMEOUT: Long = 1000 * 60 * 10
+        const val SSE_CONNECTION_TIMEOUT: Long = 1000 * 60 * 30
     }
 }
