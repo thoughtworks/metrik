@@ -28,6 +28,7 @@ import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 import { MetricsUnit } from "../../../models/metrics";
 import { ProgressSummary, SyncProgressContent } from "./SyncProgressContent";
 import { useQuery } from "../../../hooks/useQuery";
+import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -160,33 +161,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 			);
 		}
 	}, [autoSyncPeriod]);
-	const query = useQuery();
-	const generateDefaultValueFromQuery = () => {
-		const fromDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
-			? moment(query.get("from"), dateFormatYYYYMMDD).startOf("day")
-			: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
-		const toDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
-			? moment(query.get("to"), dateFormatYYYYMMDD).endOf("day")
-			: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
 
-		const pipelines: Pipeline[] = [];
-		try {
-			const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
-			for (const now of paramPipelines) {
-				pipelines.push({ value: now.value, childValue: now.childValue });
-			}
-		} catch (ignore) {
-			console.error("pipeline param in url is not valid");
-		}
-
-		return {
-			duration: [fromDate, toDate],
-			unit: query.get("unit") === MetricsUnit.MONTHLY || "Fortnightly",
-			pipelines: pipelines,
-		} as FormValues;
-	};
-
-	const defaultValues = generateDefaultValueFromQuery();
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
@@ -253,7 +228,51 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		getProject();
 	}, []);
 
+	const query = useQuery();
+	const generateDefaultValueFromQuery = () => {
+		const fromDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
+			? moment(query.get("to"), dateFormatYYYYMMDD).startOf("day")
+			: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
+		const toDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
+			? moment(query.get("from"), dateFormatYYYYMMDD).endOf("day")
+			: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
+
+		const pipelines: Pipeline[] = [];
+		try {
+			const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
+			for (const now of paramPipelines) {
+				pipelines.push({ value: now.value, childValue: now.childValue });
+			}
+		} catch (ignore) {
+			console.error("pipeline param in url is not valid");
+		}
+
+		return {
+			duration: [fromDate, toDate],
+			unit:
+				query.get("unit") === MetricsUnit.MONTHLY ? MetricsUnit.MONTHLY : MetricsUnit.FORTNIGHTLY,
+			pipelines: pipelines,
+		} as FormValues;
+	};
+	const defaultValues = generateDefaultValueFromQuery();
 	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
+	const history = useHistory();
+	useEffect(() => {
+		if (!isEmpty(formValues.pipelines)) {
+			query.set("pipeline", JSON.stringify(formValues.pipelines));
+		}
+		if (formValues.unit === MetricsUnit.FORTNIGHTLY || formValues.unit === MetricsUnit.MONTHLY) {
+			query.set("unit", formValues.unit);
+		}
+		if (formValues.duration[0]) {
+			query.set("to", formValues.duration[0].format("YYYY-MM-DD"));
+		}
+		if (formValues.duration[1]) {
+			query.set("from", formValues.duration[1].format("YYYY-MM-DD"));
+		}
+		history.push("/project?" + query.toString());
+	}, [formValues.pipelines, formValues.unit, formValues.duration]);
+
 	const prevPipelines = usePrevious(formValues.pipelines);
 	const options = pipelineStages
 		? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
