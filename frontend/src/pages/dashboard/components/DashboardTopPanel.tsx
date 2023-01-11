@@ -86,6 +86,7 @@ interface DashboardTopPanelProps {
 	projectId: string;
 	onApply: (formValues: FormValues) => void;
 	metricsResponse: FourKeyMetrics;
+	defaultValues: FormValues;
 }
 
 interface AutoSyncOption {
@@ -125,21 +126,39 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	projectId,
 	onApply,
 	metricsResponse,
+	defaultValues,
 }) => {
-	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
+	const {
+		updatingStatus,
+		project,
+		synchronization,
+		syncBuildsWithProgress,
+		pipelineOptions,
+		updateProjectName,
+	} = useDashboardContext();
+
+	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
+	const durationTimestamps = getDurationTimestamps(formValues.duration);
+	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
+
+	const prevPipelines = usePrevious(formValues.pipelines);
+	const prevOptions = usePrevious(pipelineOptions);
+	useEffect(() => {
+		if (isEmpty(formValues.pipelines)) {
+			return;
+		}
+
+		if (
+			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
+			(!isEmpty(pipelineOptions) && !isEqual(prevOptions, pipelineOptions))
+		) {
+			onApply && onApply(formValues);
+		}
+	}, [formValues.pipelines, pipelineOptions]);
+
+	// Auto sync related logic
 	const [autoSyncPeriod, setAutoSyncPeriod] = useState<AutoSyncOption>(AUTO_SYNC_OPTIONS[0]);
 	const [autoSyncJob, setAutoSyncJob] = useState<NodeJS.Timeout | null>(null);
-	useEffect(() => {
-		const btn = document.getElementById("sync");
-		setInterval(() => {
-			setIsFullscreenVisible(true);
-			btn?.click();
-			const waitBar = document.getElementById("waitBar");
-			if (waitBar) {
-				waitBar.style.display = "none";
-			}
-		}, 1800000);
-	}, []);
 	useEffect(() => {
 		if (autoSyncJob) {
 			clearInterval(autoSyncJob);
@@ -153,83 +172,19 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		}
 	}, [autoSyncPeriod]);
 
-	const {
-		updatingStatus,
-		project,
-		synchronization,
-		syncBuildsWithProgress,
-		pipelineOptions,
-		updateProjectName,
-	} = useDashboardContext();
-
-	const query = useQuery();
-	const generateDefaultValueFromQuery = () => {
-		const fromDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
-			? moment(query.get("to"), dateFormatYYYYMMDD).startOf("day")
-			: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
-		const toDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
-			? moment(query.get("from"), dateFormatYYYYMMDD).endOf("day")
-			: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
-
-		const pipelines: Pipeline[] = [];
-		try {
-			const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
-			for (const now of paramPipelines) {
-				pipelines.push({ value: now.value, childValue: now.childValue });
+	// Full screen related logic
+	const [isFullscreenVisible, setIsFullscreenVisible] = useState(false);
+	useEffect(() => {
+		const btn = document.getElementById("sync");
+		setInterval(() => {
+			setIsFullscreenVisible(true);
+			btn?.click();
+			const waitBar = document.getElementById("waitBar");
+			if (waitBar) {
+				waitBar.style.display = "none";
 			}
-		} catch (ignore) {
-			console.error("pipeline param in url is not valid");
-		}
-		if (isEmpty(pipelines) && !isEmpty(pipelineOptions)) {
-			pipelines.push({
-				value: pipelineOptions[0]?.value,
-				childValue: (pipelineOptions[0]?.children ?? [])[0]?.label,
-			});
-		}
-
-		return {
-			duration: [fromDate, toDate],
-			unit:
-				query.get("unit") === MetricsUnit.MONTHLY ? MetricsUnit.MONTHLY : MetricsUnit.FORTNIGHTLY,
-			pipelines: pipelines,
-		} as FormValues;
-	};
-	const defaultValues = generateDefaultValueFromQuery();
-	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
-	const history = useHistory();
-	useEffect(() => {
-		if (!isEmpty(formValues.pipelines)) {
-			query.set("pipeline", JSON.stringify(formValues.pipelines));
-		}
-		if (formValues.unit === MetricsUnit.FORTNIGHTLY || formValues.unit === MetricsUnit.MONTHLY) {
-			query.set("unit", formValues.unit);
-		}
-		if (formValues.duration[0]) {
-			query.set("to", formValues.duration[0].format("YYYY-MM-DD"));
-		}
-		if (formValues.duration[1]) {
-			query.set("from", formValues.duration[1].format("YYYY-MM-DD"));
-		}
-		history.push("/project?" + query.toString());
-	}, [formValues.pipelines, formValues.unit, formValues.duration]);
-
-	const prevPipelines = usePrevious(formValues.pipelines);
-
-	useEffect(() => {
-		if (isEmpty(formValues.pipelines)) {
-			return;
-		}
-
-		if (
-			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
-			(!isEmpty(pipelineOptions) && !isEqual(prevOptions, pipelineOptions))
-		) {
-			onApply && onApply(formValues);
-		}
-	}, [formValues.pipelines, pipelineOptions]);
-	const prevOptions = usePrevious(pipelineOptions);
-
-	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
+		}, 1800000);
+	}, []);
 	const hideFullscreen = (event: KeyboardEvent<HTMLElement>) => {
 		if (event.key === "Escape") {
 			setIsFullscreenVisible(false);
@@ -242,7 +197,6 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	const showFullscreen = () => {
 		setIsFullscreenVisible(true);
 	};
-	const durationTimestamps = getDurationTimestamps(formValues.duration);
 
 	const autoSyncOverlay = () => {
 		return (
