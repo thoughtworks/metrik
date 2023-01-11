@@ -174,6 +174,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		setPipelineStages,
 	] = useRequest(getPipelineStagesUsingGet);
 	const pipelineStages = transformPipelineStages(pipelineStagesResp);
+	const options = pipelineStages
+		? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
+		: [];
+	const prevOptions = usePrevious(options);
 
 	const [progressSummary, setProgressSummary] = useState<ProgressSummary>({});
 	const [syncInProgress, setSyncInProgress] = useState(false);
@@ -246,6 +250,12 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		} catch (ignore) {
 			console.error("pipeline param in url is not valid");
 		}
+		if (isEmpty(pipelines) && !isEmpty(options)) {
+			pipelines.push({
+				value: options[0]?.value,
+				childValue: (options[0]?.children ?? [])[0]?.label,
+			});
+		}
 
 		return {
 			duration: [fromDate, toDate],
@@ -274,10 +284,6 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 	}, [formValues.pipelines, formValues.unit, formValues.duration]);
 
 	const prevPipelines = usePrevious(formValues.pipelines);
-	const options = pipelineStages
-		? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
-		: [];
-	const prevOptions = usePrevious(options);
 
 	useEffect(() => {
 		if (isEmpty(formValues.pipelines)) {
@@ -430,18 +436,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 								<MultipleCascadeSelect
 									disabled={updating}
 									options={options}
-									defaultValues={
-										!isEmpty(options[0]?.children)
-											? [
-													{
-														value: formValues.pipelines[0]?.value || options[0]?.value,
-														childValue:
-															formValues.pipelines[0]?.childValue ||
-															(options[0]?.children ?? [])[0]?.label,
-													},
-											  ]
-											: []
-									}
+									defaultValues={!isEmpty(options[0]?.children) ? defaultValues.pipelines : []}
 								/>
 							</Form.Item>
 						</Col>
