@@ -11,6 +11,7 @@ import { calcMaxValueWithRatio } from "../../utils/calcMaxValueWithRatio/calcMax
 import { cleanMetricsInfo } from "../../utils/metricsDataUtils/metricsDataUtils";
 import { FourKeyMetrics, getFourKeyMetricsUsingPost } from "../../clients/metricsApis";
 import { MetricsInfo, MetricsLevel, MetricsUnit } from "../../models/metrics";
+import { DashboardContextProvider } from "./context/DashboardContext";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -62,6 +63,7 @@ export const PageDashboard = () => {
 	});
 
 	const getFourKeyMetrics = (formValues: FormValues) => {
+		console.log(formValues);
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 
@@ -94,7 +96,7 @@ export const PageDashboard = () => {
 	};
 
 	return (
-		<>
+		<DashboardContextProvider>
 			<DashboardTopPanel
 				onApply={getFourKeyMetrics}
 				projectId={projectId}
@@ -168,6 +170,6 @@ export const PageDashboard = () => {
 					</Col>
 				</Row>
 			</div>
-		</>
+		</DashboardContextProvider>
 	);
 };

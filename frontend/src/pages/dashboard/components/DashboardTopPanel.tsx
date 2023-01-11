@@ -29,6 +29,7 @@ import { MetricsUnit } from "../../../models/metrics";
 import { ProgressSummary, SyncProgressContent } from "./SyncProgressContent";
 import { useQuery } from "../../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
+import { useDashboardContext } from "../context/DashboardContext";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -69,16 +70,6 @@ const autoSyncOverlayStyles = css({
 	backgroundColor: "white",
 	"&:hover": { backgroundColor: "grey" },
 });
-
-const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = []) =>
-	data.map((v: PipelineStages) => ({
-		label: v.pipelineName,
-		value: v.pipelineId,
-		children: v.stages.map((stageName: string) => ({
-			label: stageName,
-			value: stageName,
-		})),
-	}));
 
 export interface Pipeline {
 	value: string;
@@ -162,75 +153,14 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		}
 	}, [autoSyncPeriod]);
 
-	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
-	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
-	const [synchronization, getLastSynchronizationRequest] = useRequest(
-		getLastSynchronizationUsingGet
-	);
-	const [
-		pipelineStagesResp,
-		getPipelineStagesRequest,
-		getPipelineStagesLoading,
-		setPipelineStages,
-	] = useRequest(getPipelineStagesUsingGet);
-	const pipelineStages = transformPipelineStages(pipelineStagesResp);
-	const options = pipelineStages
-		? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
-		: [];
-	const prevOptions = usePrevious(options);
-
-	const [progressSummary, setProgressSummary] = useState<ProgressSummary>({});
-	const [syncInProgress, setSyncInProgress] = useState(false);
-	const updating = syncInProgress || getPipelineStagesLoading;
-
-	const updateProjectName = async (name: string) => {
-		await updateProjectNameRequest({
-			projectId: projectId,
-			projectName: name,
-		});
-		getProject();
-	};
-
-	const getLastSyncTime = async () => {
-		const resp = await getLastSynchronizationRequest({ projectId });
-		if (!resp?.synchronizationTimestamp) {
-			syncBuildsWithProgress();
-		}
-	};
-
-	const syncBuildsWithProgress = () => {
-		setSyncInProgress(true);
-
-		const eventsource = new EventSource(`/api/project/${projectId}/sse-sync`);
-		eventsource.addEventListener("PROGRESS_UPDATE_EVENT", e => {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			const progressUpdate: ProgressUpdateEvt = JSON.parse(e.data);
-			setProgressSummary(prevState => ({
-				...prevState,
-				[progressUpdate.pipelineId]: progressUpdate,
-			}));
-		});
-		eventsource.addEventListener("COMPLETE_STREAM_EVENT", () => {
-			eventsource.close();
-			setSyncInProgress(false);
-			setProgressSummary({});
-
-			getLastSyncTime();
-			setPipelineStages([]);
-			getPipelineStages();
-		});
-	};
-
-	const getProject = () => getProjectRequest({ projectId });
-
-	const getPipelineStages = () => getPipelineStagesRequest({ projectId });
-
-	useEffect(() => {
-		getLastSyncTime();
-		getPipelineStages();
-		getProject();
-	}, []);
+	const {
+		updatingStatus,
+		project,
+		synchronization,
+		syncBuildsWithProgress,
+		pipelineOptions,
+		updateProjectName,
+	} = useDashboardContext();
 
 	const query = useQuery();
 	const generateDefaultValueFromQuery = () => {
@@ -250,10 +180,10 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		} catch (ignore) {
 			console.error("pipeline param in url is not valid");
 		}
-		if (isEmpty(pipelines) && !isEmpty(options)) {
+		if (isEmpty(pipelines) && !isEmpty(pipelineOptions)) {
 			pipelines.push({
-				value: options[0]?.value,
-				childValue: (options[0]?.children ?? [])[0]?.label,
+				value: pipelineOptions[0]?.value,
+				childValue: (pipelineOptions[0]?.children ?? [])[0]?.label,
 			});
 		}
 
@@ -292,11 +222,12 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 
 		if (
 			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
-			(!isEmpty(options) && !isEqual(prevOptions, options))
+			(!isEmpty(pipelineOptions) && !isEqual(prevOptions, pipelineOptions))
 		) {
 			onApply && onApply(formValues);
 		}
-	}, [formValues.pipelines, options]);
+	}, [formValues.pipelines, pipelineOptions]);
+	const prevOptions = usePrevious(pipelineOptions);
 
 	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
 	const hideFullscreen = (event: KeyboardEvent<HTMLElement>) => {
@@ -327,6 +258,8 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		);
 	};
 
+	const updating = () => updatingStatus.syncInProgress || updatingStatus.pipelineStagesLoading;
+
 	return (
 		<section css={containerStyles} onKeyUp={event => hideFullscreen(event)}>
 			<div css={headerStyles}>
@@ -345,23 +278,23 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 						<PipelineSetting
 							projectId={projectId}
 							syncBuild={syncBuildsWithProgress}
-							syncing={updating}
+							syncing={updating()}
 						/>
 					</div>
 					<Popover
 						id="waitBar"
-						visible={syncInProgress}
+						visible={updatingStatus.syncInProgress}
 						placement="bottomRight"
-						content={<SyncProgressContent progressSummary={progressSummary} />}
+						content={<SyncProgressContent progressSummary={updatingStatus.progressSummary} />}
 						trigger="click">
 						<Button
 							id="sync"
 							type="primary"
 							style={{ borderRadius: "2px 0px 0px 2px" }}
 							icon={<SyncOutlined />}
-							loading={syncInProgress}
+							loading={updatingStatus.syncInProgress}
 							onClick={syncBuildsWithProgress}>
-							{syncInProgress ? "Synchronizing" : "Sync Data"}
+							{updatingStatus.syncInProgress ? "Synchronizing" : "Sync Data"}
 						</Button>
 						<Dropdown trigger={["click"]} overlay={autoSyncOverlay()}>
 							<Button
@@ -406,7 +339,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 									/>
 								}
 								name="duration">
-								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} disabled={updating} />
+								<RangePicker format={dateFormatYYYYMMDD} clearIcon={false} disabled={updating()} />
 							</Form.Item>
 						</Col>
 						<Col>
@@ -418,7 +351,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 									/>
 								}
 								name="unit">
-								<Select disabled={updating}>
+								<Select disabled={updating()}>
 									<Select.Option value="Fortnightly">Fortnightly</Select.Option>
 									<Select.Option value="Monthly">Monthly</Select.Option>
 								</Select>
@@ -434,15 +367,17 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 								}
 								name="pipelines">
 								<MultipleCascadeSelect
-									disabled={updating}
-									options={options}
-									defaultValues={!isEmpty(options[0]?.children) ? defaultValues.pipelines : []}
+									disabled={updating()}
+									options={pipelineOptions}
+									defaultValues={
+										!isEmpty(pipelineOptions[0]?.children) ? defaultValues.pipelines : []
+									}
 								/>
 							</Form.Item>
 						</Col>
 						<Col style={{ textAlign: "right" }}>
 							<Form.Item css={{ marginTop: 40 }}>
-								<Button htmlType="submit" disabled={updating || isEmpty(options)}>
+								<Button htmlType="submit" disabled={updating() || isEmpty(pipelineOptions)}>
 									Apply
 								</Button>
 							</Form.Item>
@@ -455,7 +390,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				metricsList={mapMetricsList(metricsResponse, formValues.unit)}
 				startTimestamp={durationTimestamps.startTimestamp!}
 				endTimestamp={durationTimestamps.endTimestamp!}
-				pipelineList={mapPipelines(options, formValues.pipelines)}
+				pipelineList={mapPipelines(pipelineOptions, formValues.pipelines)}
 				isFullscreenVisible={isFullscreenVisible}
 			/>
 		</section>
