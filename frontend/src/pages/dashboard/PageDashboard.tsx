@@ -1,22 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "antd";
 import { css } from "@emotion/react";
 import { useQuery } from "../../hooks/useQuery";
-import { getDurationTimestamps } from "../../utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues, Pipeline } from "./components/DashboardTopPanel";
+import { DashboardTopPanel } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../../constants/styles";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../../utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
 import { cleanMetricsInfo } from "../../utils/metricsDataUtils/metricsDataUtils";
-import { FourKeyMetrics, getFourKeyMetricsUsingPost } from "../../clients/metricsApis";
 import { MetricsInfo, MetricsLevel, MetricsUnit } from "../../models/metrics";
 import { DashboardContextProvider, useDashboardContext } from "./context/DashboardContext";
-import moment from "moment/moment";
-import { dateFormatYYYYMMDD } from "../../constants/date-format";
-import { isEmpty } from "lodash";
-import { Option } from "../../components/MultipleCascadeSelect";
-import { useHistory } from "react-router-dom";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -35,142 +28,43 @@ const initialMetricsState: MetricsInfo = {
 
 const domainMaximizeRatio = 1.1;
 
-const generateDefaultValueFromQuery = (query: URLSearchParams, pipelineOptions: Option[]) => {
-	const fromDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
-		? moment(query.get("to"), dateFormatYYYYMMDD).startOf("day")
-		: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
-	const toDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
-		? moment(query.get("from"), dateFormatYYYYMMDD).endOf("day")
-		: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
-
-	const pipelines: Pipeline[] = [];
-	try {
-		const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
-		for (const now of paramPipelines) {
-			pipelines.push({ value: now.value, childValue: now.childValue });
-		}
-	} catch (ignore) {
-		console.error("pipeline param in url is not valid");
-	}
-	if (isEmpty(pipelines) && !isEmpty(pipelineOptions)) {
-		pipelines.push({
-			value: pipelineOptions[0]?.value,
-			childValue: (pipelineOptions[0]?.children ?? [])[0]?.label,
-		});
-	}
-
-	return {
-		duration: [fromDate, toDate],
-		unit: query.get("unit") === MetricsUnit.MONTHLY ? MetricsUnit.MONTHLY : MetricsUnit.FORTNIGHTLY,
-		pipelines: pipelines,
-	} as FormValues;
-};
-
 const PageDashboardContent = () => {
 	const query = useQuery();
 	const projectId = query.get("projectId") || "";
 
-	const [appliedUnit, setAppliedUnit] = useState<MetricsUnit>(MetricsUnit.FORTNIGHTLY);
 	const [changeFailureRate, setChangeFailureRate] = useState<MetricsInfo>(initialMetricsState);
 	const [deploymentFrequency, setDeploymentFrequency] = useState<MetricsInfo>(initialMetricsState);
 	const [leadTimeForChange, setLeadTimeForChange] = useState<MetricsInfo>(initialMetricsState);
 	const [meanTimeToRestore, setMeanTimeToRestore] = useState<MetricsInfo>(initialMetricsState);
-	const [loadingChart, setLoadingChart] = useState(false);
-	const defaultMetricsData = {
-		summary: {
-			value: undefined,
-			level: MetricsLevel.INVALID,
-			endTimestamp: 0,
-			startTimestamp: 0,
-		},
-		details: [
-			{
-				value: undefined,
-				endTimestamp: 0,
-				startTimestamp: 0,
-			},
-		],
-	};
-	const [metricsResponse, setMetricsResponse] = useState<FourKeyMetrics>({
-		changeFailureRate: defaultMetricsData,
-		deploymentFrequency: defaultMetricsData,
-		leadTimeForChange: defaultMetricsData,
-		meanTimeToRestore: defaultMetricsData,
-	});
 
-	const { pipelineOptions } = useDashboardContext();
+	const { fourKeyMetrics, appliedFormValue, updatingStatus } = useDashboardContext();
 
-	const history = useHistory();
-	const syncFormValuesToUrl = (formValues: FormValues) => {
-		if (!isEmpty(formValues.pipelines)) {
-			query.set("pipeline", JSON.stringify(formValues.pipelines));
-		}
-		if (formValues.unit === MetricsUnit.FORTNIGHTLY || formValues.unit === MetricsUnit.MONTHLY) {
-			query.set("unit", formValues.unit);
-		}
-		if (formValues.duration[0]) {
-			query.set("to", formValues.duration[0].format("YYYY-MM-DD"));
-		}
-		if (formValues.duration[1]) {
-			query.set("from", formValues.duration[1].format("YYYY-MM-DD"));
-		}
-		history.push("/project?" + query.toString());
-	};
-
-	const getFourKeyMetrics = (formValues: FormValues) => {
-		console.log(formValues);
-		syncFormValuesToUrl(formValues);
-		setLoadingChart(true);
-		setAppliedUnit(formValues.unit);
-
-		const durationTimestamps = getDurationTimestamps(formValues.duration);
-		getFourKeyMetricsUsingPost({
-			metricsQuery: {
-				startTime: durationTimestamps.startTimestamp!,
-				endTime: durationTimestamps.endTimestamp!,
-				pipelineStages: (formValues.pipelines || []).map(i => ({
-					pipelineId: i.value,
-					stage: i.childValue,
-				})),
-				unit: formValues.unit,
-			},
-		})
-			.then(response => {
-				setMetricsResponse(response);
-				setChangeFailureRate(cleanMetricsInfo(response.changeFailureRate));
-				setDeploymentFrequency(cleanMetricsInfo(response.deploymentFrequency));
-				setLeadTimeForChange(cleanMetricsInfo(response.leadTimeForChange));
-				setMeanTimeToRestore(cleanMetricsInfo(response.meanTimeToRestore));
-			})
-			.finally(() => {
-				setLoadingChart(false);
-			});
-	};
+	useEffect(() => {
+		setChangeFailureRate(cleanMetricsInfo(fourKeyMetrics.changeFailureRate));
+		setDeploymentFrequency(cleanMetricsInfo(fourKeyMetrics.deploymentFrequency));
+		setLeadTimeForChange(cleanMetricsInfo(fourKeyMetrics.leadTimeForChange));
+		setMeanTimeToRestore(cleanMetricsInfo(fourKeyMetrics.meanTimeToRestore));
+	}, [fourKeyMetrics]);
 
 	const getSubTitleUnit = (unit: MetricsUnit) => {
 		return `Times per ${unit.toLowerCase().replace("ly", "")}`;
 	};
 
-	return (
+	return updatingStatus.inited ? (
 		<>
-			<DashboardTopPanel
-				onApply={getFourKeyMetrics}
-				projectId={projectId}
-				defaultValues={generateDefaultValueFromQuery(query, pipelineOptions)}
-				metricsResponse={metricsResponse}
-			/>
+			<DashboardTopPanel projectId={projectId} />
 			<div css={metricsContainerStyles}>
 				<Row gutter={28}>
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Deployment Frequency (Times)"
-							info={<MetricTooltip unit={appliedUnit} type={"df"} />}
+							info={<MetricTooltip unit={appliedFormValue.unit} type={"df"} />}
 							summary={deploymentFrequency.summary}
 							data={deploymentFrequency.details}
 							yaxisFormatter={(value: string) => value}
 							yAxisLabel="Times"
-							loading={loadingChart}
-							subTitleUnit={getSubTitleUnit(appliedUnit)}
+							loading={updatingStatus.loadingMetricsData}
+							subTitleUnit={getSubTitleUnit(appliedFormValue.unit)}
 							yAxisDomain={[
 								0,
 								calcMaxValueWithRatio(deploymentFrequency.details, 20, domainMaximizeRatio),
@@ -181,12 +75,12 @@ const PageDashboardContent = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Average Lead Time for Change (Days)"
-							info={<MetricTooltip unit={appliedUnit} type={"lt"} />}
+							info={<MetricTooltip unit={appliedFormValue.unit} type={"lt"} />}
 							summary={leadTimeForChange.summary}
 							data={leadTimeForChange.details}
 							yaxisFormatter={(value: string) => value}
 							yAxisLabel="Days"
-							loading={loadingChart}
+							loading={updatingStatus.loadingMetricsData}
 							subTitleUnit="Days"
 							yAxisDomain={[
 								0,
@@ -198,12 +92,12 @@ const PageDashboardContent = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Mean Time to Restore Service (Hours)"
-							info={<MetricTooltip unit={appliedUnit} type={"mttr"} />}
+							info={<MetricTooltip unit={appliedFormValue.unit} type={"mttr"} />}
 							summary={meanTimeToRestore.summary}
 							data={meanTimeToRestore.details}
 							yaxisFormatter={(value: string) => value}
 							yAxisLabel="Hours"
-							loading={loadingChart}
+							loading={updatingStatus.loadingMetricsData}
 							subTitleUnit="Hours"
 							yAxisDomain={[
 								0,
@@ -215,12 +109,12 @@ const PageDashboardContent = () => {
 					<Col xs={24} sm={24} md={24} lg={12}>
 						<MetricsCard
 							title="Change Failure Rate"
-							info={<MetricTooltip unit={appliedUnit} type={"cfr"} />}
+							info={<MetricTooltip unit={appliedFormValue.unit} type={"cfr"} />}
 							summary={changeFailureRate.summary}
 							data={changeFailureRate.details}
 							yaxisFormatter={(value: string) => value + "%"}
 							yAxisLabel="Percentage"
-							loading={loadingChart}
+							loading={updatingStatus.loadingMetricsData}
 							subTitleUnit="Percentage"
 							yAxisDomain={[0, calcMaxValueWithRatio(changeFailureRate.details, 100, 1)]}
 						/>
@@ -228,6 +122,8 @@ const PageDashboardContent = () => {
 				</Row>
 			</div>
 		</>
+	) : (
+		<div></div>
 	);
 };
 
