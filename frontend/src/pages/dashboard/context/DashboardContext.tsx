@@ -4,14 +4,29 @@ import {
 	Project,
 	updateProjectNameUsingPut,
 } from "../../../clients/projectApis";
-import React, { FC, createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, FC, useContext, useEffect, useState } from "react";
 import { useRequest } from "../../../hooks/useRequest";
 import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipelineApis";
 import { Option } from "../../../components/MultipleCascadeSelect";
 import { ProgressSummary } from "../components/SyncProgressContent";
 import { useQuery } from "../../../hooks/useQuery";
-import { MetricsInfo } from "../../../models/metrics";
+import { MetricsInfo, MetricsLevel, MetricsUnit } from "../../../models/metrics";
 import { isEmpty } from "lodash";
+import { FormValues, Pipeline } from "../components/DashboardTopPanel";
+import { FourKeyMetrics, getFourKeyMetricsUsingPost } from "../../../clients/metricsApis";
+import { getDurationTimestamps } from "../../../utils/timeFormats/timeFormats";
+import moment from "moment/moment";
+import { dateFormatYYYYMMDD } from "../../../constants/date-format";
+
+const initialMetricsState: MetricsInfo = {
+	summary: {
+		level: MetricsLevel.INVALID,
+		value: 0,
+		endTimestamp: 0,
+		startTimestamp: 0,
+	},
+	details: [],
+};
 
 const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = []) =>
 	data.map((v: PipelineStages) => ({
@@ -24,16 +39,11 @@ const transformPipelineStages = (data: typeof getPipelineStagesUsingGet.TResp = 
 	}));
 
 interface UpdatingStatus {
+	inited: boolean;
 	syncInProgress: boolean;
 	pipelineStagesLoading: boolean;
+	loadingMetricsData: boolean;
 	progressSummary: ProgressSummary;
-}
-
-interface MetricsData {
-	changeFailureRate: MetricsInfo;
-	deploymentFrequency: MetricsInfo;
-	leadTimeForChange: MetricsInfo;
-	meanTimeToRestore: MetricsInfo;
 }
 
 interface DashboardState {
@@ -43,11 +53,46 @@ interface DashboardState {
 	synchronization: Pick<Project, "synchronizationTimestamp">;
 	pipelineOptions: Option[];
 
+	appliedFormValue: FormValues;
+	fourKeyMetrics: FourKeyMetrics;
+
 	updateProjectName: (name: string) => Promise<void>;
 	syncBuildsWithProgress: () => void;
+	syncFourKeyMetrics: (formValues: FormValues) => void;
 }
 
 const DashboardContext = createContext<DashboardState>({} as DashboardState);
+
+const generateDefaultValueFromQuery = (query: URLSearchParams, pipelineOptions: Option[]) => {
+	const fromDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
+		? moment(query.get("to"), dateFormatYYYYMMDD).startOf("day")
+		: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
+	const toDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
+		? moment(query.get("from"), dateFormatYYYYMMDD).endOf("day")
+		: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
+
+	const pipelines: Pipeline[] = [];
+	try {
+		const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
+		for (const now of paramPipelines) {
+			pipelines.push({ value: now.value, childValue: now.childValue });
+		}
+	} catch (ignore) {
+		console.error("pipeline param in url is not valid");
+	}
+	if (isEmpty(pipelines) && !isEmpty(pipelineOptions)) {
+		pipelines.push({
+			value: pipelineOptions[0]?.value,
+			childValue: (pipelineOptions[0]?.children ?? [])[0]?.label,
+		});
+	}
+
+	return {
+		duration: [fromDate, toDate],
+		unit: query.get("unit") === MetricsUnit.MONTHLY ? MetricsUnit.MONTHLY : MetricsUnit.FORTNIGHTLY,
+		pipelines: pipelines,
+	} as FormValues;
+};
 
 export const DashboardContextProvider: FC = props => {
 	const query = useQuery();
@@ -58,19 +103,42 @@ export const DashboardContextProvider: FC = props => {
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
 		getLastSynchronizationUsingGet
 	);
-	const [
-		pipelineStagesResp,
-		getPipelineStagesRequest,
-		getPipelineStagesLoading,
-		setPipelineStages,
-	] = useRequest(getPipelineStagesUsingGet);
+	const [, getPipelineStagesRequest, getPipelineStagesLoading, setPipelineStages] = useRequest(
+		getPipelineStagesUsingGet
+	);
+
+	const [inited, setInited] = useState(false);
 
 	const [pipelineOptions, setPipelineOptions] = useState<Option[]>([]);
 	const [progressSummary, setProgressSummary] = useState<ProgressSummary>({});
 	const [syncInProgress, setSyncInProgress] = useState(false);
 
-	const getProject = () => getProjectRequest({ projectId });
-	const getPipelineStages = () => getPipelineStagesRequest({ projectId });
+	const [metricsLoading, setMetricsLoading] = useState(false);
+	const [appliedFormValue, setAppliedFormValue] = useState<FormValues>({} as FormValues);
+	const [fourKeyMetrics, setFourKeyMetrics] = useState<FourKeyMetrics>({
+		changeFailureRate: initialMetricsState,
+		deploymentFrequency: initialMetricsState,
+		leadTimeForChange: initialMetricsState,
+		meanTimeToRestore: initialMetricsState,
+	});
+
+	useEffect(() => {
+		Promise.all([
+			getPipelineStagesRequest({ projectId }),
+			getLastSyncTime(),
+			getProjectRequest({ projectId }),
+		]).then(values => {
+			const pipelineStages = transformPipelineStages(values[0]);
+			const options = pipelineStages
+				? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
+				: [];
+			const defaultFormValue = generateDefaultValueFromQuery(query, options);
+			setPipelineOptions(options);
+			syncFourKeyMetrics(defaultFormValue);
+			setInited(true);
+		});
+	}, []);
+
 	const getLastSyncTime = async () => {
 		const resp = await getLastSynchronizationRequest({ projectId });
 		if (!resp?.synchronizationTimestamp) {
@@ -78,17 +146,29 @@ export const DashboardContextProvider: FC = props => {
 		}
 	};
 
-	useEffect(() => {
-		Promise.all([getLastSyncTime(), getPipelineStages(), getProject()]);
-	}, []);
+	const syncFourKeyMetrics = (formValues: FormValues) => {
+		setMetricsLoading(true);
+		setAppliedFormValue(formValues);
 
-	useEffect(() => {
-		const pipelineStages = transformPipelineStages(pipelineStagesResp);
-		const options = pipelineStages
-			? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
-			: [];
-		setPipelineOptions(options);
-	}, [pipelineStagesResp]);
+		const durationTimestamps = getDurationTimestamps(formValues.duration);
+		getFourKeyMetricsUsingPost({
+			metricsQuery: {
+				startTime: durationTimestamps.startTimestamp!,
+				endTime: durationTimestamps.endTimestamp!,
+				pipelineStages: (formValues.pipelines || []).map(i => ({
+					pipelineId: i.value,
+					stage: i.childValue,
+				})),
+				unit: formValues.unit,
+			},
+		})
+			.then(response => {
+				setFourKeyMetrics(response);
+			})
+			.finally(() => {
+				setMetricsLoading(false);
+			});
+	};
 
 	const syncBuildsWithProgress = () => {
 		setSyncInProgress(true);
@@ -110,7 +190,7 @@ export const DashboardContextProvider: FC = props => {
 
 			getLastSyncTime();
 			setPipelineStages([]);
-			getPipelineStages();
+			getPipelineStagesRequest({ projectId });
 		});
 	};
 
@@ -119,22 +199,27 @@ export const DashboardContextProvider: FC = props => {
 			projectId: projectId,
 			projectName: name,
 		});
-		getProject();
+		await getProjectRequest({ projectId });
 	};
 
 	return (
 		<DashboardContext.Provider
 			value={{
 				updatingStatus: {
+					inited,
 					syncInProgress,
 					pipelineStagesLoading: getPipelineStagesLoading,
 					progressSummary,
+					loadingMetricsData: metricsLoading,
 				},
 				project,
 				synchronization,
 				pipelineOptions,
+				appliedFormValue,
+				fourKeyMetrics,
 				updateProjectName,
 				syncBuildsWithProgress,
+				syncFourKeyMetrics,
 			}}>
 			<>{props.children}</>
 		</DashboardContext.Provider>

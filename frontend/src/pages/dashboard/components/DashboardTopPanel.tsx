@@ -5,28 +5,19 @@ import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../../constants/styles";
-import { useRequest } from "../../../hooks/useRequest";
 import moment from "moment";
 import { dateFormatYYYYMMDD } from "../../../constants/date-format";
 import { MultipleCascadeSelect } from "../../../components/MultipleCascadeSelect";
-import { isEmpty, isEqual } from "lodash";
+import { isEmpty } from "lodash";
 import {
 	formatLastUpdateTime,
 	getDurationTimestamps,
 } from "../../../utils/timeFormats/timeFormats";
-import { usePrevious } from "../../../hooks/usePrevious";
 import HintIcon from "../../../components/HintIcon";
-import { FourKeyMetrics } from "../../../clients/metricsApis";
-import { getPipelineStagesUsingGet, PipelineStages } from "../../../clients/pipelineApis";
-import {
-	getLastSynchronizationUsingGet,
-	getProjectDetailsUsingGet,
-	updateProjectNameUsingPut,
-} from "../../../clients/projectApis";
 import FullscreenDashboard from "./Fullscreen/components/FullscreenDashboard";
 import { mapMetricsList, mapPipelines } from "../utils/fullScreenDataProcess";
 import { MetricsUnit } from "../../../models/metrics";
-import { ProgressSummary, SyncProgressContent } from "./SyncProgressContent";
+import { SyncProgressContent } from "./SyncProgressContent";
 import { useQuery } from "../../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { useDashboardContext } from "../context/DashboardContext";
@@ -84,9 +75,6 @@ export interface FormValues {
 
 interface DashboardTopPanelProps {
 	projectId: string;
-	onApply: (formValues: FormValues) => void;
-	metricsResponse: FourKeyMetrics;
-	defaultValues: FormValues;
 }
 
 interface AutoSyncOption {
@@ -122,39 +110,45 @@ const AUTO_SYNC_OPTIONS: AutoSyncOption[] = [
 	{ period: 24 * 60 * 60, text: "1day" },
 ];
 
-export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
-	projectId,
-	onApply,
-	metricsResponse,
-	defaultValues,
-}) => {
+export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId }) => {
+	const history = useHistory();
+	const query = useQuery();
 	const {
 		updatingStatus,
 		project,
 		synchronization,
-		syncBuildsWithProgress,
 		pipelineOptions,
+		fourKeyMetrics,
+		appliedFormValue,
+		syncBuildsWithProgress,
 		updateProjectName,
+		syncFourKeyMetrics,
 	} = useDashboardContext();
 
-	const [formValues, setFormValues] = useState<FormValues>(defaultValues);
+	const [formValues, setFormValues] = useState<FormValues>(appliedFormValue);
 	const durationTimestamps = getDurationTimestamps(formValues.duration);
 	const lastUpdateTime = formatLastUpdateTime(synchronization?.synchronizationTimestamp);
 
-	const prevPipelines = usePrevious(formValues.pipelines);
-	const prevOptions = usePrevious(pipelineOptions);
-	useEffect(() => {
-		if (isEmpty(formValues.pipelines)) {
-			return;
+	const syncFormValuesToUrl = (formValues: FormValues) => {
+		if (!isEmpty(formValues.pipelines)) {
+			query.set("pipeline", JSON.stringify(formValues.pipelines));
 		}
+		if (formValues.unit === MetricsUnit.FORTNIGHTLY || formValues.unit === MetricsUnit.MONTHLY) {
+			query.set("unit", formValues.unit);
+		}
+		if (formValues.duration[0]) {
+			query.set("to", formValues.duration[0].format("YYYY-MM-DD"));
+		}
+		if (formValues.duration[1]) {
+			query.set("from", formValues.duration[1].format("YYYY-MM-DD"));
+		}
+		history.push("/project?" + query.toString());
+	};
 
-		if (
-			(isEmpty(prevPipelines) && !isEmpty(formValues.pipelines)) ||
-			(!isEmpty(pipelineOptions) && !isEqual(prevOptions, pipelineOptions))
-		) {
-			onApply && onApply(formValues);
-		}
-	}, [formValues.pipelines, pipelineOptions]);
+	const onApply = (formValues: FormValues) => {
+		syncFormValuesToUrl(formValues);
+		syncFourKeyMetrics(formValues);
+	};
 
 	// Auto sync related logic
 	const [autoSyncPeriod, setAutoSyncPeriod] = useState<AutoSyncOption>(AUTO_SYNC_OPTIONS[0]);
@@ -270,7 +264,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 				<Form
 					layout={"vertical"}
 					css={{ marginTop: 16 }}
-					initialValues={defaultValues}
+					initialValues={appliedFormValue}
 					onFinish={() => {
 						if (isEmpty(formValues.pipelines)) {
 							return;
@@ -324,7 +318,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 									disabled={updating()}
 									options={pipelineOptions}
 									defaultValues={
-										!isEmpty(pipelineOptions[0]?.children) ? defaultValues.pipelines : []
+										!isEmpty(pipelineOptions[0]?.children) ? appliedFormValue.pipelines : []
 									}
 								/>
 							</Form.Item>
@@ -341,7 +335,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 			</div>
 			<FullscreenDashboard
 				projectName={project?.name}
-				metricsList={mapMetricsList(metricsResponse, formValues.unit)}
+				metricsList={mapMetricsList(fourKeyMetrics, formValues.unit)}
 				startTimestamp={durationTimestamps.startTimestamp!}
 				endTimestamp={durationTimestamps.endTimestamp!}
 				pipelineList={mapPipelines(pipelineOptions, formValues.pipelines)}
