@@ -4,14 +4,19 @@ import { css } from "@emotion/react";
 import { useQuery } from "../../hooks/useQuery";
 import { getDurationTimestamps } from "../../utils/timeFormats/timeFormats";
 import { MetricsCard } from "./components/MetricsCard";
-import { DashboardTopPanel, FormValues } from "./components/DashboardTopPanel";
+import { DashboardTopPanel, FormValues, Pipeline } from "./components/DashboardTopPanel";
 import { BACKGROUND_COLOR } from "../../constants/styles";
 import { MetricTooltip } from "./components/MetricTooltip";
 import { calcMaxValueWithRatio } from "../../utils/calcMaxValueWithRatio/calcMaxValueWithRatio";
 import { cleanMetricsInfo } from "../../utils/metricsDataUtils/metricsDataUtils";
 import { FourKeyMetrics, getFourKeyMetricsUsingPost } from "../../clients/metricsApis";
 import { MetricsInfo, MetricsLevel, MetricsUnit } from "../../models/metrics";
-import { DashboardContextProvider } from "./context/DashboardContext";
+import { DashboardContextProvider, useDashboardContext } from "./context/DashboardContext";
+import moment from "moment/moment";
+import { dateFormatYYYYMMDD } from "../../constants/date-format";
+import { isEmpty } from "lodash";
+import { Option } from "../../components/MultipleCascadeSelect";
+import { useHistory } from "react-router-dom";
 
 const metricsContainerStyles = css({
 	padding: "37px 35px",
@@ -30,7 +35,38 @@ const initialMetricsState: MetricsInfo = {
 
 const domainMaximizeRatio = 1.1;
 
-export const PageDashboard = () => {
+const generateDefaultValueFromQuery = (query: URLSearchParams, pipelineOptions: Option[]) => {
+	const fromDate = moment(query.get("to"), dateFormatYYYYMMDD).isValid()
+		? moment(query.get("to"), dateFormatYYYYMMDD).startOf("day")
+		: moment(new Date(), dateFormatYYYYMMDD).startOf("day");
+	const toDate = moment(query.get("from"), dateFormatYYYYMMDD).isValid()
+		? moment(query.get("from"), dateFormatYYYYMMDD).endOf("day")
+		: moment(fromDate.toDate(), dateFormatYYYYMMDD).endOf("day").subtract(4, "month");
+
+	const pipelines: Pipeline[] = [];
+	try {
+		const paramPipelines = JSON.parse(query.get("pipeline") || "[]") as Pipeline[];
+		for (const now of paramPipelines) {
+			pipelines.push({ value: now.value, childValue: now.childValue });
+		}
+	} catch (ignore) {
+		console.error("pipeline param in url is not valid");
+	}
+	if (isEmpty(pipelines) && !isEmpty(pipelineOptions)) {
+		pipelines.push({
+			value: pipelineOptions[0]?.value,
+			childValue: (pipelineOptions[0]?.children ?? [])[0]?.label,
+		});
+	}
+
+	return {
+		duration: [fromDate, toDate],
+		unit: query.get("unit") === MetricsUnit.MONTHLY ? MetricsUnit.MONTHLY : MetricsUnit.FORTNIGHTLY,
+		pipelines: pipelines,
+	} as FormValues;
+};
+
+const PageDashboardContent = () => {
 	const query = useQuery();
 	const projectId = query.get("projectId") || "";
 
@@ -62,8 +98,28 @@ export const PageDashboard = () => {
 		meanTimeToRestore: defaultMetricsData,
 	});
 
+	const { pipelineOptions } = useDashboardContext();
+
+	const history = useHistory();
+	const syncFormValuesToUrl = (formValues: FormValues) => {
+		if (!isEmpty(formValues.pipelines)) {
+			query.set("pipeline", JSON.stringify(formValues.pipelines));
+		}
+		if (formValues.unit === MetricsUnit.FORTNIGHTLY || formValues.unit === MetricsUnit.MONTHLY) {
+			query.set("unit", formValues.unit);
+		}
+		if (formValues.duration[0]) {
+			query.set("to", formValues.duration[0].format("YYYY-MM-DD"));
+		}
+		if (formValues.duration[1]) {
+			query.set("from", formValues.duration[1].format("YYYY-MM-DD"));
+		}
+		history.push("/project?" + query.toString());
+	};
+
 	const getFourKeyMetrics = (formValues: FormValues) => {
 		console.log(formValues);
+		syncFormValuesToUrl(formValues);
 		setLoadingChart(true);
 		setAppliedUnit(formValues.unit);
 
@@ -96,10 +152,11 @@ export const PageDashboard = () => {
 	};
 
 	return (
-		<DashboardContextProvider>
+		<>
 			<DashboardTopPanel
 				onApply={getFourKeyMetrics}
 				projectId={projectId}
+				defaultValues={generateDefaultValueFromQuery(query, pipelineOptions)}
 				metricsResponse={metricsResponse}
 			/>
 			<div css={metricsContainerStyles}>
@@ -170,6 +227,14 @@ export const PageDashboard = () => {
 					</Col>
 				</Row>
 			</div>
+		</>
+	);
+};
+
+export const PageDashboard = () => {
+	return (
+		<DashboardContextProvider>
+			<PageDashboardContent />
 		</DashboardContextProvider>
 	);
 };
