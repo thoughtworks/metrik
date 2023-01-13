@@ -150,6 +150,18 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({ projectId }) => 
 		syncFourKeyMetrics(formValues);
 	};
 
+	useEffect(() => {
+		formValues.pipelines = formValues.pipelines.filter(pipeline =>
+			pipelineOptions.some(
+				option =>
+					option.value === pipeline.value &&
+					option.children?.some(childOption => childOption.value === pipeline.childValue)
+			)
+		);
+		setFormValues(formValues);
+		onApply(formValues);
+	}, [pipelineOptions]);
+
 	// Auto sync related logic
 	const [autoSyncPeriod, setAutoSyncPeriod] = useState<AutoSyncOption>(AUTO_SYNC_OPTIONS[0]);
 	const [autoSyncJob, setAutoSyncJob] = useState<NodeJS.Timeout | null>(null);
