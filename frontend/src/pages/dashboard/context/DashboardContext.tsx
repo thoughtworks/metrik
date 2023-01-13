@@ -103,9 +103,12 @@ export const DashboardContextProvider: FC = props => {
 	const [synchronization, getLastSynchronizationRequest] = useRequest(
 		getLastSynchronizationUsingGet
 	);
-	const [, getPipelineStagesRequest, getPipelineStagesLoading, setPipelineStages] = useRequest(
-		getPipelineStagesUsingGet
-	);
+	const [
+		pipelineStagesResp,
+		getPipelineStagesRequest,
+		getPipelineStagesLoading,
+		setPipelineStages,
+	] = useRequest(getPipelineStagesUsingGet);
 
 	const [inited, setInited] = useState(false);
 
@@ -138,6 +141,16 @@ export const DashboardContextProvider: FC = props => {
 			setInited(true);
 		});
 	}, []);
+
+	useEffect(() => {
+		const pipelineStages = transformPipelineStages(pipelineStagesResp);
+		const options = pipelineStages
+			? pipelineStages.filter(v => !isEmpty(v.value) && !isEmpty(v?.children))
+			: [];
+		if (!isEmpty(options)) {
+			setPipelineOptions(options);
+		}
+	}, [pipelineStagesResp]);
 
 	const getLastSyncTime = async () => {
 		const resp = await getLastSynchronizationRequest({ projectId });
