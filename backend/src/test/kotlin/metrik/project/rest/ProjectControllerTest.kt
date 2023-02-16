@@ -8,6 +8,7 @@ import metrik.project.TestFixture.buildJenkinsPipelineRequest
 import metrik.project.rest.applicationservice.ProjectApplicationService
 import metrik.project.rest.vo.request.BambooPipelineRequest
 import metrik.project.rest.vo.request.ProjectRequest
+import metrik.project.rest.vo.request.UpdateProjectRequest
 import metrik.project.rest.vo.response.PipelineResponse
 import metrik.project.rest.vo.response.ProjectDetailResponse
 import metrik.project.rest.vo.response.ProjectResponse
@@ -114,7 +115,8 @@ internal class ProjectControllerTest {
     @Test
     fun `should update project name `() {
         val projectNewName = "projectNewName"
-        every { projectApplicationService.updateProjectName(projectId, projectNewName) } returns ProjectResponse(
+        val updateProjectRequest = UpdateProjectRequest(projectNewName)
+        every { projectApplicationService.updateProjectName(projectId, updateProjectRequest) } returns ProjectResponse(
             projectId,
             projectNewName
         )
@@ -122,7 +124,7 @@ internal class ProjectControllerTest {
         mockMvc.perform(
             MockMvcRequestBuilders.put("/api/project/$projectId")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectNewName)
+                .content(ObjectMapper().writeValueAsString(updateProjectRequest))
         ).andExpect(status().isOk)
     }
 

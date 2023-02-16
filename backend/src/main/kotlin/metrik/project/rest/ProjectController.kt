@@ -2,6 +2,7 @@ package metrik.project.rest
 
 import metrik.project.rest.applicationservice.ProjectApplicationService
 import metrik.project.rest.vo.request.ProjectRequest
+import metrik.project.rest.vo.request.UpdateProjectRequest
 import metrik.project.rest.vo.response.ProjectDetailResponse
 import metrik.project.rest.vo.response.ProjectResponse
 import metrik.project.rest.vo.response.ProjectSummaryResponse
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
-import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/api")
@@ -46,9 +46,9 @@ class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     fun updateProjectName(
         @PathVariable projectId: String,
-        @RequestBody @Valid @NotBlank projectName: String
+        @RequestBody @Valid updateProjectRequest: UpdateProjectRequest
     ) {
-        projectApplicationService.updateProjectName(projectId, projectName)
+        projectApplicationService.updateProjectName(projectId, updateProjectRequest)
     }
 
     @DeleteMapping("/project/{projectId}")

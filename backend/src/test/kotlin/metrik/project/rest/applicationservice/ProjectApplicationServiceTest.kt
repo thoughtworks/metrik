@@ -17,6 +17,7 @@ import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
 import metrik.project.exception.ProjectNameDuplicateException
 import metrik.project.rest.vo.request.ProjectRequest
+import metrik.project.rest.vo.request.UpdateProjectRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -97,7 +98,7 @@ internal class ProjectApplicationServiceTest {
         every { projectRepository.save(expectedProject) } returns expectedProject
 
         val newProjectName = "new project name"
-        val updatedProject = projectApplicationService.updateProjectName(projectId, newProjectName)
+        val updatedProject = projectApplicationService.updateProjectName(projectId, UpdateProjectRequest(newProjectName))
 
         assertEquals(updatedProject.name, newProjectName)
     }

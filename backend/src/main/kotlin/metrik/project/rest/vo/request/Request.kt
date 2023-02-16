@@ -14,6 +14,11 @@ data class ProjectRequest(
     val pipeline: PipelineRequest
 )
 
+data class UpdateProjectRequest(
+    @field:NotBlank(message = "Project name cannot be empty")
+    val projectName: String
+)
+
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
