@@ -6,6 +6,7 @@ import metrik.project.domain.repository.PipelineRepository
 import metrik.project.domain.repository.ProjectRepository
 import metrik.project.exception.ProjectNameDuplicateException
 import metrik.project.rest.vo.request.ProjectRequest
+import metrik.project.rest.vo.request.UpdateProjectRequest
 import metrik.project.rest.vo.response.ProjectDetailResponse
 import metrik.project.rest.vo.response.ProjectResponse
 import metrik.project.rest.vo.response.ProjectSummaryResponse
@@ -43,8 +44,8 @@ class ProjectApplicationService {
         return ProjectSummaryResponse(savedProject)
     }
 
-    fun updateProjectName(projectId: String, projectName: String): ProjectResponse {
-        verifyProjectNameNotDuplicate(projectName)
+    fun updateProjectName(projectId: String, updateProjectRequest: UpdateProjectRequest): ProjectResponse {
+        val projectName = updateProjectRequest.projectName
         val project = projectRepository.findById(projectId)
         project.name = projectName
         return ProjectResponse(projectRepository.save(project))
