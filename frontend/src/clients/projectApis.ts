@@ -7,7 +7,9 @@ export const updateProjectNameUsingPut = createRequest<{
 }>(({ projectId, projectName }) => ({
 	url: `/api/project/${projectId}`,
 	method: "PUT",
-	data: projectName,
+	data: {
+		projectName
+	},
 	headers: { "Content-Type": "application/json" },
 }));
 
