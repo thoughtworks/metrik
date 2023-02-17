@@ -46,6 +46,7 @@ class ProjectApplicationService {
 
     fun updateProjectName(projectId: String, updateProjectRequest: UpdateProjectRequest): ProjectResponse {
         val projectName = updateProjectRequest.projectName
+        verifyProjectNameNotDuplicate(projectName)
         val project = projectRepository.findById(projectId)
         project.name = projectName
         return ProjectResponse(projectRepository.save(project))

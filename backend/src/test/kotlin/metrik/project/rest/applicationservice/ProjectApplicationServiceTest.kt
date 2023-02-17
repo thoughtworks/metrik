@@ -105,10 +105,10 @@ internal class ProjectApplicationServiceTest {
 
     @Test
     fun `update project will fail if project name already exist`() {
-        val newProjectName = "new project name"
+        val newProjectName = UpdateProjectRequest("new project name")
         every { projectRepository.findById(projectId) } returns expectedProject
         every { projectRepository.save(expectedProject) } returns expectedProject
-        every { projectRepository.existWithGivenName(newProjectName) } returns true
+        every { projectRepository.existWithGivenName(newProjectName.projectName) } returns true
 
         val exception = assertThrows<ProjectNameDuplicateException> {
             projectApplicationService.updateProjectName(projectId, newProjectName)
