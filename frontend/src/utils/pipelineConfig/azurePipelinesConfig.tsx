@@ -8,6 +8,18 @@ export const AZURE_PIPELINES_CONFIG: PipelineConfig[] = [
 		gutter: 24,
 		children: [
 			{
+				span: 8,
+				name: "name",
+				label: "Project Name",
+				rules: [
+					{
+						required: true,
+						whitespace: true,
+						message: "Please input name of your project on Azure Pipeline.",
+					},
+				],
+			},
+			{
 				span: 16,
 				name: "url",
 				label: "Project URL",
