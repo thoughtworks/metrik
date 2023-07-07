@@ -11,7 +11,7 @@ export const AZURE_PIPELINES_CONFIG: PipelineConfig[] = [
 				span: 16,
 				name: "url",
 				label: "Project URL",
-				placeholder: "e.g: https://dev.azure.com/JetstarAirways/Raven",
+				placeholder: "e.g: https://dev.azure.com/organization/project",
 				tooltip: {
 					icon: <InfoCircleOutlined />,
 					title:
