@@ -1,4 +1,5 @@
 import {
+	AzurePipelines,
 	BambooDeployedPipeline,
 	BambooPipeline,
 	GithubActions,
@@ -20,12 +21,14 @@ const { Item, useForm } = Form;
 type JenkinsFormValues = Omit<JenkinsPipeline, "id">;
 type BambooFormValues = Omit<BambooPipeline, "id">;
 type GithubActionsFormValues = Omit<GithubActions, "id">;
+type AzurePipelinesFormValues = Omit<AzurePipelines, "id">;
 type BambooDeployedFormValues = Omit<BambooDeployedPipeline, "id">;
 
 export type FormValues =
 	| JenkinsFormValues
 	| BambooFormValues
 	| GithubActionsFormValues
+	| AzurePipelinesFormValues
 	| BambooDeployedFormValues;
 
 const groupTitleStyles = css({ fontWeight: "bold", display: "inline-block", marginBottom: 12 });
@@ -144,6 +147,9 @@ const PipelineSetup: FC<{
 										<Option value={PipelineTool.BAMBOO}>{PipelineTool.BAMBOO}</Option>
 										<Option value={PipelineTool.GITHUB_ACTIONS}>
 											{PipelineTool.GITHUB_ACTIONS}
+										</Option>
+										<Option value={PipelineTool.AZURE_PIPELINES}>
+											{PipelineTool.AZURE_PIPELINES}
 										</Option>
 										<Option value={PipelineTool.BUDDY}>{PipelineTool.BUDDY}</Option>
 									</Select>
