@@ -4,6 +4,7 @@ import feign.FeignException
 import feign.codec.DecodeException
 import metrik.project.domain.model.Execution
 import metrik.project.domain.model.PipelineConfiguration
+import metrik.project.domain.repository.BuildRepository
 import metrik.project.domain.service.PipelineService
 import metrik.project.domain.service.githubactions.GithubActionsPipelineService
 import metrik.project.exception.PipelineConfigVerifyException
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service
 import java.net.URL
 
 @Service("azurePipelinesPipelineService")
-class AzurePipelinesPipelineService(private val azureFeignClient: AzureFeignClient) : PipelineService {
+class AzurePipelinesPipelineService(
+    private val azureFeignClient: AzureFeignClient,
+    private val buildRepository: BuildRepository,
+) : PipelineService {
     private var logger = LoggerFactory.getLogger(javaClass.name)
     override fun syncBuildsProgressively(
         pipeline: PipelineConfiguration,
@@ -43,7 +47,12 @@ class AzurePipelinesPipelineService(private val azureFeignClient: AzureFeignClie
     }
 
     override fun getStagesSortedByName(pipelineId: String): List<String> {
-        TODO("Not yet implemented")
+        return buildRepository.getAllBuilds(pipelineId)
+            .flatMap { it.stages }
+            .map { it.name }
+            .distinct()
+            .sortedBy { it.uppercase() }
+            .toList()
     }
 
     private fun getOrganizationProjectFromUrl(url: String): Pair<String, String> {

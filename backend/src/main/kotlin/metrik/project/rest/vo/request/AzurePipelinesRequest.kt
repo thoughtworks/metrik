@@ -16,17 +16,9 @@ class AzurePipelinesPipelineRequest(
         name = name,
         username = null,
         credential = credential,
-        url = toGithubActionsUrl(url),
+        url = url,
         type = PipelineType.valueOf(type)
     )
-
-    private fun toGithubActionsUrl(url: String) =
-        URL(url).path.split("/").let { "$apiRepo/${it[it.size - ownerIndex]}/${it.last()}" }
-
-    private companion object {
-        const val ownerIndex = 2
-        const val apiRepo = "https://api.github.com/repos"
-    }
 }
 
 class AzurePipelinesVerificationRequest(
