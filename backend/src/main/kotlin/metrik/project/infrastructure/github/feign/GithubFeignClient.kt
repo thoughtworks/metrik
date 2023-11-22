@@ -55,6 +55,8 @@ interface GithubFeignClient {
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
+        @RequestParam("per_page", required = false) perPage: Int? = 100,
+        @RequestParam("page", required = false) pageIndex: Int? = 1
     ): List<BranchResponse>?
 }
 
