@@ -5,11 +5,13 @@ import { GITHUB_ACTIONS_CONFIG } from "./githubActionsConfig";
 import { BAMBOO_DEPLOYED_PIPELINE_CONFIG } from "./bambooDeployedConfig";
 import { BUDDY_CONFIG } from "./buddyConfig";
 import { PipelineTool } from "../../models/pipeline";
+import { AZURE_PIPELINES_CONFIG } from "./azurePipelinesConfig";
 
 export const PIPELINE_CONFIG = {
 	[PipelineTool.JENKINS]: JENKINS_PIPELINE_CONFIG,
 	[PipelineTool.BAMBOO]: BAMBOO_PIPELINE_CONFIG,
 	[PipelineTool.GITHUB_ACTIONS]: GITHUB_ACTIONS_CONFIG,
+	[PipelineTool.AZURE_PIPELINES]: AZURE_PIPELINES_CONFIG,
 	[PipelineTool.BAMBOO_DEPLOYMENT]: BAMBOO_DEPLOYED_PIPELINE_CONFIG,
 	[PipelineTool.BUDDY]: BUDDY_CONFIG,
 };
@@ -44,6 +46,21 @@ export const PIPELINE_TYPE_NOTE = {
 					"&:hover": { textDecoration: "underline" },
 				}}>
 				https://github.com/features/actions
+			</a>
+		</div>
+	),
+	[PipelineTool.AZURE_PIPELINES]: (
+		<div css={{ color: "rgba(0,0,0,0.25)", whiteSpace: "normal", marginBottom: 50 }}>
+			Note: Deployment data is collected from pipelines execution history. All you have to provide
+			here is the URL of your Azure Pipeline and we can find all associated pipeline executions for
+			you automatically. Struggle with the terms? More details please refer to:{" "}
+			<a
+				href={"https://azure.microsoft.com/en-us/products/devops/pipelines"}
+				css={{
+					textDecoration: "underline",
+					"&:hover": { textDecoration: "underline" },
+				}}>
+				https://azure.microsoft.com/en-us/products/devops/pipelines
 			</a>
 		</div>
 	),
