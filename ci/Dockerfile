@@ -8,15 +8,14 @@ RUN apt-get update \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && locale-gen en_US.UTF-8
 
-# # import public keys
 RUN apt-get install -y --no-install-recommends software-properties-common wget apt-transport-https gnupg \
-    && wget --no-check-certificate -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - \
+    && wget --no-check-certificate -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
     && wget --no-check-certificate -qO - https://nginx.org/keys/nginx_signing.key | apt-key add - \
-    && add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ \
+    && add-apt-repository --yes https://packages.adoptium.net/artifactory/deb/ \
     && echo "deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list \
     && echo "deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends supervisor adoptopenjdk-11-hotspot-jre nginx \
+    && apt-get install -y --no-install-recommends supervisor temurin-11-jdk nginx \
     && rm -rf /var/lib/apt/lists/*
 
 # Create logs storaging

@@ -104,6 +104,6 @@ jobs:
             if [ "${TAG}" != "${TAGS[0]}" ]; then
               docker tag "${IMAGE_BASE}:${TAGS[0]}" "${IMAGE_BASE}:${TAG}"
             fi
-            docker push "${IMAGE_BASE}:${TAG}
+            docker push "${IMAGE_BASE}:${TAG}"
           done
         working-directory: ./ci
