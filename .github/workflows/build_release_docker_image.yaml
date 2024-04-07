@@ -6,7 +6,8 @@ on:
       - created
 
 env:
-  IMAGE_NAME: metrik
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   test-build-push-image:
@@ -78,51 +79,31 @@ jobs:
           cp -p ./backend/build/libs/metrik-backend-*.jar $ARTIFACT_DIR/backend/
           cp -p ./backend/run.sh $ARTIFACT_DIR/backend/
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to AWS ECR
-        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_PUBLIC_ECR_ACCOUNT_URL }}
-
-      - name: Build and push Docker image
+      - name: Build Docker meta
+        id: build-docker-meta
         run: |
-          IMAGE_ID=${{ secrets.AWS_PUBLIC_ECR_ACCOUNT_URL }}/${{ secrets.AWS_PUBLIC_ECR_REPO }}
-
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          echo "TAGS=latest,$VERSION" >> $GITHUB_OUTPUT
 
-          docker build . --file Dockerfile --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
-
-          IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
-          for tag in "${DOCKER_TAGS[@]}"; do
-            docker push $IMAGE_ID:$tag
+      - name: Build and push image
+        run: |
+          IMAGE_BASE=${{ env.REGISTRY }}/${{env.IMAGE_NAME}}
+          IFS="," read -ra TAGS <<< ${{ steps.build-docker-meta.outputs.TAGS }}
+          
+          docker build . --file Dockerfile --tag $IMAGE_BASE:${TAGS[0]} --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
+          
+          for TAG in ${TAGS[@]}; do
+            if [ "${TAG}" != "${TAGS[0]}" ]; then
+              docker tag "${IMAGE_BASE}:${TAGS[0]}" "${IMAGE_BASE}:${TAG}"
+            fi
+            docker push "${IMAGE_BASE}:${TAG}
           done
         working-directory: ./ci
-
-#  - name: Build and push Docker image
-#      run: |
-#        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-#
-#        # Change all uppercase to lowercase
-#        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-#
-#        # Strip "v" prefix from tag name
-#        VERSION=$(echo ${{ github.event.release.tag_name }} | sed -e 's/^v//')
-#
-#        docker build . --file Dockerfile --tag $IMAGE_ID:latest --tag $IMAGE_ID:$VERSION --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
-#
-#        IFS="," read -ra DOCKER_TAGS <<< "latest,$VERSION"
-#        for tag in "${DOCKER_TAGS[@]}"; do
-#          docker push $IMAGE_ID:$tag
-#        done
-#      working-directory: ./ci
