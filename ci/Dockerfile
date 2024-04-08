@@ -15,7 +15,7 @@ RUN apt-get install -y --no-install-recommends software-properties-common wget a
     && echo "deb https://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list \
     && echo "deb-src https://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends supervisor temurin-11-jdk nginx \
+    && apt-get install -y --no-install-recommends supervisor temurin-11-jre nginx \
     && rm -rf /var/lib/apt/lists/*
 
 # Create logs storaging
