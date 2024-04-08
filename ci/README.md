@@ -17,9 +17,9 @@
 </p>
 
 
-Pack `Metrik` production Docker image and publish to AWS ECR public repository with Github Actions.
+Pack `Metrik` production Docker image and publish to Docker Hub public repository with Github Actions.
 
-Docker image repository: https://gallery.ecr.aws/j2s5d3z8/4-key-metrics
+Docker image repository: https://hub.docker.com/r/wszzwpshh1/metrik
 
 ## About image build & publish process
 
@@ -28,19 +28,19 @@ Actions config file under project home `$PROJECT_HOME/.github/actions` and `$PRO
 process comprises two workflows, both of which wraps the following services and tools in a Docker image:
 
 * Basic OS
-  * Ubuntu 18.04 (bionic)
+    * Ubuntu 18.04 (bionic)
 
 * Environments
-  * [AdoptOpenJRE 11 \(Hotspot JVM\)](https://adoptopenjdk.net)
-  * [MongoDB 4.4.3](https://github.com/docker-library/mongo/blob/bc7b2d08696f84ef9b85cf98cfefb189c6a1f30e/4.4/Dockerfile)
-  * [Nginx](https://www.nginx.com)
+    * [OpenJDK 11 \(Hotspot JVM\)](https://adoptium.net/zh-CN/temurin/releases/?version=11&os=linux&package=jre)
+    * [MongoDB 4.4.3](https://github.com/docker-library/mongo/blob/bc7b2d08696f84ef9b85cf98cfefb189c6a1f30e/4.4/Dockerfile)
+    * [Nginx](https://www.nginx.com)
 
 * Artifacts
-  * Frontend SPA resources
-  * Backend API jar
+    * Frontend SPA resources
+    * Backend API jar
 
 * Process management
-  * [Supervisord](http://supervisord.org)
+    * [Supervisord](http://supervisord.org)
 
 The three workflows `frontend_test`, `backend_test` and `build_release_docker_image` serve the test build and release
 build respectively. Each code commit/merge in `main` branch fires a test build in Github Actions.
@@ -56,13 +56,13 @@ Please make sure that [Docker](https://www.docker.com) has already installed on 
 You can pull the latest version of *Metrik* docker image by run the following command:
 
 ``` bash
-docker pull public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker pull docker.io/wszzwpshh1/metrik:${release_version}
 ```
 
 You can run the *Metrik* docker container by via the following command:
 
 ``` bash
-docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik docker.io/wszzwpshh1/metrik:${release_version}
 ```
 
 ⚠️ *We use port 80 to access the frontend resources. You may switch to any other port in case port 80 is occupied by
@@ -86,7 +86,7 @@ If you would like to retain your database to avoid losing any data after removin
 MongoDB data folder `/data/db` out:
 
 ``` bash
-docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" docker.io/wszzwpshh1/metrik:${release_version}
 ```
 
 If you find any service doesn't work as expected, you can use the same way as above to mount the log folder `/app/logs`
@@ -96,5 +96,5 @@ If you would like to view the Swagger doc of the backend API (port `9000`), or, 
 client (port `27017`), you can publish those ports when run docker container.
 
 ``` bash
-docker run -d -p 80:80 -p 9000:9000 -p 27017:27017 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 -p 9000:9000 -p 27017:27017 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" docker.io/wszzwpshh1/metrik:${release_version}
 ```
