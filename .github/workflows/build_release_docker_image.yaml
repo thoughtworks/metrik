@@ -6,8 +6,7 @@ on:
       - created
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_REPOSITORY: ${{ vars.IMAGE_REPOSITORY }}
 
 jobs:
   test-build-push-image:
@@ -82,9 +81,8 @@ jobs:
       - name: Log in to the Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build Docker meta
         id: build-docker-meta
@@ -95,15 +93,14 @@ jobs:
 
       - name: Build and push image
         run: |
-          IMAGE_BASE=${{ env.REGISTRY }}/${{env.IMAGE_NAME}}
           IFS="," read -ra TAGS <<< ${{ steps.build-docker-meta.outputs.TAGS }}
           
-          docker build . --file Dockerfile --tag $IMAGE_BASE:${TAGS[0]} --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
+          docker build . --file Dockerfile --tag ${IMAGE_REPOSITORY}:${TAGS[0]} --label "runnumber=${GITHUB_RUN_ID}" --label "hash=${GITHUB_SHA}"
           
           for TAG in ${TAGS[@]}; do
             if [ "${TAG}" != "${TAGS[0]}" ]; then
-              docker tag "${IMAGE_BASE}:${TAGS[0]}" "${IMAGE_BASE}:${TAG}"
+              docker tag "${IMAGE_REPOSITORY}:${TAGS[0]}" "${IMAGE_REPOSITORY}:${TAG}"
             fi
-            docker push "${IMAGE_BASE}:${TAG}"
+            docker push "${IMAGE_REPOSITORY}:${TAG}"
           done
         working-directory: ./ci
