@@ -12,7 +12,7 @@
 [![Release](https://img.shields.io/github/v/release/thoughtworks/metrik.svg?include_prereleases&style=flat)](https://github.com/thoughtworks/metrik/releases)
 
 *多语言支持：* [English](README.md), [简体中文](README-CH.md)  
-*GitHub 仓库：* [https://github.com/thoughtworks/metrik](https://github.com/thoughtworks/metrik)  
+*GitHub 仓库：* [https://github.com/thoughtworks/metrik](https://github.com/thoughtworks/metrik)
 
 <!-- PROJECT TITLE -->
 <h1 align="center">
@@ -46,19 +46,23 @@
 <!-- END OF PROJECT TITLE -->
 
 <!-- ABOUT THE PROJECT -->
+
 ## 关于本项目
+
 对于想要衡量其软件交付和运营（SDO）效能的开发团队来说，本项目是一个帮助他们从CD管道收集数据并以友好的可视化方式展示关键指标的工具。
 
 **关键差异化因素:**
+
 * 单页配置，简单易用.
 * 具有跨多个CD平台工作的能力.
 * 用户可以自行选择要分析的环境（是的，生产环境不是唯一重要的环境）。
 
 [不知道什么是四个关键指标?](https://www.thoughtworks.com/radar/techniques/four-key-metrics)
 
-
 ### 集成路线
+
 产品现在支持/计划支持的CD工具清单
+
 - [x] Jenkins
 - [x] Bamboo
 - [x] Github Actions
@@ -71,35 +75,43 @@
 
 
 <!-- USAGE -->
+
 ## 用法
+
 按照以下两个步骤来运行该工具，并测量你的项目的四个关键指标。
 
 ### 安装和运行
 
-该产品被发布到ECR Docker仓库`public.ecr.aws/j2s5d3z8/4-key-metrics`。请按照以下步骤操作。
+该产品被发布到Docker Hub仓库`docker.io/wszzwpshh1/metrik`。请按照以下步骤操作。
+
 1. 确保[Docker](https://www.docker.com)已经安装在你的操作系统上。
 2. 在发布页中查找可用的[已发布版本](https://github.com/thoughtworks/metrik/releases)。
-   或者，你可以从我们的[镜像库]中找到所有的历史版本(https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+   或者，你可以从我们的[镜像库]中找到所有的历史版本(https://hub.docker.com/r/wszzwpshh1/metrik)
 3. 通过以下命令在本地运行该容器：
-``` bash
-docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:latest
-```
-*⚠️ 我们使用80端口来访问该应用程序。如果80端口被你机器上运行的其他应用程序占用，你可以切换到任何其他端口。  
-*⚠️ `latest`标签匹配该仓库的最新版本。因此，使用 public.ecr.aws/j2s5d3z8/4-key-metrics:latest 或 public.ecr.aws/j2s5d3z8/4-key-metrics 将确保你运行的是这个镜像的最新版本*。
-如果你想使用一个特定的版本标签，请记住版本名称中没有 "v"。例如，public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.10
 
+``` bash
+docker run -d -p 80:80 --name metrik wszzwpshh1/metrik:latest
+```
+
+*⚠️ 我们使用80端口来访问该应用程序。如果80端口被你机器上运行的其他应用程序占用，你可以切换到任何其他端口。  
+*⚠️ `latest`标签匹配该仓库的最新版本。因此，使用 wszzwpshh1/metrik:latest 或 wszzwpshh1/metrik
+将确保你运行的是这个镜像的最新版本*。
+如果你想使用一个特定的版本标签，请记住版本名称中没有 "v"。例如，wszzwpshh1/metrik:1.1.10
 
 ### 配置
 
 容器在你的机器上运行后。进入你最喜欢的浏览器并打开该应用程序。如果在本地运行，那就是`http://localhost:80/`。
 
 1. 开始配置:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step1.png" height=70% width=70%></div>
 
 2. 随后每个关键指标的图表将出现在主页面上:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step2.png" height=70% width=70%></div>
 
 3. 如果你想把它放在大屏幕上，还可以全屏观看:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step3.png" height=70% width=70%></div>
 
 ### 高级用法
@@ -108,19 +120,24 @@ docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:lates
 可以把数据库文件夹`/data/db`挂载出来。如果你挂载日志文件夹`/app/logs`，那么日志也会被保存。如下面的例子所示。
 
 ``` bash
-docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" wszzwpshh1/metrik:${release_version}
 ```
+
 <!-- END OF USAGE -->
 
 
 <!-- HOW TO COMPUTE -->
+
 ## 算法
-[详细算法请参考Wiki页面](https://github.com/thoughtworks/metrik/wiki) 
+
+[详细算法请参考Wiki页面](https://github.com/thoughtworks/metrik/wiki)
 <!-- END OF HOW TO COMPUTE -->
 
 
 <!-- CONTRIBUTING -->
+
 ## 贡献
+
 贡献是使开源社区成为一个学习、激励和创造的神奇场所的原因。我们真诚的感谢你所做的任何类型的贡献.
 
 请在[这里](https://github.com/thoughtworks/metrik/blob/main/CONTRIBUTING.md)查看我们的贡献者指南。
@@ -128,42 +145,55 @@ docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "
 
 
 <!-- GETTING STARTED -->
+
 ## 快速开始
+
 该代码库由三个主要部分组成："前端"、"后端 "和 "CI"。
+
 * 前端应用由以下技术栈构建：
-  * TypeScript
-  * ReactJS
-  * ReCharts
+    * TypeScript
+    * ReactJS
+    * ReCharts
 
   可以在[前端文件夹](https://github.com/thoughtworks/metrik/tree/main/frontend)找到更多细节。
 
 * 后端程序由以下技术栈构建:
-  * Kotlin
-  * Spring Boot Web
-  * MongoDB
+    * Kotlin
+    * Spring Boot Web
+    * MongoDB
 
   可以在[后端文件夹](https://github.com/thoughtworks/metrik/tree/main/backend)找到更多细节。
-  
+
 * 构建/打包的脚本在[CI文件夹](https://github.com/thoughtworks/metrik/tree/main/ci)下。
+
 <!-- END OF GETTING STARTED -->
 
 
 <!-- MORE -->
+
 ## 更多
+
 你可能会感兴趣的类似项目:
+
 * [Buildvis](https://github.com/cburgmer/buildviz), transparency for your build pipeline's results and runtime
-* [HeartBeat](https://github.com/thoughtworks/HeartBeat), calculates delivery metrics from CI/CD build data, revision control and project planning tools.
-* [GoCD Analytics Plugin](https://extensions-docs.gocd.org/analytics/current/), provides insights into your GoCD instance.
+* [HeartBeat](https://github.com/thoughtworks/HeartBeat), calculates delivery metrics from CI/CD build data, revision
+  control and project planning tools.
+* [GoCD Analytics Plugin](https://extensions-docs.gocd.org/analytics/current/), provides insights into your GoCD
+  instance.
+
 <!-- END OF MORE -->
 
 
 <!-- LICENSE -->
+
 ## License
+
 在MIT许可下发布。更多信息见[LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt)
 <!-- END OF LICENSE -->
 
 
 <!-- CONTRIBUTORS -->
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -232,4 +262,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome!

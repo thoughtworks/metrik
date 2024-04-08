@@ -42,19 +42,25 @@
 <!-- END OF PROJECT TITLE -->
 
 <!-- ABOUT THE PROJECT -->
+
 ## About the Project
-For development teams who wants to measure their software delivery and operational (SDO) performance, this is a tool that helps them collect data from CD pipelines and visualize the key metrics in a friendly format.
+
+For development teams who wants to measure their software delivery and operational (SDO) performance, this is a tool
+that helps them collect data from CD pipelines and visualize the key metrics in a friendly format.
 
 **The key differentiators:**
+
 * One page configuration, quick and easy.
 * The ability to work across different CD platforms.
-* User can select the environment in which the analysis runs via a environment filter (Yes, production env is not the only one that matters)
+* User can select the environment in which the analysis runs via a environment filter (Yes, production env is not the
+  only one that matters)
 
 [Don't know what are those four key metrics?](https://www.thoughtworks.com/radar/techniques/four-key-metrics)
 
-
 ### Integration roadmap
+
 List of CD tools the product supports now/plan to support
+
 - [x] Jenkins
 - [x] Bamboo
 - [x] GitHub Actions
@@ -67,99 +73,132 @@ List of CD tools the product supports now/plan to support
 
 
 <!-- USAGE -->
+
 ## Usage
+
 Follow the two steps below to run the tool, and measure the four key metrics of your projects.
 
 ### Install and run
 
-The product is released to an ECR Docker repository `public.ecr.aws/j2s5d3z8/4-key-metrics`. Please follow the steps:
+The product is released to a public repository hosted on Docker Hub `docker.io/wszzwpshh1/metrik`. Please follow the
+steps:
+
 1. Ensure [Docker](https://www.docker.com) has already installed on your OS.
 2. Find available [release versions](https://github.com/thoughtworks/metrik/releases) in the release page.  
-   Or, you can find all history versions from our [image repository](https://gallery.ecr.aws/j2s5d3z8/4-key-metrics)
+   Or, you can find all history versions from our [image repository](https://hub.docker.com/r/wszzwpshh1/metrik)
 3. Run the container locally via the following command:
-``` bash
-docker run -d -p 80:80 --name metrik public.ecr.aws/j2s5d3z8/4-key-metrics:latest
-```
-*⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running on your machine.*  
-*⚠️ The `latest` tag matches the most recent version of this repository. Thus using public.ecr.aws/j2s5d3z8/4-key-metrics:latest or public.ecr.aws/j2s5d3z8/4-key-metrics will ensure you are running the most up to date version of this image.*  
-If you want to stick to a specific version tag, remember there no "v" in version name. e.g. public.ecr.aws/j2s5d3z8/4-key-metrics:1.1.10
 
+``` bash
+docker run -d -p 80:80 --name metrik wszzwpshh1/metrik:latest
+```
+
+*⚠️ We use port 80 to access the app. You may switch to any other port in case port 80 is occupied by other apps running
+on your machine.*  
+*⚠️ The `latest` tag matches the most recent version of this repository. Thus using wszzwpshh1/metrik:latest or
+wszzwpshh1/metrik will ensure you are running the most up to date version of this image.*  
+If you want to stick to a specific version tag, remember there no "v" in version name. e.g. wszzwpshh1/metrik:latest:
+1.6.5
 
 ### Configure your projects
 
-After the container is running on your machine. Go to your favourite browser and open the app. If running in local that would be `http://localhost:80/`.
+After the container is running on your machine. Go to your favourite browser and open the app. If running in local that
+would be `http://localhost:80/`.
 
 1. Start the configuration:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step1.png" height=70% width=70%></div>
 
 2. And the charts for each key metric will be available at the main page:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step2.png" height=70% width=70%></div>
 
 3. Also the full screen view if you want to put it on big screens:
+
   <div><img src="https://raw.githubusercontent.com/thoughtworks/metrik/main/.doc/img/step3.png" height=70% width=70%></div>
 
 ### Advanced usage
 
 If you would like to keep the 4-key-metrics data to avoid losing any data when remove container, you
-can mount the database folder `/data/db` out. And logs are also available if you mount the log folder `/app/logs`. As shown in the example below:
+can mount the database folder `/data/db` out. And logs are also available if you mount the log folder `/app/logs`. As
+shown in the example below:
 
 ``` bash
-docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" public.ecr.aws/j2s5d3z8/4-key-metrics:${release_version}
+docker run -d -p 80:80 --name metrik -v "/path/to/local/directory:/data/db" -v "/path/to/another/directory:/app/logs" wszzwpshh1/metrik:${release_version}
 ```
+
 <!-- END OF USAGE -->
 
 
 <!-- Our Wiki -->
+
 ## How to Compute, FAQs
-[See our Wiki page](https://github.com/thoughtworks/metrik/wiki) 
+
+[See our Wiki page](https://github.com/thoughtworks/metrik/wiki)
 <!-- END OF HOW TO COMPUTE -->
 
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
 
 Please check our contributing guideline form [HERE](CONTRIBUTING.md)
 <!-- END OF CONTRIBUTING -->
 
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
+
 The codebase comprises of three major components `frontend`, `backend`, `ci`.
+
 * Frontend app is a web application built with:
-  * TypeScript
-  * ReactJS
-  * ReCharts
+    * TypeScript
+    * ReactJS
+    * ReCharts
 
   Go to [frontend folder](https://github.com/thoughtworks/metrik/tree/main/frontend) to find more details.
 
 * Backend app is built with:
-  * Kotlin
-  * Spring Boot Web
-  * MongoDB
+    * Kotlin
+    * Spring Boot Web
+    * MongoDB
 
   Go to [backend folder](https://github.com/thoughtworks/metrik/tree/main/backend) to find more details.
-  
+
 * Build/Package scripts lives in [ci folder](https://github.com/thoughtworks/metrik/tree/main/ci)
+
 <!-- END OF GETTING STARTED -->
 
 
 <!-- MORE -->
+
 ## More
+
 You might also like:
+
 * [Buildvis](https://github.com/cburgmer/buildviz), transparency for your build pipeline's results and runtime
-* [HeartBeat](https://github.com/thoughtworks/HeartBeat), calculates delivery metrics from CI/CD build data, revision control and project planning tools.
-* [GoCD Analytics Plugin](https://extensions-docs.gocd.org/analytics/current/), provides insights into your GoCD instance.
+* [HeartBeat](https://github.com/thoughtworks/HeartBeat), calculates delivery metrics from CI/CD build data, revision
+  control and project planning tools.
+* [GoCD Analytics Plugin](https://extensions-docs.gocd.org/analytics/current/), provides insights into your GoCD
+  instance.
+
 <!-- END OF MORE -->
 
 
 <!-- LICENSE -->
+
 ## License
-Distributed under the MIT License. See [LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt) for more information
+
+Distributed under the MIT License. See [LICENSE](https://github.com/thoughtworks/metrik/blob/main/LICENSE.txt) for more
+information
 <!-- END OF LICENSE -->
 
 
 <!-- CONTRIBUTORS -->
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -228,4 +267,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome!
