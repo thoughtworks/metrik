@@ -29,14 +29,15 @@ data class UpdateProjectRequest(
     JsonSubTypes.Type(value = BambooDeploymentPipelineRequest::class, name = "BAMBOO_DEPLOYMENT"),
     JsonSubTypes.Type(value = JenkinsPipelineRequest::class, name = "JENKINS"),
     JsonSubTypes.Type(value = GithubActionsPipelineRequest::class, name = "GITHUB_ACTIONS"),
+    JsonSubTypes.Type(value = AzurePipelinesPipelineRequest::class, name = "AZURE_PIPELINES"),
     JsonSubTypes.Type(value = BuddyPipelineRequest::class, name = "BUDDY")
 )
 abstract class PipelineRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
     @field:EnumConstraint(
-        acceptedValues = ["JENKINS", "BAMBOO", "BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS", "BUDDY"],
-        message = "Allowed types: JENKINS, BAMBOO, BAMBOO_DEPLOYMENT, GITHUB_ACTIONS, BUDDY"
+        acceptedValues = ["JENKINS", "BAMBOO", "BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS", "AZURE_PIPELINES", "BUDDY"],
+        message = "Allowed types: JENKINS, BAMBOO, BAMBOO_DEPLOYMENT, GITHUB_ACTIONS, AZURE_PIPELINES, BUDDY"
     )
     var type: String
 ) {
@@ -53,14 +54,15 @@ abstract class PipelineRequest(
     JsonSubTypes.Type(value = BambooDeploymentVerificationRequest::class, name = "BAMBOO_DEPLOYMENT"),
     JsonSubTypes.Type(value = JenkinsVerificationRequest::class, name = "JENKINS"),
     JsonSubTypes.Type(value = GithubActionsVerificationRequest::class, name = "GITHUB_ACTIONS"),
+    JsonSubTypes.Type(value = AzurePipelinesVerificationRequest::class, name = "AZURE_PIPELINES"),
     JsonSubTypes.Type(value = BuddyVerificationRequest::class, name = "BUDDY"),
 )
 abstract class PipelineVerificationRequest(
     @field:NotBlank(message = "URL cannot be empty")
     val url: String,
     @field:EnumConstraint(
-        acceptedValues = ["JENKINS", "BAMBOO", "BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS", "BUDDY"],
-        message = "Allowed types: JENKINS, BAMBOO, BAMBOO_DEPLOYMENT, GITHUB_ACTIONS, BUDDY"
+        acceptedValues = ["JENKINS", "BAMBOO", "BAMBOO_DEPLOYMENT", "GITHUB_ACTIONS", "AZURE_PIPELINES", "BUDDY"],
+        message = "Allowed types: JENKINS, BAMBOO, BAMBOO_DEPLOYMENT, GITHUB_ACTIONS, AZURE_PIPELINES, BUDDY"
     )
     val type: String,
 ) {
